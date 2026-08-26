@@ -1,8 +1,8 @@
 # finanz-medizin.com
 
 Statische Website mit drei zielgruppenspezifischen Landingpages und Lead-Funnels für
-**Finanz-Medizin** — die auf Heilberufe spezialisierte Finanz- und Versicherungsberatung
-der WeBuildWealth-Gruppe.
+**Finanz-Medizin** — die auf Heilberufe spezialisierte Marke von We Build Wealth
+(Einzelunternehmen, Inhaber Benedict Hintz).
 
 Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fertig.
 
@@ -39,27 +39,34 @@ Jede Landingpage argumentiert bewusst anders:
 
 ## Vor dem Livegang — Pflichtpunkte
 
-### 1. Rechtsangaben vervollständigen
+### 1. Rechtsangaben — weitgehend erledigt
 
-`impressum.html` und `datenschutz.html` enthalten gelb markierte Platzhalter
-(`<mark class="todo">`) plus je einen Hinweiskasten (`.todo-note`). Zu ergänzen sind
-insbesondere:
+`impressum.html` ist vollständig und enthält keine Platzhalter mehr. Grundlage sind
+die verbindlichen Angaben aus dem Impressum von We Build Wealth:
 
-- Firmierung, Rechtsform, Geschäftsführung, Registergericht, HRB, USt-IdNr., Telefon
-- zuständige IHK als Erlaubnis- und Aufsichtsbehörde
-- Auftragsverarbeiter des Formular-Endpunkts, sobald dieser feststeht
-- ggf. Datenschutzbeauftragter
+- **Anbieter:** Benedict Hintz, Einzelunternehmer, Calvinstraße 3, 10557 Berlin
+- **Finanz-Medizin ist eine Marke** und ein Geschäftsbereich des Einzelunternehmens
+  We Build Wealth — keine eigene Gesellschaft, kein Handelsregistereintrag, keine
+  USt-IdNr. Die Erlaubnisse sind Benedict Hintz persönlich erteilt.
+- § 34d Abs. 1 GewO: `D-5V3H-7KX3I-54` · § 34f Abs. 1 S. 1 Nr. 1 GewO: `D-F-107-RV51-31`
+- Aufsicht: IHK Berlin · Register: DIHK
 
-Das Hosting ist bereits eingetragen (Netlify, Inc.). Offen bleiben dort nur die
-Anschrift aus dem aktuellen Netlify-DPA und die Frage der Zertifizierung unter dem
-EU-US Data Privacy Framework.
+**Erlaubnisumfang beachten.** Die § 34f-Erlaubnis deckt nur Nr. 1 ab (offene
+Investmentvermögen); geschlossene Investmentvermögen und Vermögensanlagen sind nicht
+umfasst. Eine Erlaubnis nach § 34c oder § 34i GewO besteht nicht. Weil die Seiten
+Immobilien, Sachwerte und Beteiligungen thematisieren, steht auf `index.html`,
+`praxisinhaber.html` und `angestellte-aerzte.html` jeweils ein Hinweis, der die
+Grenzen benennt und auf `impressum.html#umfang` verweist. **Wird das Angebot
+inhaltlich erweitert, ist dieser Hinweis mitzuführen.**
 
-Anschrift (Calvinstraße 3, 10557 Berlin) sowie die Registernummern nach § 34d GewO
-(`D-5V3H-7KX3I-54`) und § 34f GewO (`D-F-107-RV51-31`) stammen aus dem
-Praxis-One-Pager und sollten gegengeprüft werden.
+In `datenschutz.html` sind noch drei Punkte offen (gelb markiert):
 
-Nach dem Ausfüllen: Hinweiskästen entfernen und im CSS Abschnitt 21 (`.todo`,
-`.todo-note`) löschen.
+- Anschrift von Netlify aus dem aktuellen DPA (Abschnitt 3)
+- Auftragsverarbeiter des Formular-Endpunkts, sobald dieser feststeht (Abschnitt 4)
+- Wahl in Abschnitt 8, falls die Schriftarten künftig lokal ausgeliefert werden
+
+Danach den Hinweiskasten entfernen und im CSS Abschnitt 21 (`.todo`, `.todo-note`)
+löschen.
 
 ### 2. Schriften lokal ausliefern (DSGVO)
 
