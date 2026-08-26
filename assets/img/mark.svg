@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Finanz-Medizin">
+  <title>Finanz-Medizin</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Ring: linke Hälfte navy, rechte Hälfte bordeaux -->
+    <path d="M50 8 A42 42 0 0 0 50 92" stroke="#0C2C4F" stroke-width="9"/>
+    <path d="M50 8 A42 42 0 0 1 50 92" stroke="#751524" stroke-width="9"/>
+
+    <!-- Balken (Vermögensaufbau) -->
+    <g stroke="none">
+      <rect x="56" y="62" width="7.5" height="20" rx="3" fill="#751524"/>
+      <rect x="67" y="53" width="7.5" height="29" rx="3" fill="#751524"/>
+      <rect x="78" y="44" width="7.5" height="38" rx="3" fill="#751524"/>
+    </g>
+
+    <!-- Äskulapstab mit Schlange: dunkle Kontur + helle Deckfläche,
+         damit die Marke auf hellem wie dunklem Grund trägt -->
+    <path d="M42 22 V82" stroke="#0C2C4F" stroke-width="10"/>
+    <path d="M42 22 V82" stroke="#F4F0EF" stroke-width="5.5"/>
+    <path d="M36 33 C54 39 54 47 36 53 C18 59 18 67 36 73" stroke="#0C2C4F" stroke-width="10"/>
+    <path d="M36 33 C54 39 54 47 36 53 C18 59 18 67 36 73" stroke="#F4F0EF" stroke-width="5.5"/>
+    <circle cx="42" cy="19" r="7.5" fill="#F4F0EF" stroke="#0C2C4F" stroke-width="3"/>
+  </g>
+</svg>
