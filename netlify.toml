@@ -1,0 +1,120 @@
+# =============================================================================
+#  finanz-medizin.com — Netlify
+#  Statische Auslieferung ohne Build-Schritt.
+# =============================================================================
+
+[build]
+  publish = "."
+
+# Post-Processing vollständig aus. Wichtig aus zwei Gründen:
+#  1. „Pretty URLs" würde /seite.html auf /seite umleiten — die canonical-Tags
+#     zeigen aber auf die .html-Variante. Das gäbe widersprüchliche SEO-Signale.
+#  2. Die Asset-Optimierung soll CSS und JS nicht anfassen; beides ist bereits
+#     handoptimiert und der 3D-Renderer reagiert empfindlich auf Umformungen.
+[build.processing]
+  skip_processing = true
+
+# -----------------------------------------------------------------------------
+#  Sicherheits-Header
+# -----------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    Cross-Origin-Opener-Policy = "same-origin"
+
+    # script-src braucht 'unsafe-inline' für zwei Stellen: das kurze Skript im
+    # <head>, das die js-Klasse setzt, und das onload-Attribut am Font-Preload.
+    # Werden die Schriften lokal ausgeliefert (siehe README), fällt der zweite
+    # Grund weg.
+    #
+    # HINWEIS FUNNEL: Sobald data-endpoint gesetzt wird, muss die Ziel-Domain
+    # hier in connect-src ergänzt werden — sonst blockt der Browser das Absenden.
+    Content-Security-Policy = """\
+default-src 'self'; \
+script-src 'self' 'unsafe-inline'; \
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+font-src 'self' https://fonts.gstatic.com; \
+img-src 'self' data:; \
+connect-src 'self'; \
+form-action 'self'; \
+base-uri 'self'; \
+frame-ancestors 'none'; \
+object-src 'none'\
+"""
+
+# -----------------------------------------------------------------------------
+#  Caching
+#  Die Assets tragen keinen Content-Hash im Dateinamen. Deshalb bekommen CSS und
+#  JS bewusst kein langes max-age: Netlify liefert ETags, ein Reload kostet also
+#  nur ein 304 — dafür ist nach einem Deploy garantiert die neue Fassung aktiv.
+# -----------------------------------------------------------------------------
+[[headers]]
+  for = "/assets/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# -----------------------------------------------------------------------------
+#  Bequeme Kurz-URLs für Anzeigen und Visitenkarten.
+#  Ziel ist immer die .html-Variante, damit es genau eine kanonische Adresse gibt.
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/praxisinhaber"
+  to = "/praxisinhaber.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/aerzte"
+  to = "/angestellte-aerzte.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/angestellte-aerzte"
+  to = "/angestellte-aerzte.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/mfa"
+  to = "/mfa-praxisteam.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/mfa-praxisteam"
+  to = "/mfa-praxisteam.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/impressum"
+  to = "/impressum.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/datenschutz"
+  to = "/datenschutz.html"
+  status = 301
+  force = true

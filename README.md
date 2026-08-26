@@ -47,8 +47,12 @@ insbesondere:
 
 - Firmierung, Rechtsform, Geschäftsführung, Registergericht, HRB, USt-IdNr., Telefon
 - zuständige IHK als Erlaubnis- und Aufsichtsbehörde
-- Hosting-Anbieter und Auftragsverarbeiter des Formular-Endpunkts
+- Auftragsverarbeiter des Formular-Endpunkts, sobald dieser feststeht
 - ggf. Datenschutzbeauftragter
+
+Das Hosting ist bereits eingetragen (Netlify, Inc.). Offen bleiben dort nur die
+Anschrift aus dem aktuellen Netlify-DPA und die Frage der Zertifizierung unter dem
+EU-US Data Privacy Framework.
 
 Anschrift (Calvinstraße 3, 10557 Berlin) sowie die Registernummern nach § 34d GewO
 (`D-5V3H-7KX3I-54`) und § 34f GewO (`D-F-107-RV51-31`) stammen aus dem
@@ -211,6 +215,51 @@ kann. Für die Verknüpfung mit `webuildwealth.de` bieten sich an:
 
 ---
 
+## Deployment auf Netlify
+
+Die Konfiguration liegt vollständig in `netlify.toml` — kein Build-Schritt, kein
+`package.json`, nichts zu installieren.
+
+### Einrichtung
+
+1. In Netlify **Add new site → Import an existing project** und dieses Repository
+   verbinden. Branch: der Branch, auf dem die Seite liegt.
+2. Build command leer lassen, Publish directory `.` — beides steht schon in
+   `netlify.toml` und wird übernommen.
+3. Unter **Domain management** `finanz-medizin.com` hinzufügen und
+   `www.finanz-medizin.com` als **Primary domain** setzen. Netlify legt die
+   Weiterleitung von der Apex-Domain automatisch an; die `canonical`-Tags im
+   Markup zeigen bereits auf die `www`-Variante.
+4. **HTTPS** wird über Let's Encrypt automatisch bereitgestellt. Danach unter
+   Domain management **Force HTTPS** aktivieren.
+
+### Was `netlify.toml` mitbringt
+
+- **Sicherheits-Header** für alle Seiten: HSTS, `X-Content-Type-Options`,
+  `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` und eine
+  Content-Security-Policy.
+- **Post-Processing aus** (`skip_processing = true`). Das ist Absicht: Netlifys
+  „Pretty URLs" würden `/seite.html` auf `/seite` umleiten, während die
+  `canonical`-Tags auf die `.html`-Variante zeigen — das gäbe widersprüchliche
+  SEO-Signale. Außerdem soll die Asset-Optimierung CSS und JS nicht umformen.
+- **Caching** passend zur Tatsache, dass die Dateinamen keinen Content-Hash tragen:
+  CSS und JS werden per ETag revalidiert (Reload kostet nur ein 304, nach einem
+  Deploy ist garantiert die neue Fassung aktiv), Bilder 30 Tage.
+- **Kurz-URLs** für Anzeigen und Visitenkarten: `/praxisinhaber`, `/aerzte`, `/mfa`,
+  `/impressum`, `/datenschutz` leiten per 301 auf die jeweilige Seite.
+- **`404.html`** wird von Netlify automatisch als Fehlerseite ausgeliefert.
+
+### Wichtig, sobald der Funnel-Endpunkt steht
+
+Die CSP erlaubt aktuell nur `connect-src 'self'`. Ein externer Endpunkt wird vom
+Browser sonst blockiert — die Ziel-Domain muss in `netlify.toml` bei `connect-src`
+ergänzt werden. Im Abschnitt steht ein entsprechender Hinweis.
+
+**Naheliegende Option:** Netlify bringt mit *Netlify Forms* eine eigene
+Formularverarbeitung mit, inklusive Spamschutz und E-Mail-Benachrichtigung — ohne
+Backend und ohne zusätzlichen Auftragsverarbeiter. Das würde den Endpunkt erledigen
+und läge datenschutzrechtlich beim ohnehin bereits beauftragten Anbieter.
+
 ## Lokal ansehen
 
 ```bash
@@ -218,9 +267,8 @@ python3 -m http.server 8000
 # http://localhost:8000
 ```
 
-Reine Statik — jedes Hosting mit Dateiauslieferung genügt (Netlify, Vercel, Cloudflare
-Pages, klassisches Webhosting). Empfohlen: HTTPS erzwingen, `www` als kanonische
-Variante festlegen und langfristiges Caching für `/assets/` setzen.
+Die Kurz-URLs aus `netlify.toml` greifen lokal nicht — dort direkt die
+`.html`-Dateien aufrufen.
 
 ---
 
