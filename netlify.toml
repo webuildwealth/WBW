@@ -31,18 +31,17 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Cross-Origin-Opener-Policy = "same-origin"
 
-    # script-src braucht 'unsafe-inline' für zwei Stellen: das kurze Skript im
-    # <head>, das die js-Klasse setzt, und das onload-Attribut am Font-Preload.
-    # Werden die Schriften lokal ausgeliefert (siehe README), fällt der zweite
-    # Grund weg.
+    # script-src braucht 'unsafe-inline' nur noch für das kurze Skript im <head>,
+    # das die js-Klasse setzt. Die Schriften liegen lokal — kein fremder Host mehr
+    # in style-src und font-src.
     #
     # Der Funnel sendet an /api/lead auf derselben Domain; 'self' genügt dafür.
     # Erst ein Endpunkt auf einer fremden Domain müsste hier ergänzt werden.
     Content-Security-Policy = """\
 default-src 'self'; \
 script-src 'self' 'unsafe-inline'; \
-style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
-font-src 'self' https://fonts.gstatic.com; \
+style-src 'self' 'unsafe-inline'; \
+font-src 'self'; \
 img-src 'self' data:; \
 connect-src 'self'; \
 form-action 'self'; \
@@ -66,6 +65,11 @@ object-src 'none'\
   for = "/assets/js/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
   for = "/assets/img/*"

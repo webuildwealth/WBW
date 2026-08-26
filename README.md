@@ -66,25 +66,31 @@ In `datenschutz.html` sind noch drei Punkte offen (gelb markiert):
 - Anschrift von Netlify aus dem DPA (Abschnitt 3)
 - Anschrift des Close-Betreibers aus dem DPA (Abschnitt 4)
 - jeweils die Frage der Zertifizierung unter dem EU-US Data Privacy Framework
-- Abschnitt 8 nur, falls die Schriftarten künftig lokal ausgeliefert werden
 
 Danach den Hinweiskasten entfernen und im CSS Abschnitt 21 (`.todo`, `.todo-note`)
 löschen.
 
-### 2. Schriften lokal ausliefern (DSGVO)
+### 2. Schriften — erledigt
 
-Aktuell werden Manrope, Inter und Newsreader über Google Fonts geladen. Für einen
-deutschen Webauftritt ohne Consent-Dialog sollten die Schriften selbst gehostet werden:
+Manrope, Inter und Newsreader liegen unter `assets/fonts/` und werden vom eigenen
+Server ausgeliefert. **Die Seite ruft keine externe Domain mehr auf** — geprüft mit
+einem Browserlauf: null externe Requests. Damit ist kein Consent-Dialog nötig, und
+die Content-Security-Policy kommt vollständig mit `'self'` aus.
 
-1. Schriften bei [gwfh.mranftl.com](https://gwfh.mranftl.com) oder direkt von
-   Google Fonts als WOFF2 herunterladen und unter `assets/fonts/` ablegen.
-2. In allen HTML-Dateien die drei `<link>`-Zeilen zu `fonts.googleapis.com` /
-   `fonts.gstatic.com` entfernen.
-3. `@font-face`-Regeln oben in `assets/css/site.css` einfügen (`font-display: swap`).
-4. In `datenschutz.html` Abschnitt 8 die Variante B löschen.
+- Subsets `latin` und `latin-ext`, `font-display: swap`
+- 14 `@font-face`-Regeln oben in `assets/css/site.css`; die Dateien werden über
+  `unicode-range` nur geladen, wenn sie gebraucht werden — für deutschen Text sind
+  das drei Dateien, zusammen rund 134 KB
+- Die beiden wichtigsten Schnitte werden im `<head>` per `rel="preload"` vorgeladen
+- `netlify.toml` cached `/assets/fonts/*` ein Jahr immutable
 
-Die CSS-Variablen enthalten vollständige System-Font-Fallbacks — die Seite bleibt
-auch ohne Webfonts korrekt gesetzt.
+**Wenn eine Schrift ersetzt wird**, muss der Dateiname mit wechseln — sonst liefern
+Browser wegen `immutable` weiter die alte Datei aus.
+
+**Optimierungsmöglichkeit:** Newsreader wird nur für die Kursiv-Zitate auf
+`praxisinhaber.html` gebraucht und kostet rund 62 KB. Wer darauf verzichten mag,
+löscht die `@font-face`-Regeln und die Datei — der Fallback in `--font-serif` ist
+Georgia und sieht dort ordentlich aus.
 
 ### 3. Close-Anbindung scharfschalten
 
