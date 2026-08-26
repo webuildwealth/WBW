@@ -253,6 +253,15 @@
     var self = this;
     Object.keys(this.data).forEach(function (k) { payload[k] = self.data[k]; });
 
+    // Die lesbaren Feldnamen stehen im Markup (data-label). Wir schicken sie mit,
+    // damit im CRM „Teamgröße“ steht und nicht der technische Schlüssel.
+    var labels = {};
+    this.steps.forEach(function (st) {
+      var key = st.getAttribute('data-name');
+      if (key && self.data[key]) labels[key] = st.getAttribute('data-label') || key;
+    });
+    if (Object.keys(labels).length) payload._labels = labels;
+
     this.form.querySelectorAll('input, select, textarea').forEach(function (el) {
       if (!el.name || el.name === 'website') return;
       payload[el.name] = el.type === 'checkbox' ? (el.checked ? 'ja' : 'nein') : el.value.trim();

@@ -19,6 +19,8 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `danke.html` | Bestätigungsseite, segmentspezifisch | — |
 | `impressum.html` | Impressum + Erstinformation § 15 VersVermV | — |
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) | — |
+| `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
+| `netlify/functions/lead.js` | Nimmt die Absendungen entgegen und legt sie in Close an | alle |
 
 ### Zielgruppen-Ansprache
 
@@ -61,9 +63,10 @@ inhaltlich erweitert, ist dieser Hinweis mitzuführen.**
 
 In `datenschutz.html` sind noch drei Punkte offen (gelb markiert):
 
-- Anschrift von Netlify aus dem aktuellen DPA (Abschnitt 3)
-- Auftragsverarbeiter des Formular-Endpunkts, sobald dieser feststeht (Abschnitt 4)
-- Wahl in Abschnitt 8, falls die Schriftarten künftig lokal ausgeliefert werden
+- Anschrift von Netlify aus dem DPA (Abschnitt 3)
+- Anschrift des Close-Betreibers aus dem DPA (Abschnitt 4)
+- jeweils die Frage der Zertifizierung unter dem EU-US Data Privacy Framework
+- Abschnitt 8 nur, falls die Schriftarten künftig lokal ausgeliefert werden
 
 Danach den Hinweiskasten entfernen und im CSS Abschnitt 21 (`.todo`, `.todo-note`)
 löschen.
@@ -83,43 +86,101 @@ deutschen Webauftritt ohne Consent-Dialog sollten die Schriften selbst gehostet 
 Die CSS-Variablen enthalten vollständige System-Font-Fallbacks — die Seite bleibt
 auch ohne Webfonts korrekt gesetzt.
 
-### 3. Funnel-Endpunkt konfigurieren
+### 3. Close-Anbindung scharfschalten
 
-Ohne Endpunkt leiten die Formulare nur auf `danke.html` weiter; **es wird nichts
-versendet.** Für den Produktivbetrieb in der jeweiligen Landingpage setzen:
+Die Funnels senden an `/api/lead`. Dahinter liegt die Netlify Function
+`netlify/functions/lead.js`, die in Close einen **Lead mit Kontakt** und eine
+**Notiz mit allen Antworten** anlegt.
 
-```html
-<form class="funnel" data-funnel="praxisinhaber" data-endpoint="https://…">
+**Warum eine Function und kein direkter Aufruf aus dem Browser:** Ein Close-API-Key
+erlaubt Vollzugriff auf das gesamte CRM — Lesen, Ändern, Löschen. Im Frontend läge er
+im Quelltext offen und wäre binnen Stunden missbraucht. Er gehört ausschließlich
+serverseitig in eine Umgebungsvariable.
+
+#### Einzurichten in Netlify → Site configuration → Environment variables
+
+| Variable | Pflicht | Zweck |
+|---|---|---|
+| `CLOSE_API_KEY` | ja | Close → Settings → API Keys → New API Key |
+| `CLOSE_LEAD_STATUS_ID` | nein | Lead-Status für neue Anfragen, z. B. `stat_…`. Ohne Angabe greift der Close-Standard |
+| `CLOSE_CUSTOM_FIELDS` | nein | Mapping auf echte Close-Felder, siehe unten |
+
+Nach dem Setzen einen Redeploy auslösen — Functions lesen die Variablen beim Start.
+
+#### Was in Close ankommt
+
+- **Lead-Name:** der Praxisname, sonst der Personenname
+- **Kontakt:** Name, E-Mail, Telefon
+- **Beschreibung:** „Praxis-Check über finanz-medizin.com" (je nach Funnel)
+- **Notiz** mit allen Antworten, Erreichbarkeit, Einwilligung, Landingpage, Verweis,
+  UTM-Parametern, Ausfülldauer und Zeitstempel
+
+Beispiel:
+
+```
+=== Praxis-Check über finanz-medizin.com ===
+
+ANGABEN AUS DEM CHECK
+  • Praxisform: Einzelpraxis
+  • Teamgröße: 4–8 Mitarbeitende
+  • Wichtigstes Ziel: Team halten und gewinnen, Steuerlast senken
+  • Bereits vorhanden: Nein, bisher nichts
+
+KONTAKT
+  • Praxis: Hausarztpraxis Berger
+  • Erreichbarkeit: Nachmittags (14 – 18 Uhr)
+  • Einwilligung Kontaktaufnahme: ja
+
+HERKUNFT
+  • Landingpage: /praxisinhaber.html
+  • Kampagne: utm_source=google, utm_campaign=praxis-q3
+  • Ausfülldauer: 74 Sekunden
 ```
 
-Der Endpunkt erhält einen `POST` mit `Content-Type: application/json`. Beispiel-Payload:
+Die Beschriftungen stammen aus den `data-label`-Attributen im Markup — eine neue
+Funnel-Frage erscheint automatisch mit dem richtigen Namen in der Notiz, ohne dass
+die Function angefasst werden muss.
 
-```json
-{
-  "funnel": "praxisinhaber",
-  "praxisform": "Einzelpraxis",
-  "teamgroesse": "4–8 Mitarbeitende",
-  "prioritaet": "Team halten und gewinnen, Steuerlast senken",
-  "betrieblich": "Nein, bisher nichts",
-  "vorname": "Anna", "nachname": "Berger",
-  "praxis": "Hausarztpraxis Berger",
-  "email": "…", "telefon": "…",
-  "erreichbarkeit": "Nachmittags (14 – 18 Uhr)",
-  "einwilligung": "ja",
-  "kampagne": "{\"utm_source\":\"google\"}",
-  "seite": "/praxisinhaber.html",
-  "verweis": "https://www.google.com/",
-  "dauer_sek": 74,
-  "zeitpunkt": "2026-08-26T10:12:33.000Z"
-}
+#### Optional: eigene Close-Felder befüllen
+
+Damit sich Anfragen in Close filtern und in Smart Views auswerten lassen, legen Sie
+dort Lead-Custom-Fields an und hinterlegen das Mapping als JSON:
+
+```
+CLOSE_CUSTOM_FIELDS = {"funnel":"cf_a1b2c3","praxisform":"cf_d4e5f6","teamgroesse":"cf_g7h8i9"}
 ```
 
-Ein HTTP-2xx gilt als Erfolg und löst die Weiterleitung aus; alles andere zeigt eine
-Fehlermeldung mit der E-Mail-Adresse als Rückfallweg an. Geeignet sind Formspree,
-Make/Zapier-Webhooks, HubSpot-Forms oder ein eigener Endpunkt.
+Links stehen die Funnel-Schlüssel (`funnel`, `praxisform`, `teamgroesse`,
+`prioritaet`, `betrieblich`, `status`, `ziel`, `sparrate`, `bestand`, `rolle`,
+`lebensphase`, `sorge`, `praxisangebot`, `seite`, `kampagne`, `erreichbarkeit`),
+rechts die Feld-IDs aus Close. Unbekannte oder falsch formatierte IDs werden
+ignoriert, die Notiz enthält ohnehin alles.
 
-**Datenschutz beachten:** Sobald ein externer Dienst eingebunden ist, muss er in
-`datenschutz.html` Abschnitt 4 als Auftragsverarbeiter benannt werden.
+#### Schutzmechanismen der Function
+
+- Honeypot: ausgefülltes `website`-Feld wird verworfen, der Bot bekommt trotzdem 200
+- Pflichtprüfung für Name, E-Mail-Format und Einwilligung
+- Längenbegrenzung aller Felder, bevor sie ins CRM wandern
+- Nur `POST`; Fehler werden ohne personenbezogene Daten protokolliert
+
+#### Verhalten im Fehlerfall
+
+Antwortet Close nicht, gibt die Function `502` zurück und die Seite zeigt „Das hat
+gerade nicht geklappt — schreiben Sie uns an info@finanz-medizin.com". **Die Anfrage
+wird in diesem Fall nicht zwischengespeichert.** Wer das absichern will, kann in der
+Function zusätzlich in Netlify Blobs schreiben oder eine Benachrichtigungs-E-Mail
+auslösen — beides bewusst nicht eingebaut, um die Zahl der Auftragsverarbeiter klein
+zu halten.
+
+#### Lokal testen
+
+```bash
+npm i -g netlify-cli
+netlify dev          # bedient /api/lead gegen die echte Function
+```
+
+Ohne `netlify dev` läuft die Seite weiterhin über `python3 -m http.server`, der
+Funnel läuft dann aber ins Leere — `/api/lead` existiert nur auf Netlify.
 
 ### 4. Domain und Metadaten
 

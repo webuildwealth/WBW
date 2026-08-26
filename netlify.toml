@@ -5,6 +5,10 @@
 
 [build]
   publish = "."
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
 
 # Post-Processing vollständig aus. Wichtig aus zwei Gründen:
 #  1. „Pretty URLs" würde /seite.html auf /seite umleiten — die canonical-Tags
@@ -32,8 +36,8 @@
     # Werden die Schriften lokal ausgeliefert (siehe README), fällt der zweite
     # Grund weg.
     #
-    # HINWEIS FUNNEL: Sobald data-endpoint gesetzt wird, muss die Ziel-Domain
-    # hier in connect-src ergänzt werden — sonst blockt der Browser das Absenden.
+    # Der Funnel sendet an /api/lead auf derselben Domain; 'self' genügt dafür.
+    # Erst ein Endpunkt auf einer fremden Domain müsste hier ergänzt werden.
     Content-Security-Policy = """\
 default-src 'self'; \
 script-src 'self' 'unsafe-inline'; \
@@ -72,6 +76,16 @@ object-src 'none'\
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# -----------------------------------------------------------------------------
+#  Funnel-Endpunkt. Rewrite mit Status 200, nicht 301 — ein Redirect würde den
+#  POST-Body verlieren.
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/api/lead"
+  to = "/.netlify/functions/lead"
+  status = 200
+  force = true
 
 # -----------------------------------------------------------------------------
 #  Bequeme Kurz-URLs für Anzeigen und Visitenkarten.
