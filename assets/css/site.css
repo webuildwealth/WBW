@@ -450,7 +450,7 @@ button { background: none; border: 0; cursor: pointer; }
    Stein-Ton aus derselben Farbfamilie; auf dunklem Grund steht das Bone
    original und '-medizin' wechselt ins Hellblau, damit es lesbar bleibt. */
 .brand__name .bn-a { color: #9A8E84; }
-.brand__name .bn-b { color: var(--navy-800); }
+.brand__name .bn-b { color: #1B3F86; }
 .brand__tag {
   display: block; font-family: var(--font-body); font-weight: 500;
   font-size: .62rem; letter-spacing: .13em; text-transform: uppercase;
