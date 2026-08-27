@@ -142,12 +142,31 @@ Kalender; die Bestätigung an den Interessenten schicken Sie aus Close.
 
 ---
 
-## 6 · Vor dem Livegang noch zu erledigen
+## 6 · Auftragsverarbeitungsverträge
 
-- **Datenschutzerklärung:** fünf gelb markierte Stellen. Die Anschriften
-  von Netlify und Close aus den jeweiligen Auftragsverarbeitungsverträgen
-  sowie die Frage, ob für Netlify, Close und Google eine aktuelle
-  EU-US-Data-Privacy-Framework-Zertifizierung vorliegt.
-- **Auftragsverarbeitungsverträge** abschließen: Netlify und Close jeweils
-  im Konto, Google über die Cloud-Nutzungsbedingungen.
-- **Foto** auf der Über-uns-Seite: dort steht derzeit ein Platzhalter.
+Die Datenschutzerklärung sagt zu, dass mit Netlify, Close und Google
+Verträge zur Auftragsverarbeitung nach Art. 28 DSGVO bestehen. Diese
+Zusage müssen Sie einlösen — das ist die einzige Aufgabe, die niemand
+für Sie erledigen kann:
+
+| Anbieter | Wo |
+|---|---|
+| Netlify | *Team settings* → *Legal & compliance* → DPA akzeptieren |
+| Close | *Settings* → *Legal* — je nach Tarif per Klick oder auf Anfrage |
+| Google | Cloud Console → *Terms* — der Cloud-DPA gilt mit der Nutzung als vereinbart |
+
+Das blockiert den technischen Livegang nicht: Die Seite läuft, sobald
+Schritt 1 durch ist. Die Verträge sollten aber stehen, bevor der erste
+echte Datensatz durchläuft — also bevor Sie die Domain umstellen.
+
+### Später verfeinern, nicht dringend
+
+Die Erklärung nennt Close als „Anbieter mit Sitz in den Vereinigten
+Staaten". Das genügt Art. 13 Abs. 1 lit. e DSGVO, der ausdrücklich
+Empfänger **oder Kategorien von Empfängern** verlangt. Sobald Sie den
+DPA vorliegen haben, können Sie dort die genaue Firmierung und Anschrift
+eintragen — schöner, aber nicht erforderlich.
+
+Auf der Über-uns-Seite steht statt eines Porträts eine Signet-Fläche.
+Wenn ein Foto vorliegt, tritt es an ihre Stelle; die Gestaltung dafür
+liegt bereit (`.person__bild` im Stylesheet).

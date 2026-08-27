@@ -1165,33 +1165,8 @@ body.nav-open { overflow: hidden; }
 .divider { height: 1px; background: var(--line); border: 0; margin-block: clamp(2rem,4vw,3rem); }
 :is(.section--dark,.hero--dark,.funnel-band) .divider { background: rgba(255,255,255,.13); }
 
-/* --------------------------------------------------------------------------
-   21. Platzhalter für noch zu ergänzende Rechtsangaben
-   -------------------------------------------------------------------------- */
-.todo {
-  background: #FFF3C4;
-  color: #6B4A00;
-  border: 1px dashed #C9A227;
-  border-radius: var(--r-xs);
-  padding: .05em .45em;
-  font-weight: 600;
-  font-size: .95em;
-}
-.todo-note {
-  background: #FFF8E1;
-  border: 1px solid #E8CE7B;
-  border-left: 4px solid #C9A227;
-  border-radius: var(--r-sm);
-  padding: 1rem 1.2rem;
-  color: #6B4A00;
-  font-size: .88rem;
-  line-height: 1.6;
-  margin-top: 1.5rem;
-}
-.todo-note strong { color: #4A3300; }
-
 /* ==========================================================================
-   22. Progressive Sticky-CTA
+   21. Progressive Sticky-CTA
    Die Leiste reift mit der Lesetiefe: erst unsichtbar, dann weich, dann
    bestimmt. Der Druck steigt mit dem Verständnis, nicht mit der Zeit.
    ========================================================================== */
@@ -1294,7 +1269,7 @@ body.nav-open { overflow: hidden; }
 }
 
 /* ==========================================================================
-   23. Sonderausgaben-Rechner
+   22. Sonderausgaben-Rechner
    Der Besucher erzeugt seine eigene Zahl. Gegen eine selbst errechnete Zahl
    wehrt sich niemand — gegen eine behauptete schon.
    ========================================================================== */
@@ -1420,7 +1395,7 @@ body.nav-open { overflow: hidden; }
 .calc.is-rechnend .calc__gross, .calc.is-rechnend .calc__zeile b { opacity: .45; }
 
 /* ==========================================================================
-   24. Buchungs-Widget
+   23. Buchungs-Widget
    Zeigt echte freie Zeiten aus dem Kalender. Solange Google nicht
    eingerichtet ist, tritt still der Funnel an seine Stelle — die Seite
    verspricht nie einen Termin, den sie nicht vergeben kann.
@@ -1524,7 +1499,7 @@ body.nav-open { overflow: hidden; }
 .book__ok-icon svg { width: 27px; height: 27px; }
 
 /* ==========================================================================
-   25. Vertrauen, Personen, Haltung
+   24. Vertrauen, Personen, Haltung
    Nachprüfbarkeit statt Behauptung. Wer seine Registernummer sichtbar
    danebenlegt und zur Prüfung auffordert, sagt mehr als jedes Siegel.
    ========================================================================== */
@@ -1575,12 +1550,28 @@ body.nav-open { overflow: hidden; }
   box-shadow: inset 0 0 0 1px rgba(12, 44, 79, .08);
   border-radius: inherit;
 }
-/* Platzhalter, solange kein Foto hinterlegt ist */
-.person__bild:not(:has(img))::before {
-  content: attr(data-platzhalter);
-  position: absolute; inset: 0; display: grid; place-items: center;
-  padding: 1.5rem; text-align: center;
-  font-size: .82rem; line-height: 1.5; color: var(--ink-mute);
+/* Signet-Fläche statt Porträt. Ein leerer Bildrahmen mit „Foto folgt" wirkt
+   unfertig; diese Fläche ist eine gestalterische Entscheidung und trägt
+   nebenbei die Anschrift, die Vertrauen schafft. Kommt später ein Porträt
+   dazu, tritt .person__bild wieder an ihre Stelle. */
+.person__signet {
+  display: grid; place-content: center; justify-items: center; gap: .9rem;
+  aspect-ratio: 4 / 5; border-radius: var(--r-xl); padding: 2rem;
+  text-align: center;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(165deg, var(--navy-800), var(--navy-900));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
+}
+.person__signet img { opacity: .95; }
+.person__signet-name {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: 1.25rem; letter-spacing: -.02em; color: #fff;
+}
+.person__signet-name > span { color: var(--red-500); }
+.person__signet-ort {
+  font-size: .78rem; letter-spacing: .04em;
+  color: rgba(255,255,255,.62); line-height: 1.5;
 }
 .person__rolle {
   font-family: var(--font-display); font-weight: 700; font-size: .74rem;
