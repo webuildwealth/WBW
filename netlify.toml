@@ -98,6 +98,18 @@ object-src 'none'\
   status = 200
   force = true
 
+[[redirects]]
+  from = "/api/slots"
+  to = "/.netlify/functions/slots"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/booking"
+  to = "/.netlify/functions/booking"
+  status = 200
+  force = true
+
 # -----------------------------------------------------------------------------
 #  Bequeme Kurz-URLs für Anzeigen und Visitenkarten.
 #  Ziel ist immer die .html-Variante, damit es genau eine kanonische Adresse gibt.
@@ -129,6 +141,18 @@ object-src 'none'\
 [[redirects]]
   from = "/mfa-praxisteam"
   to = "/mfa-praxisteam.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ueber-uns"
+  to = "/ueber-uns.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/team"
+  to = "/ueber-uns.html"
   status = 301
   force = true
 
