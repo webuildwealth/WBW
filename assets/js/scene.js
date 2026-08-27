@@ -224,6 +224,22 @@
   ];
   var BAR_A = [0, 0, 1, 1];
 
+  /* Die fertige Bildmarke. Am Ende der Sequenz blendet sie ueber die
+     prozedurale Fassung — dort soll das Logo exakt so stehen, wie es ist,
+     nicht als weichgezeichnete Annaeherung. */
+  var LOGO = { img: null, ready: false };
+  (function () {
+    if (typeof Image === 'undefined') return;
+    var i = new Image();
+    i.decoding = 'async';
+    i.onload = function () { LOGO.ready = true; };
+    i.src = 'assets/img/mark.svg';
+    LOGO.img = i;
+  })();
+
+  // Ab hier loest die Sequenz in die Bildmarke auf
+  var LOGO_FROM = 0.88;
+
   /* ------------------------------------------------------------- Renderer */
 
   function Scene(canvas, opts) {
@@ -237,7 +253,11 @@
     this.spinSpeed = opts.spin != null ? opts.spin : 0.16;
     this.tilt = opts.tilt != null ? opts.tilt : 0.10;
 
+    this.baseCtx = this.ctx;      // echter Kontext des sichtbaren Canvas
+    this.off = null;              // Puffer fuer die Ueberblendung zum Logo
+    this.offCtx = null;
     this.dpr = 1; this.w = 0; this.h = 0;
+    this.logoAmt = 0;           // Anteil der fertigen Bildmarke am Bild
     this.t = 0;                 // 0..1 Morph-Fortschritt über alle Ziele
     this.tSmooth = 0;
     this.time = 0;
@@ -291,7 +311,12 @@
     this.h = Math.max(1, Math.round(r.height));
     this.canvas.width = Math.round(this.w * this.dpr);
     this.canvas.height = Math.round(this.h * this.dpr);
-    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.baseCtx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    if (this.off) {
+      this.off.width = this.canvas.width;
+      this.off.height = this.canvas.height;
+      this.offCtx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    }
     this.scale = Math.min(this.w, this.h) * (this.mode === 'stage' ? 0.30 : 0.34);
     this.cx = this.w * 0.5;
     this.cy = this.h * 0.5;
@@ -313,16 +338,20 @@
     var t = this.tSmooth, time = this.time;
     var yaw, pitch;
 
+    // Zum Schluss kommt die Kamera zur Ruhe, damit die prozedurale Fassung
+    // beim Ueberblenden deckungsgleich zur festen Bildmarke steht.
+    var calm = 1 - (this.logoAmt || 0);
+
     if (this.mode === 'stage') {
       // Keyframes je Akt: das Signet steht am Ende frontal zur Kamera
-      yaw = kf(t, YAW_KF) + Math.sin(time * 0.18) * 0.045;
-      pitch = kf(t, PITCH_KF) + Math.sin(time * 0.23) * 0.028;
+      yaw = kf(t, YAW_KF) + Math.sin(time * 0.18) * 0.045 * calm;
+      pitch = kf(t, PITCH_KF) + Math.sin(time * 0.23) * 0.028 * calm;
     } else {
       yaw = Math.sin(time * this.spinSpeed) * 0.55;
       pitch = this.tilt + Math.sin(time * this.spinSpeed * 0.73) * 0.06;
     }
-    yaw += this.mx * 0.22;
-    pitch += -this.my * 0.14;
+    yaw += this.mx * 0.22 * calm;
+    pitch += -this.my * 0.14 * calm;
 
     this.cyaw = Math.cos(yaw); this.syaw = Math.sin(yaw);
     this.cpit = Math.cos(pitch); this.spit = Math.sin(pitch);
@@ -682,6 +711,19 @@
     }
   };
 
+  /* Bildmarke deckungsgleich zur prozeduralen Fassung einsetzen. Der Ring
+     im SVG hat den Mittelpunkt (50, 48) bei einem Aussenradius von rund 39,25
+     Einheiten — daraus ergibt sich Groesse und Versatz. */
+  Scene.prototype.drawLogo = function (ctx, alpha) {
+    if (!LOGO.ready || alpha <= 0) return;
+    var w = this.f / this.dist;                  // Perspektive in der Bildebene
+    var size = (2 * 0.955 * w * this.scale) / 0.785;
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, alpha);
+    ctx.drawImage(LOGO.img, this.cx - size * 0.5, this.cy - size * 0.48, size, size);
+    ctx.restore();
+  };
+
   Scene.prototype.drawParticles = function () {
     var ctx = this.ctx, self = this, out = new Float32Array(3);
     for (var i = 0; i < this.particles.length; i++) {
@@ -715,8 +757,27 @@
     this.readScroll();
     this.tSmooth += (this.t - this.tSmooth) * Math.min(1, dt * 6.5);
 
+    // Am Ende der Sequenz die prozedurale Fassung ausblenden und die echte
+    // Bildmarke einblenden. Damit die Ueberblendung sauber ist, wird die
+    // Animation dafuer in einen Puffer gezeichnet und als Ganzes verrechnet.
+    var logoAmt = 0;
+    if (this.mode === 'stage' && LOGO.ready) {
+      logoAmt = smooth((this.tSmooth - LOGO_FROM) / (1 - LOGO_FROM));
+    }
+    if (logoAmt > 0.001 && !this.off) {
+      this.off = document.createElement('canvas');
+      this.off.width = this.canvas.width;
+      this.off.height = this.canvas.height;
+      this.offCtx = this.off.getContext('2d');
+      this.offCtx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    }
+    this.logoAmt = logoAmt;
+    var toBuffer = logoAmt > 0.001 && this.offCtx;
+    this.ctx = toBuffer ? this.offCtx : this.baseCtx;
+
     var ctx = this.ctx;
     ctx.clearRect(0, 0, this.w, this.h);
+    if (toBuffer) this.baseCtx.clearRect(0, 0, this.w, this.h);
     this.setCam();
     this.items.length = 0;
 
@@ -732,6 +793,16 @@
 
     this.items.sort(function (a, b) { return a.z - b.z; });
     for (var i = 0; i < this.items.length; i++) this.items[i].fn();
+
+    if (toBuffer) {
+      var base = this.baseCtx;
+      base.save();
+      base.globalAlpha = 1 - logoAmt;
+      base.drawImage(this.off, 0, 0, this.w, this.h);
+      base.restore();
+      this.drawLogo(base, logoAmt);
+      this.ctx = base;
+    }
   };
 
   /* --------------------------------------------------------------- Runner */
