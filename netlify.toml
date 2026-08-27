@@ -10,6 +10,13 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Die Function importiert lib/lead-core.js von ausserhalb ihres Verzeichnisses.
+# Ohne diese beiden Angaben landet die Datei nicht im Function-Bundle und der
+# Aufruf schlaegt zur Laufzeit fehl.
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["lib/**"]
+
 # Post-Processing vollständig aus. Wichtig aus zwei Gründen:
 #  1. „Pretty URLs" würde /seite.html auf /seite umleiten — die canonical-Tags
 #     zeigen aber auf die .html-Variante. Das gäbe widersprüchliche SEO-Signale.
