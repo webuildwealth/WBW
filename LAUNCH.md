@@ -23,7 +23,7 @@ Zeitbedarf: Schritt 1 fünf Minuten, Schritt 3 zehn, Schritt 4 zwanzig.
 Damit deployt jede Änderung automatisch.
 
 1. *Add new site* → *Import an existing project* → GitHub → Repository `webuildwealth/WBW`
-2. Branch: `claude/finanzen-medizin-website-9set7w`
+2. Branch: `claude/netlify-website-changes-ox7xsp`
 3. Build command: **leer lassen**
 4. Publish directory: **`.`**
 5. Functions directory: **`netlify/functions`**
@@ -135,6 +135,8 @@ Nach dem Setzen von Umgebungsvariablen einmal *Deploys* → *Trigger deploy*
 | Einen Check ausfüllen | Neuer Lead in Close, mit Notiz und allen Antworten |
 | Einen Termin buchen | Eintrag im Google Kalender **und** ein Lead in Close |
 | Buchung im Kalender | Titel „Erstgespräch · Vorname Name", Sie sind der einzige Teilnehmer |
+| Startseite, Abschnitt „Erstgespräch sichern" | Vier Schritte bis zum Wunschtermin, danach Lead in Close |
+| Beim Scrollen | Der Button aus der Kopfzeile erscheint unten mittig und verschwindet, sobald sein Ziel im Bild ist |
 
 Der gebuchte Termin lädt Sie **nicht** per Mail ein — ein Dienstkonto darf
 das ohne domainweite Delegation nicht. Der Eintrag steht direkt im
