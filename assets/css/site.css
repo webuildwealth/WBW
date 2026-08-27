@@ -440,7 +440,7 @@ button { background: none; border: 0; cursor: pointer; }
 }
 
 .brand { display: flex; align-items: center; gap: .7rem; flex: none; }
-.brand img { width: 42px; height: 42px; }
+.brand img { height: 41px; width: auto; }
 .brand__name {
   font-family: var(--font-display); font-weight: 800; font-size: 1.06rem;
   letter-spacing: -.03em; color: var(--navy-800); line-height: 1;
@@ -1085,8 +1085,8 @@ body.nav-open { overflow: hidden; }
 }
 .footer a:hover { color: #fff; }
 .footer ul { display: grid; gap: .55rem; }
-.footer__brand { display: flex; align-items: center; gap: .7rem; margin-bottom: 1rem; }
-.footer__brand img { width: 44px; height: 44px; }
+.footer__brand { margin-bottom: 1.1rem; }
+.footer__brand img { width: 170px; height: auto; display: block; }
 .footer__brand .brand__name .bn-a { color: #F4F0EF; }
 .footer__brand .brand__name .bn-b { color: #93B7D8; }
 .footer__bottom {

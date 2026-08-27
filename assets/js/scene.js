@@ -233,7 +233,7 @@
     var i = new Image();
     i.decoding = 'async';
     i.onload = function () { LOGO.ready = true; };
-    i.src = 'assets/img/mark.svg';
+    i.src = 'assets/img/mark.webp';
     LOGO.img = i;
   })();
 
@@ -711,16 +711,23 @@
     }
   };
 
-  /* Bildmarke deckungsgleich zur prozeduralen Fassung einsetzen. Der Ring
-     im SVG hat den Mittelpunkt (50, 48) bei einem Aussenradius von rund 39,25
-     Einheiten — daraus ergibt sich Groesse und Versatz. */
+  /* Bildmarke deckungsgleich zur prozeduralen Fassung einsetzen. Die Werte
+     stammen aus der Datei selbst: der Ring misst 0,7994 der Bildbreite, sein
+     Mittelpunkt liegt bei 0,5038 / 0,5267 — daraus ergeben sich Groesse und
+     Versatz, damit beim Ueberblenden nichts springt. */
+  var LOGO_RATIO = 612 / 720;      // Hoehe zu Breite
+  var LOGO_RING  = 0.7994;         // Ringdurchmesser im Verhaeltnis zur Breite
+  var LOGO_CX    = 0.5038;
+  var LOGO_CY    = 0.5267;
+
   Scene.prototype.drawLogo = function (ctx, alpha) {
     if (!LOGO.ready || alpha <= 0) return;
     var w = this.f / this.dist;                  // Perspektive in der Bildebene
-    var size = (2 * 0.955 * w * this.scale) / 0.785;
+    var wid = (2 * 0.955 * w * this.scale) / LOGO_RING;
+    var hgt = wid * LOGO_RATIO;
     ctx.save();
     ctx.globalAlpha = Math.min(1, alpha);
-    ctx.drawImage(LOGO.img, this.cx - size * 0.5, this.cy - size * 0.48, size, size);
+    ctx.drawImage(LOGO.img, this.cx - wid * LOGO_CX, this.cy - hgt * LOGO_CY, wid, hgt);
     ctx.restore();
   };
 
