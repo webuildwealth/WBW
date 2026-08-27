@@ -93,6 +93,63 @@ haben wollen.
 
 ---
 
+## Deploy über das Terminal (Netlify CLI)
+
+Der schnellste Weg vom eigenen Rechner aus. Dauert beim ersten Mal etwa fünf Minuten.
+
+```bash
+# 1 · Repo holen
+git clone https://github.com/webuildwealth/WBW.git
+cd WBW
+git checkout claude/finanzen-medizin-website-9set7w
+
+# 2 · CLI installieren
+npm install -g netlify-cli
+
+# 3 · Anmelden — öffnet den Browser, kein Token nötig
+netlify login
+
+# 4 · Site anlegen und mit diesem Ordner verknüpfen
+netlify sites:create --name finanz-medizin
+#    Bei einer bereits bestehenden Site stattdessen:  netlify link
+
+# 5 · Close-Key hinterlegen (liegt danach nur bei Netlify, nicht im Repo)
+netlify env:set CLOSE_API_KEY "hier-den-key-einsetzen"
+
+# 6 · Vorschau-Deploy: gibt eine Test-URL aus, produktiv passiert nichts
+netlify deploy
+
+# 7 · Wenn die Vorschau passt: live
+netlify deploy --prod
+```
+
+`netlify.toml` wird dabei automatisch gelesen — Publish-Verzeichnis, Function-Bundling,
+Header, Caching und Weiterleitungen sind darin bereits konfiguriert.
+
+### Vor dem Livegang lokal testen
+
+```bash
+netlify dev
+```
+
+Startet die Seite auf `http://localhost:8888` **inklusive** der Function unter
+`/api/lead`. Damit lässt sich der komplette Funnel einmal echt durchspielen und
+prüfen, ob der Lead in Close ankommt — bevor irgendetwas öffentlich ist. Der Key wird
+dabei aus den Netlify-Umgebungsvariablen gezogen, wenn die Site verknüpft ist.
+
+### Änderungen später
+
+```bash
+git pull
+netlify deploy --prod
+```
+
+Noch bequemer: In Netlify unter *Site configuration → Build & deploy* das GitHub-Repo
+verbinden. Dann genügt ein `git push`, und Netlify deployt von selbst — kein Terminal
+mehr nötig.
+
+---
+
 ## Aktueller Stand: Netlify
 
 Die vollständige Netlify-Konfiguration steht in `netlify.toml`, die Einrichtung ist
