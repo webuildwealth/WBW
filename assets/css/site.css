@@ -1071,7 +1071,7 @@ body.nav-open { overflow: hidden; }
 }
 .footer h5 {
   font-family: var(--font-display); font-weight: 700; font-size: .76rem;
-  letter-spacing: .15em; text-transform: uppercase; color: rgba(255,255,255,.85);
+  letter-spacing: .15em; text-transform: uppercase; color: #E8919E;
   margin-bottom: 1rem;
 }
 .footer__grid {
@@ -1080,7 +1080,7 @@ body.nav-open { overflow: hidden; }
 }
 .footer__grid > :first-child { grid-column: 1 / -1; }
 @media (min-width: 900px) {
-  .footer__grid { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; }
+  .footer__grid { grid-template-columns: 1.35fr .8fr .9fr 1fr 1.25fr; }
   .footer__grid > :first-child { grid-column: auto; }
 }
 .footer a:hover { color: #fff; }
@@ -1101,6 +1101,12 @@ body.nav-open { overflow: hidden; }
   .footer__bottom { justify-content: center; text-align: center; }
   .footer__cta { order: -1; width: 100%; justify-content: center; }
 }
+/* Kontaktspalte: Symbol und Angabe nebeneinander, Symbol oben ausgerichtet,
+   damit auch eine umbrechende Adresse sauber steht. */
+.footer__contact { gap: .85rem; }
+.footer__contact li { display: grid; grid-template-columns: 18px 1fr; gap: .7rem; line-height: 1.45; }
+.footer__contact svg { width: 18px; height: 18px; color: #E8919E; margin-top: .12rem; }
+.footer__contact a { overflow-wrap: anywhere; }
 .footer__legal { font-size: .76rem; line-height: 1.6; color: rgba(214,225,236,.45); margin-top: 1.6rem; max-width: 70ch; }
 
 /* --------------------------------------------------------------------------
