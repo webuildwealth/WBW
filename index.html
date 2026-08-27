@@ -79,7 +79,7 @@
       <a class="nav__link" href="mfa-praxisteam.html">MFA &amp; Praxisteam</a>
       <a class="nav__link" href="#ablauf">Ablauf</a>
       <a class="nav__link" href="#faq">Fragen</a>
-      <a class="btn btn--primary btn--sm nav__cta" href="#weiche">Erstgespräch sichern</a>
+      <a class="btn btn--primary btn--sm nav__cta" href="#erstgespraech">Erstgespräch sichern</a>
     </nav>
 
     <button class="nav__burger" aria-expanded="false" aria-controls="mobilnav" aria-label="Menü öffnen">
@@ -94,7 +94,7 @@
   <a href="mfa-praxisteam.html">MFA &amp; Praxisteam <span aria-hidden="true">→</span></a>
   <a href="#ablauf">Ablauf <span aria-hidden="true">→</span></a>
   <a href="#faq">Häufige Fragen <span aria-hidden="true">→</span></a>
-  <a class="btn btn--primary btn--lg" href="#weiche">Erstgespräch sichern</a>
+  <a class="btn btn--primary btn--lg" href="#erstgespraech">Erstgespräch sichern</a>
 </div>
 
 <main id="main">
@@ -116,7 +116,7 @@
           nachvollziehbar bis zur letzten Zeile.
         </p>
         <div class="btn-row" style="margin-top:2rem">
-          <a class="btn btn--primary btn--lg" href="#weiche">Kostenfreies Erstgespräch <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn--primary btn--lg" href="#erstgespraech">Kostenfreies Erstgespräch <span class="arr" aria-hidden="true">→</span></a>
           <a class="btn btn--ghost btn--lg" href="#ablauf">So arbeiten wir</a>
         </div>
         <p class="small mute" style="margin-top:1.4rem">
@@ -437,10 +437,179 @@
           </p>
         </div>
         <div class="btn-row">
-          <a class="btn btn--primary btn--lg" href="#weiche">Weg wählen &amp; starten <span class="arr" aria-hidden="true">→</span></a>
+          <a class="btn btn--primary btn--lg" href="#erstgespraech">Termin sichern <span class="arr" aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ================================================== ERSTGESPRÄCH ==== -->
+<section class="section funnel-band" id="erstgespraech">
+  <div class="wrap">
+    <div class="center" style="max-width:42rem;margin-inline:auto" data-reveal>
+      <span class="eyebrow eyebrow--center">Erstgespräch sichern</span>
+      <h2>In vier Schritten zum Termin.</h2>
+      <p class="lead" style="margin-top:1rem">
+        Sagen Sie uns, wo Sie in der Praxis stehen und wann es Ihnen passt. Sie bekommen
+        einen bestätigten Termin — und vorab eine erste Einschätzung, an welchen Stellen
+        sich bei Ihnen am meisten bewegen lässt.
+      </p>
+    </div>
+
+    <form class="funnel" data-funnel="erstgespraech" data-endpoint="/api/lead" novalidate style="margin-top:2.5rem" data-reveal="scale">
+      <div class="funnel__head">
+        <div class="funnel__progress"><i></i></div>
+        <div class="funnel__meta">
+          <span data-fm-step>Schritt 1 von 4</span>
+          <span>ca. 60 Sekunden</span>
+        </div>
+      </div>
+
+      <div class="funnel__body">
+
+        <!-- 1 · Zielgruppe -->
+        <div class="fstep is-active" data-name="zielgruppe" data-label="Rolle in der Praxis">
+          <h3>Wer sind Sie?</h3>
+          <p class="fstep__hint">Danach richtet sich, welche Hebel wir für Sie durchrechnen.</p>
+          <div class="opts opts--2">
+            <button class="opt" data-value="Praxisinhaberin oder Praxisinhaber"><span>Praxisinhaberin / Praxisinhaber <small>Einzelpraxis, BAG, MVZ oder Gründung geplant</small></span></button>
+            <button class="opt" data-value="Angestellte Ärztin oder angestellter Arzt"><span>Angestellte Ärztin / angestellter Arzt <small>Klinik, MVZ oder Praxis</small></span></button>
+            <button class="opt" data-value="MFA oder Praxisteam"><span>MFA / Praxisteam <small>Medizinische Fachangestellte, Empfang, Assistenz</small></span></button>
+            <button class="opt" data-value="Anderer Heilberuf"><span>Anderer Heilberuf <small>Zahnmedizin, Therapie, Apotheke, Pflege</small></span></button>
+          </div>
+        </div>
+
+        <!-- 2 · Anliegen -->
+        <div class="fstep" data-name="anliegen" data-label="Ihr Anliegen" data-multi data-optional>
+          <h3>Worum soll es im Gespräch gehen?</h3>
+          <p class="fstep__hint">Mehrfachauswahl möglich. Wenn Sie unsicher sind, überspringen Sie diesen Schritt einfach.</p>
+          <div class="opts">
+            <button class="opt" data-value="Steuerlast senken"><span>Steuerlast senken <small>Sonderausgaben, Betriebsausgaben, Struktur</small></span></button>
+            <button class="opt" data-value="Vermögen aufbauen"><span>Vermögen aufbauen <small>Anlegen statt auf dem Konto parken</small></span></button>
+            <button class="opt" data-value="Arbeitskraft und Familie absichern"><span>Arbeitskraft und Familie absichern <small>BU, PKV, Hinterbliebene</small></span></button>
+            <button class="opt" data-value="Praxis absichern oder gründen"><span>Praxis absichern oder gründen <small>Ausfall, Haftpflicht, Finanzierung, Nachfolge</small></span></button>
+            <button class="opt" data-value="Team binden und Benefits aufsetzen"><span>Team binden und Benefits aufsetzen <small>bAV, Gesundheitsbudget, Sachbezug</small></span></button>
+            <button class="opt" data-value="Bestehende Verträge prüfen lassen"><span>Bestehende Verträge prüfen lassen <small>zweite Meinung zu dem, was schon läuft</small></span></button>
+          </div>
+          <div class="fnav">
+            <button class="btn btn--primary" type="button" data-fm-next>Weiter <span class="arr" aria-hidden="true">→</span></button>
+            <button class="fback" type="button" data-fm-back><span aria-hidden="true">←</span> zurück</button>
+          </div>
+        </div>
+
+        <!-- 3 · Kontaktdaten -->
+        <div class="fstep">
+          <h3>Wie erreichen wir Sie?</h3>
+          <p class="fstep__hint">Ihre Daten dienen ausschließlich der Terminvereinbarung. Kein Newsletter, keine Weitergabe.</p>
+
+          <div class="fields-2">
+            <div class="field">
+              <label for="e-vorname">Vorname</label>
+              <input id="e-vorname" name="vorname" type="text" autocomplete="given-name" data-required data-min="2">
+              <span class="field__err">Bitte tragen Sie Ihren Vornamen ein.</span>
+            </div>
+            <div class="field">
+              <label for="e-nachname">Nachname</label>
+              <input id="e-nachname" name="nachname" type="text" autocomplete="family-name" data-required data-min="2">
+              <span class="field__err">Bitte tragen Sie Ihren Nachnamen ein.</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="e-beruf">Beruf oder Fachrichtung</label>
+            <input id="e-beruf" name="beruf" type="text" autocomplete="organization-title" data-required data-min="2"
+                   placeholder="z. B. Fachärztin für Allgemeinmedizin, MFA, Zahnarzt">
+            <span class="field__err">Bitte tragen Sie Ihren Beruf ein.</span>
+          </div>
+
+          <div class="fields-2">
+            <div class="field">
+              <label for="e-mail">E-Mail</label>
+              <input id="e-mail" name="email" type="email" autocomplete="email" data-required>
+              <span class="field__err">Bitte prüfen Sie die E-Mail-Adresse.</span>
+            </div>
+            <div class="field">
+              <label for="e-tel">Telefon</label>
+              <input id="e-tel" name="telefon" type="tel" autocomplete="tel" data-required data-min="6">
+              <span class="field__err">Für die Terminbestätigung brauchen wir eine Telefonnummer.</span>
+            </div>
+          </div>
+
+          <div class="fnav">
+            <button class="btn btn--primary" type="button" data-fm-next>Weiter zum Termin <span class="arr" aria-hidden="true">→</span></button>
+            <button class="fback" type="button" data-fm-back><span aria-hidden="true">←</span> zurück</button>
+          </div>
+        </div>
+
+        <!-- 4 · Termin -->
+        <div class="fstep" data-final>
+          <h3>Wann passt Ihnen der Termin?</h3>
+          <p class="fstep__hint">25 Minuten, kostenfrei und unverbindlich. Wir bestätigen Ihren Wunschtermin innerhalb von 24 Stunden.</p>
+
+          <div class="fields-2">
+            <div class="field">
+              <label for="e-tag">Wunschtag</label>
+              <input id="e-tag" name="wunschtag" type="date" data-required data-min-date>
+              <span class="field__err">Bitte wählen Sie einen Wunschtag.</span>
+            </div>
+            <div class="field">
+              <label for="e-zeit">Uhrzeit</label>
+              <select id="e-zeit" name="wunschzeit">
+                <option>Vormittags (8 – 12 Uhr)</option>
+                <option>Mittagspause (12 – 14 Uhr)</option>
+                <option selected>Nachmittags (14 – 18 Uhr)</option>
+                <option>Abends (nach 18 Uhr)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="e-form">Wie möchten Sie sprechen?</label>
+            <select id="e-form" name="gespraechsform">
+              <option selected>Telefon</option>
+              <option>Videocall</option>
+              <option>Persönlich in der Praxis</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="e-notiz">Möchten Sie uns vorab etwas mitgeben? (optional)</label>
+            <textarea id="e-notiz" name="notiz" rows="3" placeholder="z. B. eine konkrete Frage oder ein Ausweichtermin"></textarea>
+          </div>
+
+          <div class="fsummary" data-fm-summary></div>
+
+          <div style="position:absolute;left:-9999px" aria-hidden="true">
+            <label for="e-hp">Bitte leer lassen</label>
+            <input id="e-hp" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" name="einwilligung" data-required>
+            <span>Ich möchte zu diesem Termin kontaktiert werden und habe die
+              <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzhinweise</a>
+              gelesen. Meine Angaben werden ausschließlich zur Bearbeitung dieser Anfrage
+              verwendet und nicht an Dritte weitergegeben. Die Einwilligung kann ich
+              jederzeit formlos widerrufen.</span>
+          </label>
+
+          <p class="field__err" data-fm-error hidden style="display:block;margin-top:1rem"></p>
+
+          <div class="fnav">
+            <button class="btn btn--primary btn--lg" type="submit" data-fm-submit>Termin anfragen <span class="arr" aria-hidden="true">→</span></button>
+            <button class="fback" type="button" data-fm-back><span aria-hidden="true">←</span> zurück</button>
+          </div>
+
+          <div class="funnel__trust">
+            <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg> Kostenfrei und unverbindlich</span>
+            <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg> Kein Newsletter, keine Weitergabe</span>
+            <span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg> Bestätigung innerhalb von 24 Stunden</span>
+          </div>
+        </div>
+
+      </div>
+    </form>
   </div>
 </section>
 
@@ -571,10 +740,37 @@
         <h5>Rechtliches</h5>
         <ul>
           <li><a href="impressum.html">Impressum</a></li>
+          <li><a href="impressum.html#hinweise">Rechtliche Hinweise</a></li>
           <li><a href="datenschutz.html">Datenschutz</a></li>
           <li><a href="impressum.html#erstinfo">Erstinformation §15 VersVermV</a></li>
-          <li><a href="impressum.html#schlichtung">Schlichtungsstellen</a></li>
         </ul>
+      </div>
+      <div>
+        <h5>Bewertungen</h5>
+        <ul class="footer__rate">
+          <li>
+            <a href="#" data-review="google">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6"/></svg>
+              Auf Google bewerten
+            </a>
+          </li>
+          <li>
+            <a href="#" data-review="provenexpert">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3l7.5 3v5.4c0 4.6-3.1 8.3-7.5 9.6-4.4-1.3-7.5-5-7.5-9.6V6z" stroke-linejoin="round"/><path d="M9 12l2.2 2.2L15.5 10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Auf ProvenExpert bewerten
+            </a>
+          </li>
+          <li>
+            <a href="#" data-review="trustpilot">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3.6l2.6 5.3 5.9.86-4.25 4.14 1 5.86L12 17l-5.25 2.76 1-5.86L3.5 9.76l5.9-.86z" stroke-linejoin="round"/></svg>
+              Auf Trustpilot bewerten
+            </a>
+          </li>
+        </ul>
+        <p class="footer__rate-note">
+          Eine ehrliche Bewertung hilft anderen Praxen bei der Auswahl — und uns beim
+          Besserwerden.
+        </p>
       </div>
     </div>
 
@@ -587,6 +783,7 @@
 
     <div class="footer__bottom">
       <span>© <span data-year>2026</span> Finanz-Medizin · finanz-medizin.com</span>
+      <a class="btn btn--primary btn--sm footer__cta" href="#erstgespraech">Erstgespräch sichern <span class="arr" aria-hidden="true">→</span></a>
       <span>Eine Marke von <strong style="color:rgba(255,255,255,.8);font-weight:600">We&nbsp;Build&nbsp;Wealth</strong> · Inhaber Benedict Hintz</span>
     </div>
   </div>
@@ -594,5 +791,6 @@
 
 <script src="assets/js/scene.js" defer></script>
 <script src="assets/js/main.js" defer></script>
+<script src="assets/js/funnel.js" defer></script>
 </body>
 </html>

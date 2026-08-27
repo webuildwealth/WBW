@@ -578,7 +578,12 @@ body.nav-open { overflow: hidden; }
   max-width: 34rem;
   opacity: 0; transform: translateY(26px);
   transition: opacity .55s var(--ease), transform .55s var(--ease);
-  position: absolute; top: 50%; margin-top: -7rem;
+  /* Optisch mittig: exakt zentriert, plus ein kleiner Versatz nach unten,
+     damit die fixe Kopfzeile die Blockmitte nicht nach oben zieht.
+     `translate` bleibt getrennt von `transform`, damit die Einblend-
+     Animation (translateY) unabhaengig weiterlaeuft. */
+  position: absolute; top: 50%;
+  translate: 0 calc(-50% + 1.6rem);
   pointer-events: none;
 }
 .stage__panel.is-live { opacity: 1; transform: none; pointer-events: auto; }
@@ -586,7 +591,7 @@ body.nav-open { overflow: hidden; }
 @media (max-width: 860px) {
   .stage { height: 340svh; }
   .stage__panel {
-    position: static; margin-top: 0; max-width: 100%;
+    position: static; margin-top: 0; translate: none; max-width: 100%;
     background: rgba(7, 27, 50, .62);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -1070,7 +1075,7 @@ body.nav-open { overflow: hidden; }
 }
 .footer__grid > :first-child { grid-column: 1 / -1; }
 @media (min-width: 900px) {
-  .footer__grid { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; }
+  .footer__grid { grid-template-columns: 1.5fr .85fr .95fr 1fr 1.05fr; }
   .footer__grid > :first-child { grid-column: auto; }
 }
 .footer a:hover { color: #fff; }
@@ -1081,9 +1086,21 @@ body.nav-open { overflow: hidden; }
 .footer__brand .brand__name span { color: #E8919E; }
 .footer__bottom {
   margin-top: 2.8rem; padding-top: 1.4rem; border-top: 1px solid rgba(255,255,255,.12);
-  display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; justify-content: space-between;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem;
+  justify-content: space-between;
   font-size: .8rem; color: rgba(214,225,236,.5);
 }
+/* Letzter Anlauf zum Erstgespraech, mittig in der Fusszeile */
+.footer__cta { flex: none; }
+@media (max-width: 780px) {
+  .footer__bottom { justify-content: center; text-align: center; }
+  .footer__cta { order: -1; width: 100%; justify-content: center; }
+}
+/* Bewertungsspalte: Symbol und Text in einer Zeile, wie in der Navigation */
+.footer__rate li { line-height: 1.35; }
+.footer__rate a { display: inline-flex; align-items: center; gap: .5rem; }
+.footer__rate svg { width: 16px; height: 16px; flex: none; color: #E8B04B; }
+.footer__rate-note { font-size: .82rem; line-height: 1.55; margin-top: 1rem; }
 .footer__legal { font-size: .76rem; line-height: 1.6; color: rgba(214,225,236,.45); margin-top: 1.6rem; max-width: 70ch; }
 
 /* --------------------------------------------------------------------------
@@ -1123,6 +1140,42 @@ body.nav-open { overflow: hidden; }
 .js [data-reveal="right"] { transform: translateX(28px); }
 .js [data-reveal="scale"] { transform: scale(.95); }
 
+/* ------------------------------------------------------------------------
+   Mitlaufender CTA (Dock)
+   Dupliziert den Button aus der Kopfzeile und blendet ihn beim Scrollen
+   unten mittig ein. Er verschwindet, sobald das Ziel selbst im Bild ist —
+   sonst wuerde er das Formular verdecken, zu dem er fuehren soll.
+   ------------------------------------------------------------------------ */
+.cta-dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(1.1rem + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  opacity: 0;
+  transform: translateX(-50%) translateY(150%);
+  transition: transform .5s var(--ease), opacity .35s var(--ease);
+  pointer-events: none;
+  will-change: transform;
+}
+.cta-dock.is-visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.cta-dock__btn {
+  box-shadow: 0 20px 44px -14px rgba(117, 21, 36, .8),
+              0 2px 10px rgba(7, 27, 50, .28),
+              inset 0 0 0 1px rgba(255, 255, 255, .14);
+}
+.cta-dock__btn:hover { transform: translateY(-2px); }
+body.nav-open .cta-dock { opacity: 0; transform: translateX(-50%) translateY(150%); pointer-events: none; }
+
+@media (max-width: 560px) {
+  .cta-dock { width: min(100% - 2rem, 26rem); }
+  .cta-dock__btn { width: 100%; justify-content: center; padding-block: .95rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-dock { transition: opacity .2s linear; }
+  .cta-dock, .cta-dock.is-visible { transform: translateX(-50%); }
+  .cta-dock:not(.is-visible) { opacity: 0; pointer-events: none; }
+}
+
 .count { font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1134,7 +1187,8 @@ body.nav-open { overflow: hidden; }
   .js [data-reveal] { opacity: 1 !important; transform: none !important; }
   .stage { height: auto !important; }
   .stage__sticky { position: static; height: auto; padding-block: 3rem; }
-  .stage__panel { position: static; opacity: 1 !important; transform: none !important;
+  .stage__panel { position: static; translate: none !important;
+                  opacity: 1 !important; transform: none !important;
                   margin: 0 0 2.5rem; pointer-events: auto; display: block !important; }
   .stage__copy { display: block; height: auto; padding-bottom: 0; }
 }

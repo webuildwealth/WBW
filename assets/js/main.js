@@ -158,6 +158,78 @@
     }
   }
 
+  /* ------------------------------------------------- Mitlaufender CTA */
+  /* Der Button aus der Kopfzeile wird dupliziert und beim Scrollen unten
+     mittig eingeblendet — dort, wo der Daumen ohnehin liegt. Er blendet
+     wieder aus, sobald sein Ziel oder der Footer im Bild ist. */
+  (function () {
+    var source = document.querySelector('.nav__cta');
+    if (!source || document.querySelector('.cta-dock')) return;
+
+    var href = source.getAttribute('href') || '';
+    var dock = document.createElement('div');
+    dock.className = 'cta-dock';
+
+    var link = document.createElement('a');
+    link.className = 'btn btn--primary cta-dock__btn';
+    link.href = href;
+    link.setAttribute('data-cta-dock', '');
+    link.textContent = source.textContent.trim();
+    var arr = document.createElement('span');
+    arr.className = 'arr';
+    arr.setAttribute('aria-hidden', 'true');
+    arr.textContent = '\u2192';
+    link.appendChild(document.createTextNode(' '));
+    link.appendChild(arr);
+
+    dock.appendChild(link);
+    document.body.appendChild(dock);
+
+    // Bereiche, ueber denen das Dock nichts zu suchen hat
+    var blockers = [];
+    var target = href.charAt(0) === '#' && href.length > 1
+      ? document.getElementById(href.slice(1))
+      : null;
+    if (target) blockers.push(target);
+    var foot = document.querySelector('.footer');
+    if (foot) blockers.push(foot);
+
+    var covered = 0;
+    if ('IntersectionObserver' in window && blockers.length) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          covered += en.isIntersecting ? 1 : -1;
+          if (covered < 0) covered = 0;
+        });
+        update();
+      }, { rootMargin: '0px 0px -12% 0px' });
+      blockers.forEach(function (el) { io.observe(el); });
+    }
+
+    // Erst zeigen, wenn der erste Bildschirm durchgescrollt ist
+    function threshold() {
+      var first = document.querySelector('.stage, .hero');
+      var h = first ? Math.min(first.offsetHeight, window.innerHeight * 1.1) : window.innerHeight * 0.7;
+      return Math.max(280, h * 0.55);
+    }
+
+    function update() {
+      var show = window.scrollY > threshold() && covered === 0;
+      dock.classList.toggle('is-visible', show);
+    }
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+  })();
+
+  /* ------------------------------------ Wunschtermin: kein Datum in der Vergangenheit */
+  document.querySelectorAll('input[type="date"][data-min-date]').forEach(function (el) {
+    var d = new Date();
+    d.setDate(d.getDate() + 1);
+    el.min = d.toISOString().slice(0, 10);
+  });
+
   /* ------------------------------------------------- Jahr im Impressum/Footer */
   document.querySelectorAll('[data-year]').forEach(function (el) {
     el.textContent = String(new Date().getFullYear());

@@ -71,22 +71,24 @@
 
     if (ti === 0) {
       /* ---------------------------------------------- 0 · STETHOSKOP ---- */
-      if (si === 0) {                       // Ohrbügel (U-Form)
+      if (si === 0) {                       // Ohrbügel (Binaural, Lyra-Form)
         var q = s * 2 - 1;                  // -1 .. 1
         var a = Math.abs(q);
-        x = 0.70 * q;
-        y = 0.26 + 0.76 * Math.pow(a, 1.45);
-        z = 0.30 * q * (1 - 0.35 * a);
-      } else if (si === 1) {                // Schlauch bis Bruststück
+        // Exponent < 1 zieht die Bügel unten zusammen und lässt sie oben
+        // ausschwingen — genau die Silhouette, die man als Stethoskop liest.
+        x = 0.68 * q * Math.pow(a, 0.55);
+        y = 0.10 + 0.94 * Math.pow(a, 1.22);
+        z = 0.28 * q * (1 - 0.35 * a);
+      } else if (si === 1) {                // Schlauch vom Y-Stück zum Stutzen
         k = s;
-        y = 0.28 - 1.22 * k;
-        x = 0.46 * Math.sin(Math.PI * k) * (0.35 + 0.65 * k);
-        z = 0.34 * Math.sin(TAU * k * 0.92) * (1 - 0.32 * k);
+        x = 0.40 * Math.sin(Math.PI * k) * (0.25 + 0.75 * k) + 0.10 * k;
+        y = 0.10 - 0.82 * k;
+        z = 0.34 * Math.sin(Math.PI * k) * Math.cos(Math.PI * k * 0.7) + 0.06 * k;
       } else {                              // Puls im Schlauch (Glanzlinie)
         k = s;
-        y = 0.28 - 1.22 * k;
-        x = 0.46 * Math.sin(Math.PI * k) * (0.35 + 0.65 * k) + 0.035;
-        z = 0.34 * Math.sin(TAU * k * 0.92) * (1 - 0.32 * k) + 0.05;
+        x = 0.40 * Math.sin(Math.PI * k) * (0.25 + 0.75 * k) + 0.10 * k + 0.020;
+        y = 0.10 - 0.82 * k;
+        z = 0.34 * Math.sin(Math.PI * k) * Math.cos(Math.PI * k * 0.7) + 0.06 * k + 0.030;
       }
 
     } else if (ti === 1) {
@@ -189,7 +191,7 @@
 
   // Bruststück / Knoten: Position, Radius, Neigung je Ziel
   var DISC = [
-    { p: [0.10, -0.96, 0.06], r: 0.255, tilt: 0.55, alpha: 1 },
+    { p: [0.10, -1.02, 0.06], r: 0.30, tilt: 0.55, alpha: 1 },
     { p: [0.03, 0.60, 0.02], r: 0.075, tilt: 0.0, alpha: 0.95 },
     { p: [1.00, 0.86, 0.02], r: 0.085, tilt: 0.0, alpha: 1 },
     { p: [-0.04, 0.78, 0.00], r: 0.125, tilt: 0.0, alpha: 1 }
@@ -197,12 +199,21 @@
 
   // Ohroliven (nur Ziel 0 sichtbar)
   var BUDS = [
-    [[-0.70, 1.02, -0.30], [0.70, 1.02, 0.30]],
+    [[-0.68, 1.05, -0.18], [0.68, 1.05, 0.18]],
     [[-1.18, -0.72, -0.05], [1.18, -0.72, -0.05]],
     [[-1.06, 0.92, -0.16], [1.08, -0.92, -0.16]],
     [[-0.92, 0.0, 0.0], [0.92, 0.0, 0.0]]
   ];
   var BUD_A = [1, 0, 0, 0];
+  var BUD_R = [0.105, 0.085, 0.085, 0.085];
+
+  // Anteil der Stethoskop-Form an der aktuellen Morph-Stufe. Steuert die
+  // Bauteile, die es nur dort gibt: Y-Stück, Ansatzstutzen, Riffelrand.
+  var STETH_A = [1, 0, 0, 0];
+
+  // Y-Stück (Zusammenführung der Ohrbügel) und Stutzen am Bruststück
+  var YOKE = [0.00, 0.13, 0.00];
+  var STEM = [[0.10, -0.72, 0.06], [0.10, -0.95, 0.06]];
 
   // Balken (Logo-Motiv). x, Basis-y, Höhe, Breite
   var BARS = [
@@ -443,6 +454,7 @@
     var sx = out[0], sy = out[1], w = out[2];
     var R = r * w * this.scale;
     var squash = 0.62 + 0.38 * Math.abs(this.cyaw);
+    var steth = lerp(STETH_A[mo.i0], STETH_A[mo.i1], f);
 
     this.push(z + 0.01, function () {
       ctx.save();
@@ -474,6 +486,47 @@
       ctx.strokeStyle = 'rgba(255,255,255,.85)';
       ctx.lineWidth = Math.max(1, R * 0.07);
       ctx.stroke();
+
+      /* Nur in der Stethoskop-Stufe: die Details, an denen man das Bruststück
+         tatsächlich erkennt — geriffelter Metallrand, abgesetzte Membrankante
+         und der eingelassene Membranring. */
+      if (steth > 0.02) {
+        ctx.globalAlpha = alpha * steth;
+
+        // Riffelung (Rändelrand) des Gehäuses
+        ctx.strokeStyle = 'rgba(120,110,102,.55)';
+        ctx.lineWidth = Math.max(0.6, R * 0.035);
+        for (var t = 0; t < 46; t++) {
+          var an = (t / 46) * TAU;
+          var ca = Math.cos(an), sa = Math.sin(an) * squash;
+          ctx.beginPath();
+          ctx.moveTo(ca * R * 0.845, sa * R * 0.845);
+          ctx.lineTo(ca * R * 0.985, sa * R * 0.985);
+          ctx.stroke();
+        }
+
+        // Kante zwischen Gehäuse und Membran
+        ctx.beginPath();
+        ctx.ellipse(0, 0, R * 0.80, R * 0.80 * squash, 0, 0, TAU);
+        ctx.strokeStyle = 'rgba(96,88,82,.6)';
+        ctx.lineWidth = Math.max(1, R * 0.055);
+        ctx.stroke();
+
+        // Membranring
+        ctx.beginPath();
+        ctx.ellipse(0, 0, R * 0.60, R * 0.60 * squash, 0, 0, TAU);
+        ctx.strokeStyle = 'rgba(140,131,123,.45)';
+        ctx.lineWidth = Math.max(0.6, R * 0.03);
+        ctx.stroke();
+
+        // Mittelpunkt der Membran
+        ctx.beginPath();
+        ctx.ellipse(0, 0, R * 0.10, R * 0.10 * squash, 0, 0, TAU);
+        ctx.fillStyle = 'rgba(255,255,255,.55)';
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+      }
       ctx.restore();
     });
   };
@@ -483,26 +536,98 @@
     var a = lerp(BUD_A[mo.i0], BUD_A[mo.i1], mo.f);
     if (a < 0.02) return;
     var P0 = BUDS[mo.i0], P1 = BUDS[mo.i1], ctx = this.ctx, self = this;
+    var budR = lerp(BUD_R[mo.i0], BUD_R[mo.i1], mo.f);
+    var steth = lerp(STETH_A[mo.i0], STETH_A[mo.i1], mo.f);
     for (var i = 0; i < 2; i++) {
       var out = new Float32Array(3);
       var z = this.project(
         lerp(P0[i][0], P1[i][0], mo.f),
         lerp(P0[i][1], P1[i][1], mo.f),
         lerp(P0[i][2], P1[i][2], mo.f), out, 0);
-      (function (sx, sy, w, z) {
+      (function (sx, sy, w, z, tilt) {
         self.push(z + 0.02, function () {
-          var R = 0.085 * w * self.scale;
+          var R = budR * w * self.scale;
           var g = ctx.createRadialGradient(sx - R * 0.4, sy - R * 0.45, R * 0.1, sx, sy, R);
           g.addColorStop(0, '#FFFFFF');
           g.addColorStop(0.6, '#DED6CE');
           g.addColorStop(1, '#A79D95');
+          ctx.save();
           ctx.globalAlpha = a;
-          ctx.beginPath(); ctx.arc(sx, sy, R, 0, TAU);
+          ctx.translate(sx, sy);
+          // Leicht gestauchte, gekippte Form: eine Olive, keine Kugel
+          ctx.rotate(tilt);
+          ctx.beginPath(); ctx.ellipse(0, 0, R, R * 0.76, 0, 0, TAU);
           ctx.fillStyle = g; ctx.fill();
-          ctx.globalAlpha = 1;
+          if (steth > 0.02 && R > 2) {
+            ctx.globalAlpha = a * steth;
+            ctx.beginPath(); ctx.ellipse(0, R * 0.30, R * 0.72, R * 0.20, 0, 0, TAU);
+            ctx.strokeStyle = 'rgba(104,96,89,.45)';
+            ctx.lineWidth = Math.max(0.6, R * 0.09);
+            ctx.stroke();
+          }
+          ctx.restore();
         });
-      })(out[0], out[1], out[2], z);
+      })(out[0], out[1], out[2], z, i === 0 ? 0.55 : -0.55);
     }
+  };
+
+  /* Kurzes Metallrohr zwischen zwei Raumpunkten. Wird für die beiden
+     Bauteile gebraucht, die ein Stethoskop unverwechselbar machen:
+     das Y-Stück unter den Ohrbügeln und der Stutzen am Bruststück. */
+  Scene.prototype.chromeTube = function (p0, p1, rad, alpha, zbias, knurl) {
+    var o0 = new Float32Array(3), o1 = new Float32Array(3);
+    var z0 = this.project(p0[0], p0[1], p0[2], o0, 0);
+    var z1 = this.project(p1[0], p1[1], p1[2], o1, 0);
+    var ax = o0[0], ay = o0[1], bx = o1[0], by = o1[1];
+    var R = rad * ((o0[2] + o1[2]) * 0.5) * this.scale;
+    if (R < 0.4) return;
+    var ctx = this.ctx;
+
+    this.push(Math.max(z0, z1) + (zbias || 0), function () {
+      var dx = bx - ax, dy = by - ay;
+      var len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var nx = -dy / len, ny = dx / len;           // Querachse
+
+      var g = ctx.createLinearGradient(ax - nx * R, ay - ny * R, ax + nx * R, ay + ny * R);
+      g.addColorStop(0, '#7E756D');
+      g.addColorStop(0.26, '#FCF8F4');
+      g.addColorStop(0.58, '#D5CCC4');
+      g.addColorStop(1, '#8A817A');
+
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = g;
+      ctx.lineWidth = R * 2;
+      ctx.beginPath();
+      ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
+      ctx.stroke();
+
+      // Rändelringe – die feinen Rillen machen aus dem Zylinder ein Bauteil
+      if (knurl !== false && R > 1.6) {
+        ctx.strokeStyle = 'rgba(90,82,75,.42)';
+        ctx.lineWidth = Math.max(0.6, R * 0.16);
+        for (var i = 1; i <= 3; i++) {
+          var t = i / 4;
+          var cx = ax + dx * t, cy = ay + dy * t;
+          ctx.beginPath();
+          ctx.moveTo(cx - nx * R * 0.9, cy - ny * R * 0.9);
+          ctx.lineTo(cx + nx * R * 0.9, cy + ny * R * 0.9);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+    });
+  };
+
+  Scene.prototype.drawSteth = function (mo) {
+    var a = lerp(STETH_A[mo.i0], STETH_A[mo.i1], mo.f);
+    if (a < 0.02) return;
+    // Y-Stück: dort laufen die beiden Ohrbügel in den Schlauch zusammen
+    this.chromeTube([YOKE[0], YOKE[1] + 0.11, YOKE[2]],
+                    [YOKE[0], YOKE[1] - 0.10, YOKE[2]], 0.072, a, 0.015, true);
+    // Ansatzstutzen zum Bruststück
+    this.chromeTube(STEM[0], STEM[1], 0.058, a, 0.02, true);
   };
 
   // Balken (Logo-Motiv / Vermögensaufbau) als extrudierte 3D-Quader
@@ -601,6 +726,7 @@
     this.drawStrand(0, mo);
     this.drawStrand(1, mo);
     this.drawStrand(2, mo);
+    this.drawSteth(mo);
     this.drawDisc(mo);
     this.drawBuds(mo);
 
