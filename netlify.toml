@@ -145,6 +145,18 @@ object-src 'none'\
   force = true
 
 [[redirects]]
+  from = "/ueber-uns"
+  to = "/ueber-uns.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/team"
+  to = "/ueber-uns.html"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/impressum"
   to = "/impressum.html"
   status = 301
