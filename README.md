@@ -6,6 +6,10 @@ Statische Website mit drei zielgruppenspezifischen Landingpages und Lead-Funnels
 
 Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fertig.
 
+> **Hosterwechsel geplant?** [DEPLOYMENT.md](DEPLOYMENT.md) listet auf, was die Seite
+> von einem Hoster braucht, und was beim Wechsel anzupassen ist. Die Close-Logik in
+> `lib/lead-core.js` ist plattformunabhängig — zu ersetzen ist nur der Adapter.
+
 ---
 
 ## Seitenstruktur
@@ -20,7 +24,8 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `impressum.html` | Impressum + Erstinformation § 15 VersVermV | — |
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) | — |
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
-| `netlify/functions/lead.js` | Nimmt die Absendungen entgegen und legt sie in Close an | alle |
+| `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
+| `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
 
 ### Zielgruppen-Ansprache
 
