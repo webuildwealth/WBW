@@ -458,7 +458,7 @@ button { background: none; border: 0; cursor: pointer; }
 }
 
 .nav__links { display: none; align-items: center; gap: .35rem; margin-left: auto; }
-@media (min-width: 1040px) { .nav__links { display: flex; } }
+@media (min-width: 1180px) { .nav__links { display: flex; } }
 
 .nav__link {
   padding: .55rem .85rem; border-radius: var(--r-pill);
@@ -468,6 +468,42 @@ button { background: none; border: 0; cursor: pointer; }
 }
 .nav__link:hover { background: rgba(12,44,79,.06); color: var(--ink); }
 .nav__link.is-active { color: var(--navy-800); font-weight: 650; }
+
+/* --------------------------------------------------------------------------
+   Zielgruppen-Gruppe in der Kopfzeile
+   Die ersten Punkte sind keine Seitenbereiche, sondern eine Wahl: fuer wen
+   diese Seite gilt. Deshalb stehen sie in einem eigenen Rahmen zusammen mit
+   den Abschnitten der gewaehlten Seite. Der aktive Bereich leuchtet, die
+   anderen Zielgruppen stehen daneben als schlichter Text.
+   -------------------------------------------------------------------------- */
+.nav__zg {
+  display: flex; align-items: center; gap: .1rem;
+  padding: .25rem; margin-right: .35rem;
+  border-radius: var(--r-pill);
+  background: rgba(12, 44, 79, .055);
+  box-shadow: inset 0 0 0 1px rgba(12, 44, 79, .08);
+}
+.nav__zg-tag {
+  font-family: var(--font-display); font-weight: 700; font-size: .62rem;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute);
+  padding: 0 .3rem 0 .7rem; white-space: nowrap;
+}
+.nav__zg .nav__link { border-radius: var(--r-pill); }
+.nav__zg .nav__link.is-hier {
+  background: var(--navy-800); color: #fff; font-weight: 700;
+  box-shadow: 0 6px 18px -7px rgba(12, 44, 79, .7);
+}
+.nav__zg .nav__link.is-hier:hover { background: var(--navy-700); color: #fff; }
+
+/* Ueber dem dunklen Hero dreht sich das Verhaeltnis um: heller Kern,
+   weicher Schein, damit der gewaehlte Bereich auch dort traegt. */
+.nav.is-dark .nav__zg { background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+.nav.is-dark .nav__zg-tag { color: rgba(214,225,236,.55); }
+.nav.is-dark .nav__zg .nav__link.is-hier {
+  background: #fff; color: var(--navy-900);
+  box-shadow: 0 0 0 4px rgba(255,255,255,.1), 0 8px 22px -8px rgba(255,255,255,.5);
+}
+.nav.is-dark .nav__zg .nav__link.is-hier:hover { background: #fff; color: var(--navy-900); }
 
 .nav__cta { margin-left: .5rem; }
 
@@ -488,11 +524,15 @@ button { background: none; border: 0; cursor: pointer; }
 
 .nav__burger {
   margin-left: auto; width: 46px; height: 46px;
-  display: grid; place-items: center; border-radius: var(--r-sm);
+  /* Kein Raster: dessen Zeilen werden auf die Kachelhoehe gestreckt, die
+     Balken standen dadurch 31 statt 13,6 Pixel auseinander und das
+     Schliesskreuz wurde zum Groesserzeichen. */
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  border-radius: var(--r-sm);
   border: 1px solid var(--line);
   background: rgba(255,255,255,.6);
 }
-@media (min-width: 1040px) { .nav__burger { display: none; } }
+@media (min-width: 1180px) { .nav__burger { display: none; } }
 .nav__burger span {
   display: block; width: 19px; height: 1.8px; background: var(--navy-800);
   border-radius: 2px; transition: transform .3s var(--ease), opacity .2s;
@@ -517,6 +557,24 @@ button { background: none; border: 0; cursor: pointer; }
   font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;
   color: var(--navy-800);
   display: flex; justify-content: space-between; align-items: center;
+}
+/* Im Mobilmenue dieselbe Ordnung wie in der Leiste: die Zielgruppen als
+   eigener Block mit Ueberschrift, der aktive Bereich gefuellt. */
+.nav__mobile-tag {
+  display: block; margin-top: .4rem; padding: .2rem;
+  font-family: var(--font-display); font-weight: 700; font-size: .66rem;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute);
+}
+/* .nav__mobile a faerbt jeden Link navy — der Knopf am Ende braucht seine
+   eigene Schrift zurueck, sonst steht Dunkelblau auf Bordeaux. */
+.nav__mobile a.btn { color: #fff; justify-content: center; border-bottom: 0; }
+.nav__mobile a.btn--ghost { color: var(--navy-800); }
+
+.nav__mobile a.is-hier {
+  background: var(--navy-800); color: #fff;
+  border-bottom-color: transparent; border-radius: var(--r-md);
+  padding-inline: .9rem; margin-block: .15rem;
+  box-shadow: 0 8px 22px -10px rgba(12,44,79,.8);
 }
 .nav__mobile .btn { margin-top: 1.4rem; }
 body.nav-open { overflow: hidden; }
