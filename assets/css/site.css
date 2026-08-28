@@ -724,10 +724,11 @@ body.nav-open { overflow: hidden; }
 .segment__top h3 { color: #fff; margin-top: .5rem; font-size: var(--step-2); position: relative; }
 .segment__body { padding: 1.6rem; display: flex; flex-direction: column; gap: 1rem; flex: 1; }
 .segment__list { display: grid; gap: .55rem; font-size: .93rem; }
-.segment__list li { display: flex; gap: .6rem; align-items: flex-start; line-height: 1.45; }
+.segment__list li { position: relative; padding-left: 1.3rem; line-height: 1.55; }
 .segment__list li::before {
-  content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--red-700); margin-top: .5rem;
+  content: ""; position: absolute; left: 0; top: .55em;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--red-700);
 }
 .segment__body .btn { margin-top: auto; }
 
@@ -796,6 +797,13 @@ body.nav-open { overflow: hidden; }
 }
 .lever__val small { font-weight: 600; font-size: .76rem; opacity: .8; letter-spacing: 0; }
 :is(.section--dark,.hero--dark,.funnel-band) .lever__val { background: rgba(232,145,158,.14); color: #F0B4BD; }
+
+/* Vorzeichen sichtbar machen: Was der Praxis Geld bringt, steht in Gruen;
+   nur echte Ausgaben bleiben rot, Neutrales steht neutral. */
+.lever__val--plus { background: #E4F6EC; color: #1B6B45; }
+:is(.section--dark,.hero--dark,.funnel-band) .lever__val--plus { background: rgba(110,231,168,.15); color: #6EE7A8; }
+.lever__val--null { background: var(--navy-050); color: var(--navy-700); }
+:is(.section--dark,.hero--dark,.funnel-band) .lever__val--null { background: rgba(255,255,255,.1); color: rgba(232,240,247,.85); }
 @media (min-width: 720px) {
   .lever {
     grid-template-columns: auto minmax(0, 1fr) auto;
