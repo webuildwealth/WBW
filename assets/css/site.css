@@ -1190,6 +1190,34 @@ body.nav-open .cta-dock { opacity: 0; transform: translateX(-50%) translateY(150
   .cta-dock:not(.is-visible) { opacity: 0; pointer-events: none; }
 }
 
+/* --------------------------------------------------------------------------
+   Nachvollziehbarer Rechenweg
+   Eine Behauptung ueberzeugt weniger als eine Rechnung, die man mitlesen kann.
+   Deshalb Posten links, Betrag rechts, Summe abgesetzt.
+   -------------------------------------------------------------------------- */
+.rechenweg { display: grid; gap: 0; }
+.rechenweg > div {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1.2rem;
+  padding: .72rem 0; border-bottom: 1px solid var(--line-soft);
+  font-size: .93rem; color: var(--ink-soft);
+}
+.rechenweg > div b {
+  font-family: var(--font-display); font-weight: 700; color: var(--ink);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.rechenweg > div b.is-minus { color: var(--red-700); }
+.rechenweg__summe {
+  border-bottom: 0 !important; margin-top: .3rem;
+  padding-top: .9rem !important; border-top: 2px solid var(--line) !important;
+}
+.rechenweg__summe span { font-weight: 650; color: var(--ink); }
+.rechenweg__summe b { font-size: var(--step-2); letter-spacing: -.02em; }
+:is(.section--dark,.hero--dark,.funnel-band) .rechenweg > div { color: rgba(214,225,236,.75); border-color: rgba(255,255,255,.12); }
+:is(.section--dark,.hero--dark,.funnel-band) .rechenweg > div b { color: #fff; }
+:is(.section--dark,.hero--dark,.funnel-band) .rechenweg > div b.is-minus { color: #F0B4BD; }
+:is(.section--dark,.hero--dark,.funnel-band) .rechenweg__summe { border-top-color: rgba(255,255,255,.22) !important; }
+:is(.section--dark,.hero--dark,.funnel-band) .rechenweg__summe span { color: #fff; }
+
 .count { font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) {
