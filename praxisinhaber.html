@@ -36,7 +36,6 @@
     </a>
     <nav class="nav__links" aria-label="Hauptnavigation">
       <span class="nav__zg">
-        <span class="nav__zg-tag">Ihr Bereich</span>
         <a class="nav__link is-hier" href="praxisinhaber.html">Praxisinhaber</a>
         <a class="nav__link" href="#hebel">Hebel</a>
         <a class="nav__link" href="#rechenwege">Quellen</a>
@@ -53,6 +52,7 @@
 </header>
 
 <div class="nav__mobile" id="mobilnav">
+  <a href="index.html">Startseite <span aria-hidden="true">→</span></a>
   <span class="nav__mobile-tag">Ihr Bereich</span>
   <a class="is-hier" href="praxisinhaber.html">Praxisinhaber <span aria-hidden="true">→</span></a>
   <a href="angestellte-aerzte.html">Angestellte Ärzte <span aria-hidden="true">→</span></a>
@@ -642,7 +642,9 @@
       </p>
     </div>
 
-    <h3 style="margin-top:2.8rem" data-reveal>Gesetzliche Rechengrößen 2026</h3>
+    <details class="fold" data-fold>
+      <summary class="fold__sum">Gesetzliche Rechengrößen 2026</summary>
+      <div class="fold__body">
     <div class="tbl-wrap" style="margin-top:1rem" data-reveal>
       <table class="tbl">
         <thead><tr><th>Größe</th><th>Wert 2026</th><th>Fundstelle</th></tr></thead>
@@ -667,7 +669,13 @@
       2016 ist Bestandsschutz vorgesehen.
     </p>
 
-    <h3 style="margin-top:2.6rem" data-reveal>Marktwerte — Erfahrungs- und Studienwerte, keine amtliche Statistik</h3>
+    
+      </div>
+    </details>
+
+    <details class="fold" data-fold>
+      <summary class="fold__sum">Marktwerte — Erfahrungs- und Studienwerte</summary>
+      <div class="fold__body">
     <div class="tbl-wrap" style="margin-top:1rem" data-reveal>
       <table class="tbl">
         <thead><tr><th>Kennzahl</th><th>Wert</th><th>Quelle</th></tr></thead>
@@ -682,7 +690,13 @@
       </table>
     </div>
 
-    <h3 style="margin-top:2.6rem" data-reveal>Eigene Berechnungen</h3>
+    
+      </div>
+    </details>
+
+    <details class="fold" data-fold>
+      <summary class="fold__sum">Eigene Berechnungen, Schritt für Schritt</summary>
+      <div class="fold__body">
     <div class="grid grid-3" style="margin-top:1rem" data-stagger-group="70">
       <div class="card" data-reveal>
         <h4>50 € Sachbezug statt Gehaltserhöhung</h4>
@@ -710,7 +724,11 @@
       </div>
     </div>
 
-    <p class="small mute" style="margin-top:2rem;max-width:80ch" data-reveal>
+    
+      </div>
+    </details>
+
+<p class="small mute" style="margin-top:2rem;max-width:80ch" data-reveal>
       Stand: August 2026, Rechengrößen 2026. Beispielwerte einer Musterpraxis, gerundet.
       Keine Steuer- oder Rechtsberatung.
     </p>

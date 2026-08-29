@@ -283,7 +283,13 @@
 
   Scene.prototype.bind = function () {
     var self = this;
-    this._onResize = function () { self.resize(); };
+    this._lastW = 0;
+    this._onResize = function () {
+      var w = Math.round(self.canvas.getBoundingClientRect().width);
+      if (w === self._lastW) return;   /* nur Hoehenwechsel: Adressleiste */
+      self._lastW = w;
+      self.resize();
+    };
     global.addEventListener('resize', this._onResize, { passive: true });
 
     if (!reduceMotion) {
@@ -306,7 +312,12 @@
 
   Scene.prototype.resize = function () {
     var r = this.canvas.getBoundingClientRect();
-    this.dpr = Math.min(global.devicePixelRatio || 1, 2);
+    /* Auf Telefonen kostet jede Pixelzeile Rechenzeit pro Bild — die Szene
+       zeichnet tiefensortierte Segmente neu, waehrend gewischt wird. 1,5 statt
+       2 spart rund die Haelfte der Flaeche und ist bei dieser weichen
+       Darstellung nicht zu sehen. */
+    var maxDpr = (global.innerWidth || 1024) < 760 ? 1.5 : 2;
+    this.dpr = Math.min(global.devicePixelRatio || 1, maxDpr);
     this.w = Math.max(1, Math.round(r.width));
     this.h = Math.max(1, Math.round(r.height));
     this.canvas.width = Math.round(this.w * this.dpr);

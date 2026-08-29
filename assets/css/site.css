@@ -483,11 +483,6 @@ button { background: none; border: 0; cursor: pointer; }
   background: rgba(12, 44, 79, .055);
   box-shadow: inset 0 0 0 1px rgba(12, 44, 79, .08);
 }
-.nav__zg-tag {
-  font-family: var(--font-display); font-weight: 700; font-size: .62rem;
-  letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute);
-  padding: 0 .3rem 0 .7rem; white-space: nowrap;
-}
 .nav__zg .nav__link { border-radius: var(--r-pill); }
 .nav__zg .nav__link.is-hier {
   background: var(--navy-800); color: #fff; font-weight: 700;
@@ -498,7 +493,6 @@ button { background: none; border: 0; cursor: pointer; }
 /* Ueber dem dunklen Hero dreht sich das Verhaeltnis um: heller Kern,
    weicher Schein, damit der gewaehlte Bereich auch dort traegt. */
 .nav.is-dark .nav__zg { background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
-.nav.is-dark .nav__zg-tag { color: rgba(214,225,236,.55); }
 .nav.is-dark .nav__zg .nav__link.is-hier {
   background: #fff; color: var(--navy-900);
   box-shadow: 0 0 0 4px rgba(255,255,255,.1), 0 8px 22px -8px rgba(255,255,255,.5);
@@ -1690,7 +1684,11 @@ body.nav-open .cta-dock { opacity: 0; transform: translateX(-50%) translateY(150
   grid-template-columns: 1fr;
 }
 @media (min-width: 820px) {
-  .person { grid-template-columns: minmax(0, 22rem) 1fr; }
+  .person { grid-template-columns: minmax(0, 21rem) 1fr; }
+  /* Bei umgekehrter Reihenfolge muss auch das Raster spiegeln. Sonst rutscht
+     das Portraet in die breite Textspalte und wird doppelt so gross wie das
+     gegenueberliegende. */
+  .person--reverse { grid-template-columns: 1fr minmax(0, 24rem); }
   .person--reverse > :first-child { order: 2; }
 }
 .person__bild {
@@ -1759,3 +1757,112 @@ body.nav-open .cta-dock { opacity: 0; transform: translateX(-50%) translateY(150
 :is(.section--dark, .hero--dark) .creed__text { color: rgba(232,240,247,.86); }
 .creed__text b { color: var(--ink); font-weight: 700; }
 :is(.section--dark, .hero--dark) .creed__text b { color: #fff; }
+
+/* ==========================================================================
+   25. Telefon — Lesen und Wischen
+   Auf dem Telefon wird nicht gelesen, sondern gescrollt. Deshalb hier keine
+   verkleinerte Fassung der Desktopseite, sondern ein eigener Rhythmus:
+   kleinere Ueberschriften, kuerzere Abstaende, weniger gleichzeitig
+   sichtbarer Text. Alles bleibt erreichbar — nur nicht alles gleichzeitig
+   ausgeklappt.
+   ========================================================================== */
+@media (max-width: 700px) {
+  :root {
+    /* Die Schriftstufen enden auf dem Telefon frueher. Eine Ueberschrift, die
+       vier Zeilen braucht, liest niemand — sie wird ueberwischt. */
+    --step-1: clamp(1.06rem, 1rem + .5vw, 1.14rem);
+    --step-2: clamp(1.24rem, 1.1rem + .8vw, 1.38rem);
+    --step-3: clamp(1.4rem, 1.18rem + 1.1vw, 1.6rem);
+    --step-4: clamp(1.6rem, 1.3rem + 1.5vw, 1.85rem);
+    --step-5: clamp(1.82rem, 1.4rem + 2.1vw, 2.15rem);
+    --step-6: clamp(2rem, 1.5rem + 2.6vw, 2.4rem);
+    --sect: 3.4rem;
+  }
+  body { font-size: 1.02rem; line-height: 1.6; }
+  h1, h2 { line-height: 1.13; letter-spacing: -.021em; }
+  h3 { line-height: 1.2; }
+  .lead { line-height: 1.5; }
+  .section--tight { padding-block: 2.6rem; }
+
+  /* Karten: Rand und Innenabstand kosten auf 390 Pixeln spuerbar Platz */
+  .card { padding: 1.25rem 1.2rem 1.35rem; border-radius: var(--r-md); }
+  .grid { gap: .85rem; }
+  .stack > * + * { margin-top: .9rem; }
+  .stack-lg > * + * { margin-top: 1.5rem; }
+
+  /* Knoepfe fuellen die Zeile — grosse, sichere Trefferflaechen statt
+     zweier halber Knoepfe nebeneinander */
+  .btn-row { display: grid; gap: .6rem; }
+  .btn-row .btn { width: 100%; }
+  .btn { padding: .9rem 1.3rem; font-size: .95rem; }
+  .btn--lg { padding: 1rem 1.4rem; font-size: 1rem; }
+
+  .eyebrow { margin-bottom: .8rem; font-size: .69rem; letter-spacing: .14em; }
+  .eyebrow::before { width: 16px; }
+
+  /* Portraets: in voller Breite fuellen sie fast einen ganzen Bildschirm */
+  .person__bild { width: min(100%, 15.5rem); margin-inline: auto; }
+  .person { gap: 1.2rem; }
+
+  .creed__satz { padding: 1.05rem 0; gap: .85rem; }
+  .creed__text { font-size: 1.02rem; line-height: 1.5; }
+  .proof__item { padding: 1.15rem 1.2rem; border-radius: var(--r-md); }
+
+  /* Formulare: Safari auf dem iPhone zoomt beim Antippen in jedes Feld
+     hinein, dessen Schrift kleiner als 16 Pixel ist — die Seite springt und
+     steht danach schief. Genau 16 Pixel verhindern das. */
+  .field input, .field select, .field textarea { font-size: 16px; padding: .9rem 1rem; }
+  .field label { font-size: .86rem; }
+  .opt { padding: 1rem 1.05rem; font-size: 1rem; }
+  .fields-2 { gap: 0; }
+
+  /* Der Kopfbereich der Startseite: eine Bildschirmhoehe je Aussage reicht */
+  .stage { height: 300svh; }
+  .stage__panel h1 { font-size: clamp(2rem, 9vw, 2.6rem); }
+  .stage__panel h2 { font-size: clamp(1.6rem, 7vw, 2rem); }
+
+  /* Tabellen werden zu Bloecken. Seitliches Wischen in einer Tabelle
+     kaempft mit dem Wischen der Seite; gestapelt gibt es nur eine Richtung. */
+  .tbl-wrap { overflow-x: visible; }
+  .tbl { min-width: 0; display: block; font-size: .95rem; }
+  .tbl thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .tbl tbody { display: block; }
+  .tbl tbody tr { display: block; padding: .95rem 1.05rem; }
+  .tbl tbody tr + tr { border-top: 1px solid var(--line-soft); }
+  .tbl td { display: block; padding: 0; }
+  .tbl td:first-child {
+    font-family: var(--font-display); font-weight: 700; color: var(--ink);
+    letter-spacing: -.012em; line-height: 1.3;
+  }
+  .tbl td:nth-child(2) { margin-top: .35rem; font-size: 1.02rem; color: var(--accent-ink); }
+  .tbl td:last-child { margin-top: .3rem; font-size: .82rem; line-height: 1.45; }
+  .tbl td:last-child:first-child { margin-top: 0; font-size: inherit; }
+}
+
+/* Zusammenklappbare Nachweise
+   Quellen, Rechenwege und lange Fussnoten gehoeren auf die Seite — aber nicht
+   aufgeklappt vor jemanden, der auf dem Handy scrollt. Am Schreibtisch stehen
+   sie offen (das Skript setzt `open`), auf dem Telefon hinter einer Zeile.
+   Ohne JavaScript bleibt alles ueber die Zusammenfassung erreichbar. */
+.fold { border-top: 1px solid var(--line); margin-top: 1.6rem; }
+.fold + .fold { margin-top: 0; }
+:is(.section--dark, .hero--dark) .fold { border-color: rgba(255,255,255,.14); }
+.fold__sum {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 1.05rem .2rem; cursor: pointer; list-style: none;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); letter-spacing: -.015em;
+}
+:is(.section--dark, .hero--dark) .fold__sum { color: #fff; }
+.fold__sum::-webkit-details-marker { display: none; }
+.fold__sum::after {
+  content: ""; flex: none; width: 10px; height: 10px;
+  border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform .25s var(--ease);
+}
+:is(.section--dark, .hero--dark) .fold__sum::after { border-color: #E5A2AC; }
+.fold[open] > .fold__sum::after { transform: rotate(-135deg) translate(-2px, -2px); }
+.fold__body { padding-bottom: .5rem; }
+.fold[open] > .fold__sum { border-bottom: 1px solid var(--line-soft); margin-bottom: 1.2rem; }
+:is(.section--dark, .hero--dark) .fold[open] > .fold__sum { border-color: rgba(255,255,255,.1); }

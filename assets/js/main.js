@@ -223,6 +223,30 @@
     window.addEventListener('resize', update, { passive: true });
   })();
 
+  /* ------------------------------------------- Nachweise: am Schreibtisch offen
+     Quellen und Rechenwege sind auf dem grossen Bildschirm sofort sichtbar,
+     auf dem Telefon hinter einer Zeile. Faellt das Skript aus, bleiben sie
+     ueber die Zusammenfassung erreichbar — nichts geht verloren. */
+  (function () {
+    var folds = document.querySelectorAll('details[data-fold]');
+    if (!folds.length) return;
+    var weit = window.matchMedia('(min-width: 701px)');
+    function anwenden() {
+      folds.forEach(function (d) {
+        if (d.dataset.foldTouched !== '1') d.open = weit.matches;
+      });
+    }
+    /* Der Klick auf die Zusammenfassung ist das Signal des Nutzers. Das
+       toggle-Ereignis taugt dafuer nicht: es feuert auch, wenn das Skript
+       selbst umschaltet. */
+    folds.forEach(function (d) {
+      var sum = d.querySelector('summary');
+      if (sum) sum.addEventListener('click', function () { d.dataset.foldTouched = '1'; });
+    });
+    anwenden();
+    if (weit.addEventListener) weit.addEventListener('change', anwenden);
+  })();
+
   /* ------------------------------------ Wunschtermin: kein Datum in der Vergangenheit */
   document.querySelectorAll('input[type="date"][data-min-date]').forEach(function (el) {
     var d = new Date();
