@@ -25,6 +25,8 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) | — |
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
+| `lib/booking-core.js` | Terminbuchung: freie Zeiten, Kalendereintrag mit Meet-Raum, Lead | alle |
+| `lib/fathom-core.js` | Gesprächsmitschriften von Fathom zurück ins CRM, siehe [FATHOM.md](FATHOM.md) | — |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
 
 ### Zielgruppen-Ansprache
@@ -115,6 +117,9 @@ serverseitig in eine Umgebungsvariable.
 | `CLOSE_API_KEY` | ja | Close → Settings → API Keys → New API Key |
 | `CLOSE_LEAD_STATUS_ID` | nein | Lead-Status für neue Anfragen, z. B. `stat_…`. Ohne Angabe greift der Close-Standard |
 | `CLOSE_CUSTOM_FIELDS` | nein | Mapping auf echte Close-Felder, siehe unten |
+
+Für Terminbuchung und Gesprächsmitschriften kommen weitere Variablen hinzu —
+sie stehen in [LAUNCH.md](LAUNCH.md) bzw. [FATHOM.md](FATHOM.md).
 
 Nach dem Setzen einen Redeploy auslösen — Functions lesen die Variablen beim Start.
 

@@ -131,6 +131,17 @@
             'verwendet und nicht an Dritte weitergegeben.</span>' +
         '</label>' +
 
+        '<label class="consent">' +
+          '<input type="checkbox" name="aufzeichnung">' +
+          '<span>Optional: Ich bin damit einverstanden, dass das Videogespräch ' +
+            'aufgezeichnet und automatisch verschriftlicht wird, damit die Beratung ' +
+            'nachbereitet werden kann. Ohne dieses Häkchen findet das Gespräch ' +
+            'ohne Aufzeichnung statt — auf die Beratung hat das keinen Einfluss. ' +
+            'Die Einwilligung ist jederzeit widerrufbar; Einzelheiten in den ' +
+            '<a href="datenschutz.html#aufzeichnung" target="_blank" rel="noopener">' +
+            'Datenschutzhinweisen</a>.</span>' +
+        '</label>' +
+
         '<p class="field__err" data-fehler hidden style="display:block;margin-top:1rem"></p>' +
 
         '<div class="fnav">' +
@@ -163,7 +174,17 @@
   }
 
   /* ------------------------------------------------- Schritt 3: Bestätigt */
-  function zeichneBestaetigung() {
+  function zeichneBestaetigung(daten) {
+    /* Kam ein Meet-Raum zustande, steht er hier — dann muss niemand auf die
+       E-Mail warten, um zu wissen, wo das Gespräch stattfindet. */
+    var meet = (daten && daten.meet_url) ? String(daten.meet_url) : '';
+    var einwahl = meet
+      ? '<p class="small" style="margin-top:1.1rem">Ihr Videoraum: ' +
+          '<a href="' + esc(meet) + '" target="_blank" rel="noopener" ' +
+          'style="color:var(--navy-700);text-decoration:underline">' + esc(meet) + '</a>' +
+        '</p>'
+      : '';
+
     koerper.innerHTML =
       '<div class="book__schritt is-active book__ok">' +
         '<div class="book__ok-icon">' +
@@ -173,6 +194,7 @@
         '<h3>Der Termin steht.</h3>' +
         '<p class="lead" style="margin-top:.8rem;font-size:1.05rem">' +
           langesDatum(zustand.slot) + ' um ' + uhrzeit(zustand.slot) + ' Uhr</p>' +
+        einwahl +
         '<p class="small mute" style="margin-top:1.2rem;max-width:34rem;margin-inline:auto">' +
           'Sie erhalten in Kürze eine persönliche Bestätigung per E-Mail mit den ' +
           'Einwahldaten. Wenn etwas dazwischenkommt, genügt eine kurze Nachricht an ' +
@@ -256,7 +278,7 @@
     })
       .then(function (r) { return r.json().then(function (b) { return { ok: r.ok, b: b }; }); })
       .then(function (a) {
-        if (a.ok && a.b.ok) { zeichneBestaetigung(); return; }
+        if (a.ok && a.b.ok) { zeichneBestaetigung(a.b); return; }
         btn.disabled = false;
         btn.textContent = alt;
         if (fehlerBox) {

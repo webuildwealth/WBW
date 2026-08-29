@@ -110,6 +110,15 @@ object-src 'none'\
   status = 200
   force = true
 
+# Fathom meldet fertige Gesprächsmitschriften hierher. Kein Aufruf aus dem
+# Browser, sondern ein Server-zu-Server-Webhook — die Signatur im Header prüft
+# lib/fathom-core.js.
+[[redirects]]
+  from = "/api/fathom"
+  to = "/.netlify/functions/fathom"
+  status = 200
+  force = true
+
 # -----------------------------------------------------------------------------
 #  Bequeme Kurz-URLs für Anzeigen und Visitenkarten.
 #  Ziel ist immer die .html-Variante, damit es genau eine kanonische Adresse gibt.

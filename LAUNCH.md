@@ -122,6 +122,22 @@ akzeptiert.
 | `BOOKING_LEAD_HOURS` | `24` | Mindestvorlauf bis zum Termin |
 | `BOOKING_HORIZON_DAYS` | `14` | wie weit im Voraus buchbar |
 
+**4.5 Videoraum und Gesprächsmitschrift (optional)**
+
+Die Termine werden als Google Meet angelegt, damit Fathom beitreten und
+mitschreiben kann. Ein Dienstkonto ohne Domain-Wide Delegation darf allerdings
+keinen Meet-Raum erzeugen; dann bleibt der Termin ohne Link. Abhilfe schafft
+ein fester Raum:
+
+| Variable | Wert |
+|---|---|
+| `GOOGLE_MEET_URL` | ein in Google Meet vorab erzeugter Besprechungslink |
+
+Die vollständige Einrichtung der automatischen Mitschrift — Fathom-Webhook,
+Zuordnung in Close und die Einwilligungspflichten — steht in
+[FATHOM.md](FATHOM.md). Ohne diese Einrichtung funktioniert die Buchung
+unverändert; es entsteht nur keine Mitschrift.
+
 Nach dem Setzen von Umgebungsvariablen einmal *Deploys* → *Trigger deploy*
 → *Clear cache and deploy site*. Vorher greifen sie nicht.
 
