@@ -1,3 +1,26 @@
 .DS_Store
 Thumbs.db
 node_modules/
+
+# -----------------------------------------------------------------------------
+#  Schutz gegen Datenabfluss.
+#
+#  netlify.toml setzt publish = "." — das Wurzelverzeichnis dieses Repos IST
+#  die oeffentliche Website. Alles, was hier liegt, ist unter
+#  finanz-medizin.com abrufbar.
+#
+#  Die MFA-Lead-Pipeline gehoert deshalb in ein eigenes privates Repository.
+#  Die folgenden Regeln sind die zweite Verteidigungslinie fuer den Fall, dass
+#  doch einmal eine Ausgabe in diesem Arbeitsverzeichnis landet.
+# -----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+data/
+output/
+pipeline/
+*.csv
+*.db
+*.sqlite
+*.sqlite3
+leads*.json
