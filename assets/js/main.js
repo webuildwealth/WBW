@@ -173,4 +173,50 @@
       sessionStorage.setItem('fm_campaign', JSON.stringify(store));
     }
   } catch (e) { /* Storage kann blockiert sein – unkritisch */ }
+
+  /* ------------------------------------------ Cookie-Einstellungen erneut öffnen
+     Der Knopf steht auf jeder Seite in der Fußzeile. Er ruft Cookiebot.renew()
+     auf, das den Dialog erneut einblendet.
+
+     Solange Cookiebot nicht geladen ist — weil die Domain-Group-ID noch nicht
+     eingetragen ist, ein Blocker eingreift oder das Netz klemmt — gäbe es sonst
+     eine tote Schaltfläche. Ein Knopf, der nichts tut, ist schlimmer als
+     keiner: Beim Thema Einwilligung erweckt er den Eindruck, der Widerruf sei
+     möglich, obwohl er ins Leere geht. Deshalb blendet er sich in diesem Fall
+     aus und verweist auf die Cookie-Richtlinie. */
+  (function () {
+    // Mehrzahl: Datenschutzerklärung und Cookie-Richtlinie tragen den Knopf
+    // zusätzlich im Fließtext, dort wo vom Widerruf die Rede ist.
+    var knoepfe = Array.prototype.slice.call(
+      document.querySelectorAll('[data-cookie-renew]')
+    );
+    if (!knoepfe.length) return;
+
+    function verfuegbar() {
+      return typeof window.Cookiebot !== 'undefined' &&
+             typeof window.Cookiebot.renew === 'function';
+    }
+
+    knoepfe.forEach(function (knopf) {
+      knopf.addEventListener('click', function () {
+        if (verfuegbar()) window.Cookiebot.renew();
+      });
+    });
+
+    function pruefe() {
+      var aus = !verfuegbar();
+      knoepfe.forEach(function (k) { k.hidden = aus; });
+    }
+
+    pruefe();
+    // Cookiebot meldet sich per Event, sobald es bereit ist; der Timer fängt
+    // den Fall ab, dass das Skript später oder gar nicht kommt.
+    window.addEventListener('CookiebotOnLoad', pruefe);
+    window.addEventListener('CookiebotOnDialogInit', pruefe);
+    var versuche = 0;
+    var takt = window.setInterval(function () {
+      pruefe();
+      if (verfuegbar() || ++versuche > 20) window.clearInterval(takt);
+    }, 250);
+  })();
 })();

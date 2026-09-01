@@ -3,6 +3,94 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ==========================================================================
+     1. Cookiebot (CMP) — muss vor allen anderen Skripten stehen.
+        data-blockingmode="auto" lässt Cookiebot Tracking-Skripte selbst
+        blockieren, bis eine Einwilligung vorliegt.
+     ========================================================================== -->
+<script id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        data-cbid="COOKIEBOT_CBID_HIER"
+        data-blockingmode="auto"
+        type="text/javascript"></script>
+
+<!-- ==========================================================================
+     2. Google Consent Mode v2 — Standard auf "denied".
+        Muss VOR dem GTM-Container laufen, sonst feuern Tags einmal, bevor der
+        Standard greift. wait_for_update gibt Cookiebot Zeit, eine bereits
+        erteilte Einwilligung nachzureichen, ohne dass solange gemessen wird.
+     ========================================================================== -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    ad_storage:             'denied',
+    ad_user_data:           'denied',
+    ad_personalization:     'denied',
+    analytics_storage:      'denied',
+    functionality_storage:  'denied',
+    personalization_storage:'denied',
+    security_storage:       'denied',
+    wait_for_update: 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', false);
+</script>
+
+<!-- ==========================================================================
+     3. Google Tag Manager — Container. Microsoft Clarity wird bewusst NICHT
+        hier eingebunden, sondern als Tag im GTM angelegt (siehe SETUP.md).
+
+        Abweichend vom Standard-Snippet lädt der Container NICHT sofort. Grund:
+        Schon das Anfordern von gtm.js überträgt die IP-Adresse des Besuchers an
+        Google. Das Standard-Snippet verlässt sich darauf, dass Cookiebot die
+        Einfügung zur Laufzeit abfängt — das tut es meistens, aber eben nicht
+        nachweisbar. Nachweisbar ist nur, was gar nicht erst passiert.
+
+        Deshalb wartet der Container hier auf ein ausdrückliches Signal von
+        Cookiebot und wird erst danach nachgeladen. Das deckt sich mit der
+        Zusage in der Datenschutzerklärung ("wird erst geladen, nachdem Sie
+        eingewilligt haben") und mit § 25 Abs. 1 TDDDG.
+
+        Nebenwirkung, die man kennen sollte: Ohne geladenen Container erreichen
+        auch die "denied"-Signale des Consent Mode Google nicht, es gibt also
+        keine cookielose Modellierung. Wer die möchte, ersetzt starteGtm() durch
+        einen unbedingten Aufruf — siehe SETUP.md, Abschnitt 2.2.
+     ========================================================================== -->
+<script>
+(function (w, d, s, l, i) {
+  var gestartet = false;
+
+  function starteGtm() {
+    if (gestartet) return;
+    gestartet = true;
+    w[l] = w[l] || [];
+    w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  }
+
+  // Cookiebot meldet den Einwilligungsstand über diese Ereignisse. Statistik
+  // ODER Marketing genügt — für beides gibt es Tags im Container.
+  function pruefeUndStarte() {
+    var c = w.Cookiebot && w.Cookiebot.consent;
+    if (c && (c.statistics || c.marketing)) starteGtm();
+  }
+
+  w.addEventListener('CookiebotOnAccept', pruefeUndStarte);
+  w.addEventListener('CookiebotOnConsentReady', pruefeUndStarte);
+  // Wiederkehrende Besucher: Cookiebot kann die gespeicherte Einwilligung
+  // bereits gesetzt haben, bevor dieses Skript seine Listener registriert.
+  d.addEventListener('DOMContentLoaded', pruefeUndStarte);
+  pruefeUndStarte();
+})(window, document, 'script', 'dataLayer', 'GTM-XXXXXXX');
+</script>
+
 <script>document.documentElement.classList.add("js");</script>
 <title>Impressum &amp; Erstinformation | Finanz-Medizin</title>
 <meta name="description" content="Impressum, Erstinformation nach § 15 VersVermV, Vermittlerregister, Aufsichtsbehörden und Schlichtungsstellen von Finanz-Medizin.">
@@ -16,6 +104,9 @@
 <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <a class="skip-link" href="#main">Zum Inhalt springen</a>
 
 <header class="nav is-stuck">
@@ -111,8 +202,14 @@
 
     <h3>Umsatzsteuer</h3>
     <p>
-      Eine Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz liegt
-      nicht vor.
+      Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:
+      <mark class="platzhalter">[[UMSATZSTEUER_ID]]</mark>
+    </p>
+    <p class="small mute">
+      Liegt keine USt-IdNr. vor, ist dieser Absatz durch den folgenden Satz zu
+      ersetzen: „Eine Umsatzsteuer-Identifikationsnummer gemäß § 27a
+      Umsatzsteuergesetz liegt nicht vor.“ Die Vermittlung von Versicherungen ist
+      nach § 4 Nr. 11 UStG umsatzsteuerfrei.
     </p>
 
     <h2 id="erstinfo">2. Erstinformation nach § 15 VersVermV</h2>
@@ -247,6 +344,19 @@
       eingesehen werden.
     </p>
 
+    <h3>Berufshaftpflichtversicherung</h3>
+    <p>
+      Nach § 34d Abs. 5 GewO besteht eine Berufshaftpflichtversicherung
+      (Vermögensschaden-Haftpflicht) mit der gesetzlich vorgeschriebenen
+      Mindestdeckungssumme.
+    </p>
+    <p>
+      Versicherer: <mark class="platzhalter">[[HAFTPFLICHT_VERSICHERER]]</mark><br>
+      Anschrift: <mark class="platzhalter">[[HAFTPFLICHT_ANSCHRIFT]]</mark><br>
+      Versicherungsschein-Nummer: <mark class="platzhalter">[[HAFTPFLICHT_POLICE]]</mark><br>
+      Räumlicher Geltungsbereich: <mark class="platzhalter">[[HAFTPFLICHT_GELTUNGSBEREICH]]</mark>
+    </p>
+
     <h2 id="verguetung">6. Beratungsart und Vergütung</h2>
     <p>
       Wir beraten auf Grundlage einer ausgewogenen Marktuntersuchung. Für unsere
@@ -294,6 +404,22 @@
       Postfach 06 02 22, 10052 Berlin<br>
       Telefon: 0800 2550444<br>
       <a href="https://www.pkv-ombudsmann.de" target="_blank" rel="noopener">www.pkv-ombudsmann.de</a>
+    </p>
+
+    <h3>EU-Plattform zur Online-Streitbeilegung</h3>
+    <p>
+      Die Europäische Kommission hat unter <em>ec.europa.eu/consumers/odr</em> eine
+      Plattform zur Online-Streitbeilegung (OS-Plattform) betrieben. Diese Plattform
+      wurde zum <strong>20. Juli 2025</strong> eingestellt; die Verordnung (EU)
+      Nr. 524/2013, aus der sich die Pflicht zur Verlinkung ergab, wurde durch die
+      Verordnung (EU) 2024/3228 aufgehoben.
+    </p>
+    <p>
+      Wir führen sie hier nur deshalb auf, weil viele Impressen den Link noch enthalten:
+      Ein Verweis auf eine nicht mehr erreichbare Plattform geht ins Leere und kann
+      selbst als irreführend beanstandet werden. Für Streitigkeiten stehen Ihnen
+      stattdessen die oben genannten Schlichtungsstellen sowie der ordentliche
+      Rechtsweg offen.
     </p>
 
     <h2 id="haftung">8. Haftung und Urheberrecht</h2>
@@ -360,6 +486,7 @@
         <ul>
           <li><a href="impressum.html">Impressum</a></li>
           <li><a href="datenschutz.html">Datenschutz</a></li>
+          <li><a href="cookie-richtlinie.html">Cookie-Richtlinie</a></li>
           <li><a href="#erstinfo">Erstinformation</a></li>
           <li><a href="#schlichtung">Schlichtungsstellen</a></li>
         </ul>
@@ -369,6 +496,7 @@
     <div class="footer__bottom">
       <span>© <span data-year>2026</span> Finanz-Medizin · finanz-medizin.com</span>
       <span>Eine Marke von <strong style="color:rgba(255,255,255,.8);font-weight:600">We&nbsp;Build&nbsp;Wealth</strong> · Inhaber Benedict Hintz</span>
+      <button type="button" class="footer__cookie" data-cookie-renew>Cookie-Einstellungen ändern</button>
     </div>
   </div>
 </footer>

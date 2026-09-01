@@ -3,6 +3,94 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ==========================================================================
+     1. Cookiebot (CMP) — muss vor allen anderen Skripten stehen.
+        data-blockingmode="auto" lässt Cookiebot Tracking-Skripte selbst
+        blockieren, bis eine Einwilligung vorliegt.
+     ========================================================================== -->
+<script id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        data-cbid="COOKIEBOT_CBID_HIER"
+        data-blockingmode="auto"
+        type="text/javascript"></script>
+
+<!-- ==========================================================================
+     2. Google Consent Mode v2 — Standard auf "denied".
+        Muss VOR dem GTM-Container laufen, sonst feuern Tags einmal, bevor der
+        Standard greift. wait_for_update gibt Cookiebot Zeit, eine bereits
+        erteilte Einwilligung nachzureichen, ohne dass solange gemessen wird.
+     ========================================================================== -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    ad_storage:             'denied',
+    ad_user_data:           'denied',
+    ad_personalization:     'denied',
+    analytics_storage:      'denied',
+    functionality_storage:  'denied',
+    personalization_storage:'denied',
+    security_storage:       'denied',
+    wait_for_update: 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', false);
+</script>
+
+<!-- ==========================================================================
+     3. Google Tag Manager — Container. Microsoft Clarity wird bewusst NICHT
+        hier eingebunden, sondern als Tag im GTM angelegt (siehe SETUP.md).
+
+        Abweichend vom Standard-Snippet lädt der Container NICHT sofort. Grund:
+        Schon das Anfordern von gtm.js überträgt die IP-Adresse des Besuchers an
+        Google. Das Standard-Snippet verlässt sich darauf, dass Cookiebot die
+        Einfügung zur Laufzeit abfängt — das tut es meistens, aber eben nicht
+        nachweisbar. Nachweisbar ist nur, was gar nicht erst passiert.
+
+        Deshalb wartet der Container hier auf ein ausdrückliches Signal von
+        Cookiebot und wird erst danach nachgeladen. Das deckt sich mit der
+        Zusage in der Datenschutzerklärung ("wird erst geladen, nachdem Sie
+        eingewilligt haben") und mit § 25 Abs. 1 TDDDG.
+
+        Nebenwirkung, die man kennen sollte: Ohne geladenen Container erreichen
+        auch die "denied"-Signale des Consent Mode Google nicht, es gibt also
+        keine cookielose Modellierung. Wer die möchte, ersetzt starteGtm() durch
+        einen unbedingten Aufruf — siehe SETUP.md, Abschnitt 2.2.
+     ========================================================================== -->
+<script>
+(function (w, d, s, l, i) {
+  var gestartet = false;
+
+  function starteGtm() {
+    if (gestartet) return;
+    gestartet = true;
+    w[l] = w[l] || [];
+    w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  }
+
+  // Cookiebot meldet den Einwilligungsstand über diese Ereignisse. Statistik
+  // ODER Marketing genügt — für beides gibt es Tags im Container.
+  function pruefeUndStarte() {
+    var c = w.Cookiebot && w.Cookiebot.consent;
+    if (c && (c.statistics || c.marketing)) starteGtm();
+  }
+
+  w.addEventListener('CookiebotOnAccept', pruefeUndStarte);
+  w.addEventListener('CookiebotOnConsentReady', pruefeUndStarte);
+  // Wiederkehrende Besucher: Cookiebot kann die gespeicherte Einwilligung
+  // bereits gesetzt haben, bevor dieses Skript seine Listener registriert.
+  d.addEventListener('DOMContentLoaded', pruefeUndStarte);
+  pruefeUndStarte();
+})(window, document, 'script', 'dataLayer', 'GTM-XXXXXXX');
+</script>
+
 <script>document.documentElement.classList.add("js");</script>
 <title>Über uns — warum wir nur Heilberufe beraten | Finanz-Medizin</title>
 <meta name="description" content="Finanz-Medizin berät ausschließlich Ärztinnen, Ärzte und Praxisteams. Wer dahintersteht, wie wir arbeiten und woran Sie uns messen können — inklusive nachprüfbarer Registernummern.">
@@ -23,6 +111,9 @@
 <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <a class="skip-link" href="#main">Zum Inhalt springen</a>
 
 <header class="nav">
@@ -345,6 +436,7 @@
         <ul>
           <li><a href="impressum.html">Impressum</a></li>
           <li><a href="datenschutz.html">Datenschutz</a></li>
+          <li><a href="cookie-richtlinie.html">Cookie-Richtlinie</a></li>
           <li><a href="impressum.html#erstinfo">Erstinformation §15 VersVermV</a></li>
           <li><a href="impressum.html#schlichtung">Schlichtungsstellen</a></li>
         </ul>
@@ -359,6 +451,7 @@
     <div class="footer__bottom">
       <span>© <span data-year>2026</span> Finanz-Medizin · finanz-medizin.com</span>
       <span>Eine Marke von <strong style="color:rgba(255,255,255,.8);font-weight:600">We&nbsp;Build&nbsp;Wealth</strong> · Inhaber Benedict Hintz</span>
+      <button type="button" class="footer__cookie" data-cookie-renew>Cookie-Einstellungen ändern</button>
     </div>
   </div>
 </footer>

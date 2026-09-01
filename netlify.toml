@@ -38,19 +38,32 @@
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
     Cross-Origin-Opener-Policy = "same-origin"
 
-    # script-src braucht 'unsafe-inline' nur noch für das kurze Skript im <head>,
-    # das die js-Klasse setzt. Die Schriften liegen lokal — kein fremder Host mehr
-    # in style-src und font-src.
+    # Die CSP musste für Consent-Management und Tracking geöffnet werden. Ohne
+    # diese Hosts würden Cookiebot und der GTM-Container stillschweigend
+    # blockiert — die Seite sähe unverändert aus, es liefe nur nichts.
+    #
+    # Aufgenommen ist ausschließlich, was die eingebauten Dienste brauchen:
+    #   consent./consentcdn./imgsec.cookiebot.com  Banner, Prüfung, Deklaration
+    #   www.googletagmanager.com                   Container + noscript-iframe
+    #   *.google-analytics.com / *.analytics.google.com   GA4 über den GTM
+    #   *.clarity.ms / c.bing.com                  Microsoft Clarity über den GTM
+    # Clarity und GA4 stehen hier, weil sie später als Tag im GTM aktiviert
+    # werden. Bis dahin wird nichts davon geladen — Cookiebot blockiert sie,
+    # und die CSP erlaubt nur, sie verbietet nichts von selbst.
+    #
+    # 'unsafe-eval' ist bewusst NICHT gesetzt. Der GTM-Vorschaumodus und manche
+    # benutzerdefinierten Vorlagen brauchen es; falls die Vorschau leer bleibt,
+    # steht in SETUP.md, was dann zu tun ist.
     #
     # Der Funnel sendet an /api/lead auf derselben Domain; 'self' genügt dafür.
-    # Erst ein Endpunkt auf einer fremden Domain müsste hier ergänzt werden.
     Content-Security-Policy = """\
 default-src 'self'; \
-script-src 'self' 'unsafe-inline'; \
-style-src 'self' 'unsafe-inline'; \
-font-src 'self'; \
-img-src 'self' data:; \
-connect-src 'self'; \
+script-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; \
+style-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com; \
+font-src 'self' data:; \
+img-src 'self' data: https://imgsec.cookiebot.com https://consent.cookiebot.com https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://c.bing.com; \
+connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://www.googletagmanager.com https://www.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://c.bing.com; \
+frame-src https://consentcdn.cookiebot.com https://www.googletagmanager.com; \
 form-action 'self'; \
 base-uri 'self'; \
 frame-ancestors 'none'; \
@@ -153,6 +166,12 @@ object-src 'none'\
 [[redirects]]
   from = "/team"
   to = "/ueber-uns.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/cookie-richtlinie"
+  to = "/cookie-richtlinie.html"
   status = 301
   force = true
 
