@@ -27,11 +27,27 @@
   }
 
   if (burger && mobile) {
+    /* Der weiche Übergang über der Fußleiste darf nur erscheinen, wenn das
+       Menü tatsächlich scrollt. Auf einem iPhone 16/17 Pro passt es ganz —
+       dort legte ein fest eingebauter Verlauf einen Schleier über die letzte
+       Zeile, die gar nichts verdeckt. CSS kann Scrollbarkeit nicht abfragen,
+       deshalb wird sie hier gemessen. */
+    var pruefeScroll = function () {
+      var scrollt = mobile.scrollHeight - mobile.clientHeight > 2;
+      mobile.classList.toggle('scrollt', scrollt);
+      // Am unteren Ende ist nichts mehr verdeckt — dann Verlauf wieder aus.
+      var amEnde = mobile.scrollTop + mobile.clientHeight >= mobile.scrollHeight - 2;
+      mobile.classList.toggle('am-ende', scrollt && amEnde);
+    };
+    mobile.addEventListener('scroll', pruefeScroll, { passive: true });
+    window.addEventListener('resize', pruefeScroll, { passive: true });
+
     burger.addEventListener('click', function () {
       var open = burger.getAttribute('aria-expanded') === 'true';
       burger.setAttribute('aria-expanded', String(!open));
       mobile.classList.toggle('is-open', !open);
       document.body.classList.toggle('nav-open', !open);
+      if (!open) window.requestAnimationFrame(pruefeScroll);
     });
     mobile.addEventListener('click', function (e) {
       if (e.target.closest('a')) {
