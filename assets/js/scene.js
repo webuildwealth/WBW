@@ -248,11 +248,23 @@
     }
     this.resize();
     this.bind();
+
+    /* Beim Konstruktor sind Schriften und Panelhöhe oft noch nicht final.
+       Zwei Nachmessungen kosten nichts und verhindern, dass das Objekt auf
+       einer veralteten Bandhöhe sitzen bleibt. */
+    var self0 = this;
+    var nachmessen = function () { if (!self0.dead) self0.resizeUndZeichnen(); };
+    if (document.readyState !== 'complete') {
+      global.addEventListener('load', nachmessen, { once: true });
+    }
+    if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+      document.fonts.ready.then(nachmessen);
+    }
   }
 
   Scene.prototype.bind = function () {
     var self = this;
-    this._onResize = function () { self.resize(); };
+    this._onResize = function () { self.resizeUndZeichnen(); };
     global.addEventListener('resize', this._onResize, { passive: true });
 
     if (!reduceMotion) {
@@ -285,9 +297,66 @@
     this.cx = this.w * 0.5;
     this.cy = this.h * 0.5;
     if (this.mode === 'stage') {
-      if (this.w > 980) { this.cx = this.w * 0.60; }
-      else { this.cy = this.h * 0.21; this.scale = Math.min(this.w, this.h) * 0.215; }
+      if (this.w > 980) {
+        this.cx = this.w * 0.60;
+      } else {
+        /* Auf dem Telefon liegt die Textkarte über der unteren Bildhälfte.
+           Vorher stand das Objekt fest bei 21 % Höhe und wurde von der Karte
+           angeschnitten — ausgerechnet das Bruststück, an dem die Form als
+           Stethoskop erkennbar wird, lag dahinter.
+
+           Statt einer festen Zahl wird jetzt die tatsächlich freie Fläche
+           zwischen Kopfzeile und Karte gemessen und das Objekt darin
+           zentriert. Ändert sich die Textlänge, wandert es mit. */
+        var oben = 76;                       // Höhe der Kopfzeile
+        var unten = this.h;
+        // Auf dem Telefon ist nur das aktive Panel eingeblendet; die übrigen
+        // stehen auf display:none und liefern keine brauchbaren Maße.
+        var karte = this.stage && (this.stage.querySelector('.stage__panel.is-live') ||
+                                   this.stage.querySelector('.stage__panel'));
+        if (karte) {
+          var kr = karte.getBoundingClientRect();
+          var cr = this.canvas.getBoundingClientRect();
+          var relativ = kr.top - cr.top;
+          if (relativ > oben + 90) unten = relativ;
+        }
+        /* Ausdehnung des Modells, an gerenderten Bildpunkten gemessen:
+           es reicht 1,62 Einheiten über die Mitte hinaus und 2,33 darunter —
+           der Schlauch hängt nach unten. Aus diesen beiden Zahlen ergibt sich
+           die größte Skalierung, bei der nichts mehr angeschnitten wird. */
+        // Konservativ gewaehlt: die Ausdehnung schwankt mit Morph-Phase und
+        // Kameraschwingung. Die Werte decken das gemessene Maximum ab.
+        var OBEN_E = 1.85, UNTEN_E = 3.25, LUFT_O = 8, LUFT_U = 12;
+        var band = (unten - oben) - LUFT_O - LUFT_U;
+
+        if (band < 110) {
+          /* Bleibt weniger übrig, wäre die Grafik ein Kringel von der Größe
+             eines Favicons. Dann trägt die Schrift die Seite allein — das
+             ist ruhiger als ein Objekt, für das kein Platz ist. */
+          this.tooTight = true;
+          this.scale = 1;
+          this.cy = oben;
+        } else {
+          this.tooTight = false;
+          var sk = Math.min(band / (OBEN_E + UNTEN_E), this.w * 0.26);
+          this.scale = sk;
+          this.cy = oben + LUFT_O + OBEN_E * sk;
+        }
+      }
     }
+  };
+
+  /* Ein neues canvas.width setzt die Bitmap zurück — das Bild ist danach weg.
+     Solange die Schleife läuft, malt der nächste Frame es ohnehin neu. Bei
+     prefers-reduced-motion gibt es aber keine Schleife: dort wird genau ein
+     Bild gezeichnet. Ohne dieses Nachzeichnen bliebe die Fläche nach jeder
+     Größenänderung dauerhaft leer. */
+  Scene.prototype.resizeUndZeichnen = function () {
+    this.resize();
+    // dt = 0: zeichnet exakt denselben Zustand noch einmal, ohne Zeit oder
+    // Morph vorzurücken. Mit einem echten dt wäre das Standbild nach jeder
+    // Größenänderung ein leicht anderes.
+    if (this.statisch) this.frame(0);
   };
 
   Scene.prototype.destroy = function () {
@@ -584,6 +653,11 @@
   };
 
   Scene.prototype.frame = function (dt) {
+    if (this.tooTight) {
+      if (this.canvas.style.opacity !== '0') this.canvas.style.opacity = '0';
+      return;
+    }
+    if (this.canvas.style.opacity === '0') this.canvas.style.opacity = '';
     this.time += dt;
     this.mx += (this.tmx - this.mx) * Math.min(1, dt * 3.2);
     this.my += (this.tmy - this.my) * Math.min(1, dt * 3.2);
@@ -630,6 +704,7 @@
     scenes.push(s);
     if (reduceMotion) {
       // Ein einziges statisches Bild – keine Endlosschleife
+      s.statisch = true;
       s.time = 1.2; s.t = s.tSmooth = 0; s.frame(0.016);
       return s;
     }

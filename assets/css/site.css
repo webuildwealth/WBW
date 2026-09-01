@@ -493,31 +493,46 @@ button { background: none; border: 0; cursor: pointer; }
   background: rgba(255,255,255,.6);
 }
 @media (min-width: 1040px) { .nav__burger { display: none; } }
+/* Die drei Balken liegen übereinander in derselben Rasterzelle und werden
+   per transform auseinandergeschoben. Vorher ergaben sich ihre Abstände aus
+   der Zeilenverteilung des Rasters — gemessene 15,7px —, während die
+   Rotation beim Öffnen mit 6,8px rechnete. Die Balken trafen sich deshalb
+   nie in der Mitte: statt eines Kreuzes standen zwei Striche 18px
+   auseinander. Mit expliziter Geometrie stimmt beides, unabhängig davon,
+   wie groß die Schaltfläche später einmal ist. */
 .nav__burger span {
-  display: block; width: 19px; height: 1.8px; background: var(--navy-800);
+  display: block; grid-area: 1 / 1; margin: 0;
+  width: 19px; height: 1.8px; background: var(--navy-800);
   border-radius: 2px; transition: transform .3s var(--ease), opacity .2s;
 }
-.nav__burger span + span { margin-top: 5px; }
-.nav__burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6.8px) rotate(45deg); }
+.nav__burger span:nth-child(1) { transform: translateY(-6.8px); }
+.nav__burger span:nth-child(3) { transform: translateY(6.8px); }
+.nav__burger[aria-expanded="true"] span:nth-child(1) { transform: rotate(45deg); }
 .nav__burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
-.nav__burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6.8px) rotate(-45deg); }
+.nav__burger[aria-expanded="true"] span:nth-child(3) { transform: rotate(-45deg); }
 
 .nav__mobile {
   position: fixed; inset: 76px 0 0 0; z-index: 99;
   background: var(--ivory);
-  padding: 1.5rem var(--gutter) 3rem;
+  padding: .9rem var(--gutter) calc(1.4rem + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
+  /* Auf niedrigen Geräten passen vier Kategorien mit ihren Unterpunkten
+     nicht auf einen Bildschirm — dann wird gescrollt. contain verhindert,
+     dass die Bewegung am Ende auf die Seite dahinter überspringt. */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   display: flex; flex-direction: column; gap: .3rem;
   transform: translateY(-12px); opacity: 0; pointer-events: none;
   transition: opacity .3s var(--ease), transform .3s var(--ease);
 }
 .nav__mobile.is-open { opacity: 1; transform: none; pointer-events: auto; }
-.nav__mobile a {
-  padding: .95rem .2rem; border-bottom: 1px solid var(--line-soft);
-  font-family: var(--font-display); font-weight: 700; font-size: 1.15rem;
-  color: var(--navy-800);
-  display: flex; justify-content: space-between; align-items: center;
-}
+/* Das mobile Menü enthält nur noch drei Arten von Links: Hauptkategorie,
+   Unterpunkt und den Erstgespräch-Knopf. Alle drei sind in Abschnitt 25.2
+   eigens gestaltet. Die frühere Sammelregel für „jedes a im Menü" ist damit
+   nicht nur überflüssig, sie war schädlich: Sie war spezifischer als die
+   neuen Regeln, überschrieb deren Abstände und zog eine Trennlinie zwischen
+   jede Kategorie und ihre eigenen Unterpunkte — also genau dort, wo
+   Zusammengehörigkeit gezeigt werden soll. */
 .nav__mobile .btn { margin-top: 1.4rem; }
 body.nav-open { overflow: hidden; }
 
@@ -1629,3 +1644,199 @@ mark.platzhalter {
 :is(.section--dark, .hero--dark) .creed__text { color: rgba(232,240,247,.86); }
 .creed__text b { color: var(--ink); font-weight: 700; }
 :is(.section--dark, .hero--dark) .creed__text b { color: #fff; }
+
+/* ==========================================================================
+   25. Mobile-Feinschliff
+   Alles in diesem Abschnitt steht in Media Queries für kleine Displays.
+   Der Desktop bleibt davon unberührt — das ist die Bedingung, unter der
+   hier gearbeitet wurde.
+   ========================================================================== */
+
+/* -- 25.1 Ursachen für horizontalen Überlauf ------------------------------
+   Gemessen, nicht geraten. Drei Quellen, jede einzeln behoben:
+
+   a) Die Reveal-Animation schiebt Blöcke vor dem Einblenden um 28px zur
+      Seite. Auf dem Desktop schluckt das der Seitenrand, auf dem Telefon
+      nicht: 28px Versatz minus 18px Rand ergaben exakt die 10px Überlauf,
+      die überall auftauchten. Auf kleinen Displays blenden diese Blöcke
+      deshalb von unten ein statt von der Seite — dieselbe Ruhe, keine
+      Breite.
+
+   b) Grid- und Flex-Kinder dürfen von sich aus nicht schmaler werden als
+      ihr längstes Wort. Bei deutschen Komposita wie
+      "Nachversicherungsgarantie" sprengte das eine Karte auf 424px in
+      einem 320px-Viewport. min-width:0 hebt die Sperre auf, die
+      Umbruchregel fängt das Wort selbst ab.
+
+   c) Die Kopfzeile brauchte bei 320px mehr Platz, als sie hatte.
+   -------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .js [data-reveal="left"],
+  .js [data-reveal="right"] { transform: translateY(20px); }
+
+  /* Kinder von Rastern dürfen schrumpfen */
+  .split > *, .segment > *, .cards > *, .metrics-strip > *,
+  .cta-band__grid > *, .footer__grid > *, .proof > *, .person > * { min-width: 0; }
+
+  .segment__list > li, .segment__list li > *, .lever > *, .metric > * { min-width: 0; }
+
+  /* Überschriften: „Datenschutzerklärung" ist als ein Wort breiter als eine
+     283px-Spalte und sprengte die Seite um 54px. Silbentrennung löst das
+     sauber — die Seite ist lang="de", Chromium trennt dann nach deutschen
+     Mustern. anywhere steht als Rückfall dahinter, falls keine Trennmuster
+     vorliegen; ohne diesen Rückfall bliebe der Überlauf in solchen Browsern. */
+  h1, h2, h3, .stage__panel h1, .stage__panel h2 {
+    hyphens: auto; -webkit-hyphens: auto;
+    overflow-wrap: break-word;
+  }
+  .legal h1, .legal h2 { overflow-wrap: anywhere; }
+
+  /* Lange Komposita brechen, statt den Container aufzuspannen.
+     overflow-wrap:anywhere statt break-word, weil nur "anywhere" auch in die
+     min-content-Berechnung eingeht — break-word bricht zwar optisch um, lässt
+     den Container aber trotzdem auf Wortbreite aufgehen. hyphens:auto sorgt
+     dafür, dass zuerst an Silbengrenzen getrennt wird; die Seite ist
+     lang="de", die Trennmuster greifen also. */
+  .segment__list li, .lever__text, .metric__label, .card p, .card h3,
+  .proof__was, .creed__satz {
+    overflow-wrap: anywhere;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+  }
+}
+
+/* Letzte Sicherung. Die Ursachen oben sind behoben; dies fängt nur ab, was
+   künftiger Inhalt einschleppt. clip statt hidden: clip erzeugt keinen
+   Scroll-Container und bricht damit position:sticky nicht. */
+@media (max-width: 860px) {
+  html { overflow-x: clip; }
+  body { overflow-x: clip; }
+}
+
+/* -- 25.2 Mobile Navigation ----------------------------------------------
+   Die Desktop-Navigation zeigt die drei Zielgruppen als gleichrangige
+   Einstiege. Diese Rangordnung übernimmt das Telefon-Menü: Hauptkategorie
+   groß und dunkel, Unterpunkte eingerückt, kleiner und leiser. Die
+   Einrückung erzeugt eine Linie, an der das Auge die Ebene abliest, ohne
+   sie zu lesen.
+
+   Bewusst kein Akkordeon: Bei drei Gruppen mit je vier bis fünf Punkten
+   passt alles auf einen Blick. Ein Akkordeon würde einen Klick verlangen,
+   um zu zeigen, was ohnehin hinpasst.
+   -------------------------------------------------------------------- */
+.nav__mobile-inner { display: flex; flex-direction: column; }
+
+.mnav__gruppe { padding-block: .1rem; }
+.mnav__gruppe + .mnav__gruppe { border-top: 1px solid var(--line-soft); }
+
+.nav__mobile .mnav__haupt {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .62rem .1rem .42rem;
+  font-family: var(--font-display); font-weight: 750;
+  font-size: 1.12rem; letter-spacing: -.02em;
+  color: var(--navy-900);
+  border-bottom: 0;
+}
+.nav__mobile .mnav__haupt.is-active { color: var(--red-700); }
+.mnav__pfeil { font-size: .95rem; color: var(--ink-mute); transition: transform .2s var(--ease); }
+.nav__mobile .mnav__haupt:active .mnav__pfeil { transform: translateX(3px); }
+
+/* Unterpunkte: eingerückt an einer durchgehenden Linie */
+.mnav__unter {
+  list-style: none; margin: 0 0 .45rem;
+  padding-left: .9rem; margin-left: .15rem;
+  border-left: 2px solid var(--line);
+  display: grid; gap: 0;
+}
+.nav__mobile .mnav__unter a {
+  display: block; padding: .3rem .1rem;
+  font-family: var(--font-body); font-weight: 500;
+  font-size: .93rem; letter-spacing: 0;
+  color: var(--ink-soft);
+  border-bottom: 0;
+}
+.nav__mobile .mnav__unter a:active { color: var(--navy-800); }
+
+.mnav__gruppe--flach .mnav__haupt { padding-bottom: .8rem; }
+.nav__mobile .mnav__cta { margin-top: .85rem; width: 100%; }
+
+/* Bei sehr niedrigen Geräten enger setzen, damit nichts scrollen muss */
+@media (max-height: 700px) {
+  .nav__mobile .mnav__haupt { padding: .6rem .1rem .4rem; font-size: 1.05rem; }
+  .nav__mobile .mnav__unter a { padding: .34rem .1rem; font-size: .89rem; }
+  .nav__mobile .mnav__cta { margin-top: .8rem; }
+}
+
+/* -- 25.3 Kopfzeile bei sehr schmalen Displays ---------------------------
+   Bei 320px brauchten Wortmarke, Abstand und Burger zusammen 319px in
+   einem 284px breiten Inhaltsbereich. Der Abstand schrumpft, die Marke
+   darf umbrechen statt zu schieben.
+   -------------------------------------------------------------------- */
+@media (max-width: 400px) {
+  .nav__inner { gap: .75rem; }
+  .brand { min-width: 0; }
+  .brand__name { font-size: .98rem; }
+  .brand__tag { font-size: .56rem; letter-spacing: .1em; }
+}
+@media (max-width: 340px) {
+  .brand__tag { display: none; }
+}
+
+/* -- 25.4 Schwebender CTA ------------------------------------------------
+   Vorher nahm die Leiste 17,7 % der Bildschirmhöhe ein und legte sich über
+   die Überschrift des Abschnitts, in dem der Besucher gerade las. Der Titel
+   brach dabei auf drei Zeilen um, was die Höhe erst erzeugte.
+
+   Jetzt eine Zeile: kurzer Titel, kleiner Knopf, sonst nichts. Die zweite
+   Textzeile entfällt auf dem Telefon — sie stand ohnehin unter einem
+   Knopf, den man in derselben Sekunde drückt oder nicht.
+   -------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .rail {
+    padding: 0 .6rem calc(.5rem + env(safe-area-inset-bottom, 0px));
+  }
+  /* Flex statt Raster: Mit dem Schließen-Knopf sitzen drei Elemente in einer
+     Zeile, und flex verteilt sie ohne Spaltendefinition richtig. */
+  .rail__card {
+    display: flex; align-items: center;
+    padding: .5rem .55rem .5rem .85rem;
+    gap: .55rem;
+    border-radius: 999px;
+    box-shadow: 0 10px 26px -10px rgba(0, 0, 0, .5);
+  }
+  .rail__text { flex: 1 1 auto; min-width: 0; }
+  .rail .btn { flex: 0 0 auto; }
+
+  /* Der Wegklicken-Knopf war auf dem Telefon ausgeblendet, obwohl die Logik
+     dafür existiert und die Entscheidung für die Sitzung merkt. Eine Leiste,
+     die man nicht loswird, ist genau das Aufdringliche, das hier weg soll —
+     jetzt ist die Leiste schmal genug, dass er hineinpasst. */
+  .rail__close {
+    display: grid; flex: 0 0 auto;
+  }
+  .rail__text { font-size: 0; line-height: 1.25; }
+  .rail__text b {
+    font-size: .86rem; margin-bottom: 0;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .rail .btn {
+    padding: .58rem .9rem;
+    font-size: .82rem;
+    border-radius: 999px;
+  }
+  .rail__close {
+    position: static; width: 26px; height: 26px;
+    margin: 0; border-radius: 50%;
+    background: rgba(255, 255, 255, .08);
+  }
+  .rail__close svg { width: 10px; height: 10px; }
+}
+
+/* Sehr schmal: der Knopf trägt die Aufforderung allein. width:100% wäre hier
+   falsch — im Flex-Layout bezöge es sich auf die ganze Karte und schöbe den
+   Schließen-Knopf hinaus. flex:1 lässt ihn den Rest einnehmen, nicht mehr. */
+@media (max-width: 359px) {
+  .rail__text { display: none; }
+  .rail .btn { flex: 1 1 auto; width: auto; }
+}
