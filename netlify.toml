@@ -102,6 +102,18 @@ object-src 'none'\
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # -----------------------------------------------------------------------------
+#  Interne Vertriebsunterlagen. Sie liegen im Repository unter /intern/, weil sie
+#  versioniert gehoeren — ausgeliefert werden duerfen sie nicht: publish = "."
+#  wuerde sie sonst oeffentlich unter finanz-medizin.com/intern/ erreichbar machen.
+#  Diese Regel steht bewusst vor allen anderen Redirects.
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/intern/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# -----------------------------------------------------------------------------
 #  Funnel-Endpunkt. Rewrite mit Status 200, nicht 301 — ein Redirect würde den
 #  POST-Body verlieren.
 # -----------------------------------------------------------------------------

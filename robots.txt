@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /danke.html
+Disallow: /intern/
 
 Sitemap: https://www.finanz-medizin.com/sitemap.xml

@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Telefon-Anamnese</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400;0,6..72,400;0,6..72,500&display=swap">
+<style>
+:root{
+  --bg:#F4F0EF;
+  --bg-2:#EDE8E7;
+  --surface:#FFFFFF;
+  --ink:#071B32;
+  --ink-soft:#3D5064;
+  --ink-mute:#6B7B8C;
+  --line:rgba(12,44,79,.14);
+  --line-soft:rgba(12,44,79,.07);
+  --accent:#751524;
+  --accent-soft:#FAF0F1;
+  --amber:#8A6014;
+  --amber-soft:#FBF4E6;
+  --go:#2F5D45;
+  --go-soft:#EDF3EF;
+  --rail:#D6E1EC;
+  --shadow:0 1px 2px rgba(7,27,50,.05);
+  --font-display:"Manrope",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-serif:"Newsreader",ui-serif,Georgia,"Times New Roman",serif;
+  --measure:68ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#08192B;
+    --bg-2:#0C2138;
+    --surface:#0E2439;
+    --ink:#EDE8E7;
+    --ink-soft:#B7C6D4;
+    --ink-mute:#8598A9;
+    --line:rgba(214,225,236,.18);
+    --line-soft:rgba(214,225,236,.09);
+    --accent:#E5A0A8;
+    --accent-soft:#1E1720;
+    --amber:#D9AC57;
+    --amber-soft:#1D1910;
+    --go:#7FBFA0;
+    --go-soft:#0F1F1A;
+    --rail:#25415C;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#08192B;
+  --bg-2:#0C2138;
+  --surface:#0E2439;
+  --ink:#EDE8E7;
+  --ink-soft:#B7C6D4;
+  --ink-mute:#8598A9;
+  --line:rgba(214,225,236,.18);
+  --line-soft:rgba(214,225,236,.09);
+  --accent:#E5A0A8;
+  --accent-soft:#1E1720;
+  --amber:#D9AC57;
+  --amber-soft:#1D1910;
+  --go:#7FBFA0;
+  --go-soft:#0F1F1A;
+  --rail:#25415C;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display);text-wrap:balance;margin:0;}
+p{margin:0;}
+a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+/* ---------- Werkzeugleiste ---------- */
+.tools{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:9px clamp(18px,4vw,52px);
+  background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.tools .brand{
+  font-family:var(--font-display);font-weight:800;font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;margin-right:auto;color:var(--ink);
+}
+.tools .brand span{color:var(--accent);}
+.tbtn{
+  font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:.02em;
+  padding:7px 14px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
+  transition:border-color .15s,color .15s;
+}
+.tbtn:hover{border-color:var(--accent);color:var(--accent);}
+.tbtn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg);}
+
+/* ---------- Grundraster ---------- */
+.wrap{max-width:var(--measure);margin:0 auto;padding:0 clamp(18px,4vw,32px);}
+section{padding:clamp(44px,7vw,84px) 0;border-top:1px solid var(--line-soft);}
+section:first-of-type{border-top:0;}
+.stack{display:flex;flex-direction:column;gap:22px;}
+.stack-s{display:flex;flex-direction:column;gap:12px;}
+
+.eyebrow{
+  font-family:var(--font-body);font-size:11px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
+}
+h2{font-size:clamp(27px,4.4vw,38px);line-height:1.1;font-weight:700;letter-spacing:-.02em;}
+h3{font-size:20px;line-height:1.25;font-weight:700;letter-spacing:-.01em;}
+h4{font-size:15px;font-weight:700;letter-spacing:-.005em;}
+.lead{font-size:17.5px;color:var(--ink-soft);line-height:1.6;}
+.body{color:var(--ink-soft);}
+.small{font-size:14px;color:var(--ink-mute);line-height:1.55;}
+
+/* ---------- Titelblock ---------- */
+.cover{padding:clamp(48px,8vw,96px) 0 clamp(36px,5vw,56px);}
+.cover h1{
+  font-size:clamp(38px,7.5vw,64px);line-height:1.02;font-weight:800;letter-spacing:-.035em;
+  margin:16px 0 18px;
+}
+.cover h1 em{font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--accent);}
+.facts{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:1px;background:var(--line);border:1px solid var(--line);margin-top:34px;
+}
+.facts div{background:var(--bg);padding:14px 16px;}
+.facts dt{font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-mute);}
+.facts dd{margin:5px 0 0;font-family:var(--font-display);font-weight:600;font-size:15px;}
+
+/* ---------- Inhaltsverzeichnis ---------- */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0 26px;}
+.toc a{
+  display:flex;gap:12px;align-items:baseline;padding:9px 0;
+  border-bottom:1px solid var(--line-soft);color:var(--ink);text-decoration:none;font-size:14.5px;
+}
+.toc a:hover{color:var(--accent);}
+.toc a b{font-family:var(--font-display);font-size:12px;color:var(--ink-mute);font-variant-numeric:tabular-nums;}
+
+/* ---------- Phasenkopf ---------- */
+.phase{display:flex;align-items:baseline;gap:16px;margin-bottom:6px;}
+.phase .n{
+  font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:.14em;
+  color:var(--accent);white-space:nowrap;
+}
+.phase .goal{
+  font-size:12.5px;font-weight:600;letter-spacing:.02em;color:var(--ink-mute);
+  border-left:2px solid var(--rail);padding-left:12px;
+}
+
+/* ---------- Schritt ---------- */
+.turn{
+  border-top:1px solid var(--line);padding:26px 0;
+  display:grid;grid-template-columns:56px 1fr;gap:8px 20px;
+}
+.turn:last-of-type{border-bottom:1px solid var(--line);}
+.turn .idx{
+  font-family:var(--font-display);font-size:30px;font-weight:300;line-height:.9;
+  color:var(--rail);font-variant-numeric:tabular-nums;
+}
+.turn .meta{
+  grid-column:2;font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-mute);
+}
+.turn .content{grid-column:2;display:flex;flex-direction:column;gap:14px;}
+@media(max-width:620px){
+  .turn{grid-template-columns:1fr;gap:6px;}
+  .turn .idx{font-size:22px;}
+  .turn .meta,.turn .content{grid-column:1;}
+}
+
+/* ---------- Skript ---------- */
+.script{
+  background:var(--surface);border:1px solid var(--line);border-radius:3px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.line{display:grid;grid-template-columns:78px 1fr;gap:16px;padding:13px 18px;border-top:1px solid var(--line-soft);}
+.line:first-child{border-top:0;}
+.line .who{
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-mute);padding-top:5px;
+}
+.line.you{background:var(--surface);}
+.line.you .who{color:var(--accent);}
+.line.you .txt{
+  font-family:var(--font-serif);font-size:18px;line-height:1.5;font-style:italic;color:var(--ink);
+}
+.line.them{background:var(--bg-2);}
+.line.them .txt{font-size:14.5px;color:var(--ink-soft);}
+.line .wc{
+  display:block;margin-top:6px;font-family:var(--font-body);font-style:normal;
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);
+}
+@media(max-width:560px){
+  .line{grid-template-columns:1fr;gap:5px;}
+  .line .who{padding-top:0;}
+  .line.you .txt{font-size:17px;}
+}
+
+/* ---------- Anmerkungen ---------- */
+.why{
+  font-size:14.5px;color:var(--ink-soft);line-height:1.58;
+  padding-left:14px;border-left:2px solid var(--rail);
+}
+.why b{color:var(--ink);font-weight:600;}
+.note{
+  padding:15px 18px;border-radius:3px;font-size:14.5px;line-height:1.55;
+  background:var(--amber-soft);border-left:3px solid var(--amber);color:var(--ink-soft);
+}
+.note .tag{
+  display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--amber);margin-bottom:7px;
+}
+.note b{color:var(--ink);font-weight:600;}
+.note p+p{margin-top:9px;}
+.stop{
+  padding:15px 18px;border-radius:3px;font-size:14.5px;line-height:1.55;
+  background:var(--accent-soft);border-left:3px solid var(--accent);color:var(--ink-soft);
+}
+.stop .tag{
+  display:block;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:7px;
+}
+.stop b{color:var(--ink);font-weight:600;}
+
+/* ---------- Listen ---------- */
+ul.clean,ol.clean{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px;color:var(--ink-soft);font-size:15px;}
+ul.clean li::marker{color:var(--rail);}
+ol.clean li::marker{color:var(--ink-mute);font-family:var(--font-display);font-weight:700;font-size:13px;}
+ul.clean b,ol.clean b{color:var(--ink);font-weight:600;}
+
+/* ---------- Karten ---------- */
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+.pair.trio{grid-template-columns:repeat(auto-fit,minmax(172px,1fr));}
+.box{
+  background:var(--surface);border:1px solid var(--line);border-radius:3px;
+  padding:20px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow);
+}
+.box h4{color:var(--ink);}
+.box p{font-size:14.5px;color:var(--ink-soft);line-height:1.55;}
+.box.go{border-top:3px solid var(--go);}
+.box.no{border-top:3px solid var(--accent);}
+.box .k{
+  font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+}
+.box.go .k{color:var(--go);}
+.box.no .k{color:var(--accent);}
+
+/* ---------- Einwände ---------- */
+.obj{border-top:1px solid var(--line);padding:20px 0;display:flex;flex-direction:column;gap:10px;}
+.obj:last-of-type{border-bottom:1px solid var(--line);}
+.obj .q{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:-.01em;}
+.obj .q::before{content:"»";color:var(--accent);margin-right:4px;}
+.obj .q::after{content:"«";color:var(--accent);margin-left:3px;}
+.obj .a{
+  font-family:var(--font-serif);font-style:italic;font-size:17px;line-height:1.5;
+  padding-left:14px;border-left:2px solid var(--accent);
+}
+.obj .r{font-size:13.5px;color:var(--ink-mute);line-height:1.5;}
+.obj .r b{color:var(--ink-soft);font-weight:600;}
+
+/* ---------- Tabellen ---------- */
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:3px;background:var(--surface);}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px;}
+th{
+  text-align:left;font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-mute);padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap;
+}
+td{padding:12px 14px;border-bottom:1px solid var(--line-soft);color:var(--ink-soft);vertical-align:top;}
+tr:last-child td{border-bottom:0;}
+td.num{font-family:var(--font-display);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;}
+
+/* ---------- Checkliste ---------- */
+.check{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:3px;background:var(--surface);}
+.check li{
+  list-style:none;display:flex;gap:13px;align-items:flex-start;
+  padding:13px 17px;border-top:1px solid var(--line-soft);font-size:14.5px;color:var(--ink-soft);
+}
+.check li:first-child{border-top:0;}
+.check li::before{
+  content:"";flex:0 0 auto;width:15px;height:15px;margin-top:3px;
+  border:1.5px solid var(--rail);border-radius:2px;
+}
+.check li b{color:var(--ink);font-weight:600;}
+.check ul{margin:0;padding:0;}
+
+/* ---------- Live-Modus ---------- */
+body.live .why,
+body.live .note,
+body.live .r,
+body.live .hide-live{display:none !important;}
+body.live .obj{padding:14px 0;}
+
+/* ---------- Fuß ---------- */
+footer{
+  border-top:1px solid var(--line);padding:26px 0 44px;
+  font-size:12.5px;color:var(--ink-mute);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+}
+@media print{
+  .tools{display:none;}
+  body{background:#fff;font-size:11pt;}
+  section{page-break-inside:auto;padding:22px 0;}
+  .turn,.obj,.script,.box{page-break-inside:avoid;}
+  .wrap{max-width:none;padding:0;}
+}
+</style>
+</head>
+<body>
+
+<div class="tools">
+  <div class="brand">finanz<span>·</span>medizin — Vertrieb</div>
+  <button class="tbtn" id="live" type="button" aria-pressed="false">Live-Modus</button>
+  <button class="tbtn" type="button" onclick="window.print()">Drucken</button>
+</div>
+
+<!-- ============================= TITEL ============================= -->
+<div class="wrap">
+<header class="cover">
+  <span class="eyebrow">Internes Vertriebsdokument · Kaltakquise Arztpraxen</span>
+  <h1>Telefon-<em>Anamnese</em></h1>
+  <p class="lead">
+    Der Anruf verkauft nichts. Er verkauft zwanzig Minuten. Dieses Dokument führt
+    Schritt für Schritt vom ersten Klingeln über den Empfang zum Praxisinhaber und
+    von dort in ein Qualifizierungsgespräch, an dessen Ende feststeht, ob eine
+    Zusammenarbeit sich für beide Seiten rechnet — oder eben nicht.
+  </p>
+  <dl class="facts">
+    <div><dt>Zielgruppe</dt><dd>Arztpraxen, 3–20 MA</dd></div>
+    <div><dt>Gesprächstyp</dt><dd>Erstanruf, kalt</dd></div>
+    <div><dt>Ziel des Anrufs</dt><dd>Termin, 20 Minuten</dd></div>
+    <div><dt>Ziel des Termins</dt><dd>Qualifizierung</dd></div>
+  </dl>
+</header>
+</div>
+
+<!-- ============================= NAVIGATION ============================= -->
+<section>
+  <div class="wrap stack">
+    <nav class="toc" aria-label="Inhalt">
+      <a href="#p0"><b>00</b> Vorbereitung — 60 Sekunden vor dem Wählen</a>
+      <a href="#p1"><b>01</b> Der Empfang — an der MFA vorbei, nicht gegen sie</a>
+      <a href="#p2"><b>02</b> Der Entscheider — sieben Turns bis zum Termin</a>
+      <a href="#p3"><b>03</b> Terminierung — vom Ja zum festen Slot</a>
+      <a href="#p4"><b>04</b> Einwandbibliothek — zwanzig Standardsituationen</a>
+      <a href="#p5"><b>05</b> Das Qualifizierungsgespräch — 20 Minuten, Minute für Minute</a>
+      <a href="#p6"><b>06</b> Sonderfälle — wer sonst noch drangehen kann</a>
+      <a href="#p7"><b>07</b> Wiedervorlage — die Vier-Phasen-Methode</a>
+      <a href="#p8"><b>08</b> Steuerung — fünf Zahlen, eine Pipeline</a>
+      <a href="#a1"><b>A</b> Zahlen, die gesagt werden dürfen</a>
+      <a href="#a2"><b>B</b> Rechtsrahmen und Hausregeln</a>
+      <a href="#a3"><b>C</b> Gesprächsbogen zum Ausfüllen</a>
+    </nav>
+
+    <div class="note">
+      <span class="tag">Wie dieses Dokument zu lesen ist</span>
+      <p><b>Kursiv gesetzt ist, was Sie sagen.</b> Alles in Serifenschrift ist gesprochene
+      Sprache — Vorlage, kein Vorlesetext. Einmal in eigene Worte übersetzen, sonst klingt
+      es nach Callcenter. Alles in Grotesk daneben ist Erklärung: warum der Satz so steht
+      und was er verhindert.</p>
+      <p><b>Der Live-Modus oben blendet jede Erklärung aus</b> und lässt nur stehen, was
+      gesagt wird. So gehört dieses Dokument neben das Telefon, nicht in die Vorbereitung.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PHASE 0 ============================= -->
+<section id="p0">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 00</span>
+        <span class="goal">Ziel · In 60 Sekunden anrufbereit</span>
+      </div>
+      <h2>Vorbereitung.</h2>
+    </div>
+    <p class="lead">
+      Wer unvorbereitet wählt, verbrennt den Lead beim ersten Satz. Diese Minute ist
+      keine Recherche — sie ist das Nachladen.
+    </p>
+
+    <h3>Die Leadkarte</h3>
+    <p class="body">Vor dem Wählen stehen sechs Dinge fest. Fehlt eines davon, wird nicht gewählt.</p>
+    <ol class="clean">
+      <li><b>Praxisname und Fachrichtung.</b> Hausarzt, Zahnarzt, Orthopäde — die Ansprache ändert sich nicht, die Glaubwürdigkeit schon.</li>
+      <li><b>Name und Titel der Inhaberin.</b> Frau Dr. Weber, nicht „der Chef“. Wer den Namen nicht kennt, kommt nicht durch den Empfang.</li>
+      <li><b>Geschätzte Teamgröße.</b> Aus der Praxiswebsite, dem Team-Foto oder Google Maps. Unter drei Mitarbeitenden wird nicht angerufen.</li>
+      <li><b>Der Aufhänger.</b> Offene MFA-Stelle seit wann? Neugründung? Übernahme? Ohne Aufhänger gilt die Variante ohne Trigger in Phase 02.</li>
+      <li><b>Sprechzeiten.</b> Stehen auf jeder Praxiswebsite. Zehn Sekunden Blick darauf entscheiden, ob überhaupt jemand abnehmen kann.</li>
+      <li><b>Die Quelle.</b> Woher der Datensatz stammt, muss auf Nachfrage in einem Satz beantwortbar sein — siehe Anhang B.</li>
+    </ol>
+
+    <h3>Anrufzeiten für Arztpraxen</h3>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Fenster</th><th>Bewertung</th><th>Warum</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Di–Do 11:30–12:30</td><td>Bestes Fenster</td><td>Vormittagssprechstunde läuft aus, der Andrang bricht ab, der Inhaber ist noch im Haus.</td></tr>
+          <tr><td class="num">Di–Do 14:00–15:30</td><td>Zweitbestes Fenster</td><td>Mittagspause oder Verwaltungszeit. Wer jetzt abnimmt, hat gerade wirklich zwei Minuten.</td></tr>
+          <tr><td class="num">Mo/Fr 11:30–12:30</td><td>Brauchbar</td><td>Funktioniert, ist aber voller. Für Wiedervorlagen, nicht für Erstanrufe.</td></tr>
+          <tr><td class="num">Täglich 8:00–10:30</td><td>Meiden</td><td>Stoßzeit. Volles Wartezimmer, gereizter Empfang, garantiertes Nein.</td></tr>
+          <tr><td class="num">Mi ab 12:00 · Fr ab 13:00</td><td>Meiden</td><td>Viele Praxen sind geschlossen. Anrufe laufen ins Leere und verbrennen den Datensatz.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <span class="tag">Vor dem allerersten Anruf — nicht verhandelbar</span>
+      <p><b>Ein Satz muss auswendig sitzen: die Vergütungsfrage.</b> „Und wie verdienen Sie
+      dann Geld?“ kommt in jedem dritten bis vierten Gespräch, sobald das Wort „kostet Sie
+      nichts“ fällt. Wer hier stockt, hat aus einem Preiseinwand einen Vertrauenseinwand
+      gemacht, und der ist nicht mehr zu drehen. Der Wortlaut steht in Phase 04 unter
+      „Und wie verdienen Sie dann Geld?“ — drei Halbsätze, wörtlich von der Website.</p>
+      <p><b>Terminlänge harmonisieren.</b> Dieses Dokument verkauft am Telefon 20 Minuten.
+      Website und Buchungsstrecke sprechen an mehreren Stellen von 25 Minuten
+      (<code>BOOKING_DURATION_MIN</code> steht auf 25). Entweder die Website auf 20 ziehen
+      oder am Telefon 25 sagen — aber nicht zwei Zahlen im Umlauf lassen, der Interessent
+      sieht beides.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PHASE 1 ============================= -->
+<section id="p1">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 01</span>
+        <span class="goal">Ziel · Durchgestellt werden oder ein festes Zeitfenster</span>
+      </div>
+      <h2>Der Empfang.</h2>
+    </div>
+    <p class="lead">
+      In der Arztpraxis geht fast nie der Inhaber ans Telefon, sondern die MFA. Das ist
+      der Normalfall, nicht das Hindernis. Und es ist die Person, für die das Angebot
+      am Ende gemacht ist.
+    </p>
+
+    <div class="stop">
+      <span class="tag">Die eine Regel dieser Phase</span>
+      <p><b>Niemals den Pitch am Empfang abladen.</b> Die MFA kann nicht entscheiden. Sie
+      gibt es aber sinngemäß weiter — und dann sitzt der Inhaber mit einer verzerrten
+      Version im Kopf im Gespräch. Am Empfang wird das Thema benannt, nicht erklärt.</p>
+    </div>
+
+    <div class="turn">
+      <div class="idx">01</div>
+      <div class="meta">Einstieg · ruhig, ohne Firmennamen, ohne Anliegen</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Guten Tag, Benedict Hintz hier. Ist Frau Dr. Weber kurz zu sprechen?“<span class="wc">11 Wörter</span></span></div>
+          <div class="line them"><span class="who">Empfang</span><span class="txt">„Worum geht es denn?“ — der Normalfall. Oder, in etwa jedem dritten Anruf: „Einen Moment, ich verbinde.“</span></div>
+        </div>
+        <p class="why"><b>Kein Firmenname, kein Anliegen, keine Entschuldigung.</b> Der Satz
+        klingt nach jemandem, der öfter hier anruft. Jede Vorabinformation lädt zur
+        Vorabentscheidung ein — und die trifft dann jemand, der sie gar nicht treffen darf.
+        Langsam sprechen. Wer hetzt, klingt nach Verkauf.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">02</div>
+      <div class="meta">Das Stichwort · benennen, nicht erklären</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Um Ihre offene MFA-Stelle — und um betriebliche Leistungen fürs Team. Das ist Chefsache, deswegen frage ich lieber direkt bei ihr. Zwei Minuten reichen.“<span class="wc">25 Wörter</span></span></div>
+        </div>
+        <p class="why"><b>„Chefsache“ ist der Schlüssel.</b> Es entwertet die MFA nicht, es
+        beschreibt eine Tatsache: Über Arbeitgeberleistungen entscheidet der Arbeitgeber.
+        Damit ist Weiterverbinden nicht mehr Entgegenkommen, sondern der naheliegende Weg.</p>
+        <p class="why"><b>Ohne offene Stelle</b> lautet die Fassung: <em>„Um betriebliche
+        Leistungen fürs Praxisteam — Gesundheitsbudget, Betriebsrente, so etwas. Das kann
+        nur Frau Dr. Weber entscheiden.“</em></p>
+        <div class="note">
+          <span class="tag">Wortwahl</span>
+          <p>Am Empfang fallen die Wörter <b>Versicherung, Vorsorge, Beratung, Vertrieb,
+          Angebot</b> nicht. Nicht weil sie falsch wären, sondern weil sie eine gelernte
+          Antwort auslösen: „Wir haben da schon jemanden.“ Gesagt wird, was das Thema ist —
+          betriebliche Leistungen fürs Team — nicht, welche Branche es verkauft.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">03</div>
+      <div class="meta">Der Verbündeten-Zug · nur wenn weiter geblockt wird</div>
+      <div class="content">
+        <div class="script">
+          <div class="line them"><span class="who">Empfang</span><span class="txt">„Da haben wir kein Interesse.“ / „Frau Dr. Weber nimmt solche Anrufe nicht an.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Verstehe ich. Kurz, weil es Sie selbst betrifft: Es geht um Leistungen, die die Praxis für ihr Team zahlt — ein Gesundheitsbudget für Zahnersatz und Brille zum Beispiel. Ob das kommt, entscheidet Frau Dr. Weber. Wann erreiche ich sie?“<span class="wc">40 Wörter · die einzige erlaubte Ausnahme von der 35-Wörter-Regel</span></span></div>
+        </div>
+        <p class="why"><b>Das ist der stärkste Zug dieser Phase und er ist wahr.</b> Die MFA
+        am Empfang ist genau die Person, die ein Gesundheitsbudget, den Sachbezug und die
+        bezuschusste Betriebsrente bekommen würde. Sie blockt, weil sie Verkauf an ihre
+        Chefin vermutet — nicht, weil sie das Thema kennt. In dem Moment, in dem sie
+        versteht, dass sie die Begünstigte ist, wechselt sie die Seite.</p>
+        <p class="why"><b>Genau einmal einsetzen.</b> Wer zweimal auf dasselbe Nein
+        antwortet, verkauft. Danach sauber zum Zeitfenster.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">04</div>
+      <div class="meta">Ausstieg · das Zeitfenster sichern</div>
+      <div class="content">
+        <div class="script">
+          <div class="line them"><span class="who">Empfang</span><span class="txt">„Sie ist in Behandlung.“ / „Heute geht das nicht mehr.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Kein Problem, das kenne ich. Wann erreiche ich sie am besten — vor der Sprechstunde oder in der Mittagspause?“<span class="wc">19 Wörter</span></span></div>
+          <div class="line them"><span class="who">Empfang</span><span class="txt">„Am ehesten mittwochs gegen halb eins.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Perfekt, dann melde ich mich Mittwoch um halb eins. Und mit wem habe ich gerade gesprochen? … Danke, Frau Ahrens. Schönen Tag noch.“<span class="wc">23 Wörter</span></span></div>
+        </div>
+        <p class="why"><b>Der Name der MFA ist bares Geld.</b> Beim zweiten Anruf beginnt der
+        Satz mit „Frau Ahrens, Benedict Hintz hier, wir hatten letzte Woche kurz
+        gesprochen“ — und der zweite Anruf ist damit kein Kaltanruf mehr.</p>
+        <p class="why"><b>Zwei Optionen anbieten, nicht offen fragen.</b> „Wann passt es?“
+        produziert „Rufen Sie einfach mal wieder an“. Das ist kein Zeitfenster.</p>
+        <div class="stop">
+          <span class="tag">Nie</span>
+          <p><b>Den Rückruf nie abgeben.</b> „Sie ruft Sie zurück“ heißt: nie. Zeitfenster
+          notieren, Wiedervorlage in Close setzen, selbst noch einmal anrufen. Und niemals
+          die eigene Nummer hinterlassen statt eines Termins.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Einwände am Empfang</h3>
+    <div>
+      <div class="obj">
+        <div class="q">Wir haben kein Interesse.</div>
+        <div class="a">„Das kann gut sein — nur kann ich das schwer beurteilen, solange ich nicht weiß, was Sie schon haben. Ist das Ihre Einschätzung oder hat Frau Dr. Weber das entschieden?“</div>
+        <div class="r"><b>Warum:</b> Trennt den Reflex der MFA von der Entscheidung der Inhaberin, ohne die MFA bloßzustellen. In der Mehrzahl der Fälle folgt „Na ja, ich denke schon, dass …“ — und damit ist die Tür wieder offen.</div>
+      </div>
+      <div class="obj">
+        <div class="q">Wir dürfen niemanden durchstellen.</div>
+        <div class="a">„Verstehe ich, das ist bei vielen Praxen so. Dann anders: Wann ist Frau Dr. Weber selbst am Apparat — vor der Sprechstunde oder mittags?“</div>
+        <div class="r"><b>Warum:</b> Die Anweisung nicht angreifen, sondern umgehen. Nicht durchstellen dürfen heißt nicht, keine Zeiten nennen zu dürfen.</div>
+      </div>
+      <div class="obj">
+        <div class="q">Schicken Sie uns eine E-Mail.</div>
+        <div class="a">„Mache ich gerne. Nur landet eine allgemeine Mail erfahrungsgemäß ungelesen im Ordner. Ich schicke sie, wenn ich weiß, worauf es bei Ihnen ankommt — wann erreiche ich Frau Dr. Weber?“</div>
+        <div class="r"><b>Warum:</b> Fast immer eine höfliche Absage. Nicht widersprechen, sondern die Reihenfolge umdrehen: erst sprechen, dann schicken. Wird die Mail trotzdem verlangt, wird sie geschickt — mit Wiedervorlage in fünf Tagen, nicht als Ersatz für den Anruf.</div>
+      </div>
+      <div class="obj">
+        <div class="q">Sind Sie von einer Versicherung?</div>
+        <div class="a">„Wir sind ungebundene Makler und arbeiten ausschließlich mit Arztpraxen. Was davon für Sie sinnvoll ist, steht am Anfang gar nicht fest — deshalb ist es ein Gespräch und kein Angebot.“</div>
+        <div class="r"><b>Warum:</b> Direkt beantworten. Jedes Ausweichen bestätigt die Vermutung. Ausweichen ist hier zusätzlich heikel: Als Makler nach § 34d GewO gehört der Status ohnehin offengelegt, spätestens mit der Erstinformation.</div>
+      </div>
+      <div class="obj">
+        <div class="q">Wir haben schon einen Berater.</div>
+        <div class="a">„Gut, dann ist jemand dran. Die Frage ist bei diesen Themen aber selten, ob jemand da ist, sondern was umgesetzt wurde. Genau das würde ich mit Frau Dr. Weber in zwei Minuten klären.“</div>
+        <div class="r"><b>Warum:</b> Den bestehenden Berater nie angreifen — die Praxis hat ihn selbst ausgewählt. Der Unterschied zwischen „jemanden haben“ und „umgesetzt haben“ ist die einzige Lücke, die man hier aufmacht.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PHASE 2 ============================= -->
+<section id="p2">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 02</span>
+        <span class="goal">Ziel · Ein fester Termin von 20 Minuten</span>
+      </div>
+      <h2>Der Entscheider.</h2>
+    </div>
+    <p class="lead">
+      Zwei bis vier Minuten, sieben Turns. Niemand legt auf, während er selbst redet —
+      deshalb endet hier fast jede Aussage mit einer Frage.
+    </p>
+
+    <div class="pair trio">
+      <div class="box">
+        <span class="k" style="color:var(--ink-mute)">Regel 1</span>
+        <h4>Zwei Sätze, dann Frage</h4>
+        <p>Keine Aussage ohne Rückfrage. Der Inhaber bleibt im Gespräch, weil er gebraucht wird, nicht weil er höflich ist.</p>
+      </div>
+      <div class="box">
+        <span class="k" style="color:var(--ink-mute)">Regel 2</span>
+        <h4>Höchstens 35 Wörter</h4>
+        <p>Der längste Block im ganzen Skript. Wer mehr braucht, hat den Termin bereits verloren und merkt es nur noch nicht.</p>
+      </div>
+      <div class="box">
+        <span class="k" style="color:var(--ink-mute)">Regel 3</span>
+        <h4>Erste Antwort in 10 Sekunden</h4>
+        <p>Die eigentliche Kennzahl der Phase. Wer nach zehn Sekunden noch allein spricht, hält einen Monolog vor einem vollen Wartezimmer.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">01</div>
+      <div class="meta">Einstieg · Sekunde 0 bis 10</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Guten Tag Frau Dr. Weber, Benedict Hintz hier. Ich sehe, Sie suchen gerade eine MFA — stimmt das?“<span class="wc">17 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Ja, seit einer Weile.“</span></div>
+        </div>
+        <p class="why"><b>Bewusst ohne Firmennamen.</b> Wer eine Stelle ausgeschrieben hat,
+        ordnet einen unbekannten Anrufer zuerst als Bewerber ein. Die Tür geht auf, bevor
+        die Abwehr anspringt. Ein Firmenname im ersten Satz löst sie sofort aus.</p>
+        <div class="script">
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Die Stelle ist nicht mehr aktuell.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Umso besser, dann ist das erledigt. Mein Grund ist ohnehin ein anderer — darf ich ganz kurz?“<span class="wc">16 Wörter</span></span></div>
+        </div>
+        <p class="why"><b>Ohne offene Stelle</b> beginnt der Anruf stattdessen so:
+        <em>„Guten Tag Frau Dr. Weber, Benedict Hintz hier. Zwei Fragen zu Ihrem Praxisteam,
+        danach wissen Sie, ob das für Sie überhaupt relevant ist — okay?“</em> Der Mini-Vertrag
+        aus Turn 02 rückt damit nach vorn.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">02</div>
+      <div class="meta">Entlastung und Mini-Vertrag · der kritischste Punkt im ganzen Skript</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Kurz vorweg, damit Sie mich einordnen können: Ich bin weder Bewerber noch von einer Personalvermittlung. Ich habe zwei Fragen, dann wissen Sie, ob das für Sie relevant ist — okay?“<span class="wc">30 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Ja, bitte.“</span></div>
+        </div>
+        <p class="why"><b>Wer hier weiterfragt, ohne gesagt zu haben, was er nicht ist,
+        bekommt „Wir suchen keinen Personalvermittler“</b> — und zwar zuverlässig. Die Lücke
+        füllt der Gegenüber selbst, und er füllt sie falsch.</p>
+        <p class="why"><b>„Ich habe zwei Fragen“ ist ein Vertrag über die Länge.</b> Der Arzt
+        weiß, dass es endlich ist, und unterbricht nicht mit „Worum geht es überhaupt?“.
+        Ohne diese Ansage kommt genau dieser Einwand — und er kostet den Termin öfter als
+        jeder andere.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">03</div>
+      <div class="meta">Frage 1 · harmlos, damit jemand redet</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Wie lange läuft die Anzeige schon?“<span class="wc">6 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Bestimmt seit einem halben Jahr.“</span></div>
+        </div>
+        <p class="why">Beantwortet jeder. Und der wichtigste Effekt: Der Engpass wird
+        ausgesprochen, statt behauptet. Ein Schmerz, den der Gegenüber selbst benennt,
+        muss nicht mehr bewiesen werden.</p>
+        <p class="why"><b>Ohne offene Stelle</b> lautet Frage 1: <em>„Wie viele
+        Mitarbeiterinnen sind Sie aktuell im Team?“</em> — genauso harmlos, gleicher Zweck,
+        und die Antwort qualifiziert nebenbei die Praxisgröße.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">04</div>
+      <div class="meta">Frage 2 · Richtungswechsel von Besetzung auf Bindung</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Und was machen Sie aktuell, damit die Leute, die Sie haben, bleiben?“<span class="wc">13 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">[redet — meist länger, oft mit einem Seufzer davor]</span></div>
+        </div>
+        <p class="why"><b>Diese Frage darf nicht nach Recruiting klingen.</b> „Kommt denn was
+        Brauchbares rein?“ ist wörtlich das, was ein Personalvermittler fragen würde — und
+        holt den Einwand zurück, den Turn 02 gerade ausgeräumt hat. Die Frage zeigt schon
+        auf Bindung, nicht auf Besetzung.</p>
+        <p class="why"><b>Hier zuhören, nicht bewerten.</b> Was auch immer kommt, ist die
+        Brücke zum nächsten Satz. Wer jetzt „Genau, und deshalb …“ sagt, verkauft. Wer
+        „Mhm“ sagt und wartet, bekommt den zweiten, ehrlicheren Halbsatz.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">05</div>
+      <div class="meta">Einordnung und Diagnosefrage · jetzt erst der Firmenname</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Genau daran arbeiten wir mit Praxen — Finanz-Medizin, wir machen ausschließlich Heilberufe. Leistungen, die beim Team netto ankommen und für die Praxis Betriebsausgabe sind. Haben Sie da aktuell schon etwas?“<span class="wc">32 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Nein, eigentlich nicht.“ → Pfad A · „Ja, da läuft was.“ → Pfad B · „Das macht mein Steuerberater.“ → Pfad C</span></div>
+        </div>
+        <p class="why"><b>Der Firmenname kommt hier, nicht früher.</b> An diesem Punkt läuft
+        das Gespräch bereits — die Einordnung wirkt als Legitimation statt als
+        Verkaufssignal.</p>
+        <p class="why"><b>Bewusst breit gefragt.</b> „Da schon etwas“, nicht „eine
+        betriebliche Krankenversicherung“. Wer sich früh auf ein Produkt festlegt, bekommt
+        eine Produktantwort statt eines Gesprächs. Konkrete Bausteine erst, wenn danach
+        gefragt wird.</p>
+        <p class="why"><b>„Ausschließlich Heilberufe“ ist der stärkste Halbsatz des
+        Anrufs.</b> Er trennt in vier Wörtern von allem, was sonst in Praxen anruft. Er
+        wird ruhig gesagt, nicht betont.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">06 A</div>
+      <div class="meta">Pfad A · „Nein“ — der direkte Weg zum Termin</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Dann lohnt sich der Blick. Weil das für die Praxis in der Regel nicht obendrauf kommt, sondern sich über Steuer und Abgaben trägt. Haben Sie die Tage 20 Minuten?“<span class="wc">28 Wörter</span></span></div>
+        </div>
+        <p class="why"><b>Das Kostenargument steht genau hier — nicht früher.</b> Als
+        Pitch-Element klingt „kostet nichts“ wie jeder Gratisanruf und erzeugt Skepsis.
+        Direkt vor der Terminfrage nimmt es den stillsten Einwand vorweg: dafür haben wir
+        kein Budget.</p>
+        <p class="why"><b>„Trägt sich“, nicht „ist kostenlos“.</b> Kostenlos wirft die Frage
+        auf, wo der Haken ist. Trägt sich ist eine betriebswirtschaftliche Aussage, und der
+        Gegenüber führt einen Betrieb.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">06 B</div>
+      <div class="meta">Pfad B · „Ja, haben wir schon“ — der wertvollere Pfad</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Stark, das machen die wenigsten. Was genau haben Sie im Einsatz?“<span class="wc">11 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">[antwortet — meist unpräzise]</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Und was hat Ihr Team davon konkret gemerkt?“<span class="wc">8 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">[antwortet — meist: nicht viel]</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Was wir bei Praxen sehen, die schon etwas gemacht haben — keine Kritik, besser als nichts: Haftungsthemen oft offen, das Geld klassisch verzinst statt angelegt, und die Förderung für Teilzeitkräfte ungenutzt. Kennen Sie Ihre Konditionen im Detail?“<span class="wc">37 Wörter · der einzige Block, der die Regel reißen darf</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Ehrlich gesagt nein, das macht der Berater.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Dann schaue ich in 20 Minuten einmal drüber. Danach wissen Sie entweder: alles richtig gemacht, Haken dran. Oder Sie sehen konkret, wo es hakt. Wann passt es Ihnen?“<span class="wc">29 Wörter</span></span></div>
+        </div>
+        <div class="note">
+          <span class="tag">Warum Pfad B der bessere Lead ist</span>
+          <p><b>Problembewusstsein, Budget und Entscheidungsbereitschaft sind bereits
+          bewiesen.</b> Wer schon einmal etwas abgeschlossen hat, muss nicht mehr überzeugt
+          werden, dass das Thema existiert. In Close markieren und vorziehen.</p>
+          <p><b>Den bestehenden Anbieter nie angreifen.</b> Die Entscheidung hat der Arzt
+          selbst getroffen; Kritik daran erzeugt einen Verteidigungsreflex. Die Frage nach
+          den Konditionen lässt ihn die Lücke selbst finden — das ist der ganze Trick.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">06 C</div>
+      <div class="meta">Pfad C · „Das macht mein Steuerberater“</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Gut, dann ist jemand dran. Die Frage ist dann aber nicht, ob Sie jemanden haben — sondern was davon umgesetzt ist. Was läuft aktuell konkret?“<span class="wc">25 Wörter</span></span></div>
+        </div>
+        <p class="why">Antwort abwarten, dann weiter wie Pfad B. <b>Neutral fragen, nicht
+        angreifen.</b> Ob der Steuerberater hier Verwalter oder Gestalter ist, muss der Arzt
+        selbst herausfinden — und er findet es heraus, sobald er die Antwort laut sagt.</p>
+        <p class="why"><b>Nachsetzen, falls „der macht das schon“ kommt:</b> <em>„Das glaube
+        ich sofort. Nur rechnet ein Steuerberater das vergangene Jahr ab — gestaltet wird
+        das kommende. Deshalb sprechen wir mit seinem Einverständnis auch gern direkt mit
+        ihm.“</em> Das ist wörtlich die Position der Website und keine Spitze gegen den
+        Berufsstand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PHASE 3 ============================= -->
+<section id="p3">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 03</span>
+        <span class="goal">Ziel · Fester Slot, bestätigte Einladung, kein „melden Sie sich mal“</span>
+      </div>
+      <h2>Terminierung.</h2>
+    </div>
+    <p class="lead">
+      Ein Ja ohne Uhrzeit ist kein Termin. Ein Termin ohne Bestätigung ist ein
+      No-Show mit Vorlauf.
+    </p>
+
+    <div class="turn">
+      <div class="idx">01</div>
+      <div class="meta">Die Alternativfrage · zwei Optionen, dann Stille</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Donnerstag vor der Sprechstunde oder lieber Freitag am frühen Nachmittag?“<span class="wc">11 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Donnerstag ginge, so gegen acht.“</span></div>
+        </div>
+        <p class="why"><b>Nie „Hätten Sie mal Zeit?“.</b> Das produziert „Melden Sie sich
+        nächste Woche nochmal“ — und das ist kein Termin, sondern eine Wiedervorlage mit
+        schlechterem Ausgangspunkt.</p>
+        <p class="why"><b>Nach der Frage bewusst still sein.</b> Die Pause aushalten, auch
+        wenn sie lang wird. Wer sie füllt, verhandelt gegen sich selbst.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">02</div>
+      <div class="meta">Fixieren · E-Mail, Einladung, Bestätigung — solange er am Telefon ist</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Perfekt, Donnerstag acht Uhr. An welche Adresse darf ich die Einladung schicken?“<span class="wc">13 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„weber@praxis-weber-berlin.de“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Ist raus. Da liegt auch unsere Erstinformation bei — die muss ich Ihnen als Makler geben, damit Sie wissen, mit wem Sie es zu tun haben. Schauen Sie einmal kurz, ob sie angekommen ist?“<span class="wc">34 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Ja, ist da.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Dann einmal auf Annehmen klicken, dann steht es bei uns beiden fest.“<span class="wc">12 Wörter</span></span></div>
+        </div>
+        <p class="why"><b>Die Einladung geht raus, solange der Gegenüber am Telefon ist.</b>
+        Alles, was danach passieren soll, passiert seltener — und die Erscheinungsquote
+        fällt messbar mit jeder Stunde Abstand.</p>
+        <p class="why"><b>Die Erstinformation ist kein Beiwerk.</b> Sie ist beim ersten
+        Geschäftskontakt in Textform zu übergeben (§ 15 VersVermV). Am Telefon als
+        Selbstverständlichkeit zu erwähnen, wirkt souverän statt bürokratisch — und erledigt
+        die Pflicht in einem Satz. Siehe Anhang B.</p>
+        <div class="note">
+          <span class="tag">Technischer Hinweis zum Versand</span>
+          <p><b>Die Einladung kommt nicht aus der Buchungsstrecke der Website.</b> Das
+          Dienstkonto hinter <code>/api/booking</code> darf keine Kalendereinladungen an
+          Dritte verschicken (siehe <code>lib/booking-core.js</code>); dort läuft die
+          Bestätigung über die Danke-Seite. Bei einem telefonisch gesetzten Termin wird die
+          Einladung <b>von Hand aus dem eigenen Kalender</b> verschickt, mit der
+          Erstinformation im Anhang. Danach den Lead in Close nachtragen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">03</div>
+      <div class="meta">Der Anker · die letzten zehn Sekunden</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Eine Sache noch, Frau Dr. Weber: Bringen Sie am Donnerstag bitte nichts mit. Keine Ordner, keine Policen. Zwanzig Minuten reden, mehr ist es nicht.“<span class="wc">25 Wörter</span></span></div>
+        </div>
+        <p class="why"><b>Menschen erinnern den Anfang und das Ende.</b> Der letzte Satz
+        entscheidet, welches Bild bis zum Termin im Kopf bleibt. „Bringen Sie nichts mit“
+        nimmt die Vorbereitungslast — der häufigste stille Grund für eine Absage am
+        Vorabend — und setzt gleichzeitig einen Satz, den kein anderer Anrufer sagt.</p>
+        <p class="why"><b>Nicht abwandeln in „Sie brauchen nichts vorzubereiten“.</b> Das
+        ist dieselbe Aussage ohne Bild. Der Ordner und die Policen sind das Bild.</p>
+      </div>
+    </div>
+
+    <h3>Was als gesetzter Termin zählt</h3>
+    <p class="body">
+      Ohne diese Schwelle ist die Terminzahl nach zwei Wochen nicht interpretierbar.
+      Alles, was fünf Kriterien nicht erfüllt, ist eine Wiedervorlage — und wird auch so
+      gezählt.
+    </p>
+    <ul class="check">
+      <li><b>Der Entscheider war selbst am Telefon.</b> Bei einer Berufsausübungsgemeinschaft genügt ein Partner, der zusagt, den zweiten mitzubringen.</li>
+      <li><b>Mindestens drei sozialversicherungspflichtige Mitarbeitende.</b> Darunter tragen die betrieblichen Hebel den Aufwand nicht.</li>
+      <li><b>Fester Slot mit Datum und Uhrzeit</b> im Kalender — nicht „nächste Woche irgendwann“.</li>
+      <li><b>E-Mail-Adresse liegt vor</b>, Einladung ist raus und wurde bestätigt.</li>
+      <li><b>Erstinformation ist mitgeschickt.</b></li>
+      <li><b>Kein MVZ, keine Kette, keine Klinik.</b> Siehe Phase 06.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================= PHASE 4 ============================= -->
+<section id="p4">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 04</span>
+        <span class="goal">Ziel · Zustimmen, nicht verteidigen — und zurück zur Terminfrage</span>
+      </div>
+      <h2>Einwandbibliothek.</h2>
+    </div>
+    <p class="lead">
+      Wer erklärt, warum er kein Vermittler ist, bestätigt den Verdacht. Jeder Einwand
+      wird genau einmal behandelt. Beim zweiten Mal wird verkauft — und danach ist die
+      Tür für Jahre zu.
+    </p>
+
+    <div>
+      <div class="obj">
+        <div class="q">Wir suchen keinen Personalvermittler.</div>
+        <div class="a">„Perfekt, dann können wir uns das sparen — ich bin keiner. Bei mir geht es um die Leute, die Sie schon haben. Was machen Sie aktuell, damit die bleiben?“</div>
+        <div class="r"><b>Warum:</b> Der häufigste Einwand überhaupt. Sofortige Zustimmung entwaffnet in einem Satz, die Rückfrage führt direkt zurück in Turn 04. <b>Danach:</b> Turn 04.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Und wie verdienen Sie dann Geld?</div>
+        <div class="a">„Wir werden von den Produktgebern vergütet, wenn tatsächlich etwas umgesetzt wird — der Marktstandard bei Maklern. Auf Wunsch legen wir die Vergütung für jeden einzelnen Vertrag offen, bevor Sie unterschreiben. Und wenn nichts umgesetzt wird, entstehen Ihnen keine Kosten.“</div>
+        <div class="r"><b>Warum:</b> Drei Halbsätze, auswendig, ohne Pause: <b>wer vergütet · warum es die Praxis nichts kostet · warum es trotzdem unabhängig ist.</b> Wortlaut identisch mit der Website, damit niemand zwei Versionen hört. Wer hier zögert, verwandelt einen Preiseinwand in einen Vertrauenseinwand — und der ist nicht mehr zu drehen. <b>Danach:</b> ohne Übergang zurück zur Terminfrage.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Worum geht es denn überhaupt?</div>
+        <div class="a">„Zwei Sekunden, ich sage es Ihnen gleich — aber die eine Frage entscheidet, ob es für Sie überhaupt relevant ist. Wie lange läuft die Anzeige schon?“</div>
+        <div class="r"><b>Warum:</b> Kommt fast nur, wenn der Mini-Vertrag aus Turn 02 vergessen wurde. Nicht ausweichen, sondern die Endlichkeit betonen und weiterfragen. <b>Danach:</b> Turn 03.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Kein Interesse.</div>
+        <div class="a">„Kann ich verstehen — Sie wissen ja noch gar nicht, worum es geht. Eine Frage, dann bin ich weg: Wie viele MFA haben Sie in den letzten drei Jahren verloren?“</div>
+        <div class="r"><b>Warum:</b> Reflex vor Inhalt. Eine konkrete Zahl holt den Gegenüber vom Autopiloten in die eigene Realität. <b>Danach:</b> Kommt eine Zahl, ist das der Einstieg. Kommt weiterhin nur Abwehr, wird sauber verabschiedet — und dann gilt Anhang B.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Keine Zeit.</div>
+        <div class="a">„Deshalb rufe ich auch nicht an, um es jetzt zu besprechen — sondern um 20 Minuten zu finden. Wann ist es bei Ihnen am ruhigsten?“</div>
+        <div class="r"><b>Warum:</b> Nicht behandeln, sondern in die Terminfrage überführen. „Keine Zeit“ ist fast nie eine Aussage über den Kalender. <b>Danach:</b> Phase 03.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Schicken Sie mir mal Unterlagen.</div>
+        <div class="a">„Kann ich machen — bringt nur wenig, weil das Sinnvolle bei jeder Praxis anders aussieht. Lieber umgekehrt: 20 Minuten, danach schicke ich genau das, was zu Ihnen passt.“</div>
+        <div class="r"><b>Warum:</b> Fast immer eine höfliche Absage. Nicht widersprechen — die Reihenfolge umdrehen. <b>Danach:</b> Bleibt es dabei, Unterlagen schicken, Wiedervorlage in fünf Tagen, und dann auf die Unterlagen Bezug nehmen.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Das macht unser Steuerberater.</div>
+        <div class="a">„Gut, dann ist jemand dran. Die Frage ist dann aber nicht, ob Sie jemanden haben — sondern was umgesetzt wurde. Was läuft aktuell konkret?“</div>
+        <div class="r"><b>Warum:</b> Neutral fragen, nicht angreifen. <b>Danach:</b> Pfad B.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Wir zahlen einfach ordentlich Gehalt.</div>
+        <div class="a">„Der ehrlichste Weg — und leider der teuerste. Damit bei 3.100 € brutto 50 € netto mehr ankommen, brauchen Sie rund 91 € mehr Gehalt, mit Arbeitgeberabgaben kostet Sie das rund 110 €. Genau da würde ich Ihnen die Alternative zeigen.“</div>
+        <div class="r"><b>Warum:</b> Anerkennen, dann die Effizienzlücke zeigen. Die bisherige Entscheidung nie abwerten. Die Zahlen stehen so auf der Website und sind belegbar — siehe Anhang A. <b>Danach:</b> Terminfrage.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Wir sind zu klein, wir haben nur drei Leute.</div>
+        <div class="a">„Genau deshalb rufe ich an. Wenn bei fünfzehn Leuten eine geht, fangen die anderen das auf. Bei drei nicht. Bei Ihnen ist der Ausfall teurer — nicht günstiger.“</div>
+        <div class="r"><b>Warum:</b> Häufigster Einwand in der Kernzielgruppe. Die Umkehrung muss sitzen, sonst gehen genau die besten Leads verloren. <b>Danach:</b> Terminfrage. <b>Ausnahme:</b> Bei unter drei Mitarbeitenden ist es kein Einwand, sondern die Wahrheit — dann sauber beenden.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Sind Sie von einer Versicherung?</div>
+        <div class="a">„Nein. Wir sind ungebundene Makler und arbeiten im Auftrag unserer Mandanten, nicht im Auftrag eines Konzerns. Deshalb steht am Anfang eine Analyse und kein Produkt.“</div>
+        <div class="r"><b>Warum:</b> Direkt beantworten. Jedes Herumdrucksen bestätigt die Vermutung — und der Status ist ohnehin offenzulegen. <b>Danach:</b> Terminfrage.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Woher haben Sie meine Nummer?</div>
+        <div class="a">„Aus Ihrer Stellenanzeige beziehungsweise dem öffentlichen Praxisverzeichnis. Wir schauen, welche Praxen gerade wachsen oder Personal suchen — das sind die, bei denen das Thema aktuell ist.“</div>
+        <div class="r"><b>Warum:</b> Kurz, wahr, ohne Verlegenheit. Die Antwort muss zur tatsächlichen Quelle passen, die auf der Leadkarte steht. Wer hier ausweicht, wirkt so, als hätte er die Daten gekauft. <b>Danach:</b> Terminfrage.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Was kostet mich das denn?</div>
+        <div class="a">„Das Gespräch nichts, und die Bestandsaufnahme auch nicht. Ob am Ende etwas kostet, hängt davon ab, ob Sie etwas umsetzen — und das entscheiden Sie, nachdem Sie die Zahlen gesehen haben.“</div>
+        <div class="r"><b>Warum:</b> Nicht am Telefon in die Kalkulation einsteigen. Die Frage ist eine Risikofrage, keine Preisfrage. <b>Danach:</b> Kommt „Ja, aber was kostet es dann?“, folgt der Vergütungssatz von oben.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Das muss ich mit meinem Partner besprechen.</div>
+        <div class="a">„Verstehe ich, das ist eine gemeinsame Entscheidung. Am einfachsten ist es meistens, wenn Sie beide dabei sind — dann müssen Sie es nicht weitererzählen. Wann passt es Ihnen beiden?“</div>
+        <div class="r"><b>Warum:</b> Den Mitentscheider nicht wegdiskutieren, sondern einladen. Der Satz „dann müssen Sie es nicht weitererzählen“ nimmt die eigentliche Last. <b>Danach:</b> Phase 03. Geht der Partner nicht mit, gilt der Termin trotzdem als gesetzt, wenn der Anrufende zusagt, ihn mitzubringen.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Rufen Sie in einem halben Jahr nochmal an.</div>
+        <div class="a">„Mache ich, das trage ich mir fest ein. Nur kurz, damit ich zum richtigen Zeitpunkt anrufe: Was müsste sich bis dahin verändert haben?“</div>
+        <div class="r"><b>Warum:</b> Die Zusage annehmen und sofort qualifizieren. Die Antwort trennt echte Verschiebung („nach dem Quartalsende“, „wenn die neue Kollegin da ist“) von höflicher Ablehnung. <b>Danach:</b> Datum in Close, Grund in die Notiz — der Grund ist der Aufhänger für Phase 07.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Ich glaube nicht, dass meine Mitarbeiterinnen das interessiert.</div>
+        <div class="a">„Das höre ich oft — und in den Teamgesprächen ist es fast immer andersherum. Was zuerst gefragt wird, ist der Zahnersatz. Wollen wir uns 20 Minuten nehmen, dann können Sie es Ihrem Team wenigstens anbieten?“</div>
+        <div class="r"><b>Warum:</b> Nicht widersprechen, sondern eine Beobachtung dagegensetzen. Der Schluss verschiebt die Entscheidung vom Chef zum Team — und niemand möchte seinem Team etwas vorenthalten. <b>Danach:</b> Terminfrage.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Wir machen gerade eine Praxisübernahme / einen Umbau / haben gerade neu gegründet.</div>
+        <div class="a">„Dann rufe ich zum bestmöglichen Zeitpunkt an. Genau in dieser Phase werden die Verträge gemacht, die zehn Jahre laufen. Nehmen wir uns 20 Minuten, bevor das alles feststeht?“</div>
+        <div class="r"><b>Warum:</b> Was wie ein Einwand klingt, ist der stärkste Kaufauslöser überhaupt. Neugründung und Übernahme stehen aus gutem Grund im Kernprofil. <b>Danach:</b> Terminfrage — und in Close hoch priorisieren.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Ich habe schlechte Erfahrungen mit sowas gemacht.</div>
+        <div class="a">„Das kommt vor und ich frage ungern nach — aber es hilft mir: Woran lag es? … Danke. Dann sage ich Ihnen, wie wir es anders machen, und Sie entscheiden nach 20 Minuten, ob Sie das glauben.“</div>
+        <div class="r"><b>Warum:</b> Der einzige Einwand, bei dem eine offene Frage besser ist als eine Antwort. Wer die schlechte Erfahrung erzählen darf, verwandelt sie in ein Kriterium — und Kriterien kann man erfüllen. <b>Danach:</b> Terminfrage, mit Bezug auf das Genannte.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Schicken Sie mir das an info@…, ich schaue es mir an.</div>
+        <div class="a">„Mache ich. Damit es nicht untergeht: Ich rufe Freitag kurz an und frage, ob es angekommen ist — ist Ihnen vormittags oder nachmittags lieber?“</div>
+        <div class="r"><b>Warum:</b> Die Mail wird zum Vorwand für einen vereinbarten zweiten Anruf. Ein angekündigter Rückruf ist kein Kaltanruf mehr und kein Verstoß gegen die Hausregel aus Anhang B. <b>Danach:</b> Wiedervorlage mit Uhrzeit.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Rufen Sie hier bitte nicht mehr an.</div>
+        <div class="a">„Selbstverständlich. Ich trage Sie aus, Sie hören nichts mehr von uns. Entschuldigen Sie die Störung und einen schönen Tag.“</div>
+        <div class="r"><b>Kein Einwand, sondern ein Widerspruch.</b> Kein Nachfassen, keine zweite Frage, kein „Darf ich nur kurz noch …“. Sofort in Close als <b>Kein Kontakt</b> markieren, Wiedervorlage löschen. Siehe Anhang B.</div>
+      </div>
+
+      <div class="obj">
+        <div class="q">Sie haben mich vor drei Monaten schon mal angerufen.</div>
+        <div class="a">„Stimmt, das kann sein — dann liegt der Fehler bei mir. Damals war es der falsche Zeitpunkt. Passt es heute besser, oder soll ich es endgültig sein lassen?“</div>
+        <div class="r"><b>Warum:</b> Zugeben, nicht wegdiskutieren. Die zweite Hälfte der Frage gibt die Kontrolle zurück und beendet die Sache in beide Richtungen sauber. <b>Danach:</b> Bei „sein lassen“ gilt die Zeile darüber.</div>
+      </div>
+    </div>
+
+    <div class="stop">
+      <span class="tag">Die Abbruchregel</span>
+      <p><b>Genau eine Einwandbehandlung pro Einwand.</b> Kommt derselbe Widerstand ein
+      zweites Mal, wird verabschiedet: <em>„Alles gut, dann bedanke ich mich für die zwei
+      Minuten und wünsche Ihnen einen schönen Tag.“</em> Tür offen lassen, nicht zuziehen.
+      Wiedervorlage in acht Wochen — außer der Gegenüber hat widersprochen, dann gar nicht.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PHASE 5 ============================= -->
+<section id="p5">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 05</span>
+        <span class="goal">Ziel · Entscheiden, ob eine Zusammenarbeit sich rechnet — für beide</span>
+      </div>
+      <h2>Das Qualifizierungsgespräch.</h2>
+    </div>
+    <p class="lead">
+      Zwanzig Minuten. Es wird nicht beraten und nichts verkauft. Es wird eine Anamnese
+      gemacht, ein Befund grob beziffert und daraus eine Entscheidung abgeleitet: weiter
+      zur Bestandsaufnahme — oder ehrlich beenden.
+    </p>
+
+    <div class="stop">
+      <span class="tag">Was hier nicht passiert</span>
+      <p><b>Keine Tarifnamen, keine Beitragshöhen, keine Empfehlung.</b> Zwei Gründe, beide
+      zwingend: Erstens sind die Zahlen ohne Unterlagen nicht belastbar, und eine Zahl, die
+      später fällt, kostet mehr Vertrauen, als sie im Termin gebracht hat. Zweitens ist eine
+      konkrete Empfehlung Beratung — mit Beratungs- und Dokumentationspflichten nach
+      § 61 VVG. Qualifizierung ist etwas anderes als Beratung, und dieser Termin ist
+      Qualifizierung.</p>
+      <p>Kommt eine Produktfrage: <em>„Gute Frage — die beantworte ich Ihnen belastbar,
+      sobald ich Ihre Unterlagen gesehen habe. Aus dem Bauch wäre unseriös.“</em></p>
+    </div>
+
+    <div class="turn">
+      <div class="idx">1</div>
+      <div class="meta">Minute 0–2 · Rahmen setzen</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Danke, dass Sie sich die zwanzig Minuten nehmen. Ich mache das wie eine Anamnese: Ich stelle Fragen, Sie antworten kurz, ich rechne mit. Am Ende sage ich Ihnen, ob bei Ihnen etwas zu holen ist — und wenn nicht, sage ich das genauso. Darf ich mitschreiben?“</span></div>
+        </div>
+        <p class="why"><b>Der Satz „und wenn nicht, sage ich das genauso“ ist keine
+        Floskel.</b> Er steht wörtlich als Versprechen auf der Website und ist der Grund,
+        warum der Rest des Gesprächs ohne Abwehr läuft. Er muss deshalb auch gelten.</p>
+        <p class="why"><b>Die Anamnese-Analogie ist kein Marketing.</b> Sie beschreibt die
+        Reihenfolge, die der Gegenüber jeden Tag selbst anwendet: erst Befund, dann Plan.
+        Damit ist die Struktur des Gesprächs erklärt, bevor sie beginnt.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">2</div>
+      <div class="meta">Minute 2–8 · Anamnese Praxis · die fünf Fragen des Praxis-Checks</div>
+      <div class="content">
+        <ol class="clean">
+          <li><b>Rechtsform.</b> Einzelpraxis, Berufsausübungsgemeinschaft, Praxisgemeinschaft, MVZ — oder Übernahme beziehungsweise Gründung geplant? <span class="hide-live">Entscheidet, welche Steuerhebel überhaupt zur Verfügung stehen.</span></li>
+          <li><b>Wie viele Mitarbeitende — und wie viele davon in Teilzeit oder als Minijob?</b> <span class="hide-live">Die Teilzeitquote entscheidet über die Förderung nach § 100 EStG.</span></li>
+          <li><b>Was drückt gerade am meisten?</b> Team halten, Steuerlast, Vermögen, Praxis absichern, privat absichern. Mehrfachnennung zulassen, dann nachfragen: „Und wenn Sie nur eines lösen könnten?“</li>
+          <li><b>Gibt es schon betriebliche Leistungen fürs Team?</b> Nichts · nur die Pflicht-bAV · einzelne Bausteine, unsortiert · ein vollständiges Paket.</li>
+          <li><b>Wer macht die Lohnabrechnung — Steuerberater oder Lohnbüro?</b> <span class="hide-live">Ohne diese Antwort ist später keine Umsetzung planbar; mit ihr steht der erste Kooperationspartner fest.</span></li>
+        </ol>
+        <div class="note">
+          <span class="tag">Warum genau diese fünf</span>
+          <p><b>Es sind dieselben fünf Fragen wie im Praxis-Check auf der Website.</b> Damit
+          sieht ein telefonisch qualifizierter Lead in Close exakt so aus wie einer aus dem
+          Formular — gleiche Felder, gleiche Notiz, gleiche Auswertbarkeit. Wer hier
+          abweicht, zerstört die Vergleichbarkeit zwischen beiden Kanälen.</p>
+        </div>
+        <h4>Vertiefung Team — drei Fragen, wenn „Team halten“ genannt wurde</h4>
+        <ul class="clean">
+          <li>„Wie viele MFA sind Ihnen in den letzten drei Jahren gegangen?“</li>
+          <li>„Wie lange hat die letzte Nachbesetzung gedauert?“</li>
+          <li>„Was hat die gekostet, wenn Sie Anzeige, Einarbeitung und Überstunden zusammenrechnen?“ <span class="hide-live">— hier nicht helfen. Die geschätzte eigene Zahl wirkt zehnmal stärker als jede Studie.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">3</div>
+      <div class="meta">Minute 8–14 · Anamnese privat · nur beim Inhaber</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Jetzt einmal weg von der Praxis, hin zu Ihnen persönlich — das hängt steuerlich zusammen. Fünf kurze Fragen.“</span></div>
+        </div>
+        <ul class="clean">
+          <li><b>Versorgungswerk:</b> Zahlen Sie den Pflichtbeitrag oder mehr?</li>
+          <li><b>Sonderausgabenrahmen:</b> Weiß Ihr Steuerberater, wie viel nach Anrechnung der Kammerbeiträge noch frei ist? <span class="hide-live">Die häufigste Antwort ist „keine Ahnung“ — und genau das ist der Befund.</span></li>
+          <li><b>PKV:</b> Wann hat zuletzt jemand Ihren Tarif nach § 204 VVG geprüft?</li>
+          <li><b>Berufsunfähigkeit:</b> Wissen Sie, ob Ihre Police eine Infektionsklausel hat und auf die abstrakte Verweisung verzichtet? <span class="hide-live">Bei operativ Tätigen der entscheidende Punkt.</span></li>
+          <li><b>Praxisausfall:</b> Ab welchem Tag zahlt Ihre Police — und deckt die Summe die Fixkosten inklusive Personal?</li>
+          <li><b>Gewinn:</b> Wie viel liegt aktuell auf dem Geschäftskonto, das dort nicht liegen müsste?</li>
+        </ul>
+        <p class="why"><b>Diese Fragen sind so gebaut, dass „weiß ich nicht“ die
+        wahrscheinlichste Antwort ist</b> — und „weiß ich nicht“ ist kein Scheitern, sondern
+        das Ergebnis. Es wird nicht kommentiert, nur notiert. Drei Mal „weiß ich nicht“
+        beantworten die Frage nach dem Bedarf ohne ein einziges Argument.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">4</div>
+      <div class="meta">Minute 14–17 · Befund · höchstens zwei Zahlen</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Ich fasse zusammen, was ich gehört habe: vier Mitarbeiterinnen, seit sechs Monaten eine offene Stelle, zwei Abgänge in drei Jahren, betrieblich läuft nur die Pflicht-bAV, und beim Sonderausgabenrahmen weiß gerade niemand, was frei ist. Habe ich etwas falsch verstanden?“</span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Nein, das trifft es.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Dann zwei Größenordnungen, beides gerundet und noch ohne Ihre Unterlagen: Zwei Abgänge in drei Jahren sind nach den üblichen Ansätzen rund 10.000 € pro Jahr, die allein die Fluktuation kostet. Und ein ungenutzter Sonderausgabenrahmen in dieser Größenordnung sind mehrere tausend Euro, die jedes Jahr am 31. Dezember verfallen.“</span></div>
+        </div>
+        <p class="why"><b>Erst spiegeln, dann beziffern.</b> Die Zusammenfassung mit der
+        Rückfrage „Habe ich etwas falsch verstanden?“ macht aus Ihren Notizen seine Aussage.
+        Widerspricht er, ist das wertvoller als jede Zahl.</p>
+        <p class="why"><b>Höchstens zwei Zahlen, immer mit „rund“ und „gerundet“.</b> Nur
+        Zahlen aus Anhang A. Drei Zahlen klingen nach Präsentation, zwei nach Befund.</p>
+        <div class="note">
+          <span class="tag">Die stärkste Zahl ist seine eigene</span>
+          <p>Hat er in Minute 2–8 selbst geschätzt, was ihn eine Nachbesetzung kostet, wird
+          <b>seine</b> Zahl verwendet, nicht die aus der Studie: <em>„Sie haben vorhin
+          selbst 12.000 € geschätzt — bei zwei Abgängen in drei Jahren sind das …“</em>
+          Gegen die eigene Schätzung argumentiert niemand.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">5</div>
+      <div class="meta">Minute 17–20 · Entscheidung · Weiter oder Ende</div>
+      <div class="content">
+        <h4>Bei Go</h4>
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Bei Ihnen sehe ich drei Punkte, die sich rechnen. Belastbar wird das aber erst mit Ihren Zahlen. Der nächste Schritt ist die Bestandsaufnahme: rund 90 Minuten, wir schauen uns Verträge, Personalstruktur und Steuerlast an. Danach bekommen Sie einen schriftlichen Befund mit Rechenweg und Fundstellen — den Ihr Steuerberater nachrechnen kann. Setzen wir das an?“</span></div>
+        </div>
+        <p class="why"><b>Der nächste Schritt ist nie „ein Angebot“.</b> Er ist die
+        Bestandsaufnahme, und die ist auf der Website beschrieben — der Interessent kann
+        nachlesen, was passiert. Der schriftliche Befund mit Rechenweg ist das eigentliche
+        Verkaufsargument, weil er den Steuerberater vom Gegner zum Prüfer macht.</p>
+        <h4>Bei No-Go</h4>
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Ganz ehrlich: Bei Ihnen ist gerade nichts dabei, was den Aufwand für Sie rechtfertigt. Das meiste ist gemacht, und was offen ist, lohnt die 90 Minuten nicht. Wenn Sie einverstanden sind, melde ich mich in einem Jahr nochmal — und wenn sich vorher etwas ändert, wissen Sie ja, wo Sie mich finden.“</span></div>
+        </div>
+        <p class="why"><b>Das ist die teuerste und die wichtigste Zeile des Dokuments.</b>
+        Sie kostet einen Termin und sie ist der Grund, warum die Empfehlungsquote in einer
+        eng vernetzten Branche steigt. Ärzte sprechen miteinander. „Der hat mir gesagt, ich
+        brauche nichts“ ist die beste Werbung, die es in diesem Markt gibt — und sie steht
+        als Versprechen auf der eigenen Website.</p>
+      </div>
+    </div>
+
+    <h3>Die Qualifikations-Scorecard</h3>
+    <p class="body">Direkt nach dem Gespräch ausfüllen, nicht am Abend. Vier von sechs Punkten heißt Go.</p>
+    <ul class="check">
+      <li><b>Entscheider.</b> Die Person am Tisch kann allein oder gemeinsam mit einem anwesenden Partner entscheiden.</li>
+      <li><b>Größe.</b> Mindestens drei sozialversicherungspflichtige Mitarbeitende.</li>
+      <li><b>Auslöser.</b> Offene Stelle, Abgang in den letzten zwölf Monaten, Gründung, Übernahme oder Umbau.</li>
+      <li><b>Lücke betrieblich.</b> Keine oder nur unsortierte betriebliche Leistungen.</li>
+      <li><b>Lücke privat.</b> Mindestens ein offener Hebel: Sonderausgaben, PKV nach § 204 VVG, Berufsunfähigkeit, Praxisausfall.</li>
+      <li><b>Mitwirkung.</b> Bereitschaft, Unterlagen zu zeigen und den Steuerberater einzubinden.</li>
+    </ul>
+    <p class="small">
+      Fällt die Entscheidung auf Go, wird der Termin für die Bestandsaufnahme im selben
+      Gespräch gesetzt — mit Datum, Uhrzeit und der Liste, was mitzubringen ist. Ein
+      „Ich melde mich“ nach einem qualifizierten Gespräch ist ein verlorener Lead mit
+      zwanzig Minuten Vorlauf.
+    </p>
+  </div>
+</section>
+
+<!-- ============================= PHASE 6 ============================= -->
+<section id="p6">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 06</span>
+        <span class="goal">Ziel · Für jede Person am anderen Ende die richtige Abzweigung</span>
+      </div>
+      <h2>Sonderfälle.</h2>
+    </div>
+    <p class="lead">
+      Nicht jeder, der abnimmt, ist der Inhaber. Und nicht jeder, der nicht der Inhaber
+      ist, ist eine Sackgasse — bei drei Zielgruppen im Haus fast nie.
+    </p>
+
+    <div class="pair">
+      <div class="box go">
+        <span class="k">Weiterverfolgen</span>
+        <h4>Ein angestellter Arzt geht ran</h4>
+        <p>Kein Entscheider für die Praxis — aber selbst Zielgruppe. Freundlich klären, wer
+        entscheidet, und dann fragen: <em>„Und weil ich Sie gerade am Telefon habe: Zahlen
+        Sie im Versorgungswerk nur den Pflichtbeitrag?“</em> Ergibt einen eigenen Lead im
+        Segment <b>Angestellte Ärzte</b>.</p>
+      </div>
+      <div class="box go">
+        <span class="k">Weiterverfolgen</span>
+        <h4>Eine Praxismanagerin geht ran</h4>
+        <p>Nicht wie den Empfang behandeln. Sie bereitet die Entscheidung vor und sitzt oft
+        im Termin mit. Vollständig einordnen, Turn 02 bis 05 normal fahren — nur die
+        Terminfrage lautet: <em>„Wer müsste dabei sein, damit das eine Entscheidung
+        wird?“</em></p>
+      </div>
+      <div class="box go">
+        <span class="k">Weiterverfolgen</span>
+        <h4>Berufsausübungsgemeinschaft, mehrere Inhaber</h4>
+        <p>Früh klären: <em>„Entscheiden Sie das allein oder gemeinsam?“</em> Bei gemeinsam
+        beide in den Termin holen. Ein Termin mit beiden ist mehr wert als zwei einzelne —
+        und verhindert die Schleife „Ich muss das erst besprechen“.</p>
+      </div>
+      <div class="box go">
+        <span class="k">Weiterverfolgen</span>
+        <h4>Die MFA fragt für sich selbst nach</h4>
+        <p>Kommt vor, sobald der Verbündeten-Zug gewirkt hat. Ernst nehmen, aber sauber
+        trennen: <em>„Sehr gern — das läuft vertraulich und Ihre Praxis erfährt davon
+        nichts.“</em> Eigener Lead im Segment <b>MFA</b>, und niemals mit dem Gespräch beim
+        Inhaber vermischen. Kaltakquise bei Privatpersonen ist etwas anderes als bei einer
+        Praxis, siehe Anhang B.</p>
+      </div>
+      <div class="box no">
+        <span class="k">Sauber beenden</span>
+        <h4>MVZ, Praxiskette, Klinik</h4>
+        <p>Zentrale Personalabteilung, langer Zyklus, kein Lerneffekt fürs Skript.
+        <em>„Danke, dann sind wir bei Ihnen falsch — wir arbeiten mit inhabergeführten
+        Praxen.“</em> In Close als <b>Kein Bedarf · außerhalb Zielgruppe</b> schließen.</p>
+      </div>
+      <div class="box no">
+        <span class="k">Sauber beenden</span>
+        <h4>Unter drei Mitarbeitenden</h4>
+        <p>Die betrieblichen Hebel tragen den Aufwand nicht. Ausnahme: geplante
+        Vergrößerung, Übernahme oder ein privat sehr auffälliger Befund beim Inhaber — dann
+        als privater Lead weiterführen, nicht als Praxis-Lead.</p>
+      </div>
+    </div>
+
+    <h3>Anrufbeantworter, Mailbox, Praxis geschlossen</h3>
+    <p class="body">
+      <b>Keine Nachricht hinterlassen.</b> Eine Mailboxnachricht kostet den nächsten
+      Erstanruf: Der Rückruf kommt selten, aber das Gespräch ist nicht mehr kalt und der
+      Überraschungsvorteil ist weg. Stattdessen: Wiedervorlage auf ein anderes Zeitfenster
+      am nächsten Tag. Drei Versuche zu drei verschiedenen Tageszeiten, danach acht Wochen
+      Pause.
+    </p>
+
+    <h3>Der Inhaber ruft zurück</h3>
+    <div class="script">
+      <div class="line you"><span class="who">Sie</span><span class="txt">„Schön, dass ich Sie erreiche, Frau Dr. Weber — Benedict Hintz hier. Ich hatte angerufen, weil ich gesehen habe, dass Sie eine MFA suchen. Stimmt das?“<span class="wc">26 Wörter</span></span></div>
+    </div>
+    <p class="why">
+      Weiter mit Turn 02. <b>Deshalb wird am Empfang immer der Anzeigenbezug genannt</b> und
+      nie ein vages „Ich sollte mich nochmal melden“: Ruft der Arzt zurück und fragt, worum
+      es geht, trägt der Anzeigenbezug die Antwort — die vage Variante kippt genau hier.
+    </p>
+  </div>
+</section>
+
+<!-- ============================= PHASE 7 ============================= -->
+<section id="p7">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 07</span>
+        <span class="goal">Ziel · Aus „später“ einen Termin machen</span>
+      </div>
+      <h2>Wiedervorlage.</h2>
+    </div>
+    <p class="lead">
+      Die meisten Termine entstehen nicht im Erstanruf, sondern im zweiten oder dritten.
+      Die Vier-Phasen-Methode ist dafür gebaut — sie nimmt dem Anruf das Fremde.
+    </p>
+
+    <div class="stop">
+      <span class="tag">Eine Einschränkung vorweg</span>
+      <p><b>Die Methode wird hier nur für echte Wiedervorlagen verwendet</b> — für Personen,
+      mit denen tatsächlich schon gesprochen wurde. Das im Originalskript vorgesehene
+      „Wir hatten vor vier, fünf Monaten telefoniert“ gegenüber jemandem, den man nie
+      gesprochen hat, bleibt draußen: Es ist eine Behauptung, die im Termin auffliegt,
+      sobald nachgefragt wird, was denn besprochen wurde. In einem Markt, in dem Vertrauen
+      das Produkt ist und Praxen untereinander reden, ist das der teuerste mögliche
+      Anfang. Die Wirkung der Methode kommt ohnehin aus dem echten Anknüpfungspunkt — und
+      den gibt es nach jedem geführten Gespräch.</p>
+    </div>
+
+    <div class="turn">
+      <div class="idx">1</div>
+      <div class="meta">Phase 1 · Gatekeeper — mit Stichwort statt mit Anliegen</div>
+      <div class="content">
+        <div class="script">
+          <div class="line them"><span class="who">Empfang</span><span class="txt">„Praxis Dr. Weber, Sie sprechen mit Frau Ahrens.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Frau Ahrens, guten Tag — Benedict Hintz. Können Sie mich bitte zu Frau Dr. Weber durchstellen?“<span class="wc">15 Wörter</span></span></div>
+          <div class="line them"><span class="who">Empfang</span><span class="txt">„Worum geht es denn?“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Frau Dr. Weber und ich hatten im Mai telefoniert; sie wollte, dass ich mich Anfang September nochmal melde.“<span class="wc">18 Wörter</span></span></div>
+          <div class="line them"><span class="who">Empfang</span><span class="txt">„Und worum genau?“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Notieren Sie ihr bitte kurz: Benedict Hintz wartet in der Leitung, Stichwort Praxis-Check. Dann sollte es bei ihr klingeln.“<span class="wc">20 Wörter</span></span></div>
+        </div>
+        <p class="why"><b>Das Stichwort ersetzt die Erklärung.</b> Es klingt nach laufendem
+        Vorgang statt nach Angebot — und es ist wahr, weil es der Name des Formats ist, über
+        das gesprochen wurde. Es muss in der Close-Notiz des Erstgesprächs stehen, sonst
+        klingelt es nicht.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">2</div>
+      <div class="meta">Phase 2 · Begrüßung — das Fremde auflösen</div>
+      <div class="content">
+        <div class="script">
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Weber, guten Tag.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Guten Tag Frau Dr. Weber, Benedict Hintz hier — erinnern Sie sich noch an mich?“<span class="wc">14 Wörter</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Ehrlich gesagt nicht.“</span></div>
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Kein Problem, ist ja auch ein paar Monate her. Wir hatten im Mai telefoniert, es ging um betriebliche Leistungen fürs Team — Sie fanden es interessant, aber es war mitten im Umbau. Sie meinten, ich soll mich im September nochmal melden. Klingelt es jetzt?“<span class="wc">44 Wörter · die Ausnahme, weil sie die Brücke baut</span></span></div>
+          <div class="line them"><span class="who">Ärztin</span><span class="txt">„Ah ja, stimmt. Holen Sie mich nochmal ab.“</span></div>
+        </div>
+        <p class="why"><b>Drei Dinge passieren in diesem Satz.</b> Das Fremde löst sich auf
+        („wir hatten telefoniert“), das Zusammenhanglose löst sich auf („es ging um …“), und
+        das Verkäuferische löst sich auf („Sie meinten, ich soll mich melden“) — der Anruf
+        ist dann keine Initiative mehr, sondern eine eingehaltene Zusage.</p>
+        <p class="why"><b>Der konkrete Grund von damals ist der Schlüssel.</b> „Mitten im
+        Umbau“, „vor dem Quartalsende“, „als die neue Kollegin anfing“ — deshalb wird in
+        Phase 04 nach dem Grund gefragt und deshalb steht er in der Notiz. Ohne ihn wird
+        aus der Wiedervorlage wieder ein Kaltanruf.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">3</div>
+      <div class="meta">Phase 3 · Pitch — nach der Formel Zielgruppe / Ergebnis / ohne</div>
+      <div class="content">
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Wir arbeiten ausschließlich mit Arztpraxen und sorgen dafür, dass das Team bleibt und der Gewinn arbeitet — ohne dass die Praxis dafür höhere Personalkosten trägt.“<span class="wc">26 Wörter</span></span></div>
+        </div>
+        <p class="why">
+          <b>Die Formel:</b> eine Zielgruppe <em>Z</em>, die Ergebnis <em>X</em> erreichen
+          will, ohne Schmerzpunkt <em>S</em>. Hier: Arztpraxen · Team bleibt und Gewinn
+          arbeitet · ohne höhere Personalkosten. Kein Produkt, keine Aufzählung, kein
+          „Wir bieten an“.
+        </p>
+        <p class="why"><b>Danach sofort die Frage aus Turn 05</b> — auch im Follow-up wird
+        nicht gepitcht, sondern gefragt: <em>„Hat sich seit Mai etwas daran geändert, was
+        Sie fürs Team machen?“</em></p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="idx">4</div>
+      <div class="meta">Phase 4 · Terminierung und Verabschiedung</div>
+      <div class="content">
+        <p class="body">
+          Identisch mit Phase 03: Alternativfrage, E-Mail, Einladung raus, Bestätigung
+          einholen, Annehmen-Klick, Anker. Der einzige Zusatz für das Follow-up:
+        </p>
+        <div class="script">
+          <div class="line you"><span class="who">Sie</span><span class="txt">„Und damit ich Sie nicht wieder im falschen Moment erwische: Ist der September jetzt wirklich ruhiger bei Ihnen?“<span class="wc">18 Wörter</span></span></div>
+        </div>
+        <p class="why">Deckt die Absage auf, bevor sie zum No-Show wird. Wer jetzt zögert,
+        bekommt lieber einen Termin in vier Wochen als einen, den er absagt.</p>
+      </div>
+    </div>
+
+    <h3>Der Wiedervorlage-Rhythmus</h3>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Ausgang</th><th>Nächster Kontakt</th><th>Wie</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Nicht erreicht</td><td>Nächster Tag, anderes Zeitfenster</td><td>Drei Versuche zu drei Tageszeiten, dann acht Wochen Pause. Keine Mailbox.</td></tr>
+          <tr><td class="num">Zeitfenster von der MFA</td><td>Genau zum genannten Zeitpunkt</td><td>Mit Namen der MFA einsteigen. Pünktlich — das ist die halbe Glaubwürdigkeit.</td></tr>
+          <tr><td class="num">„In X Monaten nochmal“</td><td>Zum genannten Datum, minus eine Woche</td><td>Vier Phasen, mit dem damaligen Grund als Aufhänger.</td></tr>
+          <tr><td class="num">Unterlagen geschickt</td><td>Fünf Tage später</td><td>Angekündigter Rückruf, kein Kaltanruf. Bezug auf die Unterlagen.</td></tr>
+          <tr><td class="num">No-Show beim Termin</td><td>Am selben Tag, freundlich</td><td>„Ich glaube, wir haben uns verpasst — kommt vor bei Ihrem Beruf. Neuer Anlauf?“</td></tr>
+          <tr><td class="num">Einwand zweimal</td><td>Acht Wochen</td><td>Neuer Aufhänger nötig, nicht dasselbe Skript.</td></tr>
+          <tr><td class="num">Widerspruch</td><td>Nie</td><td>In Close als Kein Kontakt sperren. Siehe Anhang B.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= PHASE 8 ============================= -->
+<section id="p8">
+  <div class="wrap stack">
+    <div>
+      <div class="phase">
+        <span class="n">PHASE 08</span>
+        <span class="goal">Ziel · Nach zwei Wochen wissen, woran es liegt</span>
+      </div>
+      <h2>Steuerung.</h2>
+    </div>
+    <p class="lead">
+      Ohne diese fünf Zahlen ist nicht unterscheidbar, ob ein Volumenproblem oder ein
+      Skriptproblem vorliegt — und man ändert dann das Falsche.
+    </p>
+
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Kennzahl</th><th>Was sie misst</th><th>Wenn sie schlecht ist</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Gewählt</td><td>Aktivität</td><td>Volumenproblem. Nicht am Skript arbeiten, sondern an der Liste und am Kalender.</td></tr>
+          <tr><td class="num">Entscheider erreicht</td><td>Phase 01</td><td>Der Empfang blockt. Opener und Stichwort überarbeiten, Anrufzeiten prüfen.</td></tr>
+          <tr><td class="num">Bis Turn 05 gekommen</td><td>Phasen 02 bis 04</td><td>Der Einstieg trägt nicht. Meist fehlt der Mini-Vertrag aus Turn 02.</td></tr>
+          <tr><td class="num">Termin gesetzt</td><td>Phase 03</td><td>Die Terminfrage ist zu weich oder kommt zu spät. Alternativfrage prüfen.</td></tr>
+          <tr><td class="num">Termin wahrgenommen</td><td>Fixierung</td><td>Einladung kam zu spät, Bestätigung fehlte, oder der Anker wurde weggelassen.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Zielkorridor</h3>
+    <div class="pair trio">
+      <div class="box"><span class="k" style="color:var(--ink-mute)">Pro Telefontag</span><h4>40–50 Wählversuche</h4><p>In zwei Blöcken, passend zu den Fenstern aus Phase 00. Alles darüber geht auf die Stimme, alles darunter liefert keine belastbaren Zahlen.</p></div>
+      <div class="box"><span class="k" style="color:var(--ink-mute)">Pro Telefontag</span><h4>2–5 gesetzte Termine</h4><p>Gezählt nach der Schwelle aus Phase 03 — nicht nach freundlichen Gesprächen.</p></div>
+      <div class="box"><span class="k" style="color:var(--ink-mute)">Nach dem Termin</span><h4>Scorecard sofort</h4><p>Direkt im Anschluss ausfüllen, solange die Antworten präsent sind. Nicht am Abend.</p></div>
+    </div>
+
+    <h3>Die Pipeline in Close</h3>
+    <p class="body">
+      Das CRM ist Close — dieselbe Instanz, in die auch die Website über
+      <code>/api/lead</code> und <code>/api/booking</code> schreibt. Telefonisch erzeugte
+      Leads werden mit denselben Feldern und derselben Notizstruktur angelegt, sonst sind
+      die Kanäle nicht vergleichbar.
+    </p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Stufe</th><th>Bedeutung</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Neu</td><td>Aus Liste importiert, noch nicht gewählt.</td></tr>
+          <tr><td class="num">Nicht erreicht</td><td>Gewählt, kein Entscheider. Versuchszähler in der Notiz.</td></tr>
+          <tr><td class="num">Wiedervorlage</td><td>Zeitfenster oder Datum gesetzt, Grund in der Notiz — der Aufhänger für Phase 07.</td></tr>
+          <tr><td class="num">Termin gesetzt</td><td>Alle sechs Kriterien der Schwelle erfüllt.</td></tr>
+          <tr><td class="num">Qualifiziert</td><td>Gespräch geführt, Scorecard bei mindestens vier Punkten.</td></tr>
+          <tr><td class="num">Bestandsaufnahme</td><td>Der 90-Minuten-Termin steht.</td></tr>
+          <tr><td class="num">Kein Bedarf</td><td>Ehrliches Nein — mit Grund. Wiedervorlage in zwölf Monaten, wenn zugestimmt.</td></tr>
+          <tr><td class="num">Kein Kontakt</td><td>Widerspruch. Gesperrt, keine Wiedervorlage, kein zweiter Anruf.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= ANHANG A ============================= -->
+<section id="a1">
+  <div class="wrap stack">
+    <div>
+      <div class="phase"><span class="n">ANHANG A</span><span class="goal">Verbindlich · nichts anderes wird am Telefon genannt</span></div>
+      <h2>Zahlen mit Fundstelle.</h2>
+    </div>
+    <p class="lead">
+      In einer eng vernetzten Branche genügt ein Arzt, der nachrechnet. Jede Zahl unten
+      steht so auf finanz-medizin.com und ist dort belegt. Zahlen, die hier nicht stehen,
+      werden am Telefon nicht gesagt — auch nicht „ungefähr“.
+    </p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Zahl</th><th>Aussage</th><th>Fundstelle</th></tr></thead>
+        <tbody>
+          <tr><td class="num">rund 15.000 €</td><td>Kosten eines MFA-Abgangs: Recruiting, Einarbeitung, Vertretung</td><td>Deloitte-Studie zur Fluktuation, Personio HR-Lexikon</td></tr>
+          <tr><td class="num">58 %</td><td>Anteil der Personalkosten an den Praxisaufwendungen</td><td>Zi-Praxis-Panel 2026</td></tr>
+          <tr><td class="num">44,3 %</td><td>Spitzensteuersatz plus Soli — Beitrag des Staates je abzugsfähigem Euro</td><td>Rechengrößen 2026</td></tr>
+          <tr><td class="num">48 %</td><td>Rentenniveau, gesetzlich gesichert bis 2031</td><td>Bundesregierung, Rentenanpassung 01.07.2026</td></tr>
+          <tr><td class="num">91 € / 110 €</td><td>Bruttoaufwand für 50 € netto mehr bei 3.100 € Brutto — mit Arbeitgeberabgaben</td><td>Modellrechnung Musterpraxis</td></tr>
+          <tr><td class="num">rund 2.900 €</td><td>Vorteil Sachbezug statt Gehaltserhöhung, bei vier MFA und Jahr</td><td>Modellrechnung Musterpraxis</td></tr>
+          <tr><td class="num">288 €</td><td>Förderung nach § 100 EStG je berechtigter Teilzeitkraft und Jahr</td><td>§ 100 EStG</td></tr>
+          <tr><td class="num">rund 770 €</td><td>Kosten eines Gesundheitsbudgets nach Steuer, vier MFA, Jahr</td><td>Modellrechnung Musterpraxis</td></tr>
+          <tr><td class="num">4.400–6.600 €</td><td>Steuerersparnis Basisrente neben dem Versorgungswerk, jährlich</td><td>Modellrechnung Musterpraxis</td></tr>
+          <tr><td class="num">12.500 € / 5.500 €</td><td>Jahresbeitrag Altersvorsorge, davon Anteil des Finanzamts</td><td>Modellrechnung, Spitzensteuersatz</td></tr>
+          <tr><td class="num">rund 413.000 €</td><td>Stand nach 20 Jahren, 5 % p. a., ohne Kosten und ohne Garantie</td><td>Modellrechnung Musterpraxis</td></tr>
+          <tr><td class="num">rund 2.500 €</td><td>Netto-Effekt des Bindungspakets für die Praxis pro Jahr</td><td>Modellrechnung Musterpraxis</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <span class="tag">Drei Regeln für den Gebrauch</span>
+      <p><b>Erstens: immer mit Rahmen.</b> „In einer Musterpraxis mit vier MFA sind das
+      rund …“ — nie die nackte Zahl. Die Modellrechnung ist auf der Website offengelegt,
+      am Telefon muss sie hörbar bleiben.</p>
+      <p><b>Zweitens: höchstens zwei Zahlen pro Gespräch.</b> Mehr klingt nach Vortrag und
+      lädt zum Nachrechnen im Kopf ein — was nie zugunsten des Anrufers ausgeht.</p>
+      <p><b>Drittens: die Zahl des Gegenübers schlägt jede eigene.</b> Wenn er selbst
+      schätzt, was ihn eine Nachbesetzung kostet, wird mit seiner Zahl weitergerechnet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= ANHANG B ============================= -->
+<section id="a2">
+  <div class="wrap stack">
+    <div>
+      <div class="phase"><span class="n">ANHANG B</span><span class="goal">Vor dem ersten Anruf lesen</span></div>
+      <h2>Rechtsrahmen und Hausregeln.</h2>
+    </div>
+
+    <div class="stop">
+      <span class="tag">Keine Rechtsberatung</span>
+      <p>Dieser Abschnitt fasst zusammen, was für die Gesprächsführung relevant ist. Er
+      ersetzt keine anwaltliche Prüfung. <b>Vor dem Rollout in Volumen sind die telefonische
+      B2B-Ansprache und die Informationspflichten bei der Versicherungsvermittlung mit
+      eigener Rechtsberatung zu klären</b> — das ist ein offener Punkt, kein erledigter.</p>
+    </div>
+
+    <h3>Praxis anrufen ist etwas anderes als Privatperson anrufen</h3>
+    <ul class="clean">
+      <li><b>Gegenüber der Praxis</b> als Marktteilnehmerin verlangt § 7 Abs. 2 Nr. 1 UWG
+      eine zumindest <b>mutmaßliche Einwilligung</b>. Sie setzt einen sachlichen Bezug zur
+      Tätigkeit des Angerufenen voraus — arbeitgeberbezogene Leistungen bei einer Praxis
+      mit offener Stelle sprechen dafür. Der Aufhänger auf der Leadkarte ist deshalb nicht
+      nur Gesprächstechnik, sondern die Begründung des Anrufs.</li>
+      <li><b>Gegenüber einer MFA privat</b> gilt das nicht. Der Werbeanruf bei
+      Verbraucherinnen ohne deren vorherige ausdrückliche Einwilligung ist unzulässig.
+      <b>MFA werden nie privat kalt angerufen</b> — der Weg führt ausschließlich über die
+      Praxis oder über eine eigene Anfrage aus dem Vorsorge-Check auf der Website.</li>
+      <li><b>Widerspruch wird sofort und endgültig umgesetzt.</b> „Rufen Sie nicht mehr an“
+      heißt: Close-Status <b>Kein Kontakt</b>, Wiedervorlagen löschen, keine Ausnahme.</li>
+    </ul>
+
+    <h3>Erstinformation nach § 15 VersVermV</h3>
+    <p class="body">
+      Als Versicherungsmakler ist die Erstinformation <b>beim ersten Geschäftskontakt in
+      Textform</b> zu übergeben — Status, Registernummer, Aufsicht, Beschwerdewege. Am
+      Telefon ist Textform nicht möglich, deshalb geht sie mit der Terminbestätigung raus.
+      Der Satz dafür steht in Phase 03 und ist Teil der Terminschwelle: <b>ohne
+      Erstinformation kein gesetzter Termin.</b> Der Inhalt liegt fertig unter
+      <code>impressum.html</code>.
+    </p>
+
+    <h3>Herkunft der Daten</h3>
+    <p class="body">
+      Werden Kontaktdaten aus öffentlichen Quellen erhoben — Stellenanzeigen,
+      Praxisverzeichnisse, Kartendienste — greift die Informationspflicht aus Art. 14 DSGVO.
+      Praktisch heißt das: Die Quelle steht auf der Leadkarte, wird auf Nachfrage genannt
+      und ist Teil der Information, die spätestens mit der ersten E-Mail rausgeht.
+    </p>
+
+    <h3>Hausregeln, die über dem Skript stehen</h3>
+    <p class="body">
+      Diese sechs Sätze stehen als Versprechen auf finanz-medizin.com. Sie sind damit keine
+      Empfehlung, sondern verbindlich — jeder Interessent kann sie nachlesen und dagegen
+      halten.
+    </p>
+    <ul class="check">
+      <li><b>Kein zweiter Anruf, wenn der erste nicht gewollt war.</b> Diese Regel schlägt jede Wiedervorlage-Logik in diesem Dokument.</li>
+      <li><b>Wenn nichts zu tun ist, wird das gesagt</b> — auch wenn dann nichts verdient wird.</li>
+      <li><b>Jede genannte Zahl hat eine Fundstelle.</b> Siehe Anhang A.</li>
+      <li><b>Ungebundene Makler.</b> Kein Konzern gibt vor, was empfohlen wird; die Vergütung wird auf Wunsch je Vertrag offengelegt.</li>
+      <li><b>Was schon gut ist, bleibt.</b> Kein funktionierender Vertrag wird ersetzt, weil ein neuer Abschluss lukrativer wäre.</li>
+      <li><b>Keine erfundenen Fristen</b>, kein Druck, kein Rückruf ohne Bitte.</li>
+    </ul>
+    <p class="small">
+      Die Grenzen des Erlaubnisumfangs gelten auch am Telefon: Die Erlaubnis nach § 34f
+      Abs. 1 Satz 1 Nr. 1 GewO umfasst offene Investmentvermögen; eine Erlaubnis nach § 34c
+      oder § 34i GewO besteht nicht. Immobilien und Finanzierungen werden konzeptionell
+      eingeordnet, umgesetzt wird mit zugelassenen Partnern. Wer am Telefon nach Immobilien
+      gefragt wird, sagt genau das.
+    </p>
+  </div>
+</section>
+
+<!-- ============================= ANHANG C ============================= -->
+<section id="a3">
+  <div class="wrap stack">
+    <div>
+      <div class="phase"><span class="n">ANHANG C</span><span class="goal">Ausdrucken · neben das Telefon legen</span></div>
+      <h2>Gesprächsbogen.</h2>
+    </div>
+
+    <h3>Vor dem Wählen</h3>
+    <ul class="check">
+      <li><b>Praxis:</b> ____________________ · <b>Fachrichtung:</b> ____________________</li>
+      <li><b>Inhaber/in:</b> ____________________ · <b>MA geschätzt:</b> ______</li>
+      <li><b>Aufhänger:</b> Stelle seit ______ · Gründung · Übernahme · keiner</li>
+      <li><b>Quelle:</b> Stellenanzeige · Praxisverzeichnis · Kartendienst · Empfehlung</li>
+      <li><b>Sprechzeiten geprüft</b> · Anrufzeit im richtigen Fenster</li>
+    </ul>
+
+    <h3>Im Gespräch</h3>
+    <ul class="check">
+      <li><b>Name der MFA:</b> ____________________</li>
+      <li><b>Entscheider erreicht?</b> ja · nein → Zeitfenster: ____________________</li>
+      <li><b>Anzeige läuft seit:</b> ____________________</li>
+      <li><b>Was tun sie für Bindung:</b> ____________________________________</li>
+      <li><b>Pfad:</b> A (nichts) · B (etwas vorhanden) · C (Steuerberater)</li>
+      <li><b>Einwand:</b> ____________________ → behandelt · abgebrochen</li>
+      <li><b>Termin:</b> ______________ Uhr · <b>E-Mail:</b> ____________________</li>
+      <li><b>Einladung raus · bestätigt · Erstinformation beigelegt</b></li>
+    </ul>
+
+    <h3>Nach dem Qualifizierungsgespräch — Scorecard</h3>
+    <ul class="check">
+      <li>Entscheider · Größe ≥ 3 · Auslöser vorhanden</li>
+      <li>Lücke betrieblich · Lücke privat · Mitwirkung zugesagt</li>
+      <li><b>Punkte:</b> ____ von 6 → ab 4: Bestandsaufnahme setzen</li>
+      <li><b>Genannter Schmerz in Euro:</b> ____________________</li>
+      <li><b>Nächster Schritt vereinbart am:</b> ____________________</li>
+      <li><b>Close aktualisiert</b> · Stufe: ____________________</li>
+    </ul>
+
+    <div class="note">
+      <span class="tag">Die zwei Sätze, die alles tragen</span>
+      <p><b>„Ich habe zwei Fragen, dann wissen Sie, ob das für Sie relevant ist — okay?“</b>
+      Ohne diesen Satz kommt „Worum geht es überhaupt?“ und der Termin ist weg.</p>
+      <p><b>„Und wenn nichts zu holen ist, sage ich Ihnen das auch.“</b> Ohne diesen Satz
+      läuft der Rest des Gesprächs gegen eine Wand aus Höflichkeit.</p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer>
+    <span>Telefon-Anamnese · Kaltakquise Arztpraxen · internes Dokument</span>
+    <span>finanz-medizin.com — eine Marke von We Build Wealth</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var btn = document.getElementById('live');
+  var KEY = 'fm-live-modus';
+  function set(on){
+    document.body.classList.toggle('live', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.textContent = on ? 'Erklärungen einblenden' : 'Live-Modus';
+    try { localStorage.setItem(KEY, on ? '1' : '0'); } catch (e) {}
+  }
+  var start = false;
+  try { start = localStorage.getItem(KEY) === '1'; } catch (e) {}
+  set(start);
+  btn.addEventListener('click', function(){
+    set(!document.body.classList.contains('live'));
+  });
+})();
+</script>
+
+</body>
+</html>
