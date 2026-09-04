@@ -18,8 +18,8 @@
   --navy-3:#17486F;
   --rot:#751524;
   --rot-2:#8C1E2F;
+  --rosa:#D69AA3;
   --ivory:#F4F0EF;
-  --ivory-2:#EDE8E7;
   --bone:#E3DCD6;
   --grau:#3D5064;
   --grau-2:#6B7B8C;
@@ -27,7 +27,6 @@
 }
 
 @page{ size:A4; margin:17mm 16mm 16mm 16mm; }
-@page:first{ margin:0; }
 
 *{box-sizing:border-box;margin:0;padding:0;}
 html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
@@ -38,13 +37,14 @@ body{
   line-height:1.5;
   background:#fff;
 }
+a{text-decoration:none;color:inherit;}
 
 /* =================== DECKBLATT =================== */
 .cover{
   background:var(--navy);
   color:var(--ivory);
   height:263mm;
-  padding:24mm 20mm 18mm;
+  padding:22mm 20mm 16mm;
   display:flex;
   flex-direction:column;
   page-break-after:always;
@@ -53,39 +53,51 @@ body{
   font-family:'Manrope';font-weight:800;font-size:10pt;
   letter-spacing:.34em;text-transform:uppercase;color:#fff;
 }
-.cover .mark span{color:#C97E8A;}
-.cover .rule{height:2px;background:var(--rot-2);width:34mm;margin:9mm 0 8mm;}
+.cover .mark span{color:var(--rosa);}
+.cover .rule{height:2px;background:var(--rot-2);width:34mm;margin:8mm 0 7mm;}
 .cover h1{
-  font-family:'Manrope';font-weight:800;font-size:37pt;line-height:1.03;
+  font-family:'Manrope';font-weight:800;font-size:34pt;line-height:1.04;
   letter-spacing:-.025em;color:#fff;
 }
-.cover h1 em{font-family:'Newsreader';font-style:italic;font-weight:400;color:#D69AA3;}
+.cover h1 em{font-family:'Newsreader';font-style:italic;font-weight:400;color:var(--rosa);}
 .cover .sub{
-  font-size:11.5pt;line-height:1.55;color:#AEBCCA;margin-top:7mm;max-width:118mm;
+  font-size:11pt;line-height:1.55;color:#AEBCCA;margin-top:6mm;max-width:118mm;
 }
 .cover .spacer{flex:1;}
-.legend{border-top:1px solid rgba(214,225,236,.28);padding-top:7mm;}
-.legend h2{
+
+/* Inhalt auf dem Deckblatt — anklickbar */
+.toc{margin-top:9mm;}
+.toc h2, .legend h2{
   font-family:'Inter';font-weight:700;font-size:8pt;letter-spacing:.2em;
-  text-transform:uppercase;color:#C97E8A;margin-bottom:5mm;
+  text-transform:uppercase;color:var(--rosa);margin-bottom:4mm;
 }
-.legend .row{display:flex;gap:7mm;margin-bottom:3.4mm;align-items:baseline;}
+.toc a{
+  display:flex;align-items:baseline;gap:5mm;
+  padding:2.4mm 0;border-bottom:1px solid rgba(214,225,236,.18);
+}
+.toc a .n{
+  flex:0 0 13mm;font-family:'Manrope';font-weight:800;font-size:8pt;
+  letter-spacing:.14em;color:var(--rosa);
+}
+.toc a .t{flex:1;font-size:10.4pt;color:#fff;font-weight:500;}
+.toc a .p{font-size:8pt;color:#7E90A2;letter-spacing:.06em;}
+
+.legend{border-top:1px solid rgba(214,225,236,.28);padding-top:6mm;margin-top:8mm;}
+.legend .row{display:flex;gap:7mm;margin-bottom:2.8mm;align-items:baseline;}
 .legend .lkey{
   flex:0 0 26mm;font-family:'Inter';font-weight:700;font-size:7.6pt;
   letter-spacing:.14em;text-transform:uppercase;color:#fff;
 }
-.legend .val{font-size:9.4pt;color:#AEBCCA;line-height:1.45;}
-.legend .val em{font-family:'Newsreader';font-style:italic;font-weight:400;color:#EDE8E7;font-size:10.4pt;}
-.cover .foot{
-  margin-top:9mm;font-size:8pt;color:#7E90A2;letter-spacing:.04em;
-}
+.legend .val{flex:1;font-size:9.2pt;color:#AEBCCA;line-height:1.45;}
+.legend .val em{font-family:'Newsreader';font-style:italic;font-weight:400;color:#EDE8E7;font-size:10.2pt;}
+.cover .foot{margin-top:7mm;font-size:8pt;color:#7E90A2;letter-spacing:.04em;}
 
 /* =================== ABSCHNITTE =================== */
 .part{page-break-before:always;}
 .part.first{page-break-before:avoid;}
 .part-head{
   border-bottom:2px solid var(--rot);
-  padding-bottom:3mm;margin-bottom:6mm;
+  padding-bottom:3mm;margin-bottom:3mm;
   display:flex;align-items:baseline;gap:5mm;
 }
 .part-head .no{
@@ -99,6 +111,16 @@ body{
   margin-left:auto;font-size:7.6pt;font-weight:600;letter-spacing:.13em;
   text-transform:uppercase;color:var(--grau-2);white-space:nowrap;
 }
+
+/* Sprungleiste unter jeder Abschnittsüberschrift */
+.nav{display:flex;flex-wrap:wrap;margin-bottom:6mm;}
+.nav a{
+  padding:1.5mm 3.2mm;border:1px solid var(--linie);border-right:0;
+  font-size:7.2pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--grau-2);
+}
+.nav a:last-child{border-right:1px solid var(--linie);}
+.nav a.here{background:var(--navy);border-color:var(--navy);color:#fff;}
 
 /* =================== VARIANTEN-BLOCK =================== */
 .var{
@@ -138,27 +160,46 @@ body{
 }
 .say.sie .txt{font-size:9.4pt;color:var(--grau);line-height:1.45;}
 
-/* =================== WEITER-PFEIL =================== */
-.go{
-  display:flex;gap:5mm;margin-top:3.4mm;padding-top:2.6mm;
-  border-top:1px dotted var(--linie);
+/* =================== ANTWORT-BUTTONS =================== */
+.jump{
+  display:flex;flex-wrap:wrap;align-items:stretch;gap:2.6mm;
+  margin-top:4mm;padding-top:3.4mm;border-top:1px dotted var(--linie);
 }
-.go .lbl{
-  flex:0 0 15mm;font-family:'Inter';font-weight:700;font-size:7.2pt;
-  letter-spacing:.15em;text-transform:uppercase;color:var(--grau-2);padding-top:.4mm;
+.jump .lbl{
+  flex:0 0 15mm;padding-top:1.8mm;
+  font-family:'Inter';font-weight:700;font-size:7.2pt;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--grau-2);
 }
-.go .paths{flex:1;font-size:8.6pt;color:var(--grau);line-height:1.6;}
-.go .paths b{color:var(--navy);font-weight:600;}
-.go .paths span{color:var(--rot);font-weight:700;}
+.btns{flex:1;display:flex;flex-wrap:wrap;gap:2.6mm;}
+a.btn{
+  display:inline-flex;align-items:center;gap:2.4mm;
+  border:1.2px solid var(--navy-3);
+  padding:2mm 3.6mm;
+  background:#fff;
+  page-break-inside:avoid;
+}
+a.btn .ans{
+  font-family:'Newsreader';font-style:italic;font-weight:400;
+  font-size:10.4pt;color:var(--navy);line-height:1.15;
+}
+a.btn .to{
+  font-family:'Inter';font-weight:700;font-size:7.2pt;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--rot);white-space:nowrap;
+}
+a.btn.solid{background:var(--navy);border-color:var(--navy);}
+a.btn.solid .ans{color:#fff;}
+a.btn.solid .to{color:var(--rosa);}
+a.btn.quiet{border-color:var(--linie);}
+a.btn.quiet .ans{color:var(--grau);}
+a.btn.quiet .to{color:var(--grau-2);}
 
 /* =================== EINWÄNDE =================== */
 .obj{
   border-top:1px solid var(--linie);
-  padding:4mm 0 4.2mm;
+  padding:4mm 0 4.4mm;
   page-break-inside:avoid;
 }
 .obj:first-of-type{border-top:1.5px solid var(--navy);}
-.obj:last-of-type{border-bottom:1px solid var(--linie);}
 .obj .q{
   font-family:'Manrope';font-weight:700;font-size:10.4pt;color:var(--navy);
   letter-spacing:-.01em;margin-bottom:2.6mm;
@@ -170,11 +211,8 @@ body{
   font-size:12.2pt;line-height:1.42;color:var(--navy);
   padding-left:5mm;border-left:2px solid var(--bone);
 }
-.obj .then{
-  margin-top:2.4mm;padding-left:5mm;
-  font-size:8pt;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--grau-2);
-}
-.obj .then b{color:var(--rot);font-weight:700;}
+.obj .jump{margin-top:3.2mm;padding-top:3mm;padding-left:5mm;border-top:0;}
+.obj .jump .lbl{flex:0 0 auto;padding-right:1mm;}
 
 /* =================== HERVORHEBUNG =================== */
 .key{
@@ -194,6 +232,8 @@ body{
 }
 .key .after{margin-top:3mm;font-size:8.6pt;color:var(--grau);line-height:1.5;}
 .key .after b{color:var(--navy);font-weight:600;}
+.key .jump{border-top-color:var(--bone);}
+.key a.btn{background:transparent;}
 
 /* =================== KLEINE ÜBERSCHRIFT =================== */
 h4.sub{
@@ -201,15 +241,10 @@ h4.sub{
   letter-spacing:.02em;color:var(--navy);
   margin:6mm 0 3mm;padding-bottom:1.6mm;border-bottom:1px solid var(--linie);
 }
-h4.sub span{color:var(--grau-2);font-weight:600;font-size:8.4pt;}
-p.note{font-size:8.8pt;color:var(--grau);line-height:1.55;margin-bottom:3mm;}
-p.note b{color:var(--navy);font-weight:600;}
 
 /* =================== REGELKARTEN =================== */
 .rules{display:flex;gap:4mm;margin-top:5mm;page-break-inside:avoid;}
-.rules div{
-  flex:1;border-top:2px solid var(--navy);padding-top:3mm;
-}
+.rules div{flex:1;border-top:2px solid var(--navy);padding-top:3mm;}
 .rules h5{font-family:'Manrope';font-weight:700;font-size:9.4pt;color:var(--navy);margin-bottom:1.6mm;}
 .rules p{font-size:8.4pt;color:var(--grau);line-height:1.45;}
 </style>
@@ -226,41 +261,43 @@ p.note b{color:var(--navy);font-weight:600;}
     bestätigten Termin im Kalender.
   </p>
 
+  <div class="toc">
+    <h2>Inhalt — zum Springen anklicken</h2>
+    <a href="#teil1"><span class="n">TEIL 1</span><span class="t">Der Einstieg am Empfang</span><span class="p">3 Varianten</span></a>
+    <a href="#teil2"><span class="n">TEIL 2</span><span class="t">Empfang — Einwandbehandlung</span><span class="p">10 Einwände</span></a>
+    <a href="#teil3"><span class="n">TEIL 3</span><span class="t">Der Praxisinhaber — Einstieg</span><span class="p">3 Situationen</span></a>
+    <a href="#teil4"><span class="n">TEIL 4</span><span class="t">Überleitung zum Termin</span><span class="p">3 Pfade</span></a>
+    <a href="#teil5"><span class="n">TEIL 5</span><span class="t">Terminierung</span><span class="p">4 Schritte</span></a>
+    <a href="#teil6"><span class="n">TEIL 6</span><span class="t">Terminierung — Einwandbehandlung</span><span class="p">15 Einwände</span></a>
+  </div>
+
   <div class="spacer"></div>
 
   <div class="legend">
-    <h2>So liest du dieses Skript</h2>
-    <div class="row">
-      <div class="lkey">DU</div>
-      <div class="val"><em>„Kursiv ist, was du sagst."</em></div>
-    </div>
-    <div class="row">
-      <div class="lkey">PRAXIS</div>
-      <div class="val">Grau ist, was zurückkommt.</div>
-    </div>
-    <div class="row">
-      <div class="lkey">Weiter</div>
-      <div class="val">Sagt dir, in welchen Teil du als Nächstes springst.</div>
-    </div>
-    <div class="row">
-      <div class="lkey">Platzhalter</div>
-      <div class="val">[Dein Name] · [Dr. Nachname] · [Praxis] — vor dem Wählen einsetzen.</div>
-    </div>
-    <div class="row">
-      <div class="lkey">Ziel</div>
-      <div class="val">Ein fester Termin über 20 Minuten. Am Telefon wird nicht beraten und nichts verkauft.</div>
-    </div>
+    <div class="row"><div class="lkey">DU</div><div class="val"><em>„Kursiv ist, was du sagst."</em></div></div>
+    <div class="row"><div class="lkey">PRAXIS</div><div class="val">Grau ist, was zurückkommt.</div></div>
+    <div class="row"><div class="lkey">Antwort-Feld</div><div class="val">Die umrandeten Felder sind anklickbar. Klick auf das, was der Gegenüber sagt — das Dokument springt an die passende Stelle.</div></div>
+    <div class="row"><div class="lkey">Platzhalter</div><div class="val">[Dein Name] · [Dr. Nachname] · [Praxis] — vor dem Wählen einsetzen.</div></div>
+    <div class="row"><div class="lkey">Ziel</div><div class="val">Ein fester Termin über 20 Minuten. Am Telefon wird nicht beraten und nichts verkauft.</div></div>
   </div>
 
   <div class="foot">Internes Vertriebsdokument · finanz-medizin.com · nicht zur Weitergabe</div>
 </div>
 
 <!-- ==================== TEIL 1 ==================== -->
-<div class="part first">
+<div class="part first" id="teil1">
   <div class="part-head">
     <span class="no">TEIL 1</span>
     <h2>Der Einstieg am Empfang</h2>
     <span class="goal">Drei Wege · einen wählen</span>
+  </div>
+  <div class="nav">
+    <a class="here" href="#teil1">1 Empfang</a>
+    <a href="#teil2">2 Einwände</a>
+    <a href="#teil3">3 Inhaber</a>
+    <a href="#teil4">4 Überleitung</a>
+    <a href="#teil5">5 Termin</a>
+    <a href="#teil6">6 Einwände Termin</a>
   </div>
 
   <div class="var">
@@ -270,12 +307,12 @@ p.note b{color:var(--navy);font-weight:600;}
       <span class="when">Standard · immer zuerst</span>
     </div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name] hier. Ist Frau Dr. [Nachname] kurz zu sprechen?"</div></div>
-    <div class="say sie"><div class="who">Praxis</div><div class="txt">„Einen Moment, ich verbinde." — oder: „Worum geht es denn?"</div></div>
-    <div class="go">
-      <div class="lbl">Weiter</div>
-      <div class="paths">
-        Sie verbindet <span>→</span> <b>Teil 3</b><br>
-        Sie fragt nach <span>→</span> <b>Teil 2</b>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">„Einen Moment, ich verbinde."</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#e-worum"><span class="ans">„Worum geht es denn?"</span><span class="to">Teil 2 →</span></a>
+        <a class="btn quiet" href="#teil2"><span class="ans">Etwas anderes / sie blockt</span><span class="to">Teil 2 →</span></a>
       </div>
     </div>
   </div>
@@ -289,12 +326,28 @@ p.note b{color:var(--navy);font-weight:600;}
     <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name] hier. Ich sehe, Sie suchen gerade eine MFA — stimmt das?"</div></div>
     <div class="say sie"><div class="who">Praxis</div><div class="txt">„Ja, genau."</div></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Kurz vorweg, damit Sie mich einordnen können: Ich bin weder Bewerber noch von einer Personalvermittlung. Es geht um betriebliche Leistungen fürs Team — und das ist Chefsache. Ist Frau Dr. [Nachname] kurz zu sprechen?"</div></div>
-    <div class="go">
-      <div class="lbl">Weiter</div>
-      <div class="paths">
-        Sie verbindet <span>→</span> <b>Teil 3</b><br>
-        Sie blockt <span>→</span> <b>Teil 2</b><br>
-        „Die Stelle ist nicht mehr aktuell" <span>→</span> <em style="font-family:'Newsreader';font-style:italic;font-size:10.6pt;color:var(--navy)">„Umso besser, dann ist das erledigt. Mein Grund ist ohnehin ein anderer …"</em> und weiter wie oben
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">„Ich verbinde."</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#teil2"><span class="ans">Sie blockt</span><span class="to">Teil 2 →</span></a>
+        <a class="btn quiet" href="#b-nicht-aktuell"><span class="ans">„Die Stelle ist nicht mehr aktuell."</span><span class="to">unten →</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="var" id="b-nicht-aktuell">
+    <div class="var-head">
+      <span class="badge">B+</span>
+      <h3>„Die Stelle ist nicht mehr aktuell"</h3>
+      <span class="when">Weiter statt auflegen</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Umso besser, dann ist das erledigt. Mein Grund ist ohnehin ein anderer: Es geht um betriebliche Leistungen fürs Team — das ist Chefsache. Ist Frau Dr. [Nachname] kurz zu sprechen?"</div></div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">„Ich verbinde."</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#teil2"><span class="ans">Sie blockt</span><span class="to">Teil 2 →</span></a>
       </div>
     </div>
   </div>
@@ -308,11 +361,12 @@ p.note b{color:var(--navy);font-weight:600;}
     <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name]. Ganz kurz, damit ich Ihre Zeit nicht verschwende: Gibt es bei Ihnen schon betriebliche Leistungen fürs Team — Gesundheitsbudget, Betriebsrente, so etwas?"</div></div>
     <div class="say sie"><div class="who">Praxis</div><div class="txt">„Nein." / „Weiß ich nicht."</div></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Genau deswegen rufe ich an. Entscheiden kann das nur Frau Dr. [Nachname] — ist sie kurz zu sprechen?"</div></div>
-    <div class="go">
-      <div class="lbl">Weiter</div>
-      <div class="paths">
-        Sie verbindet <span>→</span> <b>Teil 3</b><br>
-        Sie blockt <span>→</span> <b>Teil 2</b>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">„Ich verbinde."</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#teil2"><span class="ans">Sie blockt</span><span class="to">Teil 2 →</span></a>
+        <a class="btn quiet" href="#ausstieg"><span class="ans">„Sie ist nicht da."</span><span class="to">Ausstieg →</span></a>
       </div>
     </div>
   </div>
@@ -334,92 +388,179 @@ p.note b{color:var(--navy);font-weight:600;}
 </div>
 
 <!-- ==================== TEIL 2 ==================== -->
-<div class="part">
+<div class="part" id="teil2">
   <div class="part-head">
     <span class="no">TEIL 2</span>
     <h2>Empfang — Einwandbehandlung</h2>
     <span class="goal">Jeden Einwand genau einmal</span>
   </div>
+  <div class="nav">
+    <a href="#teil1">1 Empfang</a>
+    <a class="here" href="#teil2">2 Einwände</a>
+    <a href="#teil3">3 Inhaber</a>
+    <a href="#teil4">4 Überleitung</a>
+    <a href="#teil5">5 Termin</a>
+    <a href="#teil6">6 Einwände Termin</a>
+  </div>
 
-  <div class="obj">
+  <div class="obj" id="e-worum">
     <div class="q">Worum geht es denn?</div>
     <div class="a">„Um betriebliche Leistungen fürs Praxisteam — Gesundheitsbudget, Betriebsrente, so etwas. Das ist Chefsache, deswegen frage ich lieber direkt bei ihr. Zwei Minuten reichen."</div>
-    <div class="then">Danach <b>→</b> zurück zur Frage: „Ist sie kurz zu sprechen?"</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Verbündeten-Zug →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir haben kein Interesse.</div>
     <div class="a">„Das kann gut sein — nur kann ich das schwer beurteilen, solange ich nicht weiß, was Sie schon haben. Ist das Ihre Einschätzung, oder hat Frau Dr. [Nachname] das entschieden?"</div>
-    <div class="then">Kommt „Ich denke schon, dass …" <b>→</b> Verbündeten-Zug unten</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">„Na ja, ich denke schon …"</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie bleibt dabei</span><span class="to">Verbündeten-Zug →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Sind Sie von einer Versicherung?</div>
     <div class="a">„Wir sind ungebundene Makler und arbeiten ausschließlich mit Arztpraxen. Was für Sie sinnvoll ist, steht am Anfang gar nicht fest — deshalb ist es ein Gespräch und kein Angebot."</div>
-    <div class="then">Danach <b>→</b> „Ist Frau Dr. [Nachname] kurz zu sprechen?"</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
+        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie blockt</span><span class="to">Ausstieg →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir dürfen niemanden durchstellen.</div>
     <div class="a">„Verstehe ich, das ist bei vielen Praxen so. Dann anders herum: Wann ist Frau Dr. [Nachname] selbst am Apparat — vor der Sprechstunde oder mittags?"</div>
-    <div class="then">Zeitfenster notieren <b>→</b> Ausstieg unten</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#ausstieg"><span class="ans">Sie nennt ein Zeitfenster</span><span class="to">Ausstieg →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Verbündeten-Zug →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Schicken Sie uns eine E-Mail.</div>
     <div class="a">„Mache ich gerne. Nur landet eine allgemeine Mail erfahrungsgemäß ungelesen im Ordner. Ich schicke sie, sobald ich weiß, worauf es bei Ihnen ankommt — wann erreiche ich Frau Dr. [Nachname]?"</div>
-    <div class="then">Bleibt sie dabei: Mail schicken, in fünf Tagen anrufen <b>→</b> „Ich wollte nur kurz hören, ob es angekommen ist."</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#ausstieg"><span class="ans">Sie nennt ein Zeitfenster</span><span class="to">Ausstieg →</span></a>
+        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie besteht auf der Mail</span><span class="to">schicken, in 5 Tagen anrufen</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Sie ist in Behandlung / heute nicht da.</div>
     <div class="a">„Kein Problem, das kenne ich. Wann erreiche ich sie am besten — vor der Sprechstunde oder in der Mittagspause?"</div>
-    <div class="then">Danach <b>→</b> Ausstieg unten</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#ausstieg"><span class="ans">Zeitfenster notieren</span><span class="to">Ausstieg →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir haben schon einen Berater.</div>
     <div class="a">„Gut, dann ist jemand dran. Die Frage ist bei diesen Themen aber selten, ob jemand da ist, sondern was umgesetzt wurde. Genau das würde ich mit Frau Dr. [Nachname] in zwei Minuten klären."</div>
-    <div class="then">Danach <b>→</b> „Ist sie kurz zu sprechen?"</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Verbündeten-Zug →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir suchen niemanden und brauchen nichts.</div>
     <div class="a">„Umso besser — bei mir geht es auch nicht ums Suchen, sondern um die Leute, die Sie schon haben. Und darüber entscheidet Frau Dr. [Nachname]. Ist sie kurz zu sprechen?"</div>
-    <div class="then">Danach <b>→</b> Teil 3, oder Ausstieg unten</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
+        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie blockt</span><span class="to">Ausstieg →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Rufen Sie doch später nochmal an.</div>
     <div class="a">„Mache ich. Damit ich nicht wieder im falschen Moment störe: Ist es bei Ihnen vormittags oder nachmittags ruhiger?"</div>
-    <div class="then">Zeitfenster notieren <b>→</b> Ausstieg unten</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#ausstieg"><span class="ans">Zeitfenster notieren</span><span class="to">Ausstieg →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Von welcher Firma sind Sie nochmal?</div>
     <div class="a">„Finanz-Medizin, wir arbeiten ausschließlich mit Arztpraxen. Und weil es um Arbeitgeberleistungen geht, brauche ich dafür Frau Dr. [Nachname] — ist sie kurz zu sprechen?"</div>
-    <div class="then">Danach <b>→</b> Teil 3</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
+        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie blockt</span><span class="to">Ausstieg →</span></a>
+      </div>
+    </div>
   </div>
 
-  <div class="key">
+  <div class="key" id="verbuendet">
     <span class="tag">Der Verbündeten-Zug — wenn zum zweiten Mal geblockt wird</span>
     <div class="txt">„Verstehe ich. Kurz, weil es Sie selbst betrifft: Es geht um Leistungen, die die Praxis für ihr Team zahlt — ein Gesundheitsbudget für Zahnersatz und Brille zum Beispiel. Ob das kommt, entscheidet Frau Dr. [Nachname]. Wann erreiche ich sie?"</div>
-    <div class="after"><b>Genau einmal einsetzen.</b> Danach nicht weiter nachfassen, sondern das Zeitfenster sichern.</div>
+    <div class="after"><b>Genau einmal einsetzen.</b> Danach nicht weiter nachfassen.</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet doch</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#ausstieg"><span class="ans">Sie nennt ein Zeitfenster</span><span class="to">Ausstieg →</span></a>
+      </div>
+    </div>
   </div>
 
-  <div class="key">
+  <div class="key" id="ausstieg">
     <span class="tag">Ausstieg — immer mit einem Zeitfenster und einem Namen</span>
     <div class="txt">„Perfekt, dann melde ich mich Mittwoch um halb eins. Und mit wem habe ich gerade gesprochen? … Danke, Frau [Name]. Schönen Tag noch."</div>
     <div class="after"><b>Beim nächsten Anruf startest du damit:</b> „Frau [Name], [Dein Name] hier — wir hatten letzte Woche kurz gesprochen." Damit ist der zweite Anruf kein Kaltanruf mehr.</div>
+    <div class="jump">
+      <div class="lbl">Nächster Anruf</div>
+      <div class="btns">
+        <a class="btn" href="#teil1"><span class="ans">Wieder von vorn</span><span class="to">Teil 1 →</span></a>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- ==================== TEIL 3 ==================== -->
-<div class="part">
+<div class="part" id="teil3">
   <div class="part-head">
     <span class="no">TEIL 3</span>
     <h2>Der Praxisinhaber — Einstieg</h2>
     <span class="goal">Drei Situationen</span>
+  </div>
+  <div class="nav">
+    <a href="#teil1">1 Empfang</a>
+    <a href="#teil2">2 Einwände</a>
+    <a class="here" href="#teil3">3 Inhaber</a>
+    <a href="#teil4">4 Überleitung</a>
+    <a href="#teil5">5 Termin</a>
+    <a href="#teil6">6 Einwände Termin</a>
   </div>
 
   <div class="var">
@@ -430,6 +571,10 @@ p.note b{color:var(--navy);font-weight:600;}
     </div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag Frau Dr. [Nachname], [Dein Name] hier. Ich sehe, Sie suchen gerade eine MFA — stimmt das?"</div></div>
     <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ja, seit einer Weile."</div></div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn solid" href="#kette"><span class="ans">Zur Fragenkette</span><span class="to">unten →</span></a></div>
+    </div>
   </div>
 
   <div class="var">
@@ -439,6 +584,10 @@ p.note b{color:var(--navy);font-weight:600;}
       <span class="when">Kleine Praxis, kein Empfang</span>
     </div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name] hier — spreche ich mit Frau Dr. [Nachname] selbst? … Sehr gut. Zwei Fragen zu Ihrem Praxisteam, danach wissen Sie, ob das für Sie überhaupt relevant ist — okay?"</div></div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn solid" href="#k-frage1"><span class="ans">Direkt zu Frage eins</span><span class="to">unten →</span></a></div>
+    </div>
   </div>
 
   <div class="var">
@@ -448,65 +597,94 @@ p.note b{color:var(--navy);font-weight:600;}
       <span class="when">Nach hinterlassenem Zeitfenster</span>
     </div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Schön, dass ich Sie erreiche, Frau Dr. [Nachname] — [Dein Name] hier. Ich hatte angerufen, weil ich gesehen habe, dass Sie eine MFA suchen. Stimmt das?"</div></div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn solid" href="#kette"><span class="ans">Zur Fragenkette</span><span class="to">unten →</span></a></div>
+    </div>
   </div>
 
-  <h4 class="sub">Danach immer gleich — vier Sätze bis zur Terminfrage</h4>
+  <h4 class="sub" id="kette">Danach immer gleich — vier Sätze bis zur Terminfrage</h4>
 
   <div class="var">
     <div class="var-head"><span class="badge">1</span><h3>Entlastung</h3><span class="when">Nie weglassen</span></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Kurz vorweg, damit Sie mich einordnen können: Ich bin weder Bewerber noch von einer Personalvermittlung. Ich habe zwei Fragen, dann wissen Sie, ob das für Sie relevant ist — okay?"</div></div>
-    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ja, bitte."</div></div>
-  </div>
-
-  <div class="var">
-    <div class="var-head"><span class="badge">2</span><h3>Frage eins</h3><span class="when">Harmlos</span></div>
-    <div class="say du"><div class="who">Du</div><div class="txt">„Wie lange läuft die Anzeige schon?"</div></div>
-    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Bestimmt seit einem halben Jahr."</div></div>
-    <div class="go">
-      <div class="lbl">Ohne Anzeige</div>
-      <div class="paths"><em style="font-family:'Newsreader';font-style:italic;font-size:10.6pt;color:var(--navy)">„Wie viele Mitarbeiterinnen sind Sie aktuell im Team?"</em></div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#k-frage1"><span class="ans">„Ja, bitte."</span><span class="to">Frage eins →</span></a>
+        <a class="btn" href="#teil6"><span class="ans">„Ich habe keine Zeit."</span><span class="to">Teil 6 →</span></a>
+      </div>
     </div>
   </div>
 
-  <div class="var">
+  <div class="var" id="k-frage1">
+    <div class="var-head"><span class="badge">2</span><h3>Frage eins</h3><span class="when">Harmlos</span></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Wie lange läuft die Anzeige schon?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Bestimmt seit einem halben Jahr."</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">Ohne Anzeige stattdessen: „Wie viele Mitarbeiterinnen sind Sie aktuell im Team?"</div></div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn solid" href="#k-frage2"><span class="ans">Frage zwei</span><span class="to">unten →</span></a></div>
+    </div>
+  </div>
+
+  <div class="var" id="k-frage2">
     <div class="var-head"><span class="badge">3</span><h3>Frage zwei</h3><span class="when">Zuhören, nicht bewerten</span></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Und was machen Sie aktuell, damit die Leute, die Sie haben, bleiben?"</div></div>
     <div class="say sie"><div class="who">Ärztin</div><div class="txt">[redet — meist länger]</div></div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn solid" href="#k-einordnung"><span class="ans">Einordnung</span><span class="to">unten →</span></a></div>
+    </div>
   </div>
 
-  <div class="var">
+  <div class="var" id="k-einordnung">
     <div class="var-head"><span class="badge">4</span><h3>Einordnung</h3><span class="when">Hier fällt der Firmenname</span></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Genau daran arbeiten wir mit Praxen — Finanz-Medizin, wir machen ausschließlich Heilberufe. Leistungen, die beim Team netto ankommen und für die Praxis Betriebsausgabe sind. Haben Sie da aktuell schon etwas?"</div></div>
-    <div class="go">
-      <div class="lbl">Weiter</div>
-      <div class="paths">
-        „Nein" <span>→</span> <b>Teil 4, Pfad A</b><br>
-        „Ja, da läuft was" <span>→</span> <b>Teil 4, Pfad B</b><br>
-        „Das macht mein Steuerberater" <span>→</span> <b>Teil 4, Pfad C</b>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#pfad-a"><span class="ans">„Nein."</span><span class="to">Pfad A →</span></a>
+        <a class="btn solid" href="#pfad-b"><span class="ans">„Ja, da läuft was."</span><span class="to">Pfad B →</span></a>
+        <a class="btn solid" href="#pfad-c"><span class="ans">„Macht mein Steuerberater."</span><span class="to">Pfad C →</span></a>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ==================== TEIL 4 ==================== -->
-<div class="part">
+<div class="part" id="teil4">
   <div class="part-head">
     <span class="no">TEIL 4</span>
     <h2>Überleitung zum Termin</h2>
     <span class="goal">Drei Pfade · alle enden gleich</span>
   </div>
+  <div class="nav">
+    <a href="#teil1">1 Empfang</a>
+    <a href="#teil2">2 Einwände</a>
+    <a href="#teil3">3 Inhaber</a>
+    <a class="here" href="#teil4">4 Überleitung</a>
+    <a href="#teil5">5 Termin</a>
+    <a href="#teil6">6 Einwände Termin</a>
+  </div>
 
-  <div class="var">
+  <div class="var" id="pfad-a">
     <div class="var-head">
       <span class="badge">A</span>
       <h3>„Nein, haben wir nicht"</h3>
       <span class="when">Direkt zur Terminfrage</span>
     </div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Dann lohnt sich der Blick. Weil das für die Praxis in der Regel nicht obendrauf kommt, sondern sich über Steuer und Abgaben trägt. Haben Sie die Tage 20 Minuten?"</div></div>
-    <div class="go"><div class="lbl">Weiter</div><div class="paths"><span>→</span> <b>Teil 5</b></div></div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil5"><span class="ans">„Ja, kann ich einrichten."</span><span class="to">Teil 5 →</span></a>
+        <a class="btn" href="#teil6"><span class="ans">Sie wehrt ab</span><span class="to">Teil 6 →</span></a>
+      </div>
+    </div>
   </div>
 
-  <div class="var">
+  <div class="var" id="pfad-b">
     <div class="var-head">
       <span class="badge">B</span>
       <h3>„Ja, da läuft schon etwas"</h3>
@@ -519,10 +697,16 @@ p.note b{color:var(--navy);font-weight:600;}
     <div class="say du"><div class="who">Du</div><div class="txt">„Was wir bei Praxen sehen, die schon etwas gemacht haben — keine Kritik, besser als nichts: Haftungsthemen oft offen, das Geld klassisch verzinst statt angelegt, und die Förderung für Teilzeitkräfte ungenutzt. Kennen Sie Ihre Konditionen im Detail?"</div></div>
     <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ehrlich gesagt nein, das macht der Berater."</div></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Dann schaue ich in 20 Minuten einmal drüber. Danach wissen Sie entweder: alles richtig gemacht, Haken dran. Oder Sie sehen konkret, wo es hakt. Wann passt es Ihnen?"</div></div>
-    <div class="go"><div class="lbl">Weiter</div><div class="paths"><span>→</span> <b>Teil 5</b></div></div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil5"><span class="ans">Sie nennt einen Zeitpunkt</span><span class="to">Teil 5 →</span></a>
+        <a class="btn" href="#teil6"><span class="ans">Sie wehrt ab</span><span class="to">Teil 6 →</span></a>
+      </div>
+    </div>
   </div>
 
-  <div class="var">
+  <div class="var" id="pfad-c">
     <div class="var-head">
       <span class="badge">C</span>
       <h3>„Das macht mein Steuerberater"</h3>
@@ -531,145 +715,250 @@ p.note b{color:var(--navy);font-weight:600;}
     <div class="say du"><div class="who">Du</div><div class="txt">„Gut, dann ist jemand dran. Die Frage ist dann aber nicht, ob Sie jemanden haben — sondern was davon umgesetzt ist. Was läuft aktuell konkret?"</div></div>
     <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Eigentlich nur die Pflicht-bAV."</div></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Das sehe ich häufig. Ein Steuerberater rechnet das vergangene Jahr ab — gestaltet wird das kommende. Ich schaue mir das in 20 Minuten an, mit Ihrem Steuerberater sprechen wir danach gern gemeinsam. Wann passt es Ihnen?"</div></div>
-    <div class="go"><div class="lbl">Weiter</div><div class="paths"><span>→</span> <b>Teil 5</b></div></div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#teil5"><span class="ans">Sie nennt einen Zeitpunkt</span><span class="to">Teil 5 →</span></a>
+        <a class="btn" href="#teil6"><span class="ans">Sie wehrt ab</span><span class="to">Teil 6 →</span></a>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- ==================== TEIL 5 ==================== -->
-<div class="part">
+<div class="part" id="teil5">
   <div class="part-head">
     <span class="no">TEIL 5</span>
     <h2>Terminierung</h2>
     <span class="goal">Vier Schritte · in einem Zug</span>
   </div>
+  <div class="nav">
+    <a href="#teil1">1 Empfang</a>
+    <a href="#teil2">2 Einwände</a>
+    <a href="#teil3">3 Inhaber</a>
+    <a href="#teil4">4 Überleitung</a>
+    <a class="here" href="#teil5">5 Termin</a>
+    <a href="#teil6">6 Einwände Termin</a>
+  </div>
 
-  <div class="var">
+  <div class="var" id="t-schritt1">
     <div class="var-head"><span class="badge">1</span><h3>Zwei Optionen — nie offen fragen</h3></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Donnerstag vor der Sprechstunde oder lieber Freitag am frühen Nachmittag?"</div></div>
-    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Donnerstag ginge, so gegen acht."</div></div>
-    <div class="go"><div class="lbl">Regel</div><div class="paths">Nach der Frage <b>still sein</b> und die Pause aushalten. Wer sie füllt, verhandelt gegen sich selbst.</div></div>
+    <div class="say sie"><div class="who">Hinweis</div><div class="txt">Nach der Frage still sein und die Pause aushalten. Wer sie füllt, verhandelt gegen sich selbst.</div></div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#t-schritt2"><span class="ans">„Donnerstag ginge."</span><span class="to">Schritt 2 →</span></a>
+        <a class="btn" href="#teil6"><span class="ans">Sie bringt einen Einwand</span><span class="to">Teil 6 →</span></a>
+        <a class="btn quiet" href="#kein-termin"><span class="ans">Klares Nein</span><span class="to">Abschluss →</span></a>
+      </div>
+    </div>
   </div>
 
-  <div class="var">
+  <div class="var" id="t-schritt2">
     <div class="var-head"><span class="badge">2</span><h3>E-Mail holen</h3></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Perfekt, Donnerstag acht Uhr. An welche Adresse darf ich die Einladung schicken?"</div></div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt3"><span class="ans">Einladung rausschicken</span><span class="to">Schritt 3 →</span></a></div>
+    </div>
   </div>
 
-  <div class="var">
+  <div class="var" id="t-schritt3">
     <div class="var-head"><span class="badge">3</span><h3>Einladung raus — solange sie am Telefon ist</h3></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Ist raus. Da liegt auch unsere Erstinformation bei — die muss ich Ihnen als Makler geben, damit Sie wissen, mit wem Sie es zu tun haben. Schauen Sie einmal kurz, ob sie angekommen ist?"</div></div>
     <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ja, ist da."</div></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Dann einmal auf Annehmen klicken, dann steht es bei uns beiden fest."</div></div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt4"><span class="ans">Letzter Satz</span><span class="to">Schritt 4 →</span></a></div>
+    </div>
   </div>
 
-  <div class="var">
+  <div class="var" id="t-schritt4">
     <div class="var-head"><span class="badge">4</span><h3>Der letzte Satz</h3><span class="when">Senkt die Absagequote</span></div>
     <div class="say du"><div class="who">Du</div><div class="txt">„Eine Sache noch, Frau Dr. [Nachname]: Bringen Sie am Donnerstag bitte nichts mit. Keine Ordner, keine Policen. Zwanzig Minuten reden, mehr ist es nicht."</div></div>
+    <div class="jump">
+      <div class="lbl">Fertig</div>
+      <div class="btns"><a class="btn quiet" href="#teil1"><span class="ans">Nächster Anruf</span><span class="to">Teil 1 →</span></a></div>
+    </div>
   </div>
 
-  <div class="key">
+  <div class="key" id="kein-termin">
     <span class="tag">Kein Termin zustande gekommen</span>
     <div class="txt">„Alles gut, dann bedanke ich mich für die zwei Minuten und wünsche Ihnen einen schönen Tag."</div>
     <div class="after"><b>Tür offen lassen, nicht zuziehen.</b> Wiedervorlage in acht Wochen — außer sie hat gesagt, dass sie nicht mehr angerufen werden möchte.</div>
+    <div class="jump">
+      <div class="lbl">Weiter</div>
+      <div class="btns"><a class="btn quiet" href="#teil1"><span class="ans">Nächster Anruf</span><span class="to">Teil 1 →</span></a></div>
+    </div>
   </div>
 </div>
 
 <!-- ==================== TEIL 6 ==================== -->
-<div class="part">
+<div class="part" id="teil6">
   <div class="part-head">
     <span class="no">TEIL 6</span>
     <h2>Terminierung — Einwandbehandlung</h2>
     <span class="goal">Antworten, dann zurück zur Terminfrage</span>
   </div>
+  <div class="nav">
+    <a href="#teil1">1 Empfang</a>
+    <a href="#teil2">2 Einwände</a>
+    <a href="#teil3">3 Inhaber</a>
+    <a href="#teil4">4 Überleitung</a>
+    <a href="#teil5">5 Termin</a>
+    <a class="here" href="#teil6">6 Einwände Termin</a>
+  </div>
 
   <div class="obj">
     <div class="q">Keine Zeit.</div>
     <div class="a">„Deshalb rufe ich auch nicht an, um es jetzt zu besprechen — sondern um 20 Minuten zu finden. Wann ist es bei Ihnen am ruhigsten?"</div>
-    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Zurück zur Terminfrage</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Kein Interesse.</div>
     <div class="a">„Kann ich verstehen — Sie wissen ja noch gar nicht, worum es geht. Eine Frage, dann bin ich weg: Wie viele MFA haben Sie in den letzten drei Jahren verloren?"</div>
-    <div class="then">Kommt eine Zahl <b>→</b> Teil 5. Kommt nur Abwehr <b>→</b> freundlich verabschieden</div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#t-schritt1"><span class="ans">Sie nennt eine Zahl</span><span class="to">Teil 5 →</span></a>
+        <a class="btn quiet" href="#kein-termin"><span class="ans">Nur Abwehr</span><span class="to">Abschluss →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Schicken Sie mir mal Unterlagen.</div>
     <div class="a">„Kann ich machen — bringt nur wenig, weil das Sinnvolle bei jeder Praxis anders aussieht. Lieber umgekehrt: 20 Minuten, danach schicke ich genau das, was zu Ihnen passt."</div>
-    <div class="then">Bleibt sie dabei: schicken, in fünf Tagen anrufen</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#t-schritt1"><span class="ans">Sie lenkt ein</span><span class="to">Teil 5 →</span></a>
+        <a class="btn quiet" href="#kein-termin"><span class="ans">Sie besteht darauf</span><span class="to">schicken, in 5 Tagen anrufen</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Was kostet mich das?</div>
     <div class="a">„Das Gespräch nichts, und die Bestandsaufnahme auch nicht. Ob am Ende etwas kostet, hängt davon ab, ob Sie etwas umsetzen — und das entscheiden Sie, nachdem Sie die Zahlen gesehen haben."</div>
-    <div class="then">Kommt „Ja, aber wovon leben Sie dann?" <b>→</b> nächster Einwand</div>
+    <div class="jump">
+      <div class="lbl">Sie sagt</div>
+      <div class="btns">
+        <a class="btn solid" href="#t-schritt1"><span class="ans">„Verstanden."</span><span class="to">Teil 5 →</span></a>
+        <a class="btn" href="#e-verguetung"><span class="ans">„Und wovon leben Sie dann?"</span><span class="to">unten →</span></a>
+      </div>
+    </div>
   </div>
 
-  <div class="obj">
+  <div class="obj" id="e-verguetung">
     <div class="q">Und wie verdienen Sie dann Geld?</div>
     <div class="a">„Wir werden von den Produktgebern vergütet, wenn tatsächlich etwas umgesetzt wird — der Marktstandard bei Maklern. Auf Wunsch legen wir die Vergütung für jeden einzelnen Vertrag offen, bevor Sie unterschreiben. Und wenn nichts umgesetzt wird, entstehen Ihnen keine Kosten."</div>
-    <div class="then">Ohne Pause <b>→</b> zurück zur Terminfrage. Diese drei Sätze sitzen auswendig.</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Ohne Pause zurück zur Terminfrage</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir haben schon jemanden dafür.</div>
     <div class="a">„Gut, dann ist jemand dran. Ein zweiter, unabhängiger Blick kostet Sie nichts und deckt erfahrungsgemäß mehr auf, als man denkt. Darf ich Ihnen in 20 Minuten zeigen, worauf es dabei ankommt?"</div>
-    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Zurück zur Terminfrage</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir zahlen einfach ordentlich Gehalt.</div>
     <div class="a">„Der ehrlichste Weg — und leider der teuerste. Damit bei 3.100 € brutto 50 € netto mehr ankommen, brauchen Sie rund 91 € mehr Gehalt; mit Arbeitgeberabgaben kostet Sie das rund 110 €. Genau da würde ich Ihnen die Alternative zeigen."</div>
-    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Zurück zur Terminfrage</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir sind zu klein, wir haben nur drei Leute.</div>
     <div class="a">„Genau deshalb rufe ich an. Wenn bei fünfzehn Leuten eine geht, fangen die anderen das auf. Bei drei nicht. Bei Ihnen ist der Ausfall teurer — nicht günstiger."</div>
-    <div class="then">Unter drei Mitarbeitenden ist es kein Einwand, sondern die Wahrheit <b>→</b> sauber beenden</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#t-schritt1"><span class="ans">Drei oder mehr im Team</span><span class="to">Teil 5 →</span></a>
+        <a class="btn quiet" href="#kein-termin"><span class="ans">Weniger als drei</span><span class="to">sauber beenden →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Das muss ich mit meinem Partner besprechen.</div>
     <div class="a">„Verstehe ich, das ist eine gemeinsame Entscheidung. Am einfachsten ist es meistens, wenn Sie beide dabei sind — dann müssen Sie es nicht weitererzählen. Wann passt es Ihnen beiden?"</div>
-    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Zurück zur Terminfrage</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Rufen Sie in ein paar Monaten nochmal an.</div>
     <div class="a">„Mache ich, das trage ich mir fest ein. Nur kurz, damit ich zum richtigen Zeitpunkt anrufe: Was müsste sich bis dahin verändert haben?"</div>
-    <div class="then">Antwort und Datum notieren — beides ist der Aufhänger für den nächsten Anruf</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns">
+        <a class="btn solid" href="#t-schritt1"><span class="ans">Der Grund fällt weg</span><span class="to">Teil 5 →</span></a>
+        <a class="btn quiet" href="#kein-termin"><span class="ans">Grund und Datum notieren</span><span class="to">Abschluss →</span></a>
+      </div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Woher haben Sie meine Nummer?</div>
     <div class="a">„Aus Ihrer Stellenanzeige beziehungsweise dem öffentlichen Praxisverzeichnis. Wir schauen, welche Praxen gerade wachsen oder Personal suchen — das sind die, bei denen das Thema aktuell ist."</div>
-    <div class="then">Kurz halten, dann <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Kurz halten, weiter</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Sind Sie von einer Versicherung?</div>
     <div class="a">„Nein. Wir sind ungebundene Makler und arbeiten im Auftrag unserer Mandanten, nicht im Auftrag eines Konzerns. Deshalb steht am Anfang eine Analyse und kein Produkt."</div>
-    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Zurück zur Terminfrage</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Ich glaube nicht, dass das meine Mitarbeiterinnen interessiert.</div>
     <div class="a">„Das höre ich oft — und in den Teamgesprächen ist es fast immer andersherum. Gefragt wird zuerst nach dem Zahnersatz. Nehmen wir uns 20 Minuten, dann können Sie es Ihrem Team wenigstens anbieten?"</div>
-    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Zurück zur Terminfrage</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Wir stecken gerade mitten in einer Übernahme / einem Umbau.</div>
     <div class="a">„Dann rufe ich zum bestmöglichen Zeitpunkt an. Genau in dieser Phase werden die Verträge gemacht, die zehn Jahre laufen. Nehmen wir uns 20 Minuten, bevor das alles feststeht?"</div>
-    <div class="then">Bester Lead überhaupt <b>→</b> Teil 5, Schritt 1</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn solid" href="#t-schritt1"><span class="ans">Bester Lead überhaupt</span><span class="to">Teil 5 →</span></a></div>
+    </div>
   </div>
 
   <div class="obj">
     <div class="q">Rufen Sie hier bitte nicht mehr an.</div>
     <div class="a">„Selbstverständlich. Ich trage Sie aus, Sie hören nichts mehr von uns. Entschuldigen Sie die Störung und einen schönen Tag."</div>
-    <div class="then"><b>Kein Nachfassen.</b> Im CRM sperren, Wiedervorlage löschen, nie wieder anrufen.</div>
+    <div class="jump">
+      <div class="lbl">Dann</div>
+      <div class="btns"><a class="btn quiet" href="#teil1"><span class="ans">Kein Nachfassen · im CRM sperren</span><span class="to">nächster Anruf →</span></a></div>
+    </div>
   </div>
 
   <div class="key">
