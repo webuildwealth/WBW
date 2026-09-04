@@ -18,8 +18,9 @@ den Livegang.
      | xargs sed -i 's/COOKIEBOT_CBID_HIER/IHRE-ECHTE-ID/g'
    ```
 
-   Betroffen sind alle 10 HTML-Seiten (9× das `uc.js`-Skript im `<head>`,
-   1× zusätzlich das `cd.js`-Deklarationsskript in `cookie-richtlinie.html`).
+   Betroffen sind alle 10 HTML-Seiten: je einmal das `uc.js`-Skript im `<head>`,
+   dazu das `cd.js`-Deklarationsskript zweimal — in `cookie-richtlinie.html`
+   und in `datenschutz.html` (Abschnitt 11).
 
 5. In Cookiebot einen ersten **Scan** auslösen. Erst danach füllt sich die
    Tabelle auf der Cookie-Richtlinie-Seite.
