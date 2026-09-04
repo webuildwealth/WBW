@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Cold-Call-Skript — Arztpraxen</title>
+<style>
+/* ---------- Marken-Schriften, lokal aus assets/fonts ---------- */
+@font-face{font-family:'Manrope';font-style:normal;font-weight:200 800;font-display:block;
+  src:url('../assets/fonts/manrope-normal-latin.woff2') format('woff2');}
+@font-face{font-family:'Inter';font-style:normal;font-weight:100 900;font-display:block;
+  src:url('../assets/fonts/inter-normal-latin.woff2') format('woff2');}
+@font-face{font-family:'Newsreader';font-style:italic;font-weight:200 700;font-display:block;
+  src:url('../assets/fonts/newsreader-italic-latin.woff2') format('woff2');}
+
+:root{
+  --navy:#071B32;
+  --navy-2:#0C2C4F;
+  --navy-3:#17486F;
+  --rot:#751524;
+  --rot-2:#8C1E2F;
+  --ivory:#F4F0EF;
+  --ivory-2:#EDE8E7;
+  --bone:#E3DCD6;
+  --grau:#3D5064;
+  --grau-2:#6B7B8C;
+  --linie:#D6DCE3;
+}
+
+@page{ size:A4; margin:17mm 16mm 16mm 16mm; }
+@page:first{ margin:0; }
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--navy);
+  font-size:9.6pt;
+  line-height:1.5;
+  background:#fff;
+}
+
+/* =================== DECKBLATT =================== */
+.cover{
+  background:var(--navy);
+  color:var(--ivory);
+  height:263mm;
+  padding:24mm 20mm 18mm;
+  display:flex;
+  flex-direction:column;
+  page-break-after:always;
+}
+.cover .mark{
+  font-family:'Manrope';font-weight:800;font-size:10pt;
+  letter-spacing:.34em;text-transform:uppercase;color:#fff;
+}
+.cover .mark span{color:#C97E8A;}
+.cover .rule{height:2px;background:var(--rot-2);width:34mm;margin:9mm 0 8mm;}
+.cover h1{
+  font-family:'Manrope';font-weight:800;font-size:37pt;line-height:1.03;
+  letter-spacing:-.025em;color:#fff;
+}
+.cover h1 em{font-family:'Newsreader';font-style:italic;font-weight:400;color:#D69AA3;}
+.cover .sub{
+  font-size:11.5pt;line-height:1.55;color:#AEBCCA;margin-top:7mm;max-width:118mm;
+}
+.cover .spacer{flex:1;}
+.legend{border-top:1px solid rgba(214,225,236,.28);padding-top:7mm;}
+.legend h2{
+  font-family:'Inter';font-weight:700;font-size:8pt;letter-spacing:.2em;
+  text-transform:uppercase;color:#C97E8A;margin-bottom:5mm;
+}
+.legend .row{display:flex;gap:7mm;margin-bottom:3.4mm;align-items:baseline;}
+.legend .lkey{
+  flex:0 0 26mm;font-family:'Inter';font-weight:700;font-size:7.6pt;
+  letter-spacing:.14em;text-transform:uppercase;color:#fff;
+}
+.legend .val{font-size:9.4pt;color:#AEBCCA;line-height:1.45;}
+.legend .val em{font-family:'Newsreader';font-style:italic;font-weight:400;color:#EDE8E7;font-size:10.4pt;}
+.cover .foot{
+  margin-top:9mm;font-size:8pt;color:#7E90A2;letter-spacing:.04em;
+}
+
+/* =================== ABSCHNITTE =================== */
+.part{page-break-before:always;}
+.part.first{page-break-before:avoid;}
+.part-head{
+  border-bottom:2px solid var(--rot);
+  padding-bottom:3mm;margin-bottom:6mm;
+  display:flex;align-items:baseline;gap:5mm;
+}
+.part-head .no{
+  font-family:'Manrope';font-weight:800;font-size:9pt;letter-spacing:.18em;
+  color:var(--rot);white-space:nowrap;
+}
+.part-head h2{
+  font-family:'Manrope';font-weight:700;font-size:17pt;letter-spacing:-.02em;color:var(--navy);
+}
+.part-head .goal{
+  margin-left:auto;font-size:7.6pt;font-weight:600;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--grau-2);white-space:nowrap;
+}
+
+/* =================== VARIANTEN-BLOCK =================== */
+.var{
+  border:1px solid var(--linie);
+  border-left:3px solid var(--navy-3);
+  background:#fff;
+  padding:5mm 6mm 5.5mm;
+  margin-bottom:5mm;
+  page-break-inside:avoid;
+}
+.var-head{display:flex;align-items:baseline;gap:4mm;margin-bottom:3.5mm;}
+.var-head .badge{
+  font-family:'Manrope';font-weight:800;font-size:12pt;color:var(--rot);line-height:1;
+}
+.var-head h3{
+  font-family:'Manrope';font-weight:700;font-size:11pt;letter-spacing:-.01em;color:var(--navy);
+}
+.var-head .when{
+  margin-left:auto;font-size:7.4pt;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--grau-2);text-align:right;
+}
+
+/* =================== DIALOGZEILEN =================== */
+.say{display:flex;gap:5mm;margin-bottom:3.2mm;page-break-inside:avoid;}
+.say:last-child{margin-bottom:0;}
+.say .who{
+  flex:0 0 15mm;padding-top:.8mm;
+  font-family:'Inter';font-weight:700;font-size:7.2pt;
+  letter-spacing:.15em;text-transform:uppercase;
+}
+.say.du .who{color:var(--rot);}
+.say.sie .who{color:var(--grau-2);}
+.say .txt{flex:1;}
+.say.du .txt{
+  font-family:'Newsreader';font-style:italic;font-weight:400;
+  font-size:12.4pt;line-height:1.42;color:var(--navy);
+}
+.say.sie .txt{font-size:9.4pt;color:var(--grau);line-height:1.45;}
+
+/* =================== WEITER-PFEIL =================== */
+.go{
+  display:flex;gap:5mm;margin-top:3.4mm;padding-top:2.6mm;
+  border-top:1px dotted var(--linie);
+}
+.go .lbl{
+  flex:0 0 15mm;font-family:'Inter';font-weight:700;font-size:7.2pt;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--grau-2);padding-top:.4mm;
+}
+.go .paths{flex:1;font-size:8.6pt;color:var(--grau);line-height:1.6;}
+.go .paths b{color:var(--navy);font-weight:600;}
+.go .paths span{color:var(--rot);font-weight:700;}
+
+/* =================== EINWÄNDE =================== */
+.obj{
+  border-top:1px solid var(--linie);
+  padding:4mm 0 4.2mm;
+  page-break-inside:avoid;
+}
+.obj:first-of-type{border-top:1.5px solid var(--navy);}
+.obj:last-of-type{border-bottom:1px solid var(--linie);}
+.obj .q{
+  font-family:'Manrope';font-weight:700;font-size:10.4pt;color:var(--navy);
+  letter-spacing:-.01em;margin-bottom:2.6mm;
+}
+.obj .q::before{content:"»";color:var(--rot);margin-right:1mm;}
+.obj .q::after{content:"«";color:var(--rot);margin-left:.6mm;}
+.obj .a{
+  font-family:'Newsreader';font-style:italic;font-weight:400;
+  font-size:12.2pt;line-height:1.42;color:var(--navy);
+  padding-left:5mm;border-left:2px solid var(--bone);
+}
+.obj .then{
+  margin-top:2.4mm;padding-left:5mm;
+  font-size:8pt;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--grau-2);
+}
+.obj .then b{color:var(--rot);font-weight:700;}
+
+/* =================== HERVORHEBUNG =================== */
+.key{
+  background:var(--ivory);
+  border-left:3px solid var(--rot);
+  padding:5mm 6mm;
+  margin:5mm 0;
+  page-break-inside:avoid;
+}
+.key .tag{
+  display:block;font-family:'Inter';font-weight:700;font-size:7.4pt;
+  letter-spacing:.17em;text-transform:uppercase;color:var(--rot);margin-bottom:3mm;
+}
+.key .txt{
+  font-family:'Newsreader';font-style:italic;font-weight:400;
+  font-size:12.4pt;line-height:1.42;color:var(--navy);
+}
+.key .after{margin-top:3mm;font-size:8.6pt;color:var(--grau);line-height:1.5;}
+.key .after b{color:var(--navy);font-weight:600;}
+
+/* =================== KLEINE ÜBERSCHRIFT =================== */
+h4.sub{
+  font-family:'Manrope';font-weight:700;font-size:9.6pt;
+  letter-spacing:.02em;color:var(--navy);
+  margin:6mm 0 3mm;padding-bottom:1.6mm;border-bottom:1px solid var(--linie);
+}
+h4.sub span{color:var(--grau-2);font-weight:600;font-size:8.4pt;}
+p.note{font-size:8.8pt;color:var(--grau);line-height:1.55;margin-bottom:3mm;}
+p.note b{color:var(--navy);font-weight:600;}
+
+/* =================== REGELKARTEN =================== */
+.rules{display:flex;gap:4mm;margin-top:5mm;page-break-inside:avoid;}
+.rules div{
+  flex:1;border-top:2px solid var(--navy);padding-top:3mm;
+}
+.rules h5{font-family:'Manrope';font-weight:700;font-size:9.4pt;color:var(--navy);margin-bottom:1.6mm;}
+.rules p{font-size:8.4pt;color:var(--grau);line-height:1.45;}
+</style>
+</head>
+<body>
+
+<!-- ==================== DECKBLATT ==================== -->
+<div class="cover">
+  <div class="mark">finanz<span>·</span>medizin</div>
+  <div class="rule"></div>
+  <h1>Cold-Call-<br>Skript für <em>Arztpraxen</em></h1>
+  <p class="sub">
+    Nur Wortlaut. Kein Kommentar. Von der ersten Sekunde am Empfang bis zum
+    bestätigten Termin im Kalender.
+  </p>
+
+  <div class="spacer"></div>
+
+  <div class="legend">
+    <h2>So liest du dieses Skript</h2>
+    <div class="row">
+      <div class="lkey">DU</div>
+      <div class="val"><em>„Kursiv ist, was du sagst."</em></div>
+    </div>
+    <div class="row">
+      <div class="lkey">PRAXIS</div>
+      <div class="val">Grau ist, was zurückkommt.</div>
+    </div>
+    <div class="row">
+      <div class="lkey">Weiter</div>
+      <div class="val">Sagt dir, in welchen Teil du als Nächstes springst.</div>
+    </div>
+    <div class="row">
+      <div class="lkey">Platzhalter</div>
+      <div class="val">[Dein Name] · [Dr. Nachname] · [Praxis] — vor dem Wählen einsetzen.</div>
+    </div>
+    <div class="row">
+      <div class="lkey">Ziel</div>
+      <div class="val">Ein fester Termin über 20 Minuten. Am Telefon wird nicht beraten und nichts verkauft.</div>
+    </div>
+  </div>
+
+  <div class="foot">Internes Vertriebsdokument · finanz-medizin.com · nicht zur Weitergabe</div>
+</div>
+
+<!-- ==================== TEIL 1 ==================== -->
+<div class="part first">
+  <div class="part-head">
+    <span class="no">TEIL 1</span>
+    <h2>Der Einstieg am Empfang</h2>
+    <span class="goal">Drei Wege · einen wählen</span>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">A</span>
+      <h3>Direkt</h3>
+      <span class="when">Standard · immer zuerst</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name] hier. Ist Frau Dr. [Nachname] kurz zu sprechen?"</div></div>
+    <div class="say sie"><div class="who">Praxis</div><div class="txt">„Einen Moment, ich verbinde." — oder: „Worum geht es denn?"</div></div>
+    <div class="go">
+      <div class="lbl">Weiter</div>
+      <div class="paths">
+        Sie verbindet <span>→</span> <b>Teil 3</b><br>
+        Sie fragt nach <span>→</span> <b>Teil 2</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">B</span>
+      <h3>Über die Stellenanzeige</h3>
+      <span class="when">Wenn eine offene MFA-Stelle bekannt ist</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name] hier. Ich sehe, Sie suchen gerade eine MFA — stimmt das?"</div></div>
+    <div class="say sie"><div class="who">Praxis</div><div class="txt">„Ja, genau."</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Kurz vorweg, damit Sie mich einordnen können: Ich bin weder Bewerber noch von einer Personalvermittlung. Es geht um betriebliche Leistungen fürs Team — und das ist Chefsache. Ist Frau Dr. [Nachname] kurz zu sprechen?"</div></div>
+    <div class="go">
+      <div class="lbl">Weiter</div>
+      <div class="paths">
+        Sie verbindet <span>→</span> <b>Teil 3</b><br>
+        Sie blockt <span>→</span> <b>Teil 2</b><br>
+        „Die Stelle ist nicht mehr aktuell" <span>→</span> <em style="font-family:'Newsreader';font-style:italic;font-size:10.6pt;color:var(--navy)">„Umso besser, dann ist das erledigt. Mein Grund ist ohnehin ein anderer …"</em> und weiter wie oben
+      </div>
+    </div>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">C</span>
+      <h3>Kurz und konkret</h3>
+      <span class="when">Volles Wartezimmer · Empfang im Stress</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name]. Ganz kurz, damit ich Ihre Zeit nicht verschwende: Gibt es bei Ihnen schon betriebliche Leistungen fürs Team — Gesundheitsbudget, Betriebsrente, so etwas?"</div></div>
+    <div class="say sie"><div class="who">Praxis</div><div class="txt">„Nein." / „Weiß ich nicht."</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Genau deswegen rufe ich an. Entscheiden kann das nur Frau Dr. [Nachname] — ist sie kurz zu sprechen?"</div></div>
+    <div class="go">
+      <div class="lbl">Weiter</div>
+      <div class="paths">
+        Sie verbindet <span>→</span> <b>Teil 3</b><br>
+        Sie blockt <span>→</span> <b>Teil 2</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <div>
+      <h5>Langsam sprechen</h5>
+      <p>Wer hetzt, klingt nach Verkauf. Lieber eine Spur langsamer als du denkst, dass nötig ist.</p>
+    </div>
+    <div>
+      <h5>Kein Firmenname</h5>
+      <p>Der Name der Firma fällt erst beim Inhaber, nicht am Empfang.</p>
+    </div>
+    <div>
+      <h5>Kein Pitch</h5>
+      <p>Am Empfang wird das Thema benannt, nie erklärt. Sie kann nicht entscheiden.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TEIL 2 ==================== -->
+<div class="part">
+  <div class="part-head">
+    <span class="no">TEIL 2</span>
+    <h2>Empfang — Einwandbehandlung</h2>
+    <span class="goal">Jeden Einwand genau einmal</span>
+  </div>
+
+  <div class="obj">
+    <div class="q">Worum geht es denn?</div>
+    <div class="a">„Um betriebliche Leistungen fürs Praxisteam — Gesundheitsbudget, Betriebsrente, so etwas. Das ist Chefsache, deswegen frage ich lieber direkt bei ihr. Zwei Minuten reichen."</div>
+    <div class="then">Danach <b>→</b> zurück zur Frage: „Ist sie kurz zu sprechen?"</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir haben kein Interesse.</div>
+    <div class="a">„Das kann gut sein — nur kann ich das schwer beurteilen, solange ich nicht weiß, was Sie schon haben. Ist das Ihre Einschätzung, oder hat Frau Dr. [Nachname] das entschieden?"</div>
+    <div class="then">Kommt „Ich denke schon, dass …" <b>→</b> Verbündeten-Zug unten</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Sind Sie von einer Versicherung?</div>
+    <div class="a">„Wir sind ungebundene Makler und arbeiten ausschließlich mit Arztpraxen. Was für Sie sinnvoll ist, steht am Anfang gar nicht fest — deshalb ist es ein Gespräch und kein Angebot."</div>
+    <div class="then">Danach <b>→</b> „Ist Frau Dr. [Nachname] kurz zu sprechen?"</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir dürfen niemanden durchstellen.</div>
+    <div class="a">„Verstehe ich, das ist bei vielen Praxen so. Dann anders herum: Wann ist Frau Dr. [Nachname] selbst am Apparat — vor der Sprechstunde oder mittags?"</div>
+    <div class="then">Zeitfenster notieren <b>→</b> Ausstieg unten</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Schicken Sie uns eine E-Mail.</div>
+    <div class="a">„Mache ich gerne. Nur landet eine allgemeine Mail erfahrungsgemäß ungelesen im Ordner. Ich schicke sie, sobald ich weiß, worauf es bei Ihnen ankommt — wann erreiche ich Frau Dr. [Nachname]?"</div>
+    <div class="then">Bleibt sie dabei: Mail schicken, in fünf Tagen anrufen <b>→</b> „Ich wollte nur kurz hören, ob es angekommen ist."</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Sie ist in Behandlung / heute nicht da.</div>
+    <div class="a">„Kein Problem, das kenne ich. Wann erreiche ich sie am besten — vor der Sprechstunde oder in der Mittagspause?"</div>
+    <div class="then">Danach <b>→</b> Ausstieg unten</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir haben schon einen Berater.</div>
+    <div class="a">„Gut, dann ist jemand dran. Die Frage ist bei diesen Themen aber selten, ob jemand da ist, sondern was umgesetzt wurde. Genau das würde ich mit Frau Dr. [Nachname] in zwei Minuten klären."</div>
+    <div class="then">Danach <b>→</b> „Ist sie kurz zu sprechen?"</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir suchen niemanden und brauchen nichts.</div>
+    <div class="a">„Umso besser — bei mir geht es auch nicht ums Suchen, sondern um die Leute, die Sie schon haben. Und darüber entscheidet Frau Dr. [Nachname]. Ist sie kurz zu sprechen?"</div>
+    <div class="then">Danach <b>→</b> Teil 3, oder Ausstieg unten</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Rufen Sie doch später nochmal an.</div>
+    <div class="a">„Mache ich. Damit ich nicht wieder im falschen Moment störe: Ist es bei Ihnen vormittags oder nachmittags ruhiger?"</div>
+    <div class="then">Zeitfenster notieren <b>→</b> Ausstieg unten</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Von welcher Firma sind Sie nochmal?</div>
+    <div class="a">„Finanz-Medizin, wir arbeiten ausschließlich mit Arztpraxen. Und weil es um Arbeitgeberleistungen geht, brauche ich dafür Frau Dr. [Nachname] — ist sie kurz zu sprechen?"</div>
+    <div class="then">Danach <b>→</b> Teil 3</div>
+  </div>
+
+  <div class="key">
+    <span class="tag">Der Verbündeten-Zug — wenn zum zweiten Mal geblockt wird</span>
+    <div class="txt">„Verstehe ich. Kurz, weil es Sie selbst betrifft: Es geht um Leistungen, die die Praxis für ihr Team zahlt — ein Gesundheitsbudget für Zahnersatz und Brille zum Beispiel. Ob das kommt, entscheidet Frau Dr. [Nachname]. Wann erreiche ich sie?"</div>
+    <div class="after"><b>Genau einmal einsetzen.</b> Danach nicht weiter nachfassen, sondern das Zeitfenster sichern.</div>
+  </div>
+
+  <div class="key">
+    <span class="tag">Ausstieg — immer mit einem Zeitfenster und einem Namen</span>
+    <div class="txt">„Perfekt, dann melde ich mich Mittwoch um halb eins. Und mit wem habe ich gerade gesprochen? … Danke, Frau [Name]. Schönen Tag noch."</div>
+    <div class="after"><b>Beim nächsten Anruf startest du damit:</b> „Frau [Name], [Dein Name] hier — wir hatten letzte Woche kurz gesprochen." Damit ist der zweite Anruf kein Kaltanruf mehr.</div>
+  </div>
+</div>
+
+<!-- ==================== TEIL 3 ==================== -->
+<div class="part">
+  <div class="part-head">
+    <span class="no">TEIL 3</span>
+    <h2>Der Praxisinhaber — Einstieg</h2>
+    <span class="goal">Drei Situationen</span>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">A</span>
+      <h3>Du wurdest durchgestellt</h3>
+      <span class="when">Der Normalfall</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag Frau Dr. [Nachname], [Dein Name] hier. Ich sehe, Sie suchen gerade eine MFA — stimmt das?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ja, seit einer Weile."</div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">B</span>
+      <h3>Sie geht selbst ran</h3>
+      <span class="when">Kleine Praxis, kein Empfang</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Guten Tag, [Dein Name] hier — spreche ich mit Frau Dr. [Nachname] selbst? … Sehr gut. Zwei Fragen zu Ihrem Praxisteam, danach wissen Sie, ob das für Sie überhaupt relevant ist — okay?"</div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">C</span>
+      <h3>Sie ruft zurück</h3>
+      <span class="when">Nach hinterlassenem Zeitfenster</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Schön, dass ich Sie erreiche, Frau Dr. [Nachname] — [Dein Name] hier. Ich hatte angerufen, weil ich gesehen habe, dass Sie eine MFA suchen. Stimmt das?"</div></div>
+  </div>
+
+  <h4 class="sub">Danach immer gleich — vier Sätze bis zur Terminfrage</h4>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">1</span><h3>Entlastung</h3><span class="when">Nie weglassen</span></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Kurz vorweg, damit Sie mich einordnen können: Ich bin weder Bewerber noch von einer Personalvermittlung. Ich habe zwei Fragen, dann wissen Sie, ob das für Sie relevant ist — okay?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ja, bitte."</div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">2</span><h3>Frage eins</h3><span class="when">Harmlos</span></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Wie lange läuft die Anzeige schon?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Bestimmt seit einem halben Jahr."</div></div>
+    <div class="go">
+      <div class="lbl">Ohne Anzeige</div>
+      <div class="paths"><em style="font-family:'Newsreader';font-style:italic;font-size:10.6pt;color:var(--navy)">„Wie viele Mitarbeiterinnen sind Sie aktuell im Team?"</em></div>
+    </div>
+  </div>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">3</span><h3>Frage zwei</h3><span class="when">Zuhören, nicht bewerten</span></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Und was machen Sie aktuell, damit die Leute, die Sie haben, bleiben?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">[redet — meist länger]</div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">4</span><h3>Einordnung</h3><span class="when">Hier fällt der Firmenname</span></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Genau daran arbeiten wir mit Praxen — Finanz-Medizin, wir machen ausschließlich Heilberufe. Leistungen, die beim Team netto ankommen und für die Praxis Betriebsausgabe sind. Haben Sie da aktuell schon etwas?"</div></div>
+    <div class="go">
+      <div class="lbl">Weiter</div>
+      <div class="paths">
+        „Nein" <span>→</span> <b>Teil 4, Pfad A</b><br>
+        „Ja, da läuft was" <span>→</span> <b>Teil 4, Pfad B</b><br>
+        „Das macht mein Steuerberater" <span>→</span> <b>Teil 4, Pfad C</b>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TEIL 4 ==================== -->
+<div class="part">
+  <div class="part-head">
+    <span class="no">TEIL 4</span>
+    <h2>Überleitung zum Termin</h2>
+    <span class="goal">Drei Pfade · alle enden gleich</span>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">A</span>
+      <h3>„Nein, haben wir nicht"</h3>
+      <span class="when">Direkt zur Terminfrage</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Dann lohnt sich der Blick. Weil das für die Praxis in der Regel nicht obendrauf kommt, sondern sich über Steuer und Abgaben trägt. Haben Sie die Tage 20 Minuten?"</div></div>
+    <div class="go"><div class="lbl">Weiter</div><div class="paths"><span>→</span> <b>Teil 5</b></div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">B</span>
+      <h3>„Ja, da läuft schon etwas"</h3>
+      <span class="when">Der bessere Lead — nie den Vorgänger angreifen</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Stark, das machen die wenigsten. Was genau haben Sie im Einsatz?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">[antwortet]</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Und was hat Ihr Team davon konkret gemerkt?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">[antwortet — meist: nicht viel]</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Was wir bei Praxen sehen, die schon etwas gemacht haben — keine Kritik, besser als nichts: Haftungsthemen oft offen, das Geld klassisch verzinst statt angelegt, und die Förderung für Teilzeitkräfte ungenutzt. Kennen Sie Ihre Konditionen im Detail?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ehrlich gesagt nein, das macht der Berater."</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Dann schaue ich in 20 Minuten einmal drüber. Danach wissen Sie entweder: alles richtig gemacht, Haken dran. Oder Sie sehen konkret, wo es hakt. Wann passt es Ihnen?"</div></div>
+    <div class="go"><div class="lbl">Weiter</div><div class="paths"><span>→</span> <b>Teil 5</b></div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head">
+      <span class="badge">C</span>
+      <h3>„Das macht mein Steuerberater"</h3>
+      <span class="when">Neutral fragen, nicht angreifen</span>
+    </div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Gut, dann ist jemand dran. Die Frage ist dann aber nicht, ob Sie jemanden haben — sondern was davon umgesetzt ist. Was läuft aktuell konkret?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Eigentlich nur die Pflicht-bAV."</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Das sehe ich häufig. Ein Steuerberater rechnet das vergangene Jahr ab — gestaltet wird das kommende. Ich schaue mir das in 20 Minuten an, mit Ihrem Steuerberater sprechen wir danach gern gemeinsam. Wann passt es Ihnen?"</div></div>
+    <div class="go"><div class="lbl">Weiter</div><div class="paths"><span>→</span> <b>Teil 5</b></div></div>
+  </div>
+</div>
+
+<!-- ==================== TEIL 5 ==================== -->
+<div class="part">
+  <div class="part-head">
+    <span class="no">TEIL 5</span>
+    <h2>Terminierung</h2>
+    <span class="goal">Vier Schritte · in einem Zug</span>
+  </div>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">1</span><h3>Zwei Optionen — nie offen fragen</h3></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Donnerstag vor der Sprechstunde oder lieber Freitag am frühen Nachmittag?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Donnerstag ginge, so gegen acht."</div></div>
+    <div class="go"><div class="lbl">Regel</div><div class="paths">Nach der Frage <b>still sein</b> und die Pause aushalten. Wer sie füllt, verhandelt gegen sich selbst.</div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">2</span><h3>E-Mail holen</h3></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Perfekt, Donnerstag acht Uhr. An welche Adresse darf ich die Einladung schicken?"</div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">3</span><h3>Einladung raus — solange sie am Telefon ist</h3></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Ist raus. Da liegt auch unsere Erstinformation bei — die muss ich Ihnen als Makler geben, damit Sie wissen, mit wem Sie es zu tun haben. Schauen Sie einmal kurz, ob sie angekommen ist?"</div></div>
+    <div class="say sie"><div class="who">Ärztin</div><div class="txt">„Ja, ist da."</div></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Dann einmal auf Annehmen klicken, dann steht es bei uns beiden fest."</div></div>
+  </div>
+
+  <div class="var">
+    <div class="var-head"><span class="badge">4</span><h3>Der letzte Satz</h3><span class="when">Senkt die Absagequote</span></div>
+    <div class="say du"><div class="who">Du</div><div class="txt">„Eine Sache noch, Frau Dr. [Nachname]: Bringen Sie am Donnerstag bitte nichts mit. Keine Ordner, keine Policen. Zwanzig Minuten reden, mehr ist es nicht."</div></div>
+  </div>
+
+  <div class="key">
+    <span class="tag">Kein Termin zustande gekommen</span>
+    <div class="txt">„Alles gut, dann bedanke ich mich für die zwei Minuten und wünsche Ihnen einen schönen Tag."</div>
+    <div class="after"><b>Tür offen lassen, nicht zuziehen.</b> Wiedervorlage in acht Wochen — außer sie hat gesagt, dass sie nicht mehr angerufen werden möchte.</div>
+  </div>
+</div>
+
+<!-- ==================== TEIL 6 ==================== -->
+<div class="part">
+  <div class="part-head">
+    <span class="no">TEIL 6</span>
+    <h2>Terminierung — Einwandbehandlung</h2>
+    <span class="goal">Antworten, dann zurück zur Terminfrage</span>
+  </div>
+
+  <div class="obj">
+    <div class="q">Keine Zeit.</div>
+    <div class="a">„Deshalb rufe ich auch nicht an, um es jetzt zu besprechen — sondern um 20 Minuten zu finden. Wann ist es bei Ihnen am ruhigsten?"</div>
+    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Kein Interesse.</div>
+    <div class="a">„Kann ich verstehen — Sie wissen ja noch gar nicht, worum es geht. Eine Frage, dann bin ich weg: Wie viele MFA haben Sie in den letzten drei Jahren verloren?"</div>
+    <div class="then">Kommt eine Zahl <b>→</b> Teil 5. Kommt nur Abwehr <b>→</b> freundlich verabschieden</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Schicken Sie mir mal Unterlagen.</div>
+    <div class="a">„Kann ich machen — bringt nur wenig, weil das Sinnvolle bei jeder Praxis anders aussieht. Lieber umgekehrt: 20 Minuten, danach schicke ich genau das, was zu Ihnen passt."</div>
+    <div class="then">Bleibt sie dabei: schicken, in fünf Tagen anrufen</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Was kostet mich das?</div>
+    <div class="a">„Das Gespräch nichts, und die Bestandsaufnahme auch nicht. Ob am Ende etwas kostet, hängt davon ab, ob Sie etwas umsetzen — und das entscheiden Sie, nachdem Sie die Zahlen gesehen haben."</div>
+    <div class="then">Kommt „Ja, aber wovon leben Sie dann?" <b>→</b> nächster Einwand</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Und wie verdienen Sie dann Geld?</div>
+    <div class="a">„Wir werden von den Produktgebern vergütet, wenn tatsächlich etwas umgesetzt wird — der Marktstandard bei Maklern. Auf Wunsch legen wir die Vergütung für jeden einzelnen Vertrag offen, bevor Sie unterschreiben. Und wenn nichts umgesetzt wird, entstehen Ihnen keine Kosten."</div>
+    <div class="then">Ohne Pause <b>→</b> zurück zur Terminfrage. Diese drei Sätze sitzen auswendig.</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir haben schon jemanden dafür.</div>
+    <div class="a">„Gut, dann ist jemand dran. Ein zweiter, unabhängiger Blick kostet Sie nichts und deckt erfahrungsgemäß mehr auf, als man denkt. Darf ich Ihnen in 20 Minuten zeigen, worauf es dabei ankommt?"</div>
+    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir zahlen einfach ordentlich Gehalt.</div>
+    <div class="a">„Der ehrlichste Weg — und leider der teuerste. Damit bei 3.100 € brutto 50 € netto mehr ankommen, brauchen Sie rund 91 € mehr Gehalt; mit Arbeitgeberabgaben kostet Sie das rund 110 €. Genau da würde ich Ihnen die Alternative zeigen."</div>
+    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir sind zu klein, wir haben nur drei Leute.</div>
+    <div class="a">„Genau deshalb rufe ich an. Wenn bei fünfzehn Leuten eine geht, fangen die anderen das auf. Bei drei nicht. Bei Ihnen ist der Ausfall teurer — nicht günstiger."</div>
+    <div class="then">Unter drei Mitarbeitenden ist es kein Einwand, sondern die Wahrheit <b>→</b> sauber beenden</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Das muss ich mit meinem Partner besprechen.</div>
+    <div class="a">„Verstehe ich, das ist eine gemeinsame Entscheidung. Am einfachsten ist es meistens, wenn Sie beide dabei sind — dann müssen Sie es nicht weitererzählen. Wann passt es Ihnen beiden?"</div>
+    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Rufen Sie in ein paar Monaten nochmal an.</div>
+    <div class="a">„Mache ich, das trage ich mir fest ein. Nur kurz, damit ich zum richtigen Zeitpunkt anrufe: Was müsste sich bis dahin verändert haben?"</div>
+    <div class="then">Antwort und Datum notieren — beides ist der Aufhänger für den nächsten Anruf</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Woher haben Sie meine Nummer?</div>
+    <div class="a">„Aus Ihrer Stellenanzeige beziehungsweise dem öffentlichen Praxisverzeichnis. Wir schauen, welche Praxen gerade wachsen oder Personal suchen — das sind die, bei denen das Thema aktuell ist."</div>
+    <div class="then">Kurz halten, dann <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Sind Sie von einer Versicherung?</div>
+    <div class="a">„Nein. Wir sind ungebundene Makler und arbeiten im Auftrag unserer Mandanten, nicht im Auftrag eines Konzerns. Deshalb steht am Anfang eine Analyse und kein Produkt."</div>
+    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Ich glaube nicht, dass das meine Mitarbeiterinnen interessiert.</div>
+    <div class="a">„Das höre ich oft — und in den Teamgesprächen ist es fast immer andersherum. Gefragt wird zuerst nach dem Zahnersatz. Nehmen wir uns 20 Minuten, dann können Sie es Ihrem Team wenigstens anbieten?"</div>
+    <div class="then">Danach <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Wir stecken gerade mitten in einer Übernahme / einem Umbau.</div>
+    <div class="a">„Dann rufe ich zum bestmöglichen Zeitpunkt an. Genau in dieser Phase werden die Verträge gemacht, die zehn Jahre laufen. Nehmen wir uns 20 Minuten, bevor das alles feststeht?"</div>
+    <div class="then">Bester Lead überhaupt <b>→</b> Teil 5, Schritt 1</div>
+  </div>
+
+  <div class="obj">
+    <div class="q">Rufen Sie hier bitte nicht mehr an.</div>
+    <div class="a">„Selbstverständlich. Ich trage Sie aus, Sie hören nichts mehr von uns. Entschuldigen Sie die Störung und einen schönen Tag."</div>
+    <div class="then"><b>Kein Nachfassen.</b> Im CRM sperren, Wiedervorlage löschen, nie wieder anrufen.</div>
+  </div>
+
+  <div class="key">
+    <span class="tag">Die einzige Regel, die über allen anderen steht</span>
+    <div class="txt">„Alles gut, dann bedanke ich mich für die zwei Minuten und wünsche Ihnen einen schönen Tag."</div>
+    <div class="after"><b>Jeden Einwand genau einmal behandeln.</b> Kommt derselbe Widerstand ein zweites Mal, wird verabschiedet — nicht überzeugt. Wer zweimal auf dasselbe Nein antwortet, verkauft, und danach ist die Tür für Jahre zu.</div>
+  </div>
+</div>
+
+</body>
+</html>
