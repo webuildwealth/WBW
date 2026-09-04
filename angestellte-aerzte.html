@@ -75,11 +75,30 @@
     f.parentNode.insertBefore(j, f);
   }
 
+  /* Google-Tag (GA4). Dasselbe Tor wie beim Container: Das mitgelieferte
+     Standard-Snippet lädt gtag.js sofort und mit async — damit stünde eine
+     Messung, bevor jemand zugestimmt hat. Die Funktion gtag() ist bereits
+     oben im Consent-Mode-Block definiert und wird hier nur benutzt, nicht
+     neu angelegt; ein zweites Mal definiert überschriebe sie den Standard. */
+  var ga4Gestartet = false;
+
+  function starteGa4() {
+    if (ga4Gestartet) return;
+    ga4Gestartet = true;
+    var g = d.createElement(s);
+    g.async = true;
+    g.src = 'https://www.googletagmanager.com/gtag/js?id=G-HXRCEKDVBD';
+    d.getElementsByTagName(s)[0].parentNode.insertBefore(g, null);
+    w.gtag('js', new Date());
+    w.gtag('config', 'G-HXRCEKDVBD');
+  }
+
   // Cookiebot meldet den Einwilligungsstand über diese Ereignisse. Statistik
   // ODER Marketing genügt — für beides gibt es Tags im Container.
   function pruefeUndStarte() {
     var c = w.Cookiebot && w.Cookiebot.consent;
     if (c && (c.statistics || c.marketing)) starteGtm();
+    if (c && c.statistics) starteGa4();
   }
 
   w.addEventListener('CookiebotOnAccept', pruefeUndStarte);

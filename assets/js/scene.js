@@ -16,6 +16,7 @@
 
   var N = 132;                 // Punkte pro Strang
   var TARGETS = 4;
+  var DEG = Math.PI / 180;
   var TAU = Math.PI * 2;
 
   var reduceMotion = global.matchMedia &&
@@ -68,6 +69,27 @@
   /* Kubische Bézier — die Schlange der Bildmarke ist im Logo als zwei
      C-Segmente definiert; hier wird dieselbe Kurve nachgezogen, statt sie
      durch eine Sinuswelle anzunähern. */
+  /* Kubische Bézier in 3D — für Ohrbügel und Schlauch des Stethoskops. */
+  function bez3(p0, p1, p2, p3, t) {
+    var u = 1 - t, a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;
+    return [a * p0[0] + b * p1[0] + c * p2[0] + d * p3[0],
+            a * p0[1] + b * p1[1] + c * p2[1] + d * p3[1],
+            a * p0[2] + b * p1[2] + c * p2[2] + d * p3[2]];
+  }
+
+  /* Stethoskop-Maße. Aufbau wie am echten Gerät: Vom Y-Stück laufen zwei
+     Bügel nach außen-oben und biegen oben wieder nach innen zu den Oliven;
+     nach unten geht ein einzelner Schlauch zum Bruststück. Vorher war der
+     Bügel ein durchgehendes U und der Schlauch ein davon getrenntes Stück —
+     die beiden trafen sich nirgends, weshalb es beim ersten Blick nicht wie
+     ein Stethoskop aussah, sondern wie zwei Striche. */
+  var STETH = {
+    y: [0, 0.16, 0],                                  // Y-Stück
+    bugL: [[-0.50, 0.44, -0.07], [-0.80, 0.98, -0.19], [-0.60, 1.14, -0.24]],
+    bugR: [[ 0.50, 0.44,  0.07], [ 0.80, 0.98,  0.19], [ 0.60, 1.14,  0.24]],
+    schlauch: [[0.24, -0.22, 0.15], [-0.12, -0.62, 0.02], [0.10, -0.92, 0.06]]
+  };
+
   function bez(p0, p1, p2, p3, t) {
     var u = 1 - t, a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;
     return [a * p0[0] + b * p1[0] + c * p2[0] + d * p3[0],
@@ -79,10 +101,16 @@
      Der Faktor 0.92/42 überträgt jede Koordinate maßstabsgetreu, die y-Achse
      gespiegelt, weil SVG nach unten zählt. */
   var SIG = {
-    stabX: -0.175, stabUnten: -0.701, stabOben: 0.613,
-    // Stützpunkte der beiden Schlangensegmente
-    s1: [[-0.307, 0.372], [0.088, 0.241], [0.088, 0.066], [-0.307, -0.066]],
-    s2: [[-0.307, -0.066], [-0.701, -0.197], [-0.701, -0.372], [-0.307, -0.504]]
+    stabX: -0.224, stabUnten: -0.945, stabOben: 0.845,
+    // Ringlücken wie in der Marke: oben 14°, unten 6°
+    blauVon: 97 * DEG, blauBis: 267 * DEG,
+    rotVon:  83 * DEG, rotBis:  -87 * DEG,
+    // Drei Schlangensegmente, Stützpunkte aus mark.svg umgerechnet
+    sn: [
+      [[-0.448, -0.671], [ 0.000, -0.572], [ 0.025, -0.373], [-0.224, -0.273]],
+      [[-0.224, -0.273], [-0.472, -0.174], [-0.497,  0.025], [-0.224,  0.124]],
+      [[-0.224,  0.124], [ 0.050,  0.224], [ 0.025,  0.398], [-0.174,  0.497]]
+    ]
   };
 
   // Liefert für Strang si (0..3) und Ziel ti (0..3) den Punkt bei s = 0..1
@@ -91,22 +119,19 @@
 
     if (ti === 0) {
       /* ---------------------------------------------- 0 · STETHOSKOP ---- */
-      if (si === 0) {                       // Ohrbügel (U-Form)
-        var q = s * 2 - 1;                  // -1 .. 1
-        var a = Math.abs(q);
-        x = 0.70 * q;
-        y = 0.26 + 0.76 * Math.pow(a, 1.45);
-        z = 0.30 * q * (1 - 0.35 * a);
+      var b3;
+      if (si === 0) {                       // linker Ohrbügel
+        b3 = bez3(STETH.y, STETH.bugL[0], STETH.bugL[1], STETH.bugL[2], s);
+        x = b3[0]; y = b3[1]; z = b3[2];
+      } else if (si === 3) {                // rechter Ohrbügel
+        b3 = bez3(STETH.y, STETH.bugR[0], STETH.bugR[1], STETH.bugR[2], s);
+        x = b3[0]; y = b3[1]; z = b3[2];
       } else if (si === 1) {                // Schlauch bis Bruststück
-        k = s;
-        y = 0.28 - 1.22 * k;
-        x = 0.46 * Math.sin(Math.PI * k) * (0.35 + 0.65 * k);
-        z = 0.34 * Math.sin(TAU * k * 0.92) * (1 - 0.32 * k);
-      } else {                              // Puls im Schlauch (Glanzlinie)
-        k = s;
-        y = 0.28 - 1.22 * k;
-        x = 0.46 * Math.sin(Math.PI * k) * (0.35 + 0.65 * k) + 0.035;
-        z = 0.34 * Math.sin(TAU * k * 0.92) * (1 - 0.32 * k) + 0.05;
+        b3 = bez3(STETH.y, STETH.schlauch[0], STETH.schlauch[1], STETH.schlauch[2], s);
+        x = b3[0]; y = b3[1]; z = b3[2];
+      } else {                              // Glanzlinie auf dem Schlauch
+        b3 = bez3(STETH.y, STETH.schlauch[0], STETH.schlauch[1], STETH.schlauch[2], s);
+        x = b3[0] + 0.030; y = b3[1]; z = b3[2] + 0.045;
       }
 
     } else if (ti === 1) {
@@ -151,22 +176,20 @@
     } else {
       /* ------------------------------------------------- 3 · SIGNET ----- */
       if (si === 0) {                       // linker Bogen (navy)
-        ang = Math.PI * 0.5 + s * Math.PI;
+        ang = SIG.blauVon + s * (SIG.blauBis - SIG.blauVon);
         x = 0.92 * Math.cos(ang);
         y = 0.92 * Math.sin(ang);
         z = 0.04 * Math.sin(s * Math.PI);
       } else if (si === 1) {                // rechter Bogen (bordeaux)
-        ang = Math.PI * 0.5 - s * Math.PI;
+        ang = SIG.rotVon + s * (SIG.rotBis - SIG.rotVon);
         x = 0.92 * Math.cos(ang);
         y = 0.92 * Math.sin(ang);
         z = 0.04 * Math.sin(s * Math.PI);
-      } else if (si === 2) {                // Schlange (zwei Bézier-Segmente)
-        var pkt;
-        if (s < 0.5) {
-          pkt = bez(SIG.s1[0], SIG.s1[1], SIG.s1[2], SIG.s1[3], s * 2);
-        } else {
-          pkt = bez(SIG.s2[0], SIG.s2[1], SIG.s2[2], SIG.s2[3], (s - 0.5) * 2);
-        }
+      } else if (si === 2) {                // Schlange (drei Bézier-Segmente)
+        var seg = Math.min(2, Math.floor(s * 3));
+        var q3 = s * 3 - seg;
+        var g = SIG.sn[seg];
+        var pkt = bez(g[0], g[1], g[2], g[3], q3);
         x = pkt[0]; y = pkt[1];
         /* Im Logo ist die Schlange flach. Ein wenig Tiefe braucht sie hier
            trotzdem: Ohne sie liefe sie starr in einer Ebene vor dem Stab und
@@ -195,7 +218,7 @@
         var arr = new Float32Array(N * 3);
         for (i = 0; i < N; i++) {
           s = i / (N - 1);
-          p = shape(si === 3 && ti !== 3 ? 2 : si, ti, s);
+          p = shape(si === 3 && ti !== 0 && ti !== 3 ? 2 : si, ti, s);
           arr[i * 3] = p[0]; arr[i * 3 + 1] = p[1]; arr[i * 3 + 2] = p[2];
         }
         per.push(arr);
@@ -208,24 +231,28 @@
 
   /* --------------------------------------------------------- Farbpaletten */
   var COL = {
-    a: [hex('#1D4E7E'), hex('#4E7EA6'), hex('#1E5A88'), hex('#0C2C4F')],
+    a: [hex('#A9BCCD'), hex('#4E7EA6'), hex('#1E5A88'), hex('#0C2C4F')],
     b: [hex('#123A61'), hex('#8C1E2F'), hex('#751524'), hex('#751524')],
     c: [hex('#EFE9E4'), hex('#F0C6CD'), hex('#6F93B4'), hex('#EDE8E7')],
-    // Stab: dieselbe helle Deckfläche wie die Schlange im Logo
-    d: [hex('#EDE8E7'), hex('#EDE8E7'), hex('#EDE8E7'), hex('#EDE8E7')]
+    /* Strang 3 hat zwei Rollen: im ersten Akt der rechte Ohrbügel aus Stahl,
+       im letzten der Äskulapstab in der hellen Deckfläche des Logos. */
+    d: [hex('#A9BCCD'), hex('#EDE8E7'), hex('#EDE8E7'), hex('#EDE8E7')]
   };
   var WIDTH = {
-    a: [0.062, 0.020, 0.014, 0.070],
-    b: [0.066, 0.030, 0.034, 0.070],
-    c: [0.020, 0.017, 0.017, 0.052],
-    d: [0.052, 0.052, 0.052, 0.058]
+    // Ziel 0: Bügel dünner als der Schlauch — am Gerät ist der eine Metall,
+    // der andere weicher Kunststoff. Genau dieser Unterschied macht die Form
+    // auf den ersten Blick als Stethoskop lesbar.
+    a: [0.048, 0.020, 0.014, 0.070],
+    b: [0.078, 0.030, 0.034, 0.070],
+    c: [0.022, 0.017, 0.017, 0.052],
+    d: [0.048, 0.052, 0.052, 0.058]
   };
   var ALPHA = {
     a: [1, 0.55, 0.5, 1],
     b: [1, 1, 1, 1],
     c: [0.85, 0.5, 0.55, 1],
-    // Erst auf dem letzten Ziel sichtbar — davor gibt es keinen Stab
-    d: [0, 0, 0, 1]
+    // Im ersten Akt der rechte Bügel, im letzten der Stab; dazwischen nichts
+    d: [1, 0, 0, 1]
   };
 
   // Bruststück / Knoten: Position, Radius, Neigung je Ziel
@@ -233,12 +260,12 @@
     { p: [0.10, -0.96, 0.06], r: 0.255, tilt: 0.55, alpha: 1 },
     { p: [0.03, 0.60, 0.02], r: 0.075, tilt: 0.0, alpha: 0.95 },
     { p: [1.00, 0.86, 0.02], r: 0.085, tilt: 0.0, alpha: 1 },
-    { p: [-0.175, 0.679, 0.00], r: 0.164, tilt: 0.0, alpha: 1 }
+    { p: [-0.224, 0.905, 0.00], r: 0.139, tilt: 0.0, alpha: 1 }
   ];
 
   // Ohroliven (nur Ziel 0 sichtbar)
   var BUDS = [
-    [[-0.70, 1.02, -0.30], [0.70, 1.02, 0.30]],
+    [[-0.60, 1.14, -0.24], [0.60, 1.14, 0.24]],
     [[-1.18, -0.72, -0.05], [1.18, -0.72, -0.05]],
     [[-1.06, 0.92, -0.16], [1.08, -0.92, -0.16]],
     [[-0.92, 0.0, 0.0], [0.92, 0.0, 0.0]]
@@ -250,7 +277,7 @@
     [[0.30, -0.90, 0.0, 0.16], [0.60, -0.90, 0.0, 0.16], [0.90, -0.90, 0.0, 0.16]],
     [[0.30, -0.72, 0.0, 0.16], [0.60, -0.72, 0.0, 0.16], [0.90, -0.72, 0.0, 0.16]],
     [[0.12, -0.90, 0.62, 0.20], [0.50, -0.90, 1.06, 0.20], [0.88, -0.90, 1.52, 0.20]],
-    [[0.213, -0.701, 0.438, 0.165], [0.455, -0.701, 0.635, 0.165], [0.696, -0.701, 0.832, 0.165]]
+    [[0.211, -0.547, 0.398, 0.087], [0.448, -0.547, 0.622, 0.087], [0.684, -0.547, 0.870, 0.087]]
   ];
   var BAR_A = [0, 0, 1, 1];
 

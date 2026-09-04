@@ -94,11 +94,30 @@
     f.parentNode.insertBefore(j, f);
   }
 
+  /* Google-Tag (GA4). Dasselbe Tor wie beim Container: Das mitgelieferte
+     Standard-Snippet lädt gtag.js sofort und mit async — damit stünde eine
+     Messung, bevor jemand zugestimmt hat. Die Funktion gtag() ist bereits
+     oben im Consent-Mode-Block definiert und wird hier nur benutzt, nicht
+     neu angelegt; ein zweites Mal definiert überschriebe sie den Standard. */
+  var ga4Gestartet = false;
+
+  function starteGa4() {
+    if (ga4Gestartet) return;
+    ga4Gestartet = true;
+    var g = d.createElement(s);
+    g.async = true;
+    g.src = 'https://www.googletagmanager.com/gtag/js?id=G-HXRCEKDVBD';
+    d.getElementsByTagName(s)[0].parentNode.insertBefore(g, null);
+    w.gtag('js', new Date());
+    w.gtag('config', 'G-HXRCEKDVBD');
+  }
+
   // Cookiebot meldet den Einwilligungsstand über diese Ereignisse. Statistik
   // ODER Marketing genügt — für beides gibt es Tags im Container.
   function pruefeUndStarte() {
     var c = w.Cookiebot && w.Cookiebot.consent;
     if (c && (c.statistics || c.marketing)) starteGtm();
+    if (c && c.statistics) starteGa4();
   }
 
   w.addEventListener('CookiebotOnAccept', pruefeUndStarte);
@@ -216,7 +235,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li><a href="#anfragen">Kontaktaufnahme und Online-Checks</a></li>
         <li><a href="#termin">Terminbuchung über Google Kalender</a></li>
         <li><a href="#einwilligung">Einwilligungsverwaltung (Cookiebot)</a></li>
-        <li><a href="#gtm">Google Tag Manager</a></li>
+        <li><a href="#gtm">Google Tag Manager und Google Analytics</a></li>
         <li><a href="#clarity">Microsoft Clarity — Sitzungsaufzeichnung und Heatmaps</a></li>
         <li><a href="#empfaenger">Empfänger Ihrer Daten</a></li>
         <li><a href="#speicherdauer">Speicherdauer</a></li>
@@ -454,7 +473,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <a href="cookie-richtlinie.html">Cookie-Richtlinie</a> auf.
     </p>
 
-    <h2 id="gtm">7. Google Tag Manager</h2>
+    <h2 id="gtm">7. Google Tag Manager und Google Analytics</h2>
     <p>
       Wir verwenden den <strong>Google Tag Manager</strong> der Google Ireland Limited,
       Gordon House, Barrow Street, Dublin 4, Irland. Der Tag Manager ist kein
@@ -467,6 +486,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       fremden Server — Ihre IP-Adresse an Google übertragen. Das lässt sich technisch
       nicht vermeiden. Der Container wird erst geladen, nachdem Sie im Banner
       eingewilligt haben; ohne Einwilligung blockiert Cookiebot ihn.
+    </p>
+    <p>
+      Über den Tag Manager hinaus binden wir <strong>Google Analytics 4</strong>
+      (Mess-ID G-HXRCEKDVBD) desselben Anbieters ein. Analytics erfasst, welche
+      Seiten aufgerufen werden, wie lange der Besuch dauert, über welchen Kanal er
+      zustande kam sowie technische Angaben zu Gerät und Browser, und setzt dafür
+      Cookies, die Ihren Browser über mehrere Aufrufe hinweg wiedererkennen. Die
+      IP-Adresse wird von Google gekürzt, bevor sie gespeichert wird. Wir werten
+      die Daten nur zusammengefasst aus und führen sie nicht mit anderen Quellen
+      zusammen.
+    </p>
+    <p>
+      Auch Analytics lädt erst nach Ihrer Einwilligung in die Kategorie
+      „Statistik“; ohne Zustimmung wird das Skript nicht angefordert.
+      Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO in Verbindung mit
+      § 25 Abs. 1 TDDDG.
     </p>
     <p>
       Zusätzlich setzen wir den <strong>Google Consent Mode v2</strong> ein. Er sorgt
