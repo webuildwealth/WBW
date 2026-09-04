@@ -6,47 +6,30 @@ den Livegang.
 
 ---
 
-## 1 · Cookiebot einrichten
+## 1 · Cookiebot — ERLEDIGT
 
-1. Konto auf [cookiebot.com](https://www.cookiebot.com) anlegen.
-2. Domain `finanz-medizin.com` als *Domain Group* hinzufügen und verifizieren.
-3. Die **Domain Group ID** kopieren (Format: `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`).
-4. Im Projekt alle Vorkommen von `COOKIEBOT_CBID_HIER` ersetzen:
+Die Domain Group ID **`dc9e5b3c-0d46-44ba-9432-5a00df77d01b`** ist eingetragen:
+zwölfmal im Projekt — je einmal das `uc.js`-Skript im `<head>` aller zehn
+Seiten, dazu das `cd.js`-Deklarationsskript in `cookie-richtlinie.html` und in
+`datenschutz.html` (Abschnitt 11).
 
-   ```bash
-   grep -rl COOKIEBOT_CBID_HIER . --include='*.html' \
-     | xargs sed -i 's/COOKIEBOT_CBID_HIER/IHRE-ECHTE-ID/g'
-   ```
+**Offen bleibt:** In Cookiebot einen ersten **Scan** der Domain auslösen. Erst
+danach füllen sich die Cookie-Tabellen auf beiden Seiten; vorher bleiben sie
+leer.
 
-   Betroffen sind alle 10 HTML-Seiten: je einmal das `uc.js`-Skript im `<head>`,
-   dazu das `cd.js`-Deklarationsskript zweimal — in `cookie-richtlinie.html`
-   und in `datenschutz.html` (Abschnitt 11).
-
-5. In Cookiebot einen ersten **Scan** auslösen. Erst danach füllt sich die
-   Tabelle auf der Cookie-Richtlinie-Seite.
-
-**Kategorien prüfen.** Cookiebot ordnet gefundene Cookies automatisch ein.
-Kontrollieren Sie, dass Clarity unter *Statistik* landet und nicht unter
-*Notwendig* — sonst würde es ohne Einwilligung laden, und die gesamte
-Konstruktion wäre wertlos.
+**Kategorien prüfen (wichtig).** Cookiebot ordnet gefundene Cookies nach dem
+Scan automatisch ein. Kontrollieren Sie, dass Clarity unter *Statistik* landet
+und nicht unter *Notwendig* — sonst würde es ohne Einwilligung laden und die
+gesamte Konstruktion wäre wertlos.
 
 ---
 
 ## 2 · Google Tag Manager
 
-### 2.1 Container anlegen
+### 2.1 Container — ERLEDIGT
 
-1. [tagmanager.google.com](https://tagmanager.google.com) → Konto und Container
-   für `finanz-medizin.com`, Zielplattform **Web**.
-2. Container-ID kopieren (Format `GTM-XXXXXXX`).
-3. Im Projekt ersetzen:
-
-   ```bash
-   grep -rl GTM-XXXXXXX . --include='*.html' \
-     | xargs sed -i 's/GTM-XXXXXXX/GTM-IHRECHTE/g'
-   ```
-
-   Pro Seite zweimal enthalten: Head-Snippet und `noscript`-iframe im Body.
+Die Container-ID **`GTM-T2KGZ25V`** ist eingetragen, zwanzigmal: pro Seite
+zweimal, einmal im Head-Snippet und einmal im `noscript`-iframe im Body.
 
 ### 2.2 Consent Mode im Container aktivieren
 

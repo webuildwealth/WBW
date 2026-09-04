@@ -65,7 +65,27 @@
          + 0.28 * g(0.65, 0.058);  // T-Welle
   }
 
-  // Liefert für Strang si (0..2) und Ziel ti (0..3) den Punkt bei s = 0..1
+  /* Kubische Bézier — die Schlange der Bildmarke ist im Logo als zwei
+     C-Segmente definiert; hier wird dieselbe Kurve nachgezogen, statt sie
+     durch eine Sinuswelle anzunähern. */
+  function bez(p0, p1, p2, p3, t) {
+    var u = 1 - t, a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;
+    return [a * p0[0] + b * p1[0] + c * p2[0] + d * p3[0],
+            a * p0[1] + b * p1[1] + c * p2[1] + d * p3[1]];
+  }
+
+  /* Maße der Bildmarke, umgerechnet aus assets/img/mark.svg.
+     Dort liegt der Ring bei Radius 42 um (50,50); in der Szene bei 0.92.
+     Der Faktor 0.92/42 überträgt jede Koordinate maßstabsgetreu, die y-Achse
+     gespiegelt, weil SVG nach unten zählt. */
+  var SIG = {
+    stabX: -0.175, stabUnten: -0.701, stabOben: 0.613,
+    // Stützpunkte der beiden Schlangensegmente
+    s1: [[-0.307, 0.372], [0.088, 0.241], [0.088, 0.066], [-0.307, -0.066]],
+    s2: [[-0.307, -0.066], [-0.701, -0.197], [-0.701, -0.372], [-0.307, -0.504]]
+  };
+
+  // Liefert für Strang si (0..3) und Ziel ti (0..3) den Punkt bei s = 0..1
   function shape(si, ti, s) {
     var x = 0, y = 0, z = 0, k, ang;
 
@@ -140,11 +160,24 @@
         x = 0.92 * Math.cos(ang);
         y = 0.92 * Math.sin(ang);
         z = 0.04 * Math.sin(s * Math.PI);
-      } else {                              // Äskulapstab mit Schlange
-        k = s;
-        y = -0.78 + 1.44 * k;
-        x = -0.04 + 0.19 * Math.sin(k * Math.PI * 3.05) * (0.45 + 0.55 * k);
-        z = 0.19 * Math.cos(k * Math.PI * 3.05) * (0.45 + 0.55 * k);
+      } else if (si === 2) {                // Schlange (zwei Bézier-Segmente)
+        var pkt;
+        if (s < 0.5) {
+          pkt = bez(SIG.s1[0], SIG.s1[1], SIG.s1[2], SIG.s1[3], s * 2);
+        } else {
+          pkt = bez(SIG.s2[0], SIG.s2[1], SIG.s2[2], SIG.s2[3], (s - 0.5) * 2);
+        }
+        x = pkt[0]; y = pkt[1];
+        /* Im Logo ist die Schlange flach. Ein wenig Tiefe braucht sie hier
+           trotzdem: Ohne sie liefe sie starr in einer Ebene vor dem Stab und
+           das Objekt wirkte wie ein aufgeklebter Aufkleber. Das Vorzeichen
+           folgt der Windung — vor dem Stab, wenn sie rechts davon liegt,
+           dahinter, wenn links. */
+        z = 0.16 * Math.sin(s * Math.PI * 2);
+      } else {                              // Äskulapstab (gerade)
+        y = SIG.stabUnten + (SIG.stabOben - SIG.stabUnten) * s;
+        x = SIG.stabX;
+        z = 0;
       }
     }
     return [x, y, z];
@@ -153,13 +186,16 @@
   // Alle Zielformen einmalig vorberechnen: strands[si][ti] = Float32Array(N*3)
   function buildStrands() {
     var strands = [], si, ti, i, s, p;
-    for (si = 0; si < 3; si++) {
+    /* Vier Stränge: Der vierte trägt allein den Äskulapstab der Bildmarke und
+       ist auf den ersten drei Zielen unsichtbar. Damit er beim Übergang nicht
+       aus dem Nichts hereinfliegt, folgt er dort der Bahn von Strang 2. */
+    for (si = 0; si < 4; si++) {
       var per = [];
       for (ti = 0; ti < TARGETS; ti++) {
         var arr = new Float32Array(N * 3);
         for (i = 0; i < N; i++) {
           s = i / (N - 1);
-          p = shape(si, ti, s);
+          p = shape(si === 3 && ti !== 3 ? 2 : si, ti, s);
           arr[i * 3] = p[0]; arr[i * 3 + 1] = p[1]; arr[i * 3 + 2] = p[2];
         }
         per.push(arr);
@@ -174,17 +210,22 @@
   var COL = {
     a: [hex('#1D4E7E'), hex('#4E7EA6'), hex('#1E5A88'), hex('#0C2C4F')],
     b: [hex('#123A61'), hex('#8C1E2F'), hex('#751524'), hex('#751524')],
-    c: [hex('#EFE9E4'), hex('#F0C6CD'), hex('#6F93B4'), hex('#EDE8E7')]
+    c: [hex('#EFE9E4'), hex('#F0C6CD'), hex('#6F93B4'), hex('#EDE8E7')],
+    // Stab: dieselbe helle Deckfläche wie die Schlange im Logo
+    d: [hex('#EDE8E7'), hex('#EDE8E7'), hex('#EDE8E7'), hex('#EDE8E7')]
   };
   var WIDTH = {
     a: [0.062, 0.020, 0.014, 0.070],
     b: [0.066, 0.030, 0.034, 0.070],
-    c: [0.020, 0.017, 0.017, 0.048]
+    c: [0.020, 0.017, 0.017, 0.052],
+    d: [0.052, 0.052, 0.052, 0.058]
   };
   var ALPHA = {
     a: [1, 0.55, 0.5, 1],
     b: [1, 1, 1, 1],
-    c: [0.85, 0.5, 0.55, 1]
+    c: [0.85, 0.5, 0.55, 1],
+    // Erst auf dem letzten Ziel sichtbar — davor gibt es keinen Stab
+    d: [0, 0, 0, 1]
   };
 
   // Bruststück / Knoten: Position, Radius, Neigung je Ziel
@@ -192,7 +233,7 @@
     { p: [0.10, -0.96, 0.06], r: 0.255, tilt: 0.55, alpha: 1 },
     { p: [0.03, 0.60, 0.02], r: 0.075, tilt: 0.0, alpha: 0.95 },
     { p: [1.00, 0.86, 0.02], r: 0.085, tilt: 0.0, alpha: 1 },
-    { p: [-0.04, 0.78, 0.00], r: 0.125, tilt: 0.0, alpha: 1 }
+    { p: [-0.175, 0.679, 0.00], r: 0.164, tilt: 0.0, alpha: 1 }
   ];
 
   // Ohroliven (nur Ziel 0 sichtbar)
@@ -209,7 +250,7 @@
     [[0.30, -0.90, 0.0, 0.16], [0.60, -0.90, 0.0, 0.16], [0.90, -0.90, 0.0, 0.16]],
     [[0.30, -0.72, 0.0, 0.16], [0.60, -0.72, 0.0, 0.16], [0.90, -0.72, 0.0, 0.16]],
     [[0.12, -0.90, 0.62, 0.20], [0.50, -0.90, 1.06, 0.20], [0.88, -0.90, 1.52, 0.20]],
-    [[0.26, -0.60, 0.30, 0.112], [0.47, -0.60, 0.52, 0.112], [0.68, -0.60, 0.76, 0.112]]
+    [[0.213, -0.701, 0.438, 0.165], [0.455, -0.701, 0.635, 0.165], [0.696, -0.701, 0.832, 0.165]]
   ];
   var BAR_A = [0, 0, 1, 1];
 
@@ -418,7 +459,7 @@
 
   Scene.prototype.drawStrand = function (si, mo) {
     var A = STRANDS[si][mo.i0], B = STRANDS[si][mo.i1], f = mo.f;
-    var key = si === 0 ? 'a' : si === 1 ? 'b' : 'c';
+    var key = si === 0 ? 'a' : si === 1 ? 'b' : si === 2 ? 'c' : 'd';
     var col = mixRGB(COL[key][mo.i0], COL[key][mo.i1], f);
     var wid = lerp(WIDTH[key][mo.i0], WIDTH[key][mo.i1], f);
     var alp = lerp(ALPHA[key][mo.i0], ALPHA[key][mo.i1], f);
@@ -674,6 +715,7 @@
     this.drawBars(mo);
     this.drawStrand(0, mo);
     this.drawStrand(1, mo);
+    this.drawStrand(3, mo);   // Stab zuerst, die Schlange windet sich davor
     this.drawStrand(2, mo);
     this.drawDisc(mo);
     this.drawBuds(mo);

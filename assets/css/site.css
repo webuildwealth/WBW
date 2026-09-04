@@ -142,6 +142,13 @@
   --red-700: #751524;
   --red-600: #8C1E2F;
   --red-500: #A5293B;
+
+  /* Vorzeichen-Grün. Zwei Werte, weil ein Ton nicht auf beiden Gründen
+     funktioniert: Der dunkle trägt auf Elfenbein, der helle auf Navy.
+     Beide sind gegen ihren Grund auf Lesbarkeit geprüft. */
+  --gruen-700: #17683F;
+  --gruen-050: #E4F3EA;
+  --gruen-300: #8FD6AE;
   --red-100: #F1DDE0;
   --red-050: #FAF0F1;
 
@@ -764,7 +771,24 @@ body.nav-open { overflow: hidden; }
   font-variant-numeric: tabular-nums;
 }
 .metric__val--red { color: var(--red-700); }
+/* Vorzeichen tragen die Bedeutung: Was dem Besucher etwas einbringt, steht in
+   Grün, was ihn etwas kostet, in Rot. Vorher standen auch Gewinne in Rot —
+   „+15.000 €" in Signalrot liest sich wie eine Warnung. */
+.metric__val--plus { color: var(--gruen-700); }
+
+/* Allgemeine Vorzeichen-Auszeichnung für einzelne Zahlen im Fließtext und in
+   Rechenblöcken. Bewusst getrennt von den Bausteinklassen, damit sie überall
+   greift, wo eine Zahl eine Richtung hat. */
+.zahl--plus  { color: var(--gruen-700); }
+.zahl--minus { color: var(--red-700); }
+:is(.section--dark,.hero--dark,.funnel-band) .zahl--plus  { color: var(--gruen-300); }
+:is(.section--dark,.hero--dark,.funnel-band) .zahl--minus { color: #F0B4BD; }
+/* Reihenfolge zählt: Die allgemeine Weiß-Regel für dunkle Abschnitte hat
+   dieselbe Spezifität wie die Vorzeichen-Regeln und muss deshalb VOR ihnen
+   stehen — sonst überschreibt sie Grün und Rot wieder mit Weiß. */
 :is(.section--dark,.hero--dark,.funnel-band) .metric__val { color: #fff; }
+:is(.section--dark,.hero--dark,.funnel-band) .metric__val--plus { color: var(--gruen-300); }
+:is(.section--dark,.hero--dark,.funnel-band) .metric__val--red { color: #F0B4BD; }
 .card .metric__val { font-size: var(--step-3); }
 .metric__label { font-size: .87rem; line-height: 1.45; color: var(--ink-mute); }
 :is(.section--dark,.hero--dark,.funnel-band) .metric__label { color: rgba(214,225,236,.65); }
@@ -809,13 +833,19 @@ body.nav-open { overflow: hidden; }
   grid-column: 2; justify-self: start;
   margin-top: .5rem;
   display: inline-flex; align-items: baseline; gap: .45rem;
-  background: var(--red-050); color: var(--red-700);
+  background: var(--navy-050); color: var(--navy-800);
   border-radius: var(--r-pill); padding: .35rem .85rem;
   font-family: var(--font-display); font-weight: 800; font-size: .95rem;
   font-variant-numeric: tabular-nums;
 }
+/* Plus grün, Minus rot, „± 0" bleibt neutral — dort passiert nichts, und eine
+   Farbe würde eine Richtung behaupten, die es nicht gibt. */
+.lever__val--plus  { background: var(--gruen-050); color: var(--gruen-700); }
+.lever__val--minus { background: var(--red-050);   color: var(--red-700); }
 .lever__val small { font-weight: 600; font-size: .76rem; opacity: .8; letter-spacing: 0; }
-:is(.section--dark,.hero--dark,.funnel-band) .lever__val { background: rgba(232,145,158,.14); color: #F0B4BD; }
+:is(.section--dark,.hero--dark,.funnel-band) .lever__val { background: rgba(255,255,255,.10); color: rgba(232,240,247,.92); }
+:is(.section--dark,.hero--dark,.funnel-band) .lever__val--plus  { background: rgba(143,214,174,.14); color: var(--gruen-300); }
+:is(.section--dark,.hero--dark,.funnel-band) .lever__val--minus { background: rgba(232,145,158,.14); color: #F0B4BD; }
 @media (min-width: 720px) {
   .lever {
     grid-template-columns: auto minmax(0, 1fr) auto;
