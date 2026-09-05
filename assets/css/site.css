@@ -1638,24 +1638,33 @@ mark.platzhalter {
    unfertig; diese Fläche ist eine gestalterische Entscheidung und trägt
    nebenbei die Anschrift, die Vertrauen schafft. Kommt später ein Porträt
    dazu, tritt .person__bild wieder an ihre Stelle. */
+/* Heller Grund, weil hier die Original-Bildmarke steht: Der Render ist auf
+   hellem Untergrund entstanden und trägt seinen Hintergrund fest im Bild —
+   auf Navy stünde ein heller Kasten. Auf Elfenbein fügt er sich ein, und die
+   Marke erscheint genau so, wie sie gestaltet wurde. */
 .person__signet {
-  display: grid; place-content: center; justify-items: center; gap: .9rem;
-  aspect-ratio: 4 / 5; border-radius: var(--r-xl); padding: 2rem;
+  display: grid; justify-items: center; gap: .55rem;
   text-align: center;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.10), transparent 60%),
-    linear-gradient(165deg, var(--navy-800), var(--navy-900));
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
 }
-.person__signet img { opacity: .95; }
+/* Das Bild füllt die Fläche vollständig und bringt seinen eigenen hellen
+   Grund mit. Stünde es kleiner auf einer Farbfläche, zeichnete sich der
+   Rand des Renders als Kasten ab — die beiden Hellwerte treffen sich nie
+   exakt. So gibt es keine Kante, die daneben liegen könnte. */
+.person__signet picture { display: block; width: 100%; }
+.person__signet img {
+  display: block; width: 100%; height: auto;
+  border-radius: var(--r-xl);
+  box-shadow: 0 1px 0 rgba(12, 44, 79, .06), 0 18px 40px -24px rgba(12, 44, 79, .35);
+}
 .person__signet-name {
+  margin-top: .35rem;
   font-family: var(--font-display); font-weight: 800;
-  font-size: 1.25rem; letter-spacing: -.02em; color: #fff;
+  font-size: 1.25rem; letter-spacing: -.02em; color: var(--navy-900);
 }
-.person__signet-name > span { color: var(--red-500); }
+.person__signet-name > span { color: var(--red-700); }
 .person__signet-ort {
   font-size: .78rem; letter-spacing: .04em;
-  color: rgba(255,255,255,.62); line-height: 1.5;
+  color: var(--ink-mute); line-height: 1.5;
 }
 .person__rolle {
   font-family: var(--font-display); font-weight: 700; font-size: .74rem;

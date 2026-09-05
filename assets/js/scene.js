@@ -257,7 +257,7 @@
 
   // Bruststück / Knoten: Position, Radius, Neigung je Ziel
   var DISC = [
-    { p: [0.10, -0.96, 0.06], r: 0.255, tilt: 0.55, alpha: 1 },
+    { p: [0.10, -0.99, 0.06], r: 0.285, tilt: 0.55, alpha: 1 },
     { p: [0.03, 0.60, 0.02], r: 0.075, tilt: 0.0, alpha: 0.95 },
     { p: [1.00, 0.86, 0.02], r: 0.085, tilt: 0.0, alpha: 1 },
     { p: [-0.224, 0.905, 0.00], r: 0.139, tilt: 0.0, alpha: 1 }
@@ -580,6 +580,11 @@
     var sx = out[0], sy = out[1], w = out[2];
     var R = r * w * this.scale;
     var squash = 0.62 + 0.38 * Math.abs(this.cyaw);
+    /* Anteil des Stethoskop-Ziels in der aktuellen Mischung. Nur dort ist die
+       Scheibe ein Bruststück und bekommt Metallrand und Anschlussstutzen; bei
+       den übrigen Zielen ist sie ein schlichter Knoten bzw. der Knauf der
+       Bildmarke und soll genau so schlicht bleiben. */
+    var bruststueck = (mo.i0 === 0 ? 1 - f : 0) + (mo.i1 === 0 ? f : 0);
 
     this.push(z + 0.01, function () {
       ctx.save();
@@ -611,6 +616,45 @@
       ctx.strokeStyle = 'rgba(255,255,255,.85)';
       ctx.lineWidth = Math.max(1, R * 0.07);
       ctx.stroke();
+
+      /* Details, die die Scheibe erst als Bruststück lesbar machen:
+         eine abgesetzte Metallkante, die Fuge zwischen Gehäuse und Membran
+         und der Stutzen, an dem der Schlauch ansetzt. Ohne sie bleibt es
+         eine glänzende Kugel. */
+      if (bruststueck > 0.02) {
+        ctx.globalAlpha = alpha * bruststueck;
+
+        // Umlaufende Metallkante
+        ctx.beginPath();
+        ctx.ellipse(0, 0, R, R * squash, 0, 0, TAU);
+        ctx.strokeStyle = 'rgba(120, 108, 98, .55)';
+        ctx.lineWidth = Math.max(1, R * 0.05);
+        ctx.stroke();
+
+        // Fuge Gehäuse / Membran
+        ctx.beginPath();
+        ctx.ellipse(0, 0, R * 0.78, R * 0.78 * squash, 0, 0, TAU);
+        ctx.strokeStyle = 'rgba(96, 86, 78, .45)';
+        ctx.lineWidth = Math.max(1, R * 0.035);
+        ctx.stroke();
+
+        // Anschlussstutzen nach oben, wo der Schlauch ansetzt
+        var sw = R * 0.20, sh = R * 0.42 * squash;
+        ctx.beginPath();
+        ctx.moveTo(-sw, -R * squash * 0.86);
+        ctx.lineTo(sw, -R * squash * 0.86);
+        ctx.lineTo(sw * 0.72, -R * squash - sh);
+        ctx.lineTo(-sw * 0.72, -R * squash - sh);
+        ctx.closePath();
+        var gs = ctx.createLinearGradient(-sw, 0, sw, 0);
+        gs.addColorStop(0, '#8E8378');
+        gs.addColorStop(0.45, '#E4DCD4');
+        gs.addColorStop(1, '#9A8F84');
+        ctx.fillStyle = gs;
+        ctx.fill();
+
+        ctx.globalAlpha = alpha;
+      }
       ctx.restore();
     });
   };
