@@ -44,8 +44,9 @@
 </script>
 
 <!-- ==========================================================================
-     3. Google Tag Manager — Container. Microsoft Clarity wird bewusst NICHT
-        hier eingebunden, sondern als Tag im GTM angelegt (siehe SETUP.md).
+     3. Google Tag Manager, Google Analytics und Microsoft Clarity. Alle drei
+        werden hier geladen, nicht als Tag im Container — und alle drei erst
+        nach der Einwilligung (siehe SETUP.md, Abschnitt 2).
 
         Abweichend vom Standard-Snippet lädt der Container NICHT sofort. Grund:
         Schon das Anfordern von gtm.js überträgt die IP-Adresse des Besuchers an
@@ -106,12 +107,36 @@
     w.gtag('config', 'G-HXRCEKDVBD');
   }
 
+  /* Microsoft Clarity. Dasselbe Tor wie bei GA4, aus demselben Grund: Schon
+     der Abruf von clarity.ms/tag überträgt die IP-Adresse an Microsoft, und
+     Clarity zeichnet Sitzungen auf — das ist kein Zählpixel, das man einmal
+     zu früh feuern lassen kann. Geladen wird erst bei Einwilligung in die
+     Kategorie Statistik.
+
+     clarity('consent') direkt danach ist kein Widerspruch, sondern die
+     Gegenprobe: Ohne diesen Aufruf liefe Clarity im cookielosen Notbetrieb,
+     obwohl die Einwilligung vorliegt. Wir melden ihm also genau den Stand,
+     den Cookiebot uns gemeldet hat. */
+  var clarityGestartet = false;
+
+  function starteClarity() {
+    if (clarityGestartet) return;
+    clarityGestartet = true;
+    w.clarity = w.clarity || function () { (w.clarity.q = w.clarity.q || []).push(arguments); };
+    var t = d.createElement(s);
+    t.async = true;
+    t.src = 'https://www.clarity.ms/tag/yd2puqee2j';
+    var y = d.getElementsByTagName(s)[0];
+    y.parentNode.insertBefore(t, y);
+    w.clarity('consent');
+  }
+
   // Cookiebot meldet den Einwilligungsstand über diese Ereignisse. Statistik
   // ODER Marketing genügt — für beides gibt es Tags im Container.
   function pruefeUndStarte() {
     var c = w.Cookiebot && w.Cookiebot.consent;
     if (c && (c.statistics || c.marketing)) starteGtm();
-    if (c && c.statistics) starteGa4();
+    if (c && c.statistics) { starteGa4(); starteClarity(); }
   }
 
   w.addEventListener('CookiebotOnAccept', pruefeUndStarte);
@@ -189,7 +214,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <header class="nav">
   <div class="nav__inner">
     <a class="brand" href="index.html" aria-label="Finanz-Medizin — Startseite">
-      <img src="assets/img/mark.svg" alt="" width="38" height="38">
+      <picture>
+        <source srcset="assets/img/mark-finanz-medizin.webp" type="image/webp">
+        <img src="assets/img/mark-finanz-medizin.png" alt="" width="38" height="38">
+      </picture>
       <span>
         <span class="brand__name">finanz<span>-</span>medizin</span>
         <span class="brand__tag">Beratung für Heilberufe</span>
@@ -716,7 +744,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="footer__grid">
       <div>
         <div class="footer__brand">
-          <img src="assets/img/mark.svg" alt="Finanz-Medizin" width="44" height="44">
+          <picture>
+            <source srcset="assets/img/mark-finanz-medizin.webp" type="image/webp">
+            <img src="assets/img/mark-finanz-medizin.png" alt="Finanz-Medizin" width="44" height="44">
+          </picture>
           <span class="brand__name">finanz<span>-</span>medizin</span>
         </div>
         <p style="max-width:34ch">

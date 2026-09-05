@@ -452,6 +452,10 @@ button { background: none; border: 0; cursor: pointer; }
 }
 
 .brand { display: flex; align-items: center; gap: .7rem; flex: none; }
+/* Die Bildmarke steht als <picture> im Markup (WebP mit PNG-Rückfall). Ohne
+   die eigene Angabe würde das picture-Element als Flexkind gestreckt und das
+   Bild darin verrutschte gegenüber dem Schriftzug. */
+.brand picture { display: flex; flex: none; }
 .brand img { width: 38px; height: 38px; }
 .brand__name {
   font-family: var(--font-display); font-weight: 800; font-size: 1.06rem;
@@ -1136,6 +1140,7 @@ body.nav-open { overflow: hidden; }
 .footer a:hover { color: #fff; }
 .footer ul { display: grid; gap: .55rem; }
 .footer__brand { display: flex; align-items: center; gap: .7rem; margin-bottom: 1rem; }
+.footer__brand picture { display: flex; flex: none; }
 .footer__brand img { width: 44px; height: 44px; }
 .footer__brand .brand__name { color: #fff; }
 .footer__brand .brand__name span { color: #E8919E; }
@@ -1638,30 +1643,21 @@ mark.platzhalter {
    unfertig; diese Fläche ist eine gestalterische Entscheidung und trägt
    nebenbei die Anschrift, die Vertrauen schafft. Kommt später ein Porträt
    dazu, tritt .person__bild wieder an ihre Stelle. */
-/* Heller Grund, weil hier die Original-Bildmarke steht: Der Render ist auf
-   hellem Untergrund entstanden und trägt seinen Hintergrund fest im Bild —
-   auf Navy stünde ein heller Kasten. Auf Elfenbein fügt er sich ein, und die
-   Marke erscheint genau so, wie sie gestaltet wurde. */
+/* Hier steht die Wort-Bild-Marke im Original, freigestellt. Ein eigener
+   Schriftzug daneben entfiele doppelt — die Marke bringt ihn mit. */
 .person__signet {
   display: grid; justify-items: center; gap: .55rem;
   text-align: center;
 }
-/* Das Bild füllt die Fläche vollständig und bringt seinen eigenen hellen
-   Grund mit. Stünde es kleiner auf einer Farbfläche, zeichnete sich der
-   Rand des Renders als Kasten ab — die beiden Hellwerte treffen sich nie
-   exakt. So gibt es keine Kante, die daneben liegen könnte. */
-.person__signet picture { display: block; width: 100%; }
+/* Kein Rahmen, kein Schlagschatten: Die Datei hat keinen eigenen Grund mehr,
+   ein Schatten zeichnete deshalb ihr rechteckiges Bildfeld nach statt der
+   Marke. Das Bild steht frei auf der Fläche der Seite.
+   Die Breitenbegrenzung hält es in der Spalte auf der Größe, in der die
+   Schrift des Schriftzugs noch sauber steht. */
+.person__signet picture { display: block; width: 100%; max-width: 360px; }
 .person__signet img {
   display: block; width: 100%; height: auto;
-  border-radius: var(--r-xl);
-  box-shadow: 0 1px 0 rgba(12, 44, 79, .06), 0 18px 40px -24px rgba(12, 44, 79, .35);
 }
-.person__signet-name {
-  margin-top: .35rem;
-  font-family: var(--font-display); font-weight: 800;
-  font-size: 1.25rem; letter-spacing: -.02em; color: var(--navy-900);
-}
-.person__signet-name > span { color: var(--red-700); }
 .person__signet-ort {
   font-size: .78rem; letter-spacing: .04em;
   color: var(--ink-mute); line-height: 1.5;

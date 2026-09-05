@@ -17,10 +17,15 @@ Seiten, dazu das `cd.js`-Deklarationsskript in `cookie-richtlinie.html` und in
 danach füllen sich die Cookie-Tabellen auf beiden Seiten; vorher bleiben sie
 leer.
 
-**Kategorien prüfen (wichtig).** Cookiebot ordnet gefundene Cookies nach dem
-Scan automatisch ein. Kontrollieren Sie, dass Clarity unter *Statistik* landet
-und nicht unter *Notwendig* — sonst würde es ohne Einwilligung laden und die
-gesamte Konstruktion wäre wertlos.
+**Kategorien prüfen.** Cookiebot ordnet gefundene Cookies nach dem Scan
+automatisch ein. Kontrollieren Sie, dass `_clck`/`_clsk` (Clarity) und
+`_ga`/`_ga_*` (Analytics) unter *Statistik* landen und nicht unter *Notwendig*.
+
+Das ist hier weniger kritisch als bei einem gewöhnlichen Einbau: Beide Dienste
+werden erst geladen, wenn Cookiebot *Statistik* meldet, eine falsche Einordnung
+könnte sie also nicht vorzeitig starten. Sie stünde aber falsch in der
+Cookie-Erklärung auf der Cookie-Richtlinie — und die ist eine Zusage an den
+Besucher.
 
 ---
 
@@ -141,47 +146,31 @@ nicht mehr stimmt.
    - **Trigger:** *Consent Initialization – All Pages*
    - **Tag-Reihenfolge:** ganz oben (Consent Initialization feuert vor allem anderen)
 
-### 2.4 Microsoft Clarity als Tag
+### 2.4 Microsoft Clarity — ERLEDIGT
 
-Clarity steht bewusst **nicht** im HTML — so lässt es sich abschalten, ohne
-die Seite neu zu deployen, und der Consent-Check liegt an einer Stelle.
+Die Projekt-ID **`yd2puqee2j`** ist eingetragen, auf allen zehn Seiten, hinter
+demselben Tor wie Google Analytics: geladen wird `clarity.ms/tag/yd2puqee2j`
+erst bei Einwilligung in die Kategorie **Statistik**.
 
-1. [clarity.microsoft.com](https://clarity.microsoft.com) → Projekt anlegen →
-   **Projekt-ID** kopieren.
-2. GTM → *Tags* → **Neu**:
+Anders als ursprünglich geplant steht Clarity damit **nicht** als
+benutzerdefiniertes HTML-Tag im Container. Der Grund ist derselbe wie bei GA4:
+Ein Custom-HTML-Tag im GTM feuert unabhängig vom Consent Mode — der steuert nur
+Google-eigene Tags. Man muss dort von Hand eine Einwilligungsbedingung
+nachtragen, und wird sie vergessen, zeichnet Clarity ohne Einwilligung
+Sitzungen auf, ohne dass es auffällt. Im Seitenquelltext ist die Bedingung
+dagegen die Ladebedingung selbst: Ohne Einwilligung wird die Datei nicht
+angefordert.
 
-   | Feld | Wert |
-   |---|---|
-   | Tag-Typ | Benutzerdefiniertes HTML |
-   | Trigger | All Pages (`gtm.js`) |
-   | Name | `Clarity – Statistik` |
+Direkt nach dem Start ruft die Seite `clarity('consent')` auf. Ohne diesen
+Aufruf liefe Clarity im cookielosen Notbetrieb, obwohl eine Einwilligung
+vorliegt.
 
-3. Als HTML einsetzen (`IHRE_CLARITY_ID` ersetzen):
-
-   ```html
-   <script>
-   (function(c,l,a,r,i,t,y){
-       c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-       t=l.createElement(r);t.async=1;
-       t.src="https://www.clarity.ms/tag/"+i;
-       y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-   })(window, document, "clarity", "script", "IHRE_CLARITY_ID");
-   </script>
-   ```
-
-4. **Einwilligungsbedingung setzen — der wichtigste Schritt:**
-   Im Tag unter *Erweiterte Einstellungen* → **Einwilligungseinstellungen** →
-   *Zusätzliche Einwilligung erforderlich für Tag-Auslösung* →
-   **`analytics_storage`** hinzufügen.
-
-   Ohne diesen Eintrag feuert das Tag unabhängig von der Einwilligung. Der
-   Consent Mode allein reicht bei einem Custom-HTML-Tag **nicht** — er steuert
-   nur Google-eigene Tags.
-
-5. Zusätzlich als zweite Absicherung eine Auslöse-Ausnahme über eine
-   Datenschichtvariable ist **nicht** nötig, wenn Schritt 4 gesetzt ist und
-   Cookiebot mit `data-blockingmode="auto"` läuft. Beide greifen unabhängig
-   voneinander.
+**Legen Sie Clarity deshalb nicht zusätzlich als Tag im Container an** — es
+liefe sonst doppelt. Wollen Sie es später doch über den GTM steuern, nehmen Sie
+zuerst `starteClarity()` samt Aufruf in `pruefeUndStarte()` aus den zehn Seiten
+heraus und setzen Sie im Tag unter *Erweiterte Einstellungen* →
+*Einwilligungseinstellungen* → *Zusätzliche Einwilligung erforderlich für
+Tag-Auslösung* den Wert **`analytics_storage`**.
 
 ### 2.5 Clarity-Maskierung härten
 
@@ -294,8 +283,10 @@ schon im Browser und Sie sehen ein falsches Ergebnis.
 
 4. Jetzt im Banner **alle ablehnen**. Cookie-Liste erneut ansehen: unverändert.
 5. Jetzt **alle akzeptieren**. Nach dem Neuladen müssen `_clck` und `_clsk`
-   erscheinen. Tun sie das nicht, feuert das Clarity-Tag nicht — Consent-Bedingung
-   in Schritt 2.4 prüfen.
+   (Clarity) sowie `_ga` und `_ga_HXRCEKDVBD` (Analytics) erscheinen. Fehlen die
+   Clarity-Cookies, wurde entweder die Kategorie *Statistik* nicht bestätigt oder
+   `clarity('consent')` lief nicht — im Reiter *Network* nach `clarity.ms/tag`
+   sehen.
 
 Ebenfalls unter *Application* prüfen: **Local Storage** und **Session Storage**.
 Dort darf ohne Einwilligung nur `fm_campaign` bzw. `fm_rail_zu` stehen — beides
@@ -338,8 +329,9 @@ Sie in dem Fall zuerst, ob die CBID aus Schritt 1 wirklich eingetragen ist.
 
 GTM → **Vorschau** → URL eingeben. Im Tag-Assistenten links unten auf
 **Consent** klicken: Dort steht pro Tag, ob es wegen fehlender Einwilligung
-zurückgehalten wurde. Das Clarity-Tag muss vor der Zustimmung unter
-*Nicht ausgelöst* stehen, mit dem Grund `analytics_storage`.
+zurückgehalten wurde. Nötig ist das erst, wenn Sie eigene Tags in den Container
+legen — Analytics und Clarity laufen an ihm vorbei direkt aus dem Seitenquelltext
+(Abschnitte 2.1 und 2.4), für sie ist Abschnitt 5.2 der Nachweis.
 
 **Wichtig, sonst hält man die Vorschau für kaputt:** Der Tag-Assistent meldet
 zunächst *„Verbindung nicht hergestellt"* oder bleibt leer. Das ist richtig so

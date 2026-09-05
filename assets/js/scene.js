@@ -96,20 +96,40 @@
             a * p0[1] + b * p1[1] + c * p2[1] + d * p3[1]];
   }
 
-  /* Maße der Bildmarke, umgerechnet aus assets/img/mark.svg.
-     Dort liegt der Ring bei Radius 42 um (50,50); in der Szene bei 0.92.
-     Der Faktor 0.92/42 überträgt jede Koordinate maßstabsgetreu, die y-Achse
-     gespiegelt, weil SVG nach unten zählt. */
+  /* Maße der Bildmarke, ausgemessen an der Originaldatei
+     assets/img/mark-finanz-medizin.webp (720x612, freigestellt).
+     Der Ring dort: Mitte (349.0, 314.4), mittlerer Radius 245.3 px. In der
+     Szene liegt derselbe Ring bei 0.92 — jede gemessene Strecke wird also mit
+     0.92/245.3 umgerechnet, die y-Achse gespiegelt, weil Bilder nach unten
+     zählen.
+
+     Zuvor stammten diese Maße aus einer nachgezeichneten SVG-Fassung und
+     wichen an drei Stellen sichtbar von der Vorlage ab: Die große Ringlücke
+     saß oben statt unten, der Stab stand zu weit links (-0.224 statt -0.097),
+     und alle Strichstärken waren rund ein Drittel der echten. Die Nachzeichnung
+     ist entfallen — überall steht jetzt die Originaldatei. */
   var SIG = {
-    stabX: -0.224, stabUnten: -0.945, stabOben: 0.845,
-    // Ringlücken wie in der Marke: oben 14°, unten 6°
-    blauVon: 97 * DEG, blauBis: 267 * DEG,
-    rotVon:  83 * DEG, rotBis:  -87 * DEG,
-    // Drei Schlangensegmente, Stützpunkte aus mark.svg umgerechnet
+    stabX: -0.097, stabUnten: -0.874, stabOben: 0.845,
+    /* Gemessen: oben 5,6° Lücke (dort sitzt der Knauf), unten 15,3°, wo der
+       Schwanz der Schlange austritt.
+       Die Zahlen sind gegenüber der Messung aufgeweitet, weil die Bögen mit
+       runden Enden gezeichnet werden: Eine runde Kappe steht um die halbe
+       Strichstärke über, bei 0.211 Breite und Radius 0.92 also um 6,6° je
+       Ende. Mit den gemessenen Winkeln (88,1° / 93,7°) berührten sich die
+       Kappen oben und die Lücke verschwände. Aufgeweitet um 2 x 6,6° steht
+       sie sichtbar dort, wo sie in der Vorlage steht. */
+    blauVon: 100.25 * DEG, blauBis: 251.15 * DEG,
+    rotVon:   81.55 * DEG, rotBis:  -80.45 * DEG,
+    /* Fünf Segmente statt drei: Die Schlange der Vorlage macht zweieinhalb
+       Windungen, nicht anderthalb. Die Stützpunkte sind die gemessenen
+       Umkehrpunkte, die Kontrollpunkte senkrecht dazu — so kreuzt sie den Stab
+       jedes Mal quer und läuft nicht schräg an ihm vorbei. */
     sn: [
-      [[-0.448, -0.671], [ 0.000, -0.572], [ 0.025, -0.373], [-0.224, -0.273]],
-      [[-0.224, -0.273], [-0.472, -0.174], [-0.497,  0.025], [-0.224,  0.124]],
-      [[-0.224,  0.124], [ 0.050,  0.224], [ 0.025,  0.398], [-0.174,  0.497]]
+      [[-0.308, -1.101], [-0.190, -1.045], [ 0.036, -0.991], [ 0.036, -0.861]],
+      [[ 0.036, -0.861], [ 0.036, -0.679], [-0.319, -0.713], [-0.319, -0.531]],
+      [[-0.319, -0.531], [-0.319, -0.316], [ 0.077, -0.355], [ 0.077, -0.140]],
+      [[ 0.077, -0.140], [ 0.077,  0.075], [-0.377,  0.035], [-0.377,  0.250]],
+      [[-0.377,  0.250], [-0.377,  0.400], [ 0.030,  0.470], [ 0.370,  0.460]]
     ]
   };
 
@@ -185,18 +205,22 @@
         x = 0.92 * Math.cos(ang);
         y = 0.92 * Math.sin(ang);
         z = 0.04 * Math.sin(s * Math.PI);
-      } else if (si === 2) {                // Schlange (drei Bézier-Segmente)
-        var seg = Math.min(2, Math.floor(s * 3));
-        var q3 = s * 3 - seg;
+      } else if (si === 2) {                // Schlange (fünf Bézier-Segmente)
+        var ns = SIG.sn.length;
+        var seg = Math.min(ns - 1, Math.floor(s * ns));
+        var q3 = s * ns - seg;
         var g = SIG.sn[seg];
         var pkt = bez(g[0], g[1], g[2], g[3], q3);
         x = pkt[0]; y = pkt[1];
         /* Im Logo ist die Schlange flach. Ein wenig Tiefe braucht sie hier
            trotzdem: Ohne sie liefe sie starr in einer Ebene vor dem Stab und
-           das Objekt wirkte wie ein aufgeklebter Aufkleber. Das Vorzeichen
-           folgt der Windung — vor dem Stab, wenn sie rechts davon liegt,
-           dahinter, wenn links. */
-        z = 0.16 * Math.sin(s * Math.PI * 2);
+           das Objekt wirkte wie ein aufgeklebter Aufkleber.
+
+           Die Tiefe folgt jetzt der Windung selbst statt einer festen
+           Schwingung: Liegt die Schlange rechts vom Stab, ist sie davor, links
+           dahinter. Bei zweieinhalb Windungen träfe eine feste Sinuskurve das
+           nicht mehr — sie liefe zwei Windungen lang auf der falschen Seite. */
+        z = 0.22 * clamp((x - SIG.stabX) / 0.26, -1, 1);
       } else {                              // Äskulapstab (gerade)
         y = SIG.stabUnten + (SIG.stabOben - SIG.stabUnten) * s;
         x = SIG.stabX;
@@ -239,13 +263,30 @@
     d: [hex('#A9BCCD'), hex('#EDE8E7'), hex('#EDE8E7'), hex('#EDE8E7')]
   };
   var WIDTH = {
-    // Ziel 0: Bügel dünner als der Schlauch — am Gerät ist der eine Metall,
-    // der andere weicher Kunststoff. Genau dieser Unterschied macht die Form
-    // auf den ersten Blick als Stethoskop lesbar.
-    a: [0.048, 0.020, 0.014, 0.070],
-    b: [0.078, 0.030, 0.034, 0.070],
-    c: [0.022, 0.017, 0.017, 0.052],
-    d: [0.048, 0.052, 0.052, 0.058]
+    /* Ziel 0: Bügel dünner als der Schlauch — am Gerät ist der eine Metall,
+       der andere weicher Kunststoff. Genau dieser Unterschied macht die Form
+       auf den ersten Blick als Stethoskop lesbar.
+
+       Ziel 3 ist an der Originaldatei ausgemessen: Der Ring ist dort 56 px
+       stark bei 245 px Radius, also 0.211 in Szeneneinheiten, der Stab 0.150,
+       die Schlange 0.185. Vorher stand hier durchweg rund ein Drittel davon —
+       die Marke erschien als dünne Strichzeichnung statt als das kräftige
+       Zeichen, das sie ist. */
+    a: [0.048, 0.020, 0.014, 0.211],
+    b: [0.078, 0.030, 0.034, 0.211],
+    c: [0.022, 0.017, 0.017, 0.185],
+    d: [0.048, 0.052, 0.052, 0.150]
+  };
+  /* Dunkle Kontur, nur im Signet. Die Vorlage baut Stab und Schlange als
+     helle Fläche in einer dunklen Kontur — ohne die verschwindet ein fast
+     weißer Strang auf dem elfenbeinfarbenen Grund der Seite, und Stab und
+     Schlange laufen dort, wo sie sich kreuzen, ineinander. Bei den ersten drei
+     Zielen ist sie aus: Dort sind die Stränge selbst dunkel genug. */
+  var KANTE = {
+    a: [0, 0, 0, 0.34],
+    b: [0, 0, 0, 0.34],
+    c: [0, 0, 0, 0.62],
+    d: [0, 0, 0, 0.62]
   };
   var ALPHA = {
     a: [1, 0.55, 0.5, 1],
@@ -260,7 +301,7 @@
     { p: [0.10, -0.99, 0.06], r: 0.285, tilt: 0.55, alpha: 1 },
     { p: [0.03, 0.60, 0.02], r: 0.075, tilt: 0.0, alpha: 0.95 },
     { p: [1.00, 0.86, 0.02], r: 0.085, tilt: 0.0, alpha: 1 },
-    { p: [-0.224, 0.905, 0.00], r: 0.139, tilt: 0.0, alpha: 1 }
+    { p: [-0.083, 0.759, 0.00], r: 0.129, tilt: 0.0, alpha: 1 }
   ];
 
   // Ohroliven (nur Ziel 0 sichtbar)
@@ -277,7 +318,11 @@
     [[0.30, -0.90, 0.0, 0.16], [0.60, -0.90, 0.0, 0.16], [0.90, -0.90, 0.0, 0.16]],
     [[0.30, -0.72, 0.0, 0.16], [0.60, -0.72, 0.0, 0.16], [0.90, -0.72, 0.0, 0.16]],
     [[0.12, -0.90, 0.62, 0.20], [0.50, -0.90, 1.06, 0.20], [0.88, -0.90, 1.52, 0.20]],
-    [[0.211, -0.547, 0.398, 0.087], [0.448, -0.547, 0.622, 0.087], [0.684, -0.547, 0.870, 0.087]]
+    /* Ziel 3 gemessen: Mitten bei 0.099 / 0.368 / 0.668, Höhen 0.277 / 0.645
+       / 0.822, Halbbreiten 0.101 / 0.122 / 0.129. Die Fußpunkte liegen in der
+       Vorlage bewusst nicht auf einer Linie — der Render kippt die Balken
+       leicht nach hinten, und genau das macht die Staffelung. */
+    [[0.099, -0.793, 0.277, 0.101], [0.368, -0.756, 0.645, 0.122], [0.668, -0.569, 0.822, 0.129]]
   ];
   var BAR_A = [0, 0, 1, 1];
 
@@ -490,6 +535,7 @@
     var col = mixRGB(COL[key][mo.i0], COL[key][mo.i1], f);
     var wid = lerp(WIDTH[key][mo.i0], WIDTH[key][mo.i1], f);
     var alp = lerp(ALPHA[key][mo.i0], ALPHA[key][mo.i1], f);
+    var kante = lerp(KANTE[key][mo.i0], KANTE[key][mo.i1], f);
     if (alp < 0.02) return;
 
     var i, o, depth, ctx = this.ctx, self = this;
@@ -509,10 +555,38 @@
     var snap = new Float32Array(pr);      // Frame-Kopie (pr wird wiederverwendet)
     var dsnap = new Float32Array(dep);
 
+    /* Kontur: EIN Zug für den ganzen Strang, hinter allen seinen Segmenten.
+       Segmentweise gezeichnet wird sie zur Riffelung — die Kontur des nächsten
+       Segments landet in der Tiefensortierung hinter dem Körper des vorigen
+       und malt als dunkler Ring darüber. Als durchgehender Zug tritt sie als
+       das auf, was sie ist: der dunkle Rand der hellen Fläche. Sie ist nur im
+       Signet aktiv, wo der Strang flach in einer Ebene liegt; die eine
+       gemeinsame Tiefe kostet dort nichts. */
+    if (kante > 0.01) {
+      var zmin = dsnap[0];
+      for (i = 1; i < N; i++) if (dsnap[i] < zmin) zmin = dsnap[i];
+      this.push(zmin - 0.02, function () {
+        var lw = wid * snap[2] * self.scale * 1.20;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = 'rgba(12,44,79,' + (kante * alp * 0.62).toFixed(3) + ')';
+        ctx.lineWidth = lw;
+        ctx.beginPath();
+        ctx.moveTo(snap[0], snap[1]);
+        for (var k = 1; k < N; k++) ctx.lineTo(snap[k * 3], snap[k * 3 + 1]);
+        ctx.stroke();
+      });
+    }
+
     for (i = 0; i < N - 1; i++) {
       (function (i) {
         var o1 = i * 3, o2 = (i + 1) * 3;
         var zmid = (dsnap[i] + dsnap[i + 1]) * 0.5;
+        /* Drei Lagen je Segment, jede als eigener Eintrag mit winzigem
+           Tiefenversatz: Kontur, Körper, Glanz. Läge alles in einem Eintrag,
+           malte der Körper des nächsten Segments über den Glanz des vorigen —
+           die Sortierung läuft ja über alle Objekte der Szene, nicht entlang
+           des Strangs. */
         self.push(zmid, function () {
           var x1 = snap[o1], y1 = snap[o1 + 1], w1 = snap[o1 + 2];
           var x2 = snap[o2], y2 = snap[o2 + 1], w2 = snap[o2 + 2];
@@ -527,21 +601,45 @@
           ctx.beginPath();
           ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
           ctx.stroke();
-          // Spekular-Glanz (Zylinder-Illusion)
-          if (lw > 2.2) {
-            var ox = -lw * 0.20, oy = -lw * 0.24;
-            ctx.strokeStyle = rgba(col, shade * 1.9 + 0.28, alp * 0.5);
-            ctx.lineWidth = lw * 0.30;
-            ctx.beginPath();
-            ctx.moveTo(x1 + ox, y1 + oy); ctx.lineTo(x2 + ox, y2 + oy);
-            ctx.stroke();
-          }
+        });
+        /* Spekular-Glanz (Zylinder-Illusion) als eigener Eintrag, minimal
+           weiter vorn. Zusammen mit dem Segmentkörper gezeichnet wäre er
+           unterbrochen: Die Segmente werden global nach Tiefe sortiert, ein
+           später gezeichneter Nachbarkörper malt dann über den Glanz seines
+           Vorgängers. Bei dünnen Strichen fiel das nicht auf, beim 0.211
+           starken Ring des Signets wurde der Bogen sichtbar perlig. */
+        self.push(zmid + 0.014, function () {
+          var x1 = snap[o1], y1 = snap[o1 + 1], w1 = snap[o1 + 2];
+          var x2 = snap[o2], y2 = snap[o2 + 1], w2 = snap[o2 + 2];
+          var lw = wid * ((w1 + w2) * 0.5) * self.scale;
+          if (lw <= 2.2) return;
+          var shade = 0.62 + 0.55 * clamp((zmid + 1.1) / 2.2, 0, 1);
+          /* Der Glanz sitzt senkrecht zur Laufrichtung, nicht auf einem festen
+             Versatz nach oben links. Bei einem festen Versatz wandert er auf
+             gekrümmten Strängen aus dem Schlauch heraus und zerfällt in
+             Schuppen — auf der Schlange des Signets war das deutlich zu sehen.
+             Senkrecht versetzt bleibt er dort, wo das Licht ihn hinlegt. */
+          var dx = x2 - x1, dy = y2 - y1;
+          var len = Math.sqrt(dx * dx + dy * dy) || 1;
+          var nx = -dy / len, ny = dx / len;
+          if (nx + ny > 0) { nx = -nx; ny = -ny; }   // Licht von oben links
+          var d = lw * 0.26;
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = rgba(col, shade * 1.9 + 0.28, alp * 0.5);
+          ctx.lineWidth = lw * 0.30;
+          ctx.beginPath();
+          ctx.moveTo(x1 + nx * d, y1 + ny * d); ctx.lineTo(x2 + nx * d, y2 + ny * d);
+          ctx.stroke();
         });
       })(i);
     }
 
-    // Pulswelle: Lichtpunkt, der durch Schlauch / EKG / Kurve läuft
-    if (si === 1 && !reduceMotion) {
+    /* Pulswelle: Lichtpunkt, der durch Schlauch / EKG / Kurve läuft.
+       Im Signet nicht: Dort ist Strang 1 der bordeauxfarbene Ringbogen, und
+       ein Licht, das darauf entlangwandert, liest sich nicht als Puls, sondern
+       als Fehler im Logo. Deshalb blendet es mit dem Signetanteil aus. */
+    var signet = (mo.i0 === 3 ? 1 - mo.f : 0) + (mo.i1 === 3 ? mo.f : 0);
+    if (si === 1 && !reduceMotion && signet < 0.98) {
       var head = (this.time * 0.30) % 1.35;
       if (head < 1) {
         var hi = Math.min(N - 2, Math.max(1, Math.round(head * (N - 1))));
@@ -554,7 +652,7 @@
               ctx.save();
               ctx.globalCompositeOperation = 'lighter';
               ctx.lineCap = 'round';
-              ctx.strokeStyle = 'rgba(255,236,222,' + (0.55 * g * g).toFixed(3) + ')';
+              ctx.strokeStyle = 'rgba(255,236,222,' + (0.55 * g * g * (1 - signet)).toFixed(3) + ')';
               ctx.lineWidth = wid * snap[o1 + 2] * self.scale * (0.42 + 0.5 * g);
               ctx.beginPath();
               ctx.moveTo(snap[o1], snap[o1 + 1]); ctx.lineTo(snap[o2], snap[o2 + 1]);
@@ -686,6 +784,38 @@
     }
   };
 
+  /* Schlangenkopf. Nur im Signet sichtbar und nur dort sinnvoll: Ohne ihn
+     endet die Schlange als abgerundeter Schlauchstummel, und das Zeichen
+     verliert genau das Detail, an dem man den Äskulapstab erkennt. Die Rundung
+     sitzt auf dem letzten Stützpunkt von SIG.sn, das Auge dort, wo es in der
+     Vorlage liegt. */
+  Scene.prototype.drawKopf = function (mo) {
+    var a = (mo.i0 === 3 ? 1 - mo.f : 0) + (mo.i1 === 3 ? mo.f : 0);
+    if (a < 0.02) return;
+    var letzte = SIG.sn[SIG.sn.length - 1];
+    var kx = letzte[3][0], ky = letzte[3][1];
+    var ctx = this.ctx, self = this, out = new Float32Array(3);
+    var z = this.project(kx, ky, 0.22, out, 0);
+    (function (sx, sy, w) {
+      self.push(z + 0.03, function () {
+        var R = 0.088 * w * self.scale;
+        ctx.globalAlpha = a;
+        var g = ctx.createRadialGradient(sx - R * 0.35, sy - R * 0.4, R * 0.1, sx, sy, R);
+        g.addColorStop(0, '#FFFFFF');
+        g.addColorStop(0.6, '#EDE8E7');
+        g.addColorStop(1, '#BDB3AB');
+        ctx.beginPath();
+        ctx.ellipse(sx, sy, R * 1.36, R * 0.88, -0.16, 0, TAU);
+        ctx.fillStyle = g; ctx.fill();
+        // Auge
+        ctx.beginPath();
+        ctx.arc(sx + R * 0.50, sy - R * 0.25, Math.max(0.8, R * 0.17), 0, TAU);
+        ctx.fillStyle = '#0C2C4F'; ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+    })(out[0], out[1], out[2]);
+  };
+
   // Balken (Logo-Motiv / Vermögensaufbau) als extrudierte 3D-Quader
   Scene.prototype.drawBars = function (mo) {
     var a = lerp(BAR_A[mo.i0], BAR_A[mo.i1], mo.f);
@@ -790,6 +920,7 @@
     this.drawStrand(2, mo);
     this.drawDisc(mo);
     this.drawBuds(mo);
+    this.drawKopf(mo);
 
     this.items.sort(function (a, b) { return a.z - b.z; });
     for (var i = 0; i < this.items.length; i++) this.items[i].fn();
