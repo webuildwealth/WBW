@@ -1,7 +1,9 @@
 # MFA-Lead-Sourcing-Pipeline — Analyse, Architektur und Review
 
-**Status:** Planungsdokument (Phase 1–19). **Es wurde noch kein Pipeline-Code implementiert.**
-**Datum:** 2026-08-31
+**Status:** Planungsdokument (Phase 1–19), Stand 2026-08-31. Der Plan ist inzwischen teilweise
+umgesetzt und die BA-API hat sich geändert — **§ 16 (Nachtrag zum Livegang) korrigiert, was in
+den Abschnitten 1–15 überholt ist.** Bei Widersprüchen gilt § 16.
+**Datum:** 2026-08-31, Nachtrag 2026-09-05
 **Review-Ergebnis:** Runde 1 `CHANGES_REQUIRED` → Plan V2 → Runde 2 `APPROVED (mit 4 Auflagen)`
 
 ---
@@ -129,8 +131,8 @@ Für uns entscheidend:
 | Feld | Bedeutung für den Lead |
 |---|---|
 | `arbeitgeber` | Firmenname wie inseriert |
-| **`arbeitgeberHashId`** | **stabile Arbeitgeber-Identität — der beste Dedup-Schlüssel überhaupt** |
-| `arbeitgeberKundennummerHash` | Logo-Abruf, zusätzlicher Identitätsanker |
+| ~~`arbeitgeberHashId`~~ | in `/pc/v6/jobs` nicht mehr vorhanden — siehe § 16.1 |
+| **`arbeitgeberKundennummerHash`** | **stabile Arbeitgeber-Identität, seit v6 der Dedup-Schlüssel; nicht in jeder Anzeige gesetzt** |
 | **`arbeitgeberAdresse`** | `strasse`, `strasseHausnummer`, `plz`, `ort`, `region`, `land` |
 | **`arbeitgeberdarstellungUrl`** | **die Website des Arbeitgebers — direkt von der BA** |
 | `arbeitgeberdarstellung` | Selbstdarstellung, enthält oft Kontaktangaben |
@@ -459,7 +461,7 @@ nicht repariert. Durchwahl des Entscheiders schlägt Zentrale.
 
 | Tier | Schlüssel | Sicherheit |
 |---|---|---|
-| T1 | `ba_employer_hash` (`arbeitgeberHashId`) | exakt, BA-eigene Identität |
+| T1 | `ba_employer_hash` (`arbeitgeberKundennummerHash`, siehe § 16.1) | exakt, BA-eigene Identität — aber nur dort, wo die BA ihn liefert |
 | T2 | `company_domain` (eTLD+1, ohne Freemail/Portale) | sehr hoch |
 | T3 | `phone_e164` | hoch |
 | T4 | `name_normalized` + `postal_code` | hoch |
@@ -812,3 +814,87 @@ Jeder Befund ist im vorliegenden Dokument eingearbeitet:
 
 **Ohne diese sechs Antworten kann Schritt 1 nicht sauber beginnen; Punkte 4–6 lassen sich
 notfalls mit den dokumentierten Standardwerten (nur MFA, Berlin+50 km, LLM aus) vorbelegen.**
+
+---
+
+## 16. NACHTRAG ZUM LIVEGANG (2026-09-05)
+
+Die Abschnitte 1–15 sind der Plan vom 2026-08-31. Sie bleiben unverändert stehen, damit
+nachvollziehbar bleibt, was geplant war. Dieser Abschnitt hält fest, was der reale Betrieb
+inzwischen ergeben hat — und was vor dem Livegang noch offen ist.
+
+### 16.1 Die BA-API hat sich geändert: v4 → v6
+
+Der Suchendpunkt `/pc/v4/app/jobs` antwortet nicht mehr. Die Suche läuft über
+**`GET /pc/v6/jobs`**; die Details bleiben bei `/pc/v4/jobdetails/{base64(refnr)}`. Die Antwort
+hat eine andere Hülle und andere Feldnamen:
+
+| v4 | v6 |
+|---|---|
+| `stellenangebote[]` | `ergebnisliste[]` |
+| `refnr` | `referenznummer` |
+| `beruf` | `hauptberuf` |
+| `arbeitgeber` | `firma` |
+| `arbeitsort.{plz,ort}` | `stellenlokationen[0].adresse.{plz,ort}` |
+| `arbeitsort.koordinaten.{lat,lon}` | `stellenlokationen[0].{breite,laenge}` |
+| **`arbeitgeberHashId`** | **existiert nicht mehr** |
+
+Der Client normalisiert v6 auf die v4-Form zurück, damit die nachgelagerten Stufen unverändert
+bleiben. **Für den Dedup-Schlüssel gilt das nicht:** `arbeitgeberHashId` ist ersatzlos
+entfallen, an seine Stelle tritt `arbeitgeberKundennummerHash`. Das ist ein *anderer* Wert für
+denselben Arbeitgeber, kein umbenanntes Feld.
+
+Zwei Folgen, die § 7.1 so nicht vorgesehen hatte:
+
+1. **Der T1-Schlüssel ist nicht mehr flächendeckend.** Nach den Zählern des Kalibrierungslaufs
+   trägt ein Teil der Anzeigen keinen Hash. Diese Datensätze fallen auf T4
+   (`name_normalized` + `plz`) zurück — einen Schlüssel, den § 7.1 selbst nur mit „hoch"
+   statt „exakt" bewertet.
+2. **Ein Arbeitgeber kann unter zwei Schlüsseln erscheinen** — einmal mit Hash, einmal ohne.
+   Genau daraus entsteht die Dublette: der Sync legt für jede Variante einen eigenen
+   HubSpot-Datensatz an. Das betrifft auch aufeinanderfolgende Läufe, nicht nur eine
+   einzelne Datei.
+
+Die Property `ba_employer_hash_id` in HubSpot trägt weiterhin die Beschreibung
+„arbeitgeberHashId der Bundesagentur". Das ist seit dem Wechsel falsch und gehört korrigiert,
+bevor jemand anderes damit arbeitet.
+
+### 16.2 Stand HubSpot (gemessen am 2026-09-05)
+
+Abfrage über die CRM-Suche: **10 Companies insgesamt, davon 0 mit gesetztem
+`ba_employer_hash_id`.** Die Aufräumaktion nach den Sync-Tests war also vollständig.
+
+Das ist die gute Nachricht zur Dublettenfrage: Es gibt **keine Altbestände im alten
+Schlüsselformat**, gegen die der erste echte Lauf kollidieren könnte. Der Schlüsselwechsel
+v4 → v6 ist damit *jetzt* folgenlos — und nur jetzt. Nach dem ersten produktiven Sync ist
+der Bestand da und jede spätere Schlüsseländerung wird teuer.
+
+### 16.3 Deploy-Risiko R-2 ist eingetreten
+
+§ 1.3 und Risiko R-2 haben beschrieben, was passiert, wenn aus dem falschen Verzeichnis
+deployt wird. Genau das ist geschehen: Die Deploy-Logs weisen als Deploy-Pfad das
+Pipeline-Verzeichnis aus, nicht das Website-Verzeichnis. `netlify deploy --prod` veröffentlicht
+das aktuelle Arbeitsverzeichnis — bei `publish = "."` ohne weitere Rückfrage.
+
+Konsequenz für die Arbeitsweise, nicht nur für die Dokumentation:
+
+- Deploys **ausschließlich** aus dem Website-Verzeichnis, nie aus dem Pipeline-Verzeichnis.
+- Vor jedem Deploy den Pfad in der Netlify-Ausgabe lesen, bevor man bestätigt.
+- Die Pipeline gehört auf einen Pfad, der mit dem Website-Verzeichnis nichts gemeinsam hat.
+
+Die `.gitignore` dieses Repos (Commit „Datenabfluss ueber das Publish-Verzeichnis
+ausschliessen") schützt gegen versehentliches *Versionieren*. Gegen einen CLI-Deploy aus dem
+falschen Verzeichnis schützt sie nicht — Netlify lädt hoch, was im Verzeichnis liegt, nicht,
+was Git kennt.
+
+### 16.4 Offene Punkte vor dem Livegang
+
+| # | Punkt | Warum blockierend |
+|---|---|---|
+| 1 | Suchbegriffe und Blacklist in `berufe.yaml` widersprechen sich | Es wird breit gesucht und danach genau das wieder verworfen. Die Zielgruppe ist damit nicht definiert, sondern zufällig. |
+| 2 | `validated: false` in `berufe.yaml` | Die Konfiguration ist als ungeprüft markiert und wird trotzdem produktiv verwendet. |
+| 3 | Herkunft der angereicherten Kontaktdaten | Regel 8 und 9: keine erfundenen, keine aus Namensmustern gebildeten Adressen. Muss pro Feld nachweisbar sein, nicht plausibel. |
+| 4 | Kanalentscheidung (A-3, § 7 UWG) | Ohne sie ist offen, ob die exportierten Spalten überhaupt verwendet werden dürfen. |
+
+Punkt 1 und 2 sind Zielgruppenentscheidungen und keine technischen Fragen — sie lassen sich
+nicht durch Anpassen der Tests lösen.
