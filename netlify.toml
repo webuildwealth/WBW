@@ -44,12 +44,17 @@
     #
     # Aufgenommen ist ausschließlich, was die eingebauten Dienste brauchen:
     #   consent./consentcdn./imgsec.cookiebot.com  Banner, Prüfung, Deklaration
-    #   www.googletagmanager.com                   Container + noscript-iframe
-    #   *.google-analytics.com / *.analytics.google.com   GA4 über den GTM
+    #   *.googletagmanager.com                     Container, gtag.js, noscript
+    #   *.google-analytics.com / *.analytics.google.com   GA4-Treffer
+    #   tagassistant.google.com                    GTM-Vorschau/Debug-Fenster
     #   *.clarity.ms / c.bing.com                  Microsoft Clarity über den GTM
-    # Clarity und GA4 stehen hier, weil sie später als Tag im GTM aktiviert
-    # werden. Bis dahin wird nichts davon geladen — Cookiebot blockiert sie,
-    # und die CSP erlaubt nur, sie verbietet nichts von selbst.
+    # Bei google-analytics.com steht bewusst der Platzhalter davor: GA4 schickt
+    # Treffer aus der EU nicht an www., sondern an region1.google-analytics.com.
+    # Nur www. einzutragen kostet genau die Messungen, um die es geht.
+    #
+    # Clarity steht hier, weil es später als Tag im GTM aktiviert wird. Bis
+    # dahin wird nichts davon geladen — Cookiebot blockiert es, und die CSP
+    # erlaubt nur, sie verbietet nichts von selbst.
     #
     # 'unsafe-eval' ist bewusst NICHT gesetzt. Der GTM-Vorschaumodus und manche
     # benutzerdefinierten Vorlagen brauchen es; falls die Vorschau leer bleibt,
@@ -58,12 +63,12 @@
     # Der Funnel sendet an /api/lead auf derselben Domain; 'self' genügt dafür.
     Content-Security-Policy = """\
 default-src 'self'; \
-script-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms; \
+script-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://www.googletagmanager.com https://tagassistant.google.com https://www.clarity.ms https://*.clarity.ms; \
 style-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com; \
 font-src 'self' data:; \
-img-src 'self' data: https://imgsec.cookiebot.com https://consent.cookiebot.com https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://c.bing.com; \
-connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://www.googletagmanager.com https://www.google-analytics.com https://*.analytics.google.com https://*.clarity.ms https://c.bing.com; \
-frame-src https://consentcdn.cookiebot.com https://www.googletagmanager.com; \
+img-src 'self' data: https://imgsec.cookiebot.com https://consent.cookiebot.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://*.clarity.ms https://c.bing.com; \
+connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com https://tagassistant.google.com https://*.clarity.ms https://c.bing.com; \
+frame-src https://consentcdn.cookiebot.com https://www.googletagmanager.com https://tagassistant.google.com; \
 form-action 'self'; \
 base-uri 'self'; \
 frame-ancestors 'none'; \

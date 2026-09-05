@@ -26,10 +26,63 @@ gesamte Konstruktion wäre wertlos.
 
 ## 2 · Google Tag Manager
 
-### 2.1 Container — ERLEDIGT
+### 2.1 Container und Google-Tag — ERLEDIGT
 
 Die Container-ID **`GTM-T2KGZ25V`** ist eingetragen, zwanzigmal: pro Seite
-zweimal, einmal im Head-Snippet und einmal im `noscript`-iframe im Body.
+zweimal, einmal im Head-Snippet und einmal im `noscript`-iframe im Body. Das
+ist derselbe Container wie im Installationsdialog (Konto 6375131432, Container
+263232396, Arbeitsbereich „www.finanz-medizin.com").
+
+Die GA4-Mess-ID **`G-HXRCEKDVBD`** wird zusätzlich direkt auf der Seite geladen
+(`gtag.js`), ebenfalls auf allen zehn Seiten. `GT-NFRN2LGK` ist **kein zweiter
+Dienst**, sondern die zweite Kennung desselben Google-Tags „finanz-medizin";
+eine der beiden genügt, eingetragen ist die Mess-ID.
+
+**Beide Einbauten sind hinter dasselbe Tor gelegt:**
+
+| | lädt bei |
+|---|---|
+| `gtm.js` (Container) | Einwilligung *Statistik* **oder** *Marketing* |
+| `gtag.js` (GA4) | Einwilligung *Statistik* |
+
+Ohne Einwilligung wird keins von beiden angefordert.
+
+#### Genau einmal messen — bitte einmal nachsehen
+
+Google weist im Tag-Dialog darauf hin: *„Das Google-Tag darf auf jeder Seite
+nur einmal vorhanden sein."* Liegt im Container `GTM-T2KGZ25V` **zusätzlich**
+ein GA4-Konfigurationstag für `G-HXRCEKDVBD`, wäre das Tag zweimal auf der
+Seite.
+
+Praktisch abgefangen ist das bereits: In den Einstellungen des Google-Tags ist
+*„Duplikate von Konfigurationsinstanzen auf einer Seite ignorieren"*
+eingeschaltet. Sauber ist trotzdem nur eine Instanz. Sehen Sie einmal nach —
+GTM → *Tags* → nach `G-HXRCEKDVBD` suchen:
+
+* **Kein Treffer:** nichts zu tun. Der direkte Einbau misst, der Container ist
+  für Clarity und spätere Tags da. Das ist der derzeit angenommene Zustand.
+* **Ein Treffer:** entweder das Tag im Container löschen — oder in allen zehn
+  HTML-Seiten den Block `starteGa4()` samt seinem Aufruf in `pruefeUndStarte()`
+  entfernen. Nicht beides behalten, ohne sich auf die Dublettenerkennung zu
+  verlassen. Wird der direkte Einbau entfernt, muss das GA4-Tag im Container
+  eine Einwilligungsbedingung auf `analytics_storage` bekommen (wie beim
+  Clarity-Tag in Abschnitt 2.4) — sonst misst es bereits, sobald der Container
+  mit reiner Marketing-Einwilligung lädt.
+
+#### Warum an den Skripten `data-cookieconsent="ignore"` steht
+
+Cookiebots Auto-Blocking erkennt GTM- und Consent-Mode-Snippets und hält sie
+von sich aus an. Genau das darf hier **nicht** passieren:
+
+* Der Consent-Mode-Block muss laufen, *bevor* eine Entscheidung vorliegt —
+  er ist es ja, der alles auf `denied` setzt. Blockiert stünde der Standard
+  erst nach der Einwilligung, also zu spät, um irgendetwas zu verhindern.
+* Der Ladeblock prüft die Einwilligung selbst. Blockiert Cookiebot ihn
+  zusätzlich, hängt der Start an zwei Bedingungen statt an einer, und eine
+  falsche Einstufung des Snippets würde die Messung stillschweigend abschalten.
+
+Das Attribut hebelt nichts aus: Geladen wird nach wie vor erst, wenn Cookiebot
+eine Einwilligung meldet. Nachprüfbar in Abschnitt 5.2.
 
 ### 2.2 Consent Mode im Container aktivieren
 
@@ -256,8 +309,9 @@ von dieser Website selbst, ohne Personenbezug, ohne Übertragung.
    | Filter | ohne Einwilligung | nach Zustimmung |
    |---|---|---|
    | `clarity` | **keine Zeile** | mehrere Zeilen |
-   | `google-analytics` | **keine Zeile** | Zeilen |
-   | `googletagmanager` | **keine Zeile** | `gtm.js` |
+   | `google-analytics` | **keine Zeile** | Zeilen (aus der EU an `region1.`) |
+   | `gtag/js` | **keine Zeile** | eine Zeile mit `id=G-HXRCEKDVBD` |
+   | `googletagmanager` | **keine Zeile** | `gtm.js`, `gtag/js` |
    | `cookiebot` | `uc.js` — korrekt, das ist das Banner | ebenso |
 
    Anders als bei einem Standard-GTM-Einbau darf hier vor der Einwilligung
@@ -286,3 +340,16 @@ GTM → **Vorschau** → URL eingeben. Im Tag-Assistenten links unten auf
 **Consent** klicken: Dort steht pro Tag, ob es wegen fehlender Einwilligung
 zurückgehalten wurde. Das Clarity-Tag muss vor der Zustimmung unter
 *Nicht ausgelöst* stehen, mit dem Grund `analytics_storage`.
+
+**Wichtig, sonst hält man die Vorschau für kaputt:** Der Tag-Assistent meldet
+zunächst *„Verbindung nicht hergestellt"* oder bleibt leer. Das ist richtig so
+— der Container lädt ja erst nach der Einwilligung (Abschnitt 2.2). **Im
+geöffneten Vorschaufenster im Cookie-Banner zustimmen**, dann verbindet sich
+der Assistent innerhalb weniger Sekunden. Ohne Zustimmung kann er sich nicht
+verbinden, weil `gtm.js` gar nicht angefordert wird.
+
+Bleibt die Vorschau auch nach der Zustimmung leer, in der **Console** nach
+`Content Security Policy` suchen. `tagassistant.google.com` ist in
+`netlify.toml` freigegeben (Skript, Frame, Verbindung); fehlt darüber hinaus
+`'unsafe-eval'`, steht in Abschnitt 4, wie es sich vorübergehend ergänzen
+lässt.

@@ -39,8 +39,13 @@
         Muss VOR dem GTM-Container laufen, sonst feuern Tags einmal, bevor der
         Standard greift. wait_for_update gibt Cookiebot Zeit, eine bereits
         erteilte Einwilligung nachzureichen, ohne dass solange gemessen wird.
+
+        data-cookieconsent="ignore" ist hier Pflicht: Ohne das Attribut hielte
+        Cookiebots automatische Blockierung diesen Block selbst an. Der
+        "denied"-Standard stuende dann erst nach der Einwilligung — also genau
+        dann, wenn er nichts mehr schuetzt.
      ========================================================================== -->
-<script>
+<script data-cookieconsent="ignore">
   window.dataLayer = window.dataLayer || [];
   function gtag(){ dataLayer.push(arguments); }
   gtag('consent', 'default', {
@@ -76,8 +81,16 @@
         auch die "denied"-Signale des Consent Mode Google nicht, es gibt also
         keine cookielose Modellierung. Wer die möchte, ersetzt starteGtm() durch
         einen unbedingten Aufruf — siehe SETUP.md, Abschnitt 2.2.
+
+        data-cookieconsent="ignore" haelt Cookiebots Auto-Blockierung von
+        diesem Ladeblock fern. Das ist keine Umgehung: Der Block prueft die
+        Einwilligung selbst (pruefeUndStarte) und laedt ohne sie nichts. Bliebe
+        er blockiert, haenge der Start zusaetzlich an Cookiebots eigener
+        Einstufung des Snippets — die Pruefung waere doppelt, der Zeitpunkt
+        unbestimmt und ein Fehler in der Einstufung wuerde die Messung
+        stillschweigend abschalten.
      ========================================================================== -->
-<script>
+<script data-cookieconsent="ignore">
 (function (w, d, s, l, i) {
   var gestartet = false;
 
