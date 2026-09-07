@@ -8,6 +8,18 @@ Was das Skript macht
     - wandelt geschaftsbereich und lead_source_detail von Freitext in Dropdowns
     - löscht auf Wunsch die 28 leeren Altfelder (nur mit --loeschen)
 
+Verhaeltnis zur mfa-lead-pipeline
+    Die Pipeline besitzt eigene Properties (ba_*, mfa_*, do_not_contact) und
+    ueberschreibt sie bei jedem Lauf. Dieses Skript fasst davon NICHTS an — mit
+    einer Ausnahme: `lead_source_detail` wird einmalig von Freitext auf
+    Aufzaehlung umgestellt. Die Werteliste unten muss deckungsgleich mit
+    src/mfa_pipeline/lead_kategorie.py sein, sonst weist HubSpot den naechsten
+    Pipeline-Lauf mit HTTP 400 zurueck.
+
+    Ebenfalls unangetastet: lifecyclestage, hs_lead_status und
+    hubspot_owner_id. Die Pipeline schreibt sie laut ihrer properties.py
+    absichtlich nie — dieses Skript legt sie auch nicht an.
+
 Was es NICHT macht
     Pipelines, Deal-Phasen und Lifecycle-Phasen. Die kann die Properties-API
     nicht anlegen — das bleibt Handarbeit in der HubSpot-Oberfläche.
@@ -50,6 +62,8 @@ GESCHAEFTSBEREICH = [
 ]
 
 LEAD_SOURCE_DETAIL = [
+    # BA-Kategorien: vergibt die Pipeline (src/mfa_pipeline/lead_kategorie.py).
+    # Diese Liste MUSS mit deren OPTIONEN uebereinstimmen.
     ("ba_mfa", "BA — MFA"),
     ("ba_zahnmedizin", "BA — Zahnmedizin"),
     ("ba_medtechnik", "BA — Medizinische Technologie"),
@@ -57,9 +71,11 @@ LEAD_SOURCE_DETAIL = [
     ("ba_therapie", "BA — Therapie"),
     ("ba_arzt", "BA — Arzt"),
     ("ba_sonstige", "BA — Sonstiger Gesundheitsberuf"),
-    ("empfehlung", "Empfehlung"),
-    ("netzwerk", "Persönliches Netzwerk"),
+    # Uebrige Wege
     ("website", "Website-Formular"),
+    ("linkedin", "LinkedIn-Nachricht"),
+    ("netzwerk", "Persoenliches Netzwerk"),
+    ("empfehlung", "Empfehlung"),
     ("social", "Social Media"),
 ]
 
@@ -153,8 +169,8 @@ PLAN = {
         auswahl("geschaftsbereich", "Geschäftsbereich", GESCHAEFTSBEREICH,
                 "FM oder WBW. Bestimmt, zu welchem Geschäft der Kontakt gehört."),
         auswahl("lead_source_detail", "Lead-Quelle Detail", LEAD_SOURCE_DETAIL,
-                "Feingranulare Herkunft. Bei BA-Leads aus dem Stellentitel abgeleitet, "
-                "nicht aus dem Namen des Suchlaufs."),
+                "Was der Lead ist, nicht woher die Abfrage kam. Bei BA-Leads von der "
+                "Pipeline aus dem Feld beruf gesetzt, sonst beim Anlegen."),
         auswahl("kanal", "Kanal", KANAL,
                 "Über welchen Weg der Kontakt entstanden ist."),
         auswahl("nicht_kontaktieren_grund", "Nicht kontaktieren — Grund", NICHT_KONTAKTIEREN,
@@ -170,14 +186,13 @@ PLAN = {
         auswahl("geschaftsbereich", "Geschäftsbereich", GESCHAEFTSBEREICH,
                 "FM oder WBW. Praxen aus der MFA-Pipeline sind FM."),
         auswahl("lead_source_detail", "Lead-Quelle Detail", LEAD_SOURCE_DETAIL,
-                "Feingranulare Herkunft, aus ba_job_title abgeleitet."),
+                "Einmalige Umstellung von Freitext auf Aufzaehlung. Danach besitzt die "
+                "Pipeline dieses Feld und setzt es je Lead aus dem BA-Feld beruf."),
         auswahl("nicht_kontaktieren_grund", "Nicht kontaktieren — Grund", NICHT_KONTAKTIEREN,
-                "Sperrliste. Vom Import niemals überschreiben."),
+                "Der GRUND zur Sperre. Der Schalter selbst ist do_not_contact, das die "
+                "Pipeline besitzt und bei jedem Lauf respektiert."),
         zahl("anrufversuche", "Anrufversuche",
              "Zähler erfolgloser Kontaktversuche."),
-        text("ba_run_id", "BA Suchlauf",
-             "Technische Kennung des Suchlaufs, z. B. mfa-berlin-50km-2026-09-06. "
-             "Hält lead_source_detail sauber."),
     ],
     "deals": [
         auswahl("geschaftsbereich", "Geschäftsbereich", GESCHAEFTSBEREICH),
