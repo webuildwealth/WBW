@@ -482,6 +482,128 @@ button { background: none; border: 0; cursor: pointer; }
 
 .nav__cta { margin-left: .5rem; }
 
+/* ---- Aufklapper der drei Zielgruppen -------------------------------------
+   Die drei Hauptpunkte tragen die Unterpunkte der jeweiligen Seite bei sich.
+   Vorher standen im Kopf je Seite zwei zufällig ausgewählte Sprungmarken
+   („Hebel", „Quellen") neben den Seitenlinks — man sah weder, wozu sie
+   gehören, noch was es sonst noch gibt. Jetzt hängt jeder Unterpunkt sichtbar
+   an seiner Zielgruppe.
+
+   Geöffnet wird mit der Maus (:hover) und mit der Tastatur (:focus-within);
+   eine eigene Taste braucht es dafür nicht, weil der Hauptpunkt selbst ein
+   Link auf die Seite bleibt. Escape schließt (siehe main.js).            */
+.nav__gruppe { position: relative; display: flex; }
+
+.nav__link--haupt { display: inline-flex; align-items: center; gap: .34rem; }
+
+/* Das Zeichen dreht sich beim Öffnen — die einzige Bewegung, die der Kopf
+   sich leistet. */
+.nav__chevron {
+  width: 7px; height: 7px; flex: none; margin-top: -2px;
+  border-right: 1.6px solid currentColor; border-bottom: 1.6px solid currentColor;
+  transform: rotate(45deg); opacity: .5;
+  transition: transform .22s var(--ease), opacity .22s;
+}
+
+/* „Leuchten" des Hauptpunkts, solange sein Aufklapper offen ist: heller Text,
+   ein warmer Schein in Bordeaux und ein Strich, der von der Mitte aufläuft.
+   Bewusst kein Neon — die Seite soll seriös bleiben. */
+.nav__gruppe:hover .nav__link--haupt,
+.nav__gruppe.ist-offen .nav__link--haupt {
+  color: var(--ink); background: rgba(12,44,79,.06);
+  box-shadow: 0 6px 20px -12px rgba(117,21,36,.75);
+}
+.nav__gruppe:hover .nav__chevron,
+.nav__gruppe.ist-offen .nav__chevron { transform: rotate(225deg); opacity: .9; }
+
+.nav__link--haupt::after {
+  content: ""; position: absolute; left: 50%; right: 50%; bottom: .16rem;
+  height: 2px; border-radius: 2px; background: var(--red-700);
+  transition: left .24s var(--ease), right .24s var(--ease), opacity .24s;
+  opacity: 0;
+}
+.nav__gruppe:hover .nav__link--haupt::after,
+.nav__gruppe.ist-offen .nav__link--haupt::after,
+.nav__link--haupt.is-active::after { left: .85rem; right: .85rem; opacity: 1; }
+
+.nav__flyout {
+  position: absolute; top: calc(100% + .45rem); left: -.3rem;
+  min-width: 20.5rem; padding: .45rem;
+  display: grid; gap: .1rem;
+  background: rgba(255,255,255,.97);
+  backdrop-filter: saturate(180%) blur(18px);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  border: 1px solid var(--line-soft); border-radius: var(--r-lg);
+  box-shadow: 0 28px 60px -28px rgba(7,27,50,.45), 0 2px 8px -4px rgba(7,27,50,.18);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: opacity .2s var(--ease), transform .2s var(--ease), visibility .2s;
+  z-index: 2;
+}
+/* Die Brücke über den Abstand: Ohne sie schließt der Aufklapper, sobald der
+   Zeiger die Lücke zwischen Punkt und Feld überquert. */
+.nav__flyout::before {
+  content: ""; position: absolute; left: 0; right: 0; top: -.55rem; height: .55rem;
+}
+/* Geöffnet wird per Zeiger (:hover) oder per Tastatur — letzteres über die
+   Klasse aus main.js. Nicht über :focus-within: Solange das Feld
+   visibility:hidden trägt, sind seine Links gar nicht fokussierbar, die
+   Bedingung könnte also nie eintreten. Und visibility:hidden soll bleiben,
+   damit ein geschlossener Aufklapper auch für Screenreader zu ist. */
+.nav__gruppe:hover .nav__flyout,
+.nav__gruppe.ist-offen .nav__flyout {
+  opacity: 1; visibility: visible; transform: translateY(0);
+}
+.nav__gruppe.ist-zu .nav__flyout { opacity: 0; visibility: hidden; transform: translateY(-6px); }
+
+.nav__sub {
+  display: flex; align-items: flex-start; gap: .6rem;
+  padding: .5rem .6rem; border-radius: var(--r-md);
+  transition: background-color .16s;
+}
+.nav__sub:hover, .nav__sub:focus-visible { background: rgba(12,44,79,.055); }
+
+/* Der Punkt daneben leuchtet auf — er ist der kleine Bruder des Strichs
+   unter dem Hauptpunkt und benutzt dieselbe Farbe. */
+.nav__punkt {
+  width: 7px; height: 7px; flex: none; margin-top: .42rem; border-radius: 50%;
+  background: rgba(12, 44, 79, .22);
+  transition: background-color .16s, box-shadow .16s, transform .16s;
+}
+.nav__sub:hover .nav__punkt, .nav__sub:focus-visible .nav__punkt {
+  background: var(--red-700); transform: scale(1.15);
+  box-shadow: 0 0 0 3px rgba(117,21,36,.14);
+}
+.nav__sub-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.nav__sub-text b {
+  font-family: var(--font-display); font-weight: 700; font-size: .89rem;
+  color: var(--ink); letter-spacing: -.01em; line-height: 1.25;
+}
+.nav__sub-text i {
+  font-style: normal; font-size: .76rem; color: var(--ink-mute); line-height: 1.35;
+}
+
+/* Über dem dunklen Hero dieselbe Glasfläche wie die Kopfzeile selbst. */
+.nav.is-dark .nav__flyout {
+  background: rgba(9, 31, 56, .93);
+  border-color: rgba(255,255,255,.12);
+  box-shadow: 0 28px 60px -26px rgba(0,0,0,.7);
+}
+.nav.is-dark .nav__sub:hover, .nav.is-dark .nav__sub:focus-visible { background: rgba(255,255,255,.08); }
+.nav.is-dark .nav__sub-text b { color: #fff; }
+.nav.is-dark .nav__sub-text i { color: rgba(214,225,236,.62); }
+.nav.is-dark .nav__punkt { background: rgba(214,225,236,.34); }
+.nav.is-dark .nav__sub:hover .nav__punkt { background: #E8919E; box-shadow: 0 0 0 3px rgba(232,145,158,.18); }
+.nav.is-dark .nav__gruppe:hover .nav__link--haupt,
+.nav.is-dark .nav__gruppe.ist-offen .nav__link--haupt {
+  background: rgba(255,255,255,.1); color: #fff;
+  box-shadow: 0 6px 20px -12px rgba(232,145,158,.8);
+}
+.nav.is-dark .nav__link--haupt::after { background: #E8919E; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__flyout, .nav__chevron, .nav__link--haupt::after, .nav__punkt { transition: none; }
+}
+
 /* Nav über dunklem Hero */
 .nav.is-dark .brand__name { color: #fff; }
 .nav.is-dark .brand__name span { color: #E8919E; }
@@ -1920,4 +2042,89 @@ mark.platzhalter {
 @media (max-width: 359px) {
   .rail__text { display: none; }
   .rail .btn { flex: 1 1 auto; width: auto; }
+}
+
+/* --------------------------------------------------------------------------
+   26. iPhone-Feinschliff
+   Abgestimmt auf 402 x 874 (iPhone 16 Pro und 17 Pro) und getestet von 320
+   bis 430 px. Alles steht in Media Queries — die Desktop-Fassung bleibt
+   unverändert.
+   -------------------------------------------------------------------------- */
+
+/* -- 26.1 Faltbare Beleganhänge ------------------------------------------ */
+
+/* Das details-Element steht im Quelltext offen. Auf dem Desktop verschwindet
+   nur die Schaltfläche, der Inhalt steht wie bisher. Auf schmalen Geräten
+   nimmt main.js das open-Attribut heraus; ohne JavaScript bleibt alles
+   sichtbar, es geht also kein Inhalt verloren. */
+.falt > summary { display: none; }
+.falt__inhalt { display: contents; }
+/* Ab Tabletbreite verschwindet das details-Element ganz aus dem Layout: Sein
+   Inhalt steht dann wieder als direktes Kind seines Abschnitts, die
+   Randabstände fallen zusammen wie vorher, und die Desktop-Fassung ist mit der
+   vor dem Falten deckungsgleich. */
+@media (min-width: 861px) { .falt { display: contents; } }
+
+@media (max-width: 860px) {
+  .falt > summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    margin-top: 1.8rem; padding: .95rem 1.15rem;
+    border: 1px solid var(--line); border-radius: var(--r-md);
+    background: var(--surface);
+    font-family: var(--font-display); font-weight: 700; font-size: .95rem;
+    color: var(--navy-900); cursor: pointer; list-style: none;
+  }
+  .falt > summary::-webkit-details-marker { display: none; }
+  .falt > summary:focus-visible { outline: 2px solid var(--red-700); outline-offset: 2px; }
+  .falt__zeichen {
+    width: 9px; height: 9px; flex: none; margin-top: -3px;
+    border-right: 2px solid var(--red-700); border-bottom: 2px solid var(--red-700);
+    transform: rotate(45deg); transition: transform .2s var(--ease);
+  }
+  .falt[open] > summary .falt__zeichen { transform: rotate(225deg); margin-top: 3px; }
+  /* display:contents beim Inhalt beibehalten, damit die Raster darin nicht
+     ihre Spaltenlogik verlieren. */
+  .falt[open] > .falt__inhalt { display: contents; }
+}
+
+/* -- 26.2 Typografie auf dem Handy --------------------------------------- */
+
+@media (max-width: 500px) {
+  /* Die Schriftgrade der Seite sind über clamp an die Breite gekoppelt und
+     treffen auf 402 px die obere Kante ihres mobilen Bereichs: Eine
+     H2-Überschrift stand dort in 37,6 px und brauchte allein vier Zeilen.
+     Hier wird der mobile Rand der Skala um rund 8 % zurückgenommen — genug,
+     dass Überschriften eine Zeile kürzer werden, ohne dass sie ihre Wirkung
+     verlieren. Die Fließtextgrößen bleiben, wie sie sind: 17 px Inter ist auf
+     iOS die Größe, bei der nichts gezoomt werden muss. */
+  h1, .h1 { font-size: clamp(1.95rem, 8.1vw, 2.45rem); line-height: 1.08; }
+  h2, .h2 { font-size: clamp(1.62rem, 6.9vw, 2.05rem); line-height: 1.14; }
+  h3 { font-size: clamp(1.22rem, 5.1vw, 1.5rem); line-height: 1.22; }
+  .stage__panel h1, .stage__panel h2 { font-size: clamp(1.85rem, 7.8vw, 2.35rem); }
+
+  /* Der Vorspann stand in derselben Größe wie auf dem Tablet und wirkte
+     dadurch wie ein zweiter Titel. */
+  .lead { font-size: 1.02rem; line-height: 1.55; }
+
+  /* Abschnittsabstände: 4,5 rem oben und unten sind auf 874 px Höhe ein
+     Sechstel Bildschirm nur an Luft. Ein Drittel weniger reicht, damit die
+     Abschnitte sich noch klar trennen. */
+  .section { padding-block: clamp(3rem, 8vw, 4rem); }
+  .section--tight { padding-block: clamp(2.2rem, 6vw, 3rem); }
+
+  /* Karten und Listen enger setzen — auf dem Desktop trägt der Weißraum die
+     Ruhe, auf 402 px kostet er nur Scrollweg. */
+  .card { padding: 1.15rem 1.2rem; }
+  .grid { gap: .9rem; }
+}
+
+/* -- 26.3 Sichere Ränder ------------------------------------------------- */
+
+@media (max-width: 500px) {
+  /* Das Dynamic Island und die Home-Anzeige des iPhone 17 Pro schneiden sonst
+     in Kopfzeile und schwebenden CTA. env() greift nur im Vollbild-Modus und
+     bei installierten Web-Apps; im normalen Safari ist der Wert 0 und die
+     Regel wirkungslos. */
+  .nav__inner { padding-inline: max(0px, env(safe-area-inset-left)) max(0px, env(safe-area-inset-right)); }
+  .footer { padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
 }

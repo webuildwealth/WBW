@@ -186,12 +186,74 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </span>
     </a>
     <nav class="nav__links" aria-label="Hauptnavigation">
-      <a class="nav__link" href="praxisinhaber.html">Praxisinhaber</a>
-      <a class="nav__link" href="angestellte-aerzte.html">Angestellte Ärzte</a>
-      <a class="nav__link" href="mfa-praxisteam.html">MFA &amp; Praxisteam</a>
+      <div class="nav__gruppe">
+        <a class="nav__link nav__link--haupt" href="praxisinhaber.html" aria-haspopup="true">Praxisinhaber<span class="nav__chevron" aria-hidden="true"></span></a>
+        <div class="nav__flyout" aria-label="Praxisinhaber">
+          <a class="nav__sub" href="praxisinhaber.html#hebel">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Die sieben Hebel</b><i>Wo im Praxisjahr Geld liegen bleibt</i></span>
+          </a>
+          <a class="nav__sub" href="praxisinhaber.html#absicherung">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Praxis absichern</b><i>Ausfall, Haftung, Nachfolge</i></span>
+          </a>
+          <a class="nav__sub" href="praxisinhaber.html#rechenwege">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Rechenwege</b><i>Jede Zahl mit Quelle</i></span>
+          </a>
+          <a class="nav__sub" href="praxisinhaber.html#check">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Praxis-Check</b><i>Fünf Fragen, rund 90 Sekunden</i></span>
+          </a>
+        </div>
+      </div>
+      <div class="nav__gruppe">
+        <a class="nav__link nav__link--haupt" href="angestellte-aerzte.html" aria-haspopup="true">Angestellte Ärzte<span class="nav__chevron" aria-hidden="true"></span></a>
+        <div class="nav__flyout" aria-label="Angestellte Ärzte">
+          <a class="nav__sub" href="angestellte-aerzte.html#steuer">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Steuerhebel</b><i>Was das Versorgungswerk offen lässt</i></span>
+          </a>
+          <a class="nav__sub" href="angestellte-aerzte.html#rechner">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Sonderausgaben-Rechner</b><i>Ihre Entlastung ausrechnen</i></span>
+          </a>
+          <a class="nav__sub" href="angestellte-aerzte.html#anlage">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Vermögensaufbau</b><i>Vom Überschuss zum Plan</i></span>
+          </a>
+          <a class="nav__sub" href="angestellte-aerzte.html#niederlassung">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Niederlassung</b><i>Der Schritt in die eigene Praxis</i></span>
+          </a>
+          <a class="nav__sub" href="angestellte-aerzte.html#check">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Vorsorge-Check</b><i>Fünf Fragen, rund 90 Sekunden</i></span>
+          </a>
+        </div>
+      </div>
+      <div class="nav__gruppe">
+        <a class="nav__link nav__link--haupt" href="mfa-praxisteam.html" aria-haspopup="true">MFA & Praxisteam<span class="nav__chevron" aria-hidden="true"></span></a>
+        <div class="nav__flyout" aria-label="MFA und Praxisteam">
+          <a class="nav__sub" href="mfa-praxisteam.html#leistungen">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Betriebliche Leistungen</b><i>Was die Praxis zahlen kann</i></span>
+          </a>
+          <a class="nav__sub" href="mfa-praxisteam.html#familie">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Familie &amp; Lebensphasen</b><i>Teilzeit, Elternzeit, Rückkehr</i></span>
+          </a>
+          <a class="nav__sub" href="mfa-praxisteam.html#arbeitskraft">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Arbeitskraft</b><i>Wenn der Rücken nicht mehr mitmacht</i></span>
+          </a>
+          <a class="nav__sub" href="mfa-praxisteam.html#check">
+            <span class="nav__punkt" aria-hidden="true"></span>
+            <span class="nav__sub-text"><b>Ihr Check</b><i>Fünf Fragen, rund 90 Sekunden</i></span>
+          </a>
+        </div>
+      </div>
       <a class="nav__link" href="ueber-uns.html">Über uns</a>
-      <a class="nav__link" href="#hebel">Hebel</a>
-      <a class="nav__link" href="#rechenwege">Quellen</a>
       <a class="btn btn--primary btn--sm nav__cta" href="#check">Praxis-Check starten</a>
     </nav>
     <button class="nav__burger" aria-expanded="false" aria-controls="mobilnav" aria-label="Menü öffnen">
@@ -826,6 +888,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </p>
     </div>
 
+    <!-- Auf dem Handy gefaltet: Der Abschnitt ist ein Beleganhang, vier
+         Bildschirme lang, und steht zwischen dem Argument und dem Check. Das
+         details-Element steht offen im Quelltext — ohne JavaScript und auf dem
+         Desktop ist also alles sichtbar wie bisher; erst main.js klappt es auf
+         schmalen Geräten zu. So hängt kein Inhalt am Skript. -->
+    <details class="falt" open>
+      <summary class="falt__knopf">
+        <span>Alle Quellen und Rechenwege</span>
+        <span class="falt__zeichen" aria-hidden="true"></span>
+      </summary>
+      <div class="falt__inhalt">
+
     <h3 style="margin-top:2.8rem" data-reveal>Gesetzliche Rechengrößen 2026</h3>
     <div class="tbl-wrap" style="margin-top:1rem" data-reveal>
       <table class="tbl">
@@ -898,6 +972,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       Stand: August 2026, Rechengrößen 2026. Beispielwerte einer Musterpraxis, gerundet.
       Keine Steuer- oder Rechtsberatung.
     </p>
+
+      </div>
+    </details>
   </div>
 </section>
 
@@ -942,7 +1019,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- ============================================== MITZIEHENDER CTA ==== -->
 <div class="rail" data-rail
-     data-rail-fest-titel="Bleibt die Frage, was das für Ihre Praxis heißt"
+     data-rail-fest-titel="Was heißt das für Ihre Praxis?"
      data-rail-fest-text="Fünf Fragen, dann wissen Sie es."
      data-rail-fest-btn="Praxis-Check starten">
   <div class="rail__card">

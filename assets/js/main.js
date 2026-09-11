@@ -62,8 +62,65 @@
   var here = location.pathname.split('/').pop() || 'index.html';
   document.querySelectorAll('.nav__link').forEach(function (a) {
     var href = (a.getAttribute('href') || '').split('#')[0];
+    // Die 404-Seite verlinkt absolut (/seite.html), weil sie unter jedem Pfad
+    // ausgeliefert werden kann; für den Vergleich zählt nur der Dateiname.
+    href = href.split('/').pop();
     if (href && href === here) a.classList.add('is-active');
   });
+
+  /* Aufklapper im Kopf. Geöffnet wird per CSS über :hover und :focus-within —
+     hier stehen nur die beiden Fälle, die CSS nicht kann: Escape schließt, und
+     ein Klick auf einen Unterpunkt schließt ebenfalls. Ohne das zweite bliebe
+     das Feld nach einem Sprung auf derselben Seite offen stehen, weil der
+     Fokus im Feld liegt und :focus-within weiter greift. */
+  var gruppen = document.querySelectorAll('.nav__gruppe');
+  gruppen.forEach(function (g) {
+    /* Tastatur: Sobald der Hauptpunkt den Fokus bekommt, öffnet sich sein Feld
+       und die Unterpunkte werden erreichbar. CSS allein schafft das nicht —
+       ein Feld mit visibility:hidden nimmt seine Links aus der Tabreihenfolge,
+       :focus-within könnte also nie greifen. */
+    g.addEventListener('focusin', function () {
+      g.classList.remove('ist-zu');
+      g.classList.add('ist-offen');
+    });
+    g.addEventListener('focusout', function (e) {
+      if (!g.contains(e.relatedTarget)) g.classList.remove('ist-offen');
+    });
+    g.addEventListener('mouseenter', function () { g.classList.remove('ist-zu'); });
+    /* Nach einem Klick auf einen Unterpunkt soll das Feld weg sein. Ohne das
+       bliebe es nach einem Sprung auf derselben Seite offen stehen, weil der
+       Fokus im Feld liegt. */
+    g.addEventListener('click', function (e) {
+      if (e.target.closest('.nav__sub')) {
+        g.classList.remove('ist-offen');
+        g.classList.add('ist-zu');
+      }
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    gruppen.forEach(function (g) {
+      if (!g.contains(document.activeElement)) return;
+      var haupt = g.querySelector('.nav__link--haupt');
+      // Erst den Fokus zurückholen, dann schließen: focus() feuert focusin,
+      // und das würde das Feld sonst gleich wieder aufmachen.
+      if (haupt) haupt.focus();
+      g.classList.remove('ist-offen');
+      g.classList.add('ist-zu');
+    });
+  });
+
+  /* Beleganhänge auf schmalen Geräten zuklappen. Sie stehen im Quelltext
+     offen, damit sie ohne JavaScript und auf dem Desktop vollständig da sind —
+     erst hier werden sie zugeklappt. Einmal geöffnet bleiben sie offen; beim
+     Drehen ins Querformat wird nicht wieder zugeklappt, weil das eine
+     Entscheidung des Lesers zurücknähme. */
+  var schmal = window.matchMedia('(max-width: 860px)');
+  if (schmal.matches) {
+    document.querySelectorAll('details.falt[open]').forEach(function (d) {
+      d.removeAttribute('open');
+    });
+  }
 
   /* -------------------------------------------------------------- Reveals */
   var revealables = document.querySelectorAll('[data-reveal]');
