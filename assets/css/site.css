@@ -1643,18 +1643,19 @@ mark.platzhalter {
    unfertig; diese Fläche ist eine gestalterische Entscheidung und trägt
    nebenbei die Anschrift, die Vertrauen schafft. Kommt später ein Porträt
    dazu, tritt .person__bild wieder an ihre Stelle. */
-/* Hier steht die Wort-Bild-Marke im Original, freigestellt. Ein eigener
-   Schriftzug daneben entfiele doppelt — die Marke bringt ihn mit. */
+/* Hier steht die Wort-Bild-Marke im Original. Ein eigener Schriftzug daneben
+   entfiele doppelt — die Marke bringt ihn mit. */
 .person__signet {
   display: grid; justify-items: center; gap: .55rem;
   text-align: center;
 }
-/* Kein Rahmen, kein Schlagschatten: Die Datei hat keinen eigenen Grund mehr,
-   ein Schatten zeichnete deshalb ihr rechteckiges Bildfeld nach statt der
-   Marke. Das Bild steht frei auf der Fläche der Seite.
-   Die Breitenbegrenzung hält es in der Spalte auf der Größe, in der die
-   Schrift des Schriftzugs noch sauber steht. */
-.person__signet picture { display: block; width: 100%; max-width: 360px; }
+/* Kein Rahmen, kein Schlagschatten. Die Datei bringt den hellen Grund des
+   Renders mit, aber er ist auf das Elfenbein der Seite gezogen und die
+   Bildkanten laufen weich aus — es gibt also keine Kante, die ein Schatten
+   nachzeichnen könnte, und keine, die als Kasten auffällt.
+   Die Breitenbegrenzung hält die Marke in der Spalte auf der Größe, in der
+   der Schriftzug noch sauber steht. */
+.person__signet picture { display: block; width: 100%; max-width: 400px; }
 .person__signet img {
   display: block; width: 100%; height: auto;
 }

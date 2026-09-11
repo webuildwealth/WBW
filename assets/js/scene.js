@@ -103,23 +103,30 @@
      0.92/245.3 umgerechnet, die y-Achse gespiegelt, weil Bilder nach unten
      zählen.
 
-     Zuvor stammten diese Maße aus einer nachgezeichneten SVG-Fassung und
-     wichen an drei Stellen sichtbar von der Vorlage ab: Die große Ringlücke
-     saß oben statt unten, der Stab stand zu weit links (-0.224 statt -0.097),
-     und alle Strichstärken waren rund ein Drittel der echten. Die Nachzeichnung
-     ist entfallen — überall steht jetzt die Originaldatei. */
+     Nachgemessen an der verbindlichen Fassung, die der Inhaber geliefert hat
+     (Logo_finanz-medizin.png, 1254 x 1254). Sie weicht von der Datei ab, die
+     zuvor als Vorlage diente: Deren Rot war ein helles Karminrot (#A7041C),
+     hier ist es das Bordeaux der Marke (gemessener Median #741625), und das
+     Blau ist #122F50 statt eines helleren Royalblaus. Beide entsprechen damit
+     genau den Farbtokens der Website.
+
+     Der Ring in der verbindlichen Fassung: Mitte (370.5, 351.9), Radius 314.9,
+     Strichstärke 60.8 px = 19,3 % des Radius. Der blaue Bogen läuft von 106°
+     über links und unten bis 301°, der bordeauxfarbene von 100° über rechts
+     bis ebenfalls rund 301°. Es gibt also nur EINE Lücke, oben, wo der Knauf
+     sitzt — unten stoßen die Bögen aneinander. */
   var SIG = {
     stabX: -0.097, stabUnten: -0.874, stabOben: 0.845,
-    /* Gemessen: oben 5,6° Lücke (dort sitzt der Knauf), unten 15,3°, wo der
-       Schwanz der Schlange austritt.
-       Die Zahlen sind gegenüber der Messung aufgeweitet, weil die Bögen mit
+    /* Oben 6° Lücke, unten stoßen die Bögen aneinander.
+       Die Winkel sind gegenüber der Messung aufgeweitet, weil die Bögen mit
        runden Enden gezeichnet werden: Eine runde Kappe steht um die halbe
-       Strichstärke über, bei 0.211 Breite und Radius 0.92 also um 6,6° je
-       Ende. Mit den gemessenen Winkeln (88,1° / 93,7°) berührten sich die
-       Kappen oben und die Lücke verschwände. Aufgeweitet um 2 x 6,6° steht
-       sie sichtbar dort, wo sie in der Vorlage steht. */
-    blauVon: 100.25 * DEG, blauBis: 251.15 * DEG,
-    rotVon:   81.55 * DEG, rotBis:  -80.45 * DEG,
+       Strichstärke über, bei 0.166 Breite und Radius 0.92 also um 5,2° je
+       Ende. Mit den gemessenen Winkeln berührten sich die Kappen oben und die
+       Lücke verschwände. Unten ist es umgekehrt gewollt: Dort enden beide
+       Bögen nur 5° voneinander entfernt, die Kappen überlappen, und die Marke
+       schließt sich so, wie sie es in der Vorlage tut. */
+    blauVon: 111.2 * DEG, blauBis: 303.0 * DEG,
+    rotVon:   94.8 * DEG, rotBis:  -62.0 * DEG,
     /* Fünf Segmente statt drei: Die Schlange der Vorlage macht zweieinhalb
        Windungen, nicht anderthalb. Die Stützpunkte sind die gemessenen
        Umkehrpunkte, die Kontrollpunkte senkrecht dazu — so kreuzt sie den Stab
@@ -267,15 +274,13 @@
        der andere weicher Kunststoff. Genau dieser Unterschied macht die Form
        auf den ersten Blick als Stethoskop lesbar.
 
-       Ziel 3 ist an der Originaldatei ausgemessen: Der Ring ist dort 56 px
-       stark bei 245 px Radius, also 0.211 in Szeneneinheiten, der Stab 0.150,
-       die Schlange 0.185. Vorher stand hier durchweg rund ein Drittel davon —
-       die Marke erschien als dünne Strichzeichnung statt als das kräftige
-       Zeichen, das sie ist. */
-    a: [0.048, 0.020, 0.014, 0.211],
-    b: [0.078, 0.030, 0.034, 0.211],
-    c: [0.022, 0.017, 0.017, 0.185],
-    d: [0.048, 0.052, 0.052, 0.150]
+       Ziel 3 ist an der verbindlichen Fassung ausgemessen: Der Ring ist dort
+       19,3 % des Radius stark, in Szeneneinheiten also 0.166 bei Radius 0.92.
+       Stab und Schlange stehen im selben Verhältnis dazu wie in der Vorlage. */
+    a: [0.048, 0.020, 0.014, 0.166],
+    b: [0.078, 0.030, 0.034, 0.166],
+    c: [0.022, 0.017, 0.017, 0.150],
+    d: [0.048, 0.052, 0.052, 0.122]
   };
   /* Dunkle Kontur, nur im Signet. Die Vorlage baut Stab und Schlange als
      helle Fläche in einer dunklen Kontur — ohne die verschwindet ein fast
@@ -318,11 +323,11 @@
     [[0.30, -0.90, 0.0, 0.16], [0.60, -0.90, 0.0, 0.16], [0.90, -0.90, 0.0, 0.16]],
     [[0.30, -0.72, 0.0, 0.16], [0.60, -0.72, 0.0, 0.16], [0.90, -0.72, 0.0, 0.16]],
     [[0.12, -0.90, 0.62, 0.20], [0.50, -0.90, 1.06, 0.20], [0.88, -0.90, 1.52, 0.20]],
-    /* Ziel 3 gemessen: Mitten bei 0.099 / 0.368 / 0.668, Höhen 0.277 / 0.645
-       / 0.822, Halbbreiten 0.101 / 0.122 / 0.129. Die Fußpunkte liegen in der
-       Vorlage bewusst nicht auf einer Linie — der Render kippt die Balken
-       leicht nach hinten, und genau das macht die Staffelung. */
-    [[0.099, -0.793, 0.277, 0.101], [0.368, -0.756, 0.645, 0.122], [0.668, -0.569, 0.822, 0.129]]
+    /* Ziel 3, an der verbindlichen Fassung gemessen. Sie baut die Balken anders
+       als die Datei, die zuvor als Vorlage diente: breit, dicht nebeneinander
+       und auf EINER Grundlinie bei -0.856, nicht gestaffelt. Der dritte reicht
+       mit seiner oberen rechten Ecke genau an die Innenkante des Rings. */
+    [[0.129, -0.856, 0.773, 0.092], [0.377, -0.856, 1.086, 0.101], [0.653, -0.856, 1.362, 0.101]]
   ];
   var BAR_A = [0, 0, 1, 1];
 
@@ -821,7 +826,12 @@
     var a = lerp(BAR_A[mo.i0], BAR_A[mo.i1], mo.f);
     if (a < 0.02) return;
     var B0 = BARS[mo.i0], B1 = BARS[mo.i1], ctx = this.ctx, self = this;
-    var d = 0.10; // Tiefe
+    /* Tiefe der Quader. Im Signet flacher als in der Wachstumskurve: Dort sind
+       die Balken ein Diagramm und duerfen Koerper haben, in der Bildmarke sind
+       sie flache Formen. Mit 0.10 stand der dritte Balken sichtbar ueber dem
+       Ring, weil die Extrusion ihn nach rechts schob. */
+    var signet = (mo.i0 === 3 ? 1 - mo.f : 0) + (mo.i1 === 3 ? mo.f : 0);
+    var d = lerp(0.10, 0.045, signet);
 
     for (var i = 0; i < 3; i++) {
       var x = lerp(B0[i][0], B1[i][0], mo.f);
