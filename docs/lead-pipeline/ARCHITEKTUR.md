@@ -996,3 +996,102 @@ domainweiten Identitätsnachweis ist **noch nicht gemessen**. Sie kann erst im
 nächsten vollständigen Lauf beziffert werden; jede Zahl davor wäre geraten. Die
 Änderung ist durch 188 Tests abgedeckt, darunter sechs neue Regressionstests für
 genau diese Fälle.
+
+---
+
+## 18. NACHTRAG: MVZ ALS VERBUND MEHRERER PRAXEN (2026-09-14)
+
+Ein MVZ ist ein Pool mehrerer Ärzte an mehreren Standorten. Für den Vertrieb ist
+jede dieser Praxen ein eigenes Unternehmen mit eigener Telefonnummer und eigener
+Adresse. Die Pipeline hat sie bis hierher zu **einer** Firma verschmolzen. Dieser
+Abschnitt hält fest, warum, was dagegen unternommen wurde — und einen zweiten
+Befund, der beim Nachmessen auffiel und schwerer wiegt als die MVZ-Frage selbst.
+
+### 18.1 Der Schlüssel war der Arbeitgeber, nicht der Standort
+
+Gruppiert wurde nach `arbeitgeberKundennummerHash`. Die Bundesagentur führt alle
+Standorte eines MVZ unter **einer** Kundennummer. `build_lead` nahm anschließend
+`offers[0]` — also die Adresse der zufällig ersten Anzeige. Aus fünf Praxen wurde
+eine Firma mit einer Adresse und einer Telefonnummer.
+
+Gemessen am Lauf `…20260905T171757Z-2501a6`:
+
+| Ebene | Zahl |
+|---|---:|
+| Arbeitgeber mit Hash (alle Anzeigen) | 1022 |
+| davon mit mehr als einer Adresse | 99 (9,7 %) |
+| Leads nach MFA- und Arbeitgeberfilter, alt | 201 |
+| Leads nach Trennung je Standort | 208 (**+7**) |
+| zerlegte Standorte / betroffene Arbeitgeber | 12 / 6 |
+| darunter MVZ | Policum, Orthodont, Zahnkultur, Doceins |
+
+Gruppiert wird jetzt nach `hash + PLZ`. Für den CRM-Schlüssel gilt bewusst eine
+asymmetrische Regel, weil `ba_employer_hash_id` die `idProperty` des
+HubSpot-Upserts ist:
+
+- **Ein Standort → blanker Hash, unverändert.** Alle bereits angelegten
+  Companies bleiben zuordenbar; es entstehen keine Dubletten.
+- **Mehrere Standorte → `<hash>#<plz>` je Standort.** Sonst überschreiben sie
+  einander beim Upsert, und der zuletzt geschriebene Standort gewinnt.
+
+Wer schon unter dem blanken Hash im CRM steht, hinterlässt dabei eine
+Karteileiche. `data/reports/<lauf>_standorte.json` listet alten und neuen
+Schlüssel, damit das nachvollziehbar von Hand bereinigt werden kann.
+
+### 18.2 Die Nummer des richtigen Standorts
+
+Das Impressum eines MVZ listet jede Praxis mit eigener Anschrift und eigener
+Durchwahl. `practice_phone` sah dort bisher nur „mehrere gleichrangige Nummern"
+und gab sicherheitshalber **gar keine** zurück — ausgerechnet bei den
+Arbeitgebern mit den meisten Stellen also nie eine.
+
+Jede Nummer wird jetzt der Postleitzahl zugeordnet, die im Text am dichtesten
+bei ihr steht (Fenster 25 Zeilen; bei Gleichstand gewinnt die davorstehende,
+weil die Anschrift über der Durchwahl steht). Genommen wird nur die Nummer des
+gesuchten Standorts. Bleibt danach nichts oder mehr als eine übrig, gilt wieder
+die alte, strenge Regel — eine falsche Nummer im CRM ist schlimmer als keine.
+
+### 18.3 Befund: die OpenStreetMap-Stufe lief vollständig ins Leere
+
+Beim Nachmessen der MVZ-Adressen fiel auf, dass **kein einziger Lead eine Straße
+trägt**. Nachgezählt über alle gespeicherten Läufe:
+
+> In **93.351** BA-Suchantworten kommt `arbeitsort.strasse` **kein einziges Mal**
+> vor. Die v6-Suchantwort liefert ausschließlich `plz`, `ort` und `koordinaten`.
+
+Der OSM-Abgleich verlangte aber Straße **und** Hausnummer: `adressschluessel`
+gab ohne Straße `None` zurück, `finde` brach sofort ab. Die gesamte
+OpenStreetMap-Stufe konnte damit strukturell keinen einzigen Treffer liefern.
+Das ist kein Randfall, sondern der Ausfall einer der drei Kontaktquellen.
+
+Die Koordinaten sind dafür brauchbar, und zwar gebäudegenau — nachgeprüft, weil
+PLZ-Mittelpunkte wertlos wären: In **237 von 265** Postleitzahlgebieten
+desselben Laufs treten mehrere verschiedene Koordinatenpaare auf, in einem
+Gebiet bis zu 21.
+
+Der Abgleich läuft deshalb zweistufig. Adresse zuerst, weil eine Hausnummer
+eindeutiger ist als jede Entfernung; danach die Entfernung:
+
+| `treffer_art` | Bedingung | Konfidenz |
+|---|---|---|
+| `adresse` | PLZ + Straße + Hausnummer eindeutig | 0,90 |
+| `adresse+name` | mehrere im Haus, Name entscheidet | 0,94 |
+| `strasse+name` | Straße + eindeutiger Name | 0,82 |
+| `koordinaten` | genau ein Objekt ≤ 50 m, keins im Block (≤ 150 m) | 0,86 |
+| `koordinaten+name` | mehrere ≤ 150 m, genau ein Namenstreffer | 0,91 |
+| `naehe+name` | genau ein Namenstreffer ≤ 400 m | 0,80 |
+
+Eine abweichende `addr:postcode` am OSM-Objekt schließt den Treffer aus. Die
+Postleitzahl ersetzt die Entfernung nicht, sie bremst sie.
+
+### 18.4 Messstand
+
+§ 17.5 gilt unverändert: Die Wirkung der Erweiterungen auf Telefon- und
+Website-Abdeckung ist **noch nicht gemessen**. Gemessen sind hier ausschließlich
+die Strukturzahlen dieses Abschnitts (99/1022, 201→208, 93.351, 237/265). Die
+Änderungen sind durch 201 Tests abgedeckt, darunter 13 neue für Standorttrennung,
+standortgenaue Telefonauswahl und Koordinatenabgleich.
+
+Zu beachten beim nächsten Lauf: Die Standorttrennung entsteht beim **Suchen**.
+Wer nur `enrich_leads.py` laufen lässt, bekommt die Verbesserungen an Website,
+Impressum und OpenStreetMap — aber jedes MVZ bleibt eine einzige Firma.
