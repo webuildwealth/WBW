@@ -239,6 +239,50 @@ Google (Cloud + Tag Manager), **Usercentrics/Cookiebot** und **Microsoft**
 
 ---
 
+## 3b · Die zwei Bildplätze
+
+Beide sind gebaut und warten nur auf die Dateien. Solange keine da ist, fordert
+die Seite nichts an und es fehlt auch nichts sichtbar.
+
+### Startseite — Sie beide, rechts hinter der Animation
+
+Datei nach `assets/img/team-hero.webp`, dann in `index.html` am `<section
+class="stage …">` ergänzen:
+
+```html
+style="--stage-foto: url('/assets/img/team-hero.webp')"
+```
+
+**Der Schrägstrich am Anfang ist Pflicht.** Ein relativer Pfad in einer Custom
+Property löst Chromium gegen das Stylesheet auf, in dem sie benutzt wird, nicht
+gegen das Dokument, in dem sie steht — aus `assets/img/…` würde
+`assets/css/assets/img/…`, und das Bild bliebe stumm aus.
+
+Die Fläche steht rechts, läuft nach links und unten in den Hero aus und liegt
+unter einem Navy-Schleier: Der Hero trägt weiße Schrift, ein Foto in voller
+Helligkeit dahinter macht beides unlesbar. Auf dem Handy liegt es ganzflächig
+und leiser dahinter.
+
+### Über uns — Porträt Benedict Hintz
+
+Datei nach `assets/img/benedict-hintz.webp`. In `ueber-uns.html` tritt
+`.person__bild` an die Stelle von `.person__signet`:
+
+```html
+<div class="person__bild">
+  <picture>
+    <source srcset="assets/img/benedict-hintz.webp" type="image/webp">
+    <img src="assets/img/benedict-hintz.jpg" alt="Benedict Hintz"
+         width="880" height="1100" loading="lazy" decoding="async">
+  </picture>
+</div>
+```
+
+Die Klasse gibt es bereits: 4:5, abgerundet, `object-fit: cover`. Die Zeile mit
+der Anschrift wandert dann unter den Text der Spalte daneben.
+
+---
+
 ## 4 · Was sich an der Auslieferung geändert hat
 
 Die Content-Security-Policy in `netlify.toml` war zuvor vollständig auf

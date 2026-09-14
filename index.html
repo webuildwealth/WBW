@@ -356,6 +356,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ================================================= 3D-SCROLL-SEQUENZ ==== -->
 <section class="stage hero--dark" data-nav-dark aria-label="Einführung">
   <div class="stage__sticky">
+    <!-- Bildfläche rechts, hinter der Animation. Sie zeichnet nur, wenn auf
+         .stage die Eigenschaft --stage-foto gesetzt ist; ohne sie steht dort
+         `none` und der Browser fordert nichts an. Zum Aktivieren am
+         section-Tag oben ergänzen:
+           style="--stage-foto: url('/assets/img/team-hero.webp')"
+         Der Schrägstrich am Anfang ist Pflicht — Begründung in site.css.  -->
+    <div class="stage__foto" aria-hidden="true"></div>
     <canvas class="stage__canvas" data-scene="stage" aria-hidden="true"></canvas>
 
     <div class="stage__copy">

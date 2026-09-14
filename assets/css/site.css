@@ -729,8 +729,68 @@ body.nav-open { overflow: hidden; }
   align-items: center;
   overflow: clip;
 }
-.stage__canvas, .stage__copy { grid-area: cell; }
+.stage__canvas, .stage__copy, .stage__foto { grid-area: cell; }
 .stage__canvas { width: 100%; height: 100svh; }
+
+/* --------------------------------------------------------------------------
+   Bildfläche im Hero
+   Sie steht rechts, hinter der Animation, und läuft nach links und unten in
+   den dunklen Grund aus. Zwei Dinge sind hier wichtig:
+
+   1. Sie zeichnet nur, wenn --stage-foto gesetzt ist. Ohne die Eigenschaft
+      steht dort `none`, und der Browser fordert nichts an — die Fläche kostet
+      also nichts, solange kein Bild da ist.
+      Der Pfad darin MUSS mit einem Schrägstrich beginnen. Ein relativer Pfad
+      in einer Custom Property löst Chromium gegen das Stylesheet auf, in dem
+      die Eigenschaft benutzt wird, nicht gegen das Dokument, in dem sie
+      gesetzt ist — aus `assets/img/x.webp` würde `assets/css/assets/img/x.webp`.
+   2. Sie bleibt dunkel. Der Hero trägt weiße Schrift und helle Stränge; ein
+      Foto in voller Helligkeit dahinter würde beides unlesbar machen. Deckkraft
+      und der Navy-Schleier darüber sind so gewählt, dass das Bild als Tiefe
+      wirkt und nicht als Motiv.
+   -------------------------------------------------------------------------- */
+.stage__foto {
+  position: relative;
+  align-self: stretch; justify-self: end;
+  width: min(64%, 980px); height: 100svh;
+  pointer-events: none;
+  background-image: var(--stage-foto, none);
+  background-position: center right;
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: .5;
+  filter: saturate(.72) contrast(1.02);
+  /* Nach links ausblenden. Bewusst nur EINE Maske: Zwei Masken mit
+     mask-composite zu schneiden ist zwar die naheliegende Lösung für „links
+     und unten", aber die beiden Schreibweisen (-webkit-mask-composite und
+     mask-composite) haben unterschiedliche Schlüsselwörter, und in der
+     Kombination bleibt die Fläche in Chromium leer. Der untere Verlauf liegt
+     deshalb im Schleier darüber — dasselbe Ergebnis, ein Mechanismus weniger. */
+  -webkit-mask-image: linear-gradient(to left, #000 30%, transparent 94%);
+          mask-image: linear-gradient(to left, #000 30%, transparent 94%);
+}
+/* Navy-Schleier: nimmt dem Bild die Farbe, die mit der Marke konkurriert, und
+   führt es unten in den Grund des Heros. */
+.stage__foto::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(to top, rgb(7, 27, 50) 0%, rgba(7, 27, 50, 0) 26%),
+    linear-gradient(105deg,
+      rgba(7, 27, 50, .92) 0%,
+      rgba(7, 27, 50, .55) 38%,
+      rgba(7, 27, 50, .3) 100%);
+}
+/* Auf dem Handy steht die Animation über dem Text und es ist kein Platz für
+   eine zweite Ebene daneben. Dort liegt das Bild ganzflächig und sehr leise
+   dahinter — mehr wäre Unruhe. */
+@media (max-width: 860px) {
+  .stage__foto {
+    width: 100%; justify-self: stretch;
+    opacity: .3;
+    -webkit-mask-image: none;
+            mask-image: none;
+  }
+}
 
 .stage__copy {
   position: relative; z-index: 2;
@@ -2127,4 +2187,45 @@ mark.platzhalter {
      Regel wirkungslos. */
   .nav__inner { padding-inline: max(0px, env(safe-area-inset-left)) max(0px, env(safe-area-inset-right)); }
   .footer { padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
+}
+
+/* --------------------------------------------------------------------------
+   27. Druck
+   § 15 VersVermV verlangt die Erstinformation in Textform. Wer sie aus dem
+   Browser druckt oder als PDF sichert, soll ein Dokument bekommen und keinen
+   Abzug der Website: keine Navigation, kein schwebender CTA, keine Farbflächen,
+   die Toner kosten und nichts sagen — dafür die Adressen hinter den Links,
+   denn im Ausdruck ist ein Link ohne Ziel wertlos.
+   -------------------------------------------------------------------------- */
+@media print {
+  .nav, .nav__mobile, .footer, .rail, .skip-link,
+  .stage__canvas, .stage__foto, .hero__viz, canvas,
+  .cta-band, .btn, .cookiebot-renew { display: none !important; }
+
+  html, body {
+    background: #fff !important; color: #000 !important;
+    font-size: 11pt; line-height: 1.5;
+  }
+  .wrap, .wrap-narrow { width: auto !important; max-width: none !important; margin: 0 !important; }
+  main, .legal, .section { padding: 0 !important; }
+
+  h1, h2, h3, h4 { color: #000 !important; page-break-after: avoid; break-after: avoid; }
+  h1 { font-size: 18pt; } h2 { font-size: 14pt; margin-top: 1.2em; } h3 { font-size: 12pt; }
+  p, li { orphans: 3; widows: 3; }
+  table, figure, .card { page-break-inside: avoid; break-inside: avoid; }
+
+  a { color: #000 !important; text-decoration: underline; }
+  /* Ziele ausschreiben — aber nur bei echten Adressen. Sprungmarken innerhalb
+     der Seite hinter dem Linktext auszuschreiben wäre nur Rauschen. */
+  .legal a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; word-break: break-all; }
+  .legal a[href^="mailto:"]::after { content: " (" attr(href) ")"; font-size: 9pt; }
+
+  /* Platzhalter müssen im Ausdruck erst recht auffallen. */
+  .platzhalter { background: #000 !important; color: #fff !important; padding: 0 .2em; }
+
+  /* Alles, was auf Bewegung wartet, muss sichtbar sein — sonst druckt die
+     Seite leere Flächen. */
+  [data-reveal], .falt__inhalt { opacity: 1 !important; transform: none !important; }
+  details.falt { display: contents !important; }
+  .falt > summary { display: none !important; }
 }
