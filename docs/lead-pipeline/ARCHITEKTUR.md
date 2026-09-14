@@ -1095,3 +1095,65 @@ standortgenaue Telefonauswahl und Koordinatenabgleich.
 Zu beachten beim nächsten Lauf: Die Standorttrennung entsteht beim **Suchen**.
 Wer nur `enrich_leads.py` laufen lässt, bekommt die Verbesserungen an Website,
 Impressum und OpenStreetMap — aber jedes MVZ bleibt eine einzige Firma.
+
+---
+
+## 19. NACHTRAG: ZIELGRUPPE KLEINERE PRAXEN, UND EIN ECHTER LIVE-LAUF (2026-09-14)
+
+### 19.1 Erster Live-Lauf mit dem 14.09.-Paket
+
+Ein Lauf auf echten Daten (`calibration-berlin-50km-mfa-20260914T142738Z-c07642`)
+bestätigte einen bereits dokumentierten, aber noch nicht behobenen Befund:
+`max_search_requests: 120` reichte nicht. Das Budget war beim 39. von 67
+Suchbegriffen (`Pflegehelfer`) aufgebraucht; **28 Berufsgruppen** — Physio-
+therapie, Ergotherapie, Logopädie, Podologie, Hebammen, OTA/ATA, Rettungsdienst,
+MTA/MTRA, Apotheker, PTA u. a. — wurden dadurch **überhaupt nicht durchsucht**.
+`max_search_requests` steht jetzt auf 250 (67 Begriffe × bis zu ~11 Seiten je
+Begriff, mit Reserve).
+
+Ein `--live`-Aufruf ohne `--leads` brach korrekt mit „Keine Leads angegeben"
+ab, bevor `HubSpotClient()` instanziiert wurde — geprüft im Code
+(`scripts/sync_hubspot.py`): der Rückgabepfad liegt vor der Client-Erzeugung.
+Es wurde nichts nach HubSpot geschrieben.
+
+### 19.2 Zielgruppe: kleinere Praxen statt Kliniken und Pflegeketten
+
+Vorgabe: Die Finanzberatung richtet sich an den Praxisinhaber persönlich.
+Bei einer Klinik oder Pflegekette entscheidet strukturell eine
+Personalabteilung — ein anderer Adressat, unabhängig von Kontaktdaten-Qualität.
+
+Neuer Filter `markiere_grossanbieter()`: Ein Arbeitgeber, der über **alle**
+seine Standorte zusammen **6 oder mehr** gleichzeitige MFA-relevante Anzeigen
+schaltet, gilt als Großanbieter und wird nicht als Lead übertragen. Gezählt
+wird über den ganzen Arbeitgeber (Summe über alle `hash_id`-Standort-Einträge
+aus § 18.1), nicht je einzelnem Standort — sonst bliebe eine Kette mit vielen
+kleinen Außenstellen (wenige Jobs je Adresse, viele Adressen) unauffällig,
+obwohl sie in der Summe eindeutig kein kleiner Anbieter ist. Beleg aus dem
+Lauf vom 14.09.: Vivantes allein hatte 46 gleichzeitige Anzeigen an einer
+einzigen Postleitzahl.
+
+Einstellbar statt fest verdrahtet:
+- `--grossanbieter-ab N` ändert die Schwelle (Standard 6).
+- `--ohne-groessenfilter` schaltet den Filter vollständig ab.
+
+`data/reports/<lauf>_employers.json` führt `arbeitgeber_gesamt_jobs` und
+`ist_grossanbieter` je Arbeitgeber, damit die Grenze nachvollziehbar bleibt.
+Neue Report-Zeile: „Grossanbieter ausgeschlossen (Zielgruppe: kleinere
+Praxen)". 7 neue Tests (`markiere_grossanbieter`), darunter der Ketten-Fall
+mit vier kleinen Filialen, die einzeln unauffällig wären.
+
+### 19.3 Telefonnummer als Pflichtfeld
+
+Kein neuer Code nötig: `sync_hubspot.py --nur-mit-telefon` (bereits seit dem
+Update vom 10.09. vorhanden) überträgt ausschließlich Praxen mit geprüfter
+Telefonnummer; alles andere bleibt in der Review-Datei. Google Maps/Places als
+zusätzliche Telefonquelle wurde geprüft und **abgelehnt** — kostenpflichtige
+API, widerspricht der bestehenden 0-€-Vorgabe. OpenStreetMap (§ 18.3) deckt
+denselben Bedarf kostenlos ab.
+
+### 19.4 Messstand
+
+Die Wirkung von Budget-Fix und Größenfilter zusammen auf einem vollständigen
+Lauf ist **noch nicht gemessen** — der nächste Lauf beim Nutzer ist ausstehend.
+207 Tests grün (pytest und `tests/run_all.py`), 20 davon neu seit § 18
+(13 Standorte/OSM, 7 Größenfilter).
