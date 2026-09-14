@@ -898,3 +898,101 @@ was Git kennt.
 
 Punkt 1 und 2 sind Zielgruppenentscheidungen und keine technischen Fragen — sie lassen sich
 nicht durch Anpassen der Tests lösen.
+
+---
+
+## 17. NACHTRAG: TELEFON UND WEBSITE ALS PFLICHTFELDER (2026-09-14)
+
+Vorgabe aus dem Betrieb: Im CRM soll möglichst kein Unternehmen ohne
+Telefonnummer **und** ohne Website stehen. Der folgende Abschnitt hält fest, was
+dafür implementiert wurde, und — ebenso wichtig — wo die Grenze liegt.
+
+### 17.1 Rangfolge der Telefonquellen (Stand: implementiert)
+
+| Rang | Quelle | `mfa_phone_source` | Konfidenz |
+|---|---|---|---|
+| 1 | BA-Stellenanzeige | `BA_JOB_DESCRIPTION` | aus dem Anzeigentext |
+| 2 | Impressum der Praxis-Website (§ 5 TMG / DDG) | `PRACTICE_IMPRESSUM` | 0,97 |
+| 3 | Kontakt, Anfahrt, Sprechzeiten | `PRACTICE_CONTACT_PAGE` | 0,94 |
+| 4 | „Über uns", „Team", „Unsere Praxis" | `PRACTICE_ABOUT_PAGE` | 0,90 |
+| 5 | Startseite | `PRACTICE_HOMEPAGE` | 0,86 |
+| — | OpenStreetMap, Adressabgleich | `OPENSTREETMAP` | 0,82–0,94 |
+
+Rang 4 und 5 sind neu. Grund: Auf kleinen Praxisseiten nennt das Impressum
+häufig nur Inhaber, Berufsbezeichnung und Aufsichtsbehörde, während die
+Durchwahl ausschließlich auf „Über uns" oder im Kopf der Startseite steht. Wer
+dort nicht nachsieht, verliert eine Nummer, die öffentlich dasteht.
+
+Die Startseite steht bewusst zuletzt: Bei Praxisketten zeigt sie gern die Nummer
+der Hauptfiliale. Sie wird nur ausgewertet, wenn keine der drei besseren Seiten
+eine eindeutige Nummer liefert. Eine Anzeigen-Nummer wird von keiner
+Website-Nummer ersetzt.
+
+### 17.2 Der Identitätsnachweis gilt für die Domain, nicht für die Seite
+
+Bisher musste **dieselbe Seite**, auf der die Nummer steht, auch Praxisnamen und
+exakte Anzeigenadresse tragen. Für Impressen ist das erfüllt, für Team-Seiten
+praktisch nie — sie wiederholen die Anschrift nicht. Die Regel lautet jetzt:
+
+> Eine Nummer wird übernommen, wenn **irgendeine** Seite derselben Domain den
+> Praxisnamen zusammen mit der exakten Straße samt Hausnummer und der PLZ aus
+> der Anzeige trägt.
+
+Stammt der Nachweis von einer anderen Seite als die Nummer, wird die Fundstelle
+des Nachweises in `method` mitgeschrieben (`beleg:<URL>`) und die Konfidenz um
+0,03 gesenkt. Findet sich auf der ganzen Domain kein Nachweis, wird **keine**
+Nummer übernommen (`site:NotVerified`). Die Schranke gegen fremde Praxen bleibt
+damit bestehen; sie greift nur eine Ebene höher.
+
+Nebeneffekt, der eigenständig zählt: Wird die Domain der Praxis zugeordnet, aber
+keine eindeutige Nummer gefunden, bleibt die **geprüfte Website** erhalten
+(`WEBSITE_VERIFIED_NO_PHONE`). Dieser Fall ging vorher vollständig verloren.
+
+### 17.3 Umfang des Abrufs
+
+Höchstens 14 Seiten je Domain (vorher 8), abgearbeitet nach Beweiskraft:
+Impressum vor Kontakt vor „Über uns" vor Startseite. Ein **gefundener** Link
+schlägt bei gleichem Rang den geratenen Pfad — bei begrenztem Seitenbudget darf
+nicht der Zufall der Navigation entscheiden, ob das Impressum noch drankommt.
+`robots.txt` wird weiterhin gelesen und befolgt. Arztverzeichnisse und
+Buchungsportale gelten nie als Firmenwebsite: Die dort angezeigte Nummer ist
+häufig eine Vermittlungsnummer des Portals, und die ist im CRM schlimmer als gar
+keine.
+
+### 17.4 Was diese Änderung nicht leisten kann
+
+Die Vorgabe „kein Unternehmen ohne Telefonnummer und Website" ist mit ehrlichen
+Mitteln nicht bei 100 % erfüllbar:
+
+- Ein Teil der Praxen **hat keine Website**. Für sie existiert keine Quelle, die
+  eine liefern könnte, ohne sie zu erfinden.
+- Die Telefonnummer solcher Praxen steht im Telefonbuch oder auf einem Portal.
+  Portalnummern sind bewusst ausgeschlossen (§ 17.3).
+- OpenStreetMap deckt nur ab, was dort eingetragen ist.
+
+Daraus folgen zwei getrennte Stellschrauben, die nicht verwechselt werden
+dürfen: **Abdeckung erhöhen** (§ 17.1–17.3) und **unvollständige Leads
+zurückhalten**. Letzteres leistet `sync_hubspot.py --nur-vollstaendig`; es hält
+auch Praxen zurück, die es nachweislich gibt und zu denen eine Nummer vorliegt —
+nur eben keine eigene Seite. Deshalb ist es nicht der Standard.
+
+Die Lückenliste `data/reports/*_luecken.json` benennt je Praxis, was fehlt
+(`fehlt`, `web_status`). Sie ist die Arbeitsliste für das, was keine Maschine
+liefern kann.
+
+### 17.5 Messstand
+
+Gemessen wurde bisher **ohne** die Erweiterung aus § 17.1/17.2, Lauf
+`calibration-berlin-50km-mfa-20260906T182340Z-f89f1f`, 133 Leads:
+
+| Stufe | Telefon | Website |
+|---|---:|---:|
+| nur BA-Anzeige | 15 (11,3 %) | 31 (23,3 %) |
+| + Impressum/Kontakt | 21 (15,8 %) | 31 (23,3 %) |
+| + OpenStreetMap | 43 (32,3 %) | 51 (38,3 %) |
+
+Die Wirkung der Erweiterung auf „Über uns"/Startseite und auf den
+domainweiten Identitätsnachweis ist **noch nicht gemessen**. Sie kann erst im
+nächsten vollständigen Lauf beziffert werden; jede Zahl davor wäre geraten. Die
+Änderung ist durch 188 Tests abgedeckt, darunter sechs neue Regressionstests für
+genau diese Fälle.
