@@ -140,6 +140,28 @@
     ]
   };
 
+  /* Die Umrisse der beiden Ringbögen und der Balken, Punkt für Punkt aus der
+     Originaldatei ausgelesen (Konturverfolgung nach Moore, danach
+     Douglas-Peucker auf 0,9 px Genauigkeit). Umgerechnet in Szeneneinheiten
+     über denselben Faktor wie SIG: 0.92 / 314.9. Gespeichert flach als
+     x,y,x,y … je Umriss.
+
+     Warum ausgelesen statt gezeichnet: Der Ring der Marke ist nicht zwei Bögen
+     eines Kreises. Der bordeauxfarbene läuft auf einem engeren Radius als der
+     blaue, seine Enden sind schräg abgeschnitten, und unten stoßen beide
+     aneinander, statt eine Lücke zu lassen. Jede parametrische Näherung hat
+     genau das verfehlt — diese Punkte treffen es, weil sie die Datei sind. */
+  var MARKE = {
+    blau: [
+      [-0.2819,0.92,-0.2556,0.92,-0.2469,0.9083,-0.2469,0.8265,-0.2498,0.8236,-0.2498,0.8119,-0.2527,0.809,-0.279,0.809,-0.3141,0.7944,-0.3316,0.7827,-0.3754,0.733,-0.3959,0.7213,-0.4046,0.7213,-0.4485,0.7009,-0.466,0.6863,-0.4777,0.6834,-0.4981,0.6717,-0.504,0.6629,-0.5186,0.6571,-0.539,0.6395,-0.5478,0.6366,-0.5712,0.6162,-0.5858,0.5986,-0.6121,0.5782,-0.6325,0.549,-0.6909,0.4847,-0.6939,0.4759,-0.7114,0.4555,-0.7377,0.4116,-0.7435,0.3941,-0.7523,0.3854,-0.7552,0.3766,-0.7552,0.3532,-0.7611,0.3532,-0.7669,0.3474,-0.7669,0.3211,-0.7844,0.2889,-0.7903,0.2597,-0.8049,0.2247,-0.8049,0.2159,-0.8107,0.2042,-0.8107,0.1925,-0.8166,0.1808,-0.8224,0.1458,-0.8312,0.1195,-0.8341,0.0465,-0.837,0.0435,-0.837,-0.047,-0.8341,-0.05,-0.8341,-0.0879,-0.8283,-0.1084,-0.8283,-0.1318,-0.8224,-0.1464,-0.8224,-0.161,-0.8107,-0.196,-0.8107,-0.2077,-0.799,-0.2369,-0.799,-0.2486,-0.7844,-0.2778,-0.7757,-0.31,-0.7698,-0.3158,-0.7611,-0.3334,-0.7611,-0.3392,-0.7494,-0.3567,-0.7289,-0.4005,-0.7202,-0.4093,-0.7085,-0.4327,-0.6734,-0.4823,-0.6442,-0.5174,-0.5653,-0.5992,-0.5507,-0.608,-0.5244,-0.6313,-0.5157,-0.6343,-0.5069,-0.643,-0.4543,-0.6752,-0.4368,-0.681,-0.4309,-0.6869,-0.4134,-0.6927,-0.3871,-0.7073,-0.3579,-0.7161,-0.352,-0.7219,-0.3491,-0.7278,-0.3491,-0.8329,-0.352,-0.8388,-0.3783,-0.8534,-0.4397,-0.8534,-0.4426,-0.8505,-0.4572,-0.8505,-0.4572,-0.8359,-0.466,-0.8271,-0.501,-0.8154,-0.5069,-0.8096,-0.539,-0.795,-0.6325,-0.7365,-0.6617,-0.7102,-0.6763,-0.7015,-0.7465,-0.6343,-0.7552,-0.6197,-0.7698,-0.6138,-0.7757,-0.6021,-0.7903,-0.5904,-0.8166,-0.5466,-0.8399,-0.5233,-0.8458,-0.5057,-0.8546,-0.4999,-0.8692,-0.4823,-0.8692,-0.4677,-0.8925,-0.4414,-0.8984,-0.421,-0.9071,-0.4093,-0.9071,-0.4035,-0.9159,-0.3859,-0.9218,-0.3801,-0.9218,-0.3713,-0.948,-0.3187,-0.9539,-0.2924,-0.9627,-0.2749,-0.9743,-0.2632,-0.9831,-0.2428,-0.9889,-0.2253,-0.9889,-0.2077,-1.0006,-0.1727,-1.0036,-0.1347,-1.0065,-0.1318,-1.0094,-0.0967,-1.0123,-0.0938,-1.0152,0.0348,-1.0123,0.0377,-1.0123,0.1049,-1.0094,0.1078,-1.0094,0.1312,-1.0065,0.1341,-1.0036,0.1721,-0.9977,0.1867,-0.9977,0.1984,-0.9948,0.2013,-0.9831,0.2568,-0.9539,0.3445,-0.9422,0.3649,-0.9393,0.3795,-0.9101,0.4379,-0.9042,0.4438,-0.9042,0.4496,-0.8925,0.4642,-0.8867,0.4788,-0.8662,0.5081,-0.8546,0.5314,-0.799,0.6045,-0.7815,0.6249,-0.6822,0.7213,-0.6179,0.771,-0.6004,0.7798,-0.5682,0.8031,-0.539,0.8207,-0.4222,0.8762,-0.3374,0.9054,-0.2849,0.9171]
+    ],
+    rot: [
+      [-0.1271,0.9434,-0.0803,0.9434,-0.0774,0.9405,-0.0073,0.9375,0.0131,0.9317,0.0307,0.9317,0.0453,0.9258,0.057,0.9258,0.0599,0.9229,0.0833,0.92,0.1183,0.9083,0.1271,0.9083,0.1797,0.8908,0.2381,0.8645,0.244,0.8645,0.2498,0.8586,0.2556,0.8586,0.2965,0.8382,0.3024,0.8324,0.3228,0.8236,0.352,0.8031,0.3608,0.8002,0.4163,0.7622,0.4631,0.7243,0.4864,0.7038,0.5682,0.6191,0.6208,0.5519,0.6442,0.5168,0.6676,0.473,0.6734,0.4672,0.7114,0.3912,0.7523,0.2802,0.7523,0.2714,0.7581,0.2597,0.7581,0.251,0.7757,0.1896,0.7757,0.175,0.7815,0.1546,0.7844,0.1078,0.7874,0.1049,0.7874,0.0757,0.7903,0.0727,0.7903,-0.047,0.7874,-0.05,0.7874,-0.0821,0.7815,-0.1025,0.7786,-0.1434,0.7757,-0.1464,0.764,-0.2165,0.7523,-0.2515,0.7494,-0.272,0.7406,-0.2895,0.7406,-0.2983,0.7202,-0.3538,0.7143,-0.3626,0.7143,-0.3684,0.6851,-0.4268,0.6763,-0.4356,0.6763,-0.4414,0.6705,-0.4473,0.6617,-0.4677,0.65,-0.4823,0.6442,-0.497,0.6121,-0.5466,0.5273,-0.646,0.5215,-0.6489,0.504,-0.6693,0.4748,-0.6869,0.4339,-0.7248,0.3959,-0.7511,0.3871,-0.7541,0.3754,-0.7657,0.3462,-0.7803,0.3404,-0.7862,0.3345,-0.7862,0.2965,-0.8037,0.279,-0.8037,0.2761,-0.7979,0.279,-0.7336,0.2819,-0.7307,0.2819,-0.6606,0.279,-0.6576,0.279,-0.497,0.2819,-0.494,0.2819,-0.4794,0.279,-0.4765,0.279,-0.4619,0.2819,-0.459,0.2819,-0.4181,0.279,-0.4152,0.279,-0.2457,0.2819,-0.2428,0.2819,-0.2311,0.279,-0.2282,0.279,-0.196,0.2819,-0.1931,0.2819,-0.1522,0.279,-0.1493,0.279,-0.0909,0.2761,-0.0879,0.2761,-0.0383,0.2732,-0.0354,0.2732,-0.0237,0.2761,-0.0207,0.2761,0.137,0.279,0.1399,0.279,0.1925,0.2849,0.2013,0.2965,0.2071,0.3199,0.2101,0.3871,0.2334,0.4163,0.2393,0.4339,0.248,0.4689,0.251,0.4748,0.2451,0.4748,0.2071,0.4777,0.2042,0.4777,-0.3859,0.4806,-0.3889,0.4806,-0.421,0.4864,-0.4268,0.4923,-0.4268,0.5098,-0.3976,0.5244,-0.3538,0.5303,-0.348,0.5303,-0.3421,0.5419,-0.3246,0.5478,-0.3041,0.5536,-0.2983,0.5595,-0.2778,0.5653,-0.272,0.5682,-0.2545,0.577,-0.2369,0.5829,-0.2106,0.5887,-0.199,0.5916,-0.1756,0.6033,-0.1376,0.6033,-0.123,0.6091,-0.1113,0.6121,-0.05,0.615,-0.047,0.615,0.0523,0.6121,0.0552,0.6121,0.0669,0.6238,0.0669,0.6296,0.0727,0.6296,0.0786,0.6267,0.0815,0.6238,0.1195,0.6179,0.1341,0.6208,0.1633,0.6179,0.1662,0.6179,0.1779,0.615,0.1808,0.6004,0.2422,0.5858,0.2597,0.5712,0.2597,0.5712,0.2714,0.5799,0.2743,0.5799,0.286,0.577,0.2889,0.5566,0.2889,0.5478,0.3152,0.5419,0.3211,0.5332,0.3445,0.5157,0.3707,0.5127,0.3824,0.504,0.397,0.4894,0.4146,0.4835,0.4321,0.4455,0.4759,0.4192,0.5139,0.39,0.5402,0.3842,0.5519,0.3725,0.5636,0.3667,0.5636,0.3462,0.5869,0.3228,0.5986,0.2965,0.6278,0.2849,0.6308,0.2673,0.6512,0.241,0.6571,0.2293,0.6629,0.2147,0.6775,0.2089,0.6775,0.1738,0.698,0.1505,0.7038,0.13,0.7155,0.1066,0.7213,0.1008,0.7272,0.0803,0.7301,0.0657,0.7389,0.0453,0.7418,0.0336,0.7476,0.0219,0.7476,0.0102,0.7535,-0.0131,0.7535,-0.0219,0.7593,-0.0336,0.7593,-0.0365,0.7622,-0.1183,0.7652,-0.1271,0.7739,-0.13,0.7827,-0.1329,0.8324,-0.1359,0.8353,-0.1359,0.844,-0.1446,0.8586,-0.1446,0.8733,-0.1505,0.882,-0.1505,0.8995,-0.1592,0.9171,-0.1592,0.9288,-0.1534,0.9375,-0.1475,0.9405,-0.13,0.9405],
+      [0.1943,-0.0646,0.2118,-0.0646,0.2206,-0.0733,0.2206,-0.83,0.2177,-0.8359,0.206,-0.8446,0.1768,-0.8446,0.168,-0.8563,0.1592,-0.8563,0.1534,-0.8622,0.1242,-0.868,0.1154,-0.8738,0.0774,-0.8768,0.0716,-0.8709,0.0628,-0.8709,0.054,-0.8768,0.054,-0.8855,0.0394,-0.8855,0.0365,-0.8826,0.0365,-0.3713,0.0336,-0.3684,0.0336,-0.2749,0.0365,-0.272,0.0365,-0.2048,0.0394,-0.2019,0.0365,-0.1172,0.0511,-0.1084,0.0716,-0.1055,0.1008,-0.0938,0.1096,-0.0938,0.1271,-0.085,0.1359,-0.085,0.1651,-0.0733,0.1914,-0.0675],
+      [-0.0394,-0.4093,-0.0278,-0.4093,-0.0219,-0.4122,-0.0161,-0.421,-0.0161,-0.4999,-0.019,-0.5028,-0.019,-0.608,-0.0161,-0.6109,-0.0161,-0.6723,-0.019,-0.6752,-0.019,-0.7307,-0.0161,-0.7336,-0.0161,-0.7453,-0.019,-0.7482,-0.019,-0.8563,-0.0161,-0.8592,-0.0161,-0.8826,-0.019,-0.8884,-0.0307,-0.8884,-0.0394,-0.8826,-0.0599,-0.8826,-0.0657,-0.8884,-0.0657,-0.9001,-0.0774,-0.9001,-0.0803,-0.8972,-0.0979,-0.8972,-0.1037,-0.8943,-0.1066,-0.8855,-0.1154,-0.8797,-0.13,-0.8797,-0.1329,-0.8826,-0.1329,-0.8914,-0.1534,-0.8914,-0.1534,-0.8797,-0.1388,-0.8709,-0.1154,-0.83,-0.1096,-0.8271,-0.1037,-0.8183,-0.1008,-0.8096,-0.1037,-0.7891,-0.1008,-0.7891,-0.0891,-0.7745,-0.0891,-0.719,-0.092,-0.7161,-0.095,-0.6956,-0.1183,-0.6518,-0.1592,-0.608,-0.1797,-0.5934,-0.1797,-0.5788,-0.1768,-0.5758,-0.1768,-0.4561,-0.1738,-0.4502,-0.0424,-0.4122]
+    ]
+  };
+
   // Liefert für Strang si (0..3) und Ziel ti (0..3) den Punkt bei s = 0..1
   function shape(si, ti, s) {
     var x = 0, y = 0, z = 0, k, ang;
@@ -330,6 +352,32 @@
     [[0.129, -0.856, 0.773, 0.092], [0.377, -0.856, 1.086, 0.101], [0.653, -0.856, 1.362, 0.101]]
   ];
   var BAR_A = [0, 0, 1, 1];
+
+  /* Die Originaldatei der Bildmarke, aus der auch MARKE stammt. Sie wird im
+     letzten Akt INNERHALB der ausgelesenen Umrisse gezeichnet: Der Umriss legt
+     fest, was zu sehen ist, das Bild liefert Schattierung, Kanten und Glanz.
+     So steht am Ende die Marke, wie sie gerendert wurde — und nicht eine
+     flache Nachbildung, der man ansieht, dass sie nachgebaut ist.
+
+     Der Renderhintergrund kann dabei nicht durchschlagen, weil er außerhalb
+     jedes Umrisses liegt. Genau daran war das Freistellen gescheitert: Der
+     weiße Stab und der Grund unterscheiden sich um zwei Helligkeitsstufen.
+     Der Umriss löst das, ohne die Datei anzufassen. */
+  var MARKE_BILD = null, markeBereit = false;
+  function markeLaden(beiFertig) {
+    if (MARKE_BILD) return;
+    MARKE_BILD = new global.Image();
+    MARKE_BILD.decoding = 'async';
+    MARKE_BILD.addEventListener('load', function () {
+      markeBereit = MARKE_BILD.naturalWidth > 0;
+      if (beiFertig) beiFertig();
+    });
+    MARKE_BILD.addEventListener('error', function () { markeBereit = false; });
+    MARKE_BILD.src = 'assets/img/marke-zeichen.webp';
+  }
+  /* Ausschnitt und Maßstab der Datei, dieselben Zahlen wie bei der
+     Konturverfolgung: Mitte (370.5, 351.9), Radius 314.9 px = 0.92. */
+  var BILD = { cx: 370.5, cy: 351.9, s: 0.92 / 314.9, w: 690, h: 702 };
 
   /* ------------------------------------------------------------- Renderer */
 
@@ -541,6 +589,9 @@
     var wid = lerp(WIDTH[key][mo.i0], WIDTH[key][mo.i1], f);
     var alp = lerp(ALPHA[key][mo.i0], ALPHA[key][mo.i1], f);
     var kante = lerp(KANTE[key][mo.i0], KANTE[key][mo.i1], f);
+    /* Die beiden Ringbögen (Strang 0 und 1) treten im letzten Akt an die
+       ausgelesenen Umrisse ab. Stab und Schlange bleiben. */
+    if (si === 0 || si === 1) alp *= (1 - (this.marke || 0));
     if (alp < 0.02) return;
 
     var i, o, depth, ctx = this.ctx, self = this;
@@ -821,9 +872,92 @@
     })(out[0], out[1], out[2]);
   };
 
+  /* Die ausgelesenen Umrisse der Marke, flach gefüllt. Sie ersetzen im letzten
+     Akt die beiden Ringröhren und die Balken; Stab, Schlange, Knauf und Kopf
+     bleiben, wie sie sind — die tragen die Bewegung bis zum Schluss.
+
+     Gezeichnet wird durch dieselbe Projektion wie alles andere, also bei z = 0.
+     Damit dreht und atmet die Marke mit der Szene mit, ohne sich zu verformen. */
+  Scene.prototype.drawMarke = function () {
+    var a = this.marke;
+    if (a < 0.02) return;
+    var ctx = this.ctx, self = this, out = new Float32Array(3);
+
+    // Die Umrisse liegen flach als x,y,x,y … — ein Array je Umriss statt eines
+    // Arrays von Paaren. Das spart bei knapp 300 Punkten ein paar hundert
+    // Objekte je Bild.
+    function zug(pfad) {
+      ctx.beginPath();
+      for (var i = 0; i < pfad.length; i += 2) {
+        self.project(pfad[i], pfad[i + 1], 0, out, 0);
+        if (i === 0) ctx.moveTo(out[0], out[1]); else ctx.lineTo(out[0], out[1]);
+      }
+      ctx.closePath();
+    }
+
+    // Mitte und Radius auf dem Bildschirm — für den Farbverlauf über die Marke
+    var mitte = new Float32Array(3);
+    this.project(0, 0, 0, mitte, 0);
+    var rand = new Float32Array(3);
+    this.project(1.05, 0, 0, rand, 0);
+    var R = Math.max(1, Math.abs(rand[0] - mitte[0]));
+
+    function malen(pfade, dunkel, hell, glanz) {
+      var g = ctx.createLinearGradient(mitte[0] - R, mitte[1] - R, mitte[0] + R, mitte[1] + R);
+      g.addColorStop(0, hell);
+      g.addColorStop(0.55, dunkel);
+      g.addColorStop(1, glanz);
+      ctx.fillStyle = g;
+      for (var i = 0; i < pfade.length; i++) {
+        zug(pfade[i]);
+        ctx.fill();
+        // Dunkle Kontur wie im Render — ohne sie schwimmen die Flächen auf
+        // hellem Grund ineinander.
+        ctx.strokeStyle = 'rgba(8, 22, 40, .38)';
+        ctx.lineWidth = Math.max(1, R * 0.012);
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+      }
+    }
+
+    /* Das Bild in die Umrisse klemmen. Die Ecken der Datei werden durch
+       dieselbe Projektion geschickt wie die Umrisse; bei der fast frontalen
+       Kameralage des letzten Akts ist die Abbildung dort praktisch affin, das
+       Bild sitzt also deckungsgleich in seiner Kontur. */
+    function bildRahmen() {
+      var lo = new Float32Array(3), ru = new Float32Array(3);
+      self.project((0 - BILD.cx) * BILD.s, -(0 - BILD.cy) * BILD.s, 0, lo, 0);
+      self.project((BILD.w - BILD.cx) * BILD.s, -(BILD.h - BILD.cy) * BILD.s, 0, ru, 0);
+      return [lo[0], lo[1], ru[0] - lo[0], ru[1] - lo[1]];
+    }
+
+    this.push(0.06, function () {
+      ctx.save();
+      ctx.globalAlpha = a;
+      if (markeBereit) {
+        var r = bildRahmen();
+        var alle = MARKE.blau.concat(MARKE.rot);
+        for (var i = 0; i < alle.length; i++) {
+          ctx.save();
+          zug(alle[i]);
+          ctx.clip();
+          ctx.drawImage(MARKE_BILD, r[0], r[1], r[2], r[3]);
+          ctx.restore();
+        }
+      } else {
+        // Rückfall, solange die Datei noch lädt oder fehlt: flache Flächen in
+        // den Markenfarben. Besser eine schlichte Marke als gar keine.
+        malen(MARKE.blau, '#0C2C4F', '#1D4C7E', '#0A2440');
+        malen(MARKE.rot,  '#751524', '#A32234', '#5A0F1B');
+      }
+      ctx.restore();
+    });
+  };
+
   // Balken (Logo-Motiv / Vermögensaufbau) als extrudierte 3D-Quader
   Scene.prototype.drawBars = function (mo) {
-    var a = lerp(BAR_A[mo.i0], BAR_A[mo.i1], mo.f);
+    // Im Signet übernehmen die ausgelesenen Umrisse auch die Balken.
+    var a = lerp(BAR_A[mo.i0], BAR_A[mo.i1], mo.f) * (1 - (this.marke || 0));
     if (a < 0.02) return;
     var B0 = BARS[mo.i0], B1 = BARS[mo.i1], ctx = this.ctx, self = this;
     /* Tiefe der Quader. Im Signet flacher als in der Wachstumskurve: Dort sind
@@ -922,12 +1056,27 @@
     this.items.length = 0;
 
     var mo = this.morph();
+    /* Anteil des Signets in der aktuellen Mischung und daraus der Anteil, zu
+       dem schon die ausgelesene Marke gezeichnet wird. Die Röhren laufen die
+       Bewegung zu Ende und blenden in der zweiten Hälfte des letzten Akts in
+       die echten Umrisse über — so bleibt die Bewegung erhalten und am Ende
+       steht die Marke, wie sie ist. */
+    this.signet = (mo.i0 === 3 ? 1 - mo.f : 0) + (mo.i1 === 3 ? mo.f : 0);
+    this.marke = clamp((this.signet - 0.5) / 0.5, 0, 1);
+    /* Erst laden, wenn der letzte Akt in Sicht kommt — auf den ersten drei
+       Zielen wird die Datei nie gebraucht. Im statischen Betrieb muss nach dem
+       Laden einmal nachgezeichnet werden, sonst bliebe die Marke aus. */
+    if (this.signet > 0.02) {
+      var self2 = this;
+      markeLaden(function () { if (self2.statisch && !self2.dead) self2.frame(0); });
+    }
     this.drawParticles();
     this.drawBars(mo);
     this.drawStrand(0, mo);
     this.drawStrand(1, mo);
     this.drawStrand(3, mo);   // Stab zuerst, die Schlange windet sich davor
     this.drawStrand(2, mo);
+    this.drawMarke(mo);
     this.drawDisc(mo);
     this.drawBuds(mo);
     this.drawKopf(mo);
