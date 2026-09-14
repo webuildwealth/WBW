@@ -234,6 +234,7 @@ a.btn.quiet .to{color:var(--grau-2);}
 .key .after b{color:var(--navy);font-weight:600;}
 .key .jump{border-top-color:var(--bone);}
 .key a.btn{background:transparent;}
+.key a.btn.solid{background:var(--navy);border-color:var(--navy);}
 
 /* =================== KLEINE ÜBERSCHRIFT =================== */
 h4.sub{
@@ -413,7 +414,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
-        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Verbündeten-Zug →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -425,7 +426,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#teil3"><span class="ans">„Oh — dann verbinde ich."</span><span class="to">Teil 3 →</span></a>
-        <a class="btn" href="#verbuendet"><span class="ans">Sie bleibt dabei</span><span class="to">Verbündeten-Zug →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie bleibt dabei</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -437,7 +438,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
-        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie blockt</span><span class="to">Ausstieg →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -449,7 +450,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#ausstieg"><span class="ans">Sie nennt ein Zeitfenster</span><span class="to">Ausstieg →</span></a>
-        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Verbündeten-Zug →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -461,7 +462,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#ausstieg"><span class="ans">Sie nennt ein Zeitfenster</span><span class="to">Ausstieg →</span></a>
-        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie besteht auf der Mail</span><span class="to">schicken, in 5 Tagen anrufen</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie besteht auf der Mail</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -484,7 +485,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
-        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Verbündeten-Zug →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -496,7 +497,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
-        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie blockt</span><span class="to">Ausstieg →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -519,7 +520,7 @@ h4.sub{
       <div class="lbl">Dann</div>
       <div class="btns">
         <a class="btn solid" href="#teil3"><span class="ans">Sie verbindet</span><span class="to">Teil 3 →</span></a>
-        <a class="btn quiet" href="#ausstieg"><span class="ans">Sie blockt</span><span class="to">Ausstieg →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt</span><span class="to">Universal-Antwort →</span></a>
       </div>
     </div>
   </div>
@@ -531,15 +532,18 @@ h4.sub{
       <div class="lbl">Sie sagt</div>
       <div class="btns">
         <a class="btn solid" href="#teil3"><span class="ans">„Das kann ich nicht sagen."</span><span class="to">Teil 3 →</span></a>
+        <a class="btn" href="#verbuendet"><span class="ans">Sie blockt weiter</span><span class="to">Universal-Antwort →</span></a>
         <a class="btn quiet" href="#ausstieg"><span class="ans">Sie beantwortet es fachlich</span><span class="to">Praxis ist versorgt →</span></a>
       </div>
     </div>
   </div>
 
   <div class="key" id="verbuendet">
-    <span class="tag">Der Verbündeten-Zug — wenn zum zweiten Mal geblockt wird</span>
-    <div class="txt">„Verstehe ich. Nur kurz, weil es Sie persönlich betrifft: Es geht um Leistungen, die die Praxis für ihr Team einrichten kann — und um Ansprüche, die Ihnen als Angestellter ohnehin zustehen. Ist da nichts eingerichtet, geht Ihnen jeden Monat etwas verloren. Entscheiden kann das nur Frau Dr. [Nachname]. Wann erreiche ich sie?"</div>
-    <div class="after"><b>Genau einmal einsetzen.</b> Danach nicht weiter nachfassen.</div>
+    <span class="tag">Universal-Antwort — passt auf jeden Einwand am Empfang</span>
+    <div class="txt">„Frau [Name], ich weiß, dass Frau Dr. [Nachname] viel beschäftigt ist und Sie nicht jeden durchstellen dürfen. Mein Anliegen ist, Ihren Arbeitsplatz attraktiver zu gestalten, damit die Fluktuation in der Praxis geringer wird — ohne dass es im Portemonnaie von Frau Dr. [Nachname] schmerzt. Sie haben doch ein Interesse daran, dass sich Ihre harte Arbeit mehr lohnt, oder?"</div>
+    <div class="after"><b>Hier stoppen und die Antwort abwarten.</b> Die Frage ist so gebaut, dass niemand Nein sagt. Erst nach ihrem Ja kommt der zweite Teil.</div>
+    <div class="txt" style="margin-top:4mm">„Und genau hierüber möchte ich mit Frau Dr. [Nachname] nur 30 Sekunden sprechen. Würden Sie mich bitte durchstellen?"</div>
+    <div class="after"><b>Genau einmal einsetzen.</b> Blockt sie danach weiter, wird das Zeitfenster gesichert und aufgelegt.</div>
     <div class="jump">
       <div class="lbl">Dann</div>
       <div class="btns">
