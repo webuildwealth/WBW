@@ -168,7 +168,7 @@ Finanzberatung ausschließlich für Ärztinnen, Ärzte und Praxisteams. Erst der
 ```
 Finanz-Medizin ist die auf Heilberufe spezialisierte Finanz- und Versicherungsberatung von Benedict Hintz — eine Marke des Einzelunternehmens We Build Wealth in Berlin.
 
-Wir beraten ausschließlich Angehörige der Heilberufe. Nicht aus Bescheidenheit, sondern weil kaum ein Beruf so gut verdient und so schlecht beraten wird: Ärztinnen und Ärzte haben ein eigenes Versorgungswerk, eine eigene Gebührenordnung, eigene Kammern, eigene Haftungsrisiken und mit dem Praxiswert einen Vermögensgegenstand, den es in keiner anderen Branche so gibt. Trotzdem bekommen sie meist dieselbe Beratung wie alle anderen.
+Wir beraten ausschließlich Angehörige der Heilberufe. Der Grund: Kaum ein Beruf verdient so gut und wird so schlecht beraten. Ärztinnen und Ärzte haben ein eigenes Versorgungswerk, eine eigene Gebührenordnung, eigene Kammern, eigene Haftungsrisiken und mit dem Praxiswert einen Vermögensgegenstand, den es in keiner anderen Branche so gibt. Trotzdem bekommen sie meist dieselbe Beratung wie alle anderen.
 
 Was wir in fast jedem Erstgespräch finden: ungenutzter Sonderausgabenrahmen neben dem Versorgungswerk. Eine Berufsunfähigkeitsversicherung ohne Infektionsklausel — bei einer Ärztin, die operiert. Ein Praxisausfallschutz, dessen Versicherungssumme die Personalkosten nicht deckt. Ein PKV-Tarif, den seit acht Jahren niemand nach § 204 VVG geprüft hat.
 
@@ -182,9 +182,9 @@ MFA und Praxisteams — Rentenlücke, Teilzeit- und Familienphasen, betriebliche
 
 WORAN SIE UNS MESSEN KÖNNEN
 
-Jede Zahl, die wir nennen, hat eine Fundstelle: im Gesetz, im Tarifvertrag oder in einer Studie. Sie und Ihr Steuerberater können alles nachrechnen. Wir sind ungebundene Makler — kein Konzern gibt uns vor, was wir empfehlen. Was schon gut ist, bleibt. Und wenn bei Ihnen nichts zu tun ist, sagen wir Ihnen das.
+Jede Zahl hat eine Fundstelle: im Gesetz, im Tarifvertrag oder in einer Studie. Sie und Ihr Steuerberater können alles nachrechnen. Wir sind ungebundene Makler — kein Konzern gibt uns vor, was wir empfehlen. Was schon gut ist, bleibt. Und wenn bei Ihnen nichts zu tun ist, sagen wir Ihnen das.
 
-Ungebundener Versicherungsmakler nach § 34d Abs. 1 GewO (D-5V3H-7KX3I-54) und Finanzanlagenvermittler nach § 34f Abs. 1 S. 1 Nr. 1 GewO (D-F-107-RV51-31). Aufsicht: IHK Berlin.
+Ungebundener Versicherungsmakler nach § 34d GewO (D-5V3H-7KX3I-54) und Finanzanlagenvermittler nach § 34f GewO (D-F-107-RV51-31). Aufsicht: IHK Berlin.
 
 Erstgespräch, Bestandsaufnahme und Konzept sind kostenfrei.
 ```
@@ -200,7 +200,7 @@ Finanzberatung ausschließlich für Ärztinnen, Ärzte und Praxisteams | Betrieb
 ```
 Ich berate ausschließlich Angehörige der Heilberufe — Praxisinhaberinnen und Praxisinhaber, angestellte Ärztinnen und Ärzte sowie Praxisteams.
 
-Der Grund für diese Einschränkung ist der immer gleiche Befund: Kaum ein Beruf verdient so gut und wird so schlecht beraten. Ein eigenes Versorgungswerk, eine eigene Gebührenordnung, eigene Kammern, eigene Haftungsrisiken, dazu mit dem Praxiswert ein Vermögensgegenstand, den es sonst nirgends gibt — und trotzdem bekommen die meisten dieselbe Beratung wie alle anderen. Von jemandem, der den Unterschied zwischen Versorgungswerk und gesetzlicher Rente erst googeln muss.
+Der Grund für diese Einschränkung ist der immer gleiche Befund: Kaum ein Beruf verdient so gut und wird so schlecht beraten. Ein eigenes Versorgungswerk, eine eigene Gebührenordnung, eigene Kammern, eigene Haftungsrisiken, dazu mit dem Praxiswert ein Vermögensgegenstand, den es sonst nirgends gibt — und trotzdem dieselbe Beratung wie für alle anderen. Von jemandem, der den Unterschied zwischen Versorgungswerk und gesetzlicher Rente erst googeln muss.
 
 WAS ICH IN FAST JEDEM ERSTGESPRÄCH FINDE
 
@@ -214,7 +214,7 @@ Der teuerste Posten im Praxisjahr steht in keiner Betriebswirtschaftlichen Auswe
 
 FÜR ANGESTELLTE ÄRZTINNEN UND ÄRZTE
 
-Bei hohem Grenzsteuersatz kostet ein Euro Altersvorsorge deutlich weniger als einen Euro. Wer diesen Hebel neben dem Versorgungswerk nutzt, baut Vermögen auf, ohne mehr zu arbeiten. Dazu Arbeitskraftabsicherung mit den Details, die für operativ Tätige zählen, und Liquidität, die für die eigene Niederlassung verfügbar bleibt.
+Bei hohem Grenzsteuersatz kostet ein Euro Altersvorsorge deutlich weniger als einen Euro. Wer diesen Hebel neben dem Versorgungswerk nutzt, baut Vermögen auf, ohne mehr zu arbeiten. Dazu Arbeitskraftabsicherung mit den Details, die für operativ Tätige zählen, und Liquidität für die eigene Niederlassung.
 
 FÜR MFA UND PRAXISTEAMS
 
@@ -224,7 +224,7 @@ WIE ICH ARBEITE
 
 Jede Zahl hat eine Fundstelle — im Gesetz, im Tarifvertrag oder in einer Studie. Sie und Ihr Steuerberater können alles nachrechnen. Ich bin ungebundener Makler, kein Konzern gibt mir vor, was ich empfehle. Was schon gut ist, bleibt. Ich ersetze keinen funktionierenden Vertrag, nur weil ein neuer Abschluss lukrativer wäre. Und wenn bei Ihnen nichts zu tun ist, sage ich Ihnen das — auch wenn ich dann nichts verdiene.
 
-Versicherungsmakler nach § 34d Abs. 1 GewO (D-5V3H-7KX3I-54), Finanzanlagenvermittler nach § 34f Abs. 1 S. 1 Nr. 1 GewO (D-F-107-RV51-31). Aufsicht: IHK Berlin.
+Versicherungsmakler nach § 34d GewO (D-5V3H-7KX3I-54), Finanzanlagenvermittler nach § 34f GewO (D-F-107-RV51-31). Aufsicht: IHK Berlin.
 
 Erstgespräch: info@finanz-medizin.com
 ```
