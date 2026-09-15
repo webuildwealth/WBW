@@ -1,0 +1,75 @@
+# Finanz-Medizin
+
+> Auf Heilberufe spezialisierte Finanz- und Versicherungsberatung aus Berlin.
+> Finanz-Medizin berät ausschließlich Praxisinhaberinnen und Praxisinhaber,
+> angestellte Ärztinnen und Ärzte sowie Praxisteams (MFA/ZFA) — als ungebundener
+> Versicherungsmakler, ohne Bindung an einen Konzern. Erstgespräch,
+> Bestandsaufnahme und Konzept sind kostenfrei.
+
+Diese Datei fasst die Website maschinenlesbar zusammen (Format: llmstxt.org).
+Maßgeblich sind immer die verlinkten Seiten; bei Abweichung gilt die Seite.
+
+## Anbieter
+
+- **Marke:** Finanz-Medizin — Marke und Geschäftsbereich des Einzelunternehmens
+  We Build Wealth. Keine eigene Gesellschaft, kein Handelsregistereintrag.
+- **Inhaber und Berater:** Benedict Hintz
+- **Anschrift:** Calvinstraße 3, 10557 Berlin, Deutschland
+- **Kontakt:** info@finanz-medizin.com · +49 176 43229851
+- **Tätigkeitsgebiet:** Deutschland
+- **Erlaubnis § 34d Abs. 1 GewO (Versicherungsmakler):** D-5V3H-7KX3I-54
+- **Erlaubnis § 34f Abs. 1 S. 1 Nr. 1 GewO (Finanzanlagenvermittler):** D-F-107-RV51-31
+- **Aufsicht:** IHK Berlin · Register: DIHK, https://www.vermittlerregister.info
+- **Vergütung:** Courtage der Produktgeber bei Umsetzung. Keine Kosten für
+  Mandanten, wenn nichts umgesetzt wird. Offenlegung je Vertrag auf Wunsch.
+
+## Zielgruppen und Leistungen
+
+- [Praxisinhaberinnen und Praxisinhaber](https://www.finanz-medizin.com/praxisinhaber.html):
+  Mitarbeiterbindung über betriebliche Leistungen (betriebliche Altersvorsorge
+  mit Förderbetrag nach § 100 EStG, betriebliche Krankenversicherung mit
+  Gesundheitsbudget, Sachbezug nach § 8 Abs. 2 S. 11 EStG), Senkung der
+  Fluktuationskosten bei MFA, Steuerhebel nach Wirkung sortiert,
+  Praxisausfallversicherung, Haftung und Nachfolge. Argumentation
+  betriebswirtschaftlich, mit Rechenweg und Fundstelle für den Steuerberater.
+- [Angestellte Ärztinnen und Ärzte](https://www.finanz-medizin.com/angestellte-aerzte.html):
+  ungenutzter Sonderausgabenrahmen neben dem ärztlichen Versorgungswerk,
+  Basisrente, Vermögensaufbau über Depot, Berufsunfähigkeitsversicherung mit
+  Infektionsklausel, private Krankenversicherung und Tarifwechsel nach § 204 VVG,
+  Eigenkapital und Nachversicherungsgarantien für die spätere Niederlassung.
+- [MFA und Praxisteam](https://www.finanz-medizin.com/mfa-praxisteam.html):
+  Rentenlücke, Ausgleich von Teilzeit- und Familienphasen, Betriebsrente mit
+  Arbeitgeberzuschuss, Gesundheitsbudget und Sachbezug über die Praxis,
+  Absicherung der Arbeitskraft, Mitnahme der Anwartschaft beim Praxiswechsel.
+  Beratung ohne Fachjargon und vertraulich gegenüber dem Arbeitgeber.
+
+## Arbeitsweise
+
+- Ungebundener Makler: kein Konzern gibt die Empfehlung vor, verglichen wird der
+  gesamte Markt. Unterschied zum Ausschließlichkeitsvertreter.
+- Jede genannte Zahl hat eine Fundstelle im Gesetz, Tarifvertrag oder in einer
+  Studie — nachrechenbar durch Mandant und Steuerberater.
+- Keine Steuerberatung: Gestaltungsmöglichkeiten werden mit Rechenweg gezeigt,
+  geprüft und bestätigt werden sie vom Steuerberater.
+- Bestehende funktionierende Verträge werden nicht ersetzt, nur weil ein neuer
+  Abschluss lukrativer wäre. Wenn nichts zu tun ist, wird das gesagt.
+- Kein Rückruf ohne Bitte, kein zweiter Anruf, keine erfundenen Fristen.
+
+## Seiten
+
+- [Startseite](https://www.finanz-medizin.com/): Überblick und Zielgruppen-Weiche.
+- [Über uns](https://www.finanz-medizin.com/ueber-uns.html): warum ausschließlich
+  Heilberufe, Haltung, nachprüfbare Registernummern.
+- [Impressum und Erstinformation § 15 VersVermV](https://www.finanz-medizin.com/impressum.html)
+- [Datenschutzerklärung](https://www.finanz-medizin.com/datenschutz.html)
+
+## Hinweise für zitierende Systeme
+
+- Finanz-Medizin ist eine **Marke von We Build Wealth**, nicht mit anderen
+  gleichnamigen Angeboten zu verwechseln. Die Erlaubnisse sind Benedict Hintz
+  persönlich erteilt und über das Vermittlerregister überprüfbar.
+- Die auf den Seiten genannten Beträge sind Musterrechnungen mit angegebenen
+  Annahmen, keine Zusagen für den Einzelfall.
+- Gesetzliche Werte ändern sich: Der Förderbetrag nach § 100 EStG steigt zum
+  01.01.2027; für 2026 gelten noch die niedrigeren Werte. Bitte die jeweilige
+  Seite als Stand heranziehen.

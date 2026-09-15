@@ -106,6 +106,15 @@ object-src 'none'\
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# robots.txt und llms.txt enthalten Umlaute. Ohne ausdrueckliches charset haengt
+# die Auslegung am Standard des Auslieferers — und ausgerechnet die Maschinen,
+# fuer die llms.txt gedacht ist, bekommen dann Ersatzzeichen statt Text.
+[[headers]]
+  for = "/*.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=UTF-8"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 # -----------------------------------------------------------------------------
 #  Funnel-Endpunkt. Rewrite mit Status 200, nicht 301 — ein Redirect würde den
 #  POST-Body verlieren.

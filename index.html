@@ -171,38 +171,268 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/inter-normal-latin.woff2">
 <link rel="stylesheet" href="assets/css/site.css">
 
+<!-- ===== Strukturdaten — erzeugt von tools/strukturdaten.py ===== -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "FinancialService",
-  "name": "Finanz-Medizin",
-  "url": "https://www.finanz-medizin.com/",
-  "email": "info@finanz-medizin.com",
-  "image": "https://www.finanz-medizin.com/assets/img/og-finanz-medizin.jpg",
-  "description": "Spezialisierte Finanz- und Versicherungsberatung für Arztpraxen, angestellte Ärztinnen und Ärzte sowie medizinische Fachangestellte. Finanz-Medizin ist eine Marke von We Build Wealth, Inhaber Benedict Hintz.",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "Calvinstraße 3",
-    "postalCode": "10557",
-    "addressLocality": "Berlin",
-    "addressCountry": "DE"
-  },
-  "legalName": "Benedict Hintz — We Build Wealth",
-  "founder": { "@type": "Person", "name": "Benedict Hintz" },
-  "telephone": "+49 176 43229851",
-  "parentOrganization": {
-    "@type": "Organization",
-    "name": "We Build Wealth"
-  },
-  "areaServed": "DE",
-  "knowsAbout": ["Betriebliche Altersvorsorge", "Betriebliche Krankenversicherung", "Basisrente", "Praxisabsicherung", "Berufsunfähigkeitsversicherung", "Private Krankenversicherung", "Vermögensaufbau"],
-  "audience": [
-    { "@type": "Audience", "audienceType": "Praxisinhaberinnen und Praxisinhaber" },
-    { "@type": "Audience", "audienceType": "Angestellte Ärztinnen und Ärzte" },
-    { "@type": "Audience", "audienceType": "Medizinische Fachangestellte" }
+  "@graph": [
+    {
+      "@type": [
+        "FinancialService",
+        "ProfessionalService"
+      ],
+      "@id": "https://www.finanz-medizin.com/#organisation",
+      "name": "Finanz-Medizin",
+      "alternateName": [
+        "Finanz Medizin",
+        "finanz-medizin.com"
+      ],
+      "legalName": "Benedict Hintz — We Build Wealth",
+      "url": "https://www.finanz-medizin.com/",
+      "email": "info@finanz-medizin.com",
+      "telephone": "+49 176 43229851",
+      "image": "https://www.finanz-medizin.com/assets/img/og-finanz-medizin.jpg",
+      "logo": "https://www.finanz-medizin.com/assets/img/og-finanz-medizin.jpg",
+      "slogan": "Erst der Befund, dann der Plan.",
+      "description": "Finanz-Medizin ist die auf Heilberufe spezialisierte Finanz- und Versicherungsberatung von We Build Wealth: unabhängige Beratung für Praxisinhaberinnen und Praxisinhaber, angestellte Ärztinnen und Ärzte sowie medizinische Fachangestellte — zu betrieblicher Altersvorsorge, Steuergestaltung, Arbeitskraftabsicherung, Praxisabsicherung und Vermögensaufbau. Ungebundener Makler, kostenfreies Erstgespräch.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calvinstraße 3",
+        "postalCode": "10557",
+        "addressLocality": "Berlin",
+        "addressRegion": "Berlin",
+        "addressCountry": "DE"
+      },
+      "founder": {
+        "@id": "https://www.finanz-medizin.com/#benedict-hintz"
+      },
+      "employee": {
+        "@id": "https://www.finanz-medizin.com/#benedict-hintz"
+      },
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "We Build Wealth"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Deutschland"
+      },
+      "availableLanguage": {
+        "@type": "Language",
+        "name": "Deutsch",
+        "alternateName": "de"
+      },
+      "priceRange": "Erstgespräch, Bestandsaufnahme und Konzept kostenfrei",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Erstberatung",
+        "email": "info@finanz-medizin.com",
+        "telephone": "+49 176 43229851",
+        "availableLanguage": "de",
+        "areaServed": "DE"
+      },
+      "identifier": [
+        {
+          "@type": "PropertyValue",
+          "name": "Versicherungsmakler nach § 34d Abs. 1 GewO",
+          "value": "D-5V3H-7KX3I-54",
+          "url": "https://www.vermittlerregister.info"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "Finanzanlagenvermittler nach § 34f Abs. 1 S. 1 Nr. 1 GewO",
+          "value": "D-F-107-RV51-31",
+          "url": "https://www.vermittlerregister.info"
+        }
+      ],
+      "knowsAbout": [
+        "Betriebliche Altersvorsorge für Arztpraxen",
+        "Betriebliche Krankenversicherung und Gesundheitsbudget",
+        "Basisrente und Sonderausgabenabzug für Ärztinnen und Ärzte",
+        "Ärztliches Versorgungswerk",
+        "Berufsunfähigkeitsversicherung mit Infektionsklausel",
+        "Praxisausfallversicherung und Praxisabsicherung",
+        "Private Krankenversicherung und Tarifwechsel nach § 204 VVG",
+        "Mitarbeiterbindung und Fluktuationskosten in der Arztpraxis",
+        "Vermögensaufbau und Niederlassungsfinanzierung",
+        "Altersvorsorge für medizinische Fachangestellte"
+      ],
+      "audience": [
+        {
+          "@type": "Audience",
+          "audienceType": "Praxisinhaberinnen und Praxisinhaber"
+        },
+        {
+          "@type": "Audience",
+          "audienceType": "Angestellte Ärztinnen und Ärzte"
+        },
+        {
+          "@type": "Audience",
+          "audienceType": "Medizinische Fachangestellte (MFA)"
+        },
+        {
+          "@type": "Audience",
+          "audienceType": "Zahnmedizinische Fachangestellte (ZFA)"
+        }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Beratungsleistungen für Heilberufe",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Praxis-Check für Praxisinhaber",
+              "description": "Bestandsaufnahme für die Praxis: Mitarbeiterbindung über betriebliche Leistungen, Steuerhebel nach Wirkung sortiert, Absicherung von Ausfall, Haftung und Nachfolge.",
+              "url": "https://www.finanz-medizin.com/praxisinhaber.html"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Vermögens-Check für angestellte Ärztinnen und Ärzte",
+              "description": "Sonderausgabenrahmen neben dem Versorgungswerk, Vermögensaufbau, Arbeitskraftabsicherung und Eigenkapital für die Niederlassung.",
+              "url": "https://www.finanz-medizin.com/angestellte-aerzte.html"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Vorsorge-Check für MFA und Praxisteam",
+              "description": "Rentenlücke, Teilzeit- und Familienphasen, Gesundheitsbudget und Betriebsrente über die Praxis, Absicherung der Arbeitskraft.",
+              "url": "https://www.finanz-medizin.com/mfa-praxisteam.html"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://www.finanz-medizin.com/#benedict-hintz",
+      "name": "Benedict Hintz",
+      "jobTitle": "Versicherungsmakler und Finanzanlagenvermittler",
+      "description": "Inhaber von We Build Wealth und Berater der Marke Finanz-Medizin. Berät ausschließlich Angehörige der Heilberufe.",
+      "url": "https://www.finanz-medizin.com/ueber-uns.html",
+      "worksFor": {
+        "@id": "https://www.finanz-medizin.com/#organisation"
+      },
+      "email": "info@finanz-medizin.com",
+      "knowsLanguage": "de",
+      "hasCredential": [
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "Erlaubnis nach § 34d Abs. 1 GewO (Versicherungsmakler)",
+          "identifier": "D-5V3H-7KX3I-54",
+          "recognizedBy": {
+            "@type": "Organization",
+            "name": "IHK Berlin"
+          }
+        },
+        {
+          "@type": "EducationalOccupationalCredential",
+          "credentialCategory": "Erlaubnis nach § 34f Abs. 1 S. 1 Nr. 1 GewO (Finanzanlagenvermittler)",
+          "identifier": "D-F-107-RV51-31",
+          "recognizedBy": {
+            "@type": "Organization",
+            "name": "IHK Berlin"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.finanz-medizin.com/#website",
+      "url": "https://www.finanz-medizin.com/",
+      "name": "Finanz-Medizin",
+      "inLanguage": "de-DE",
+      "publisher": {
+        "@id": "https://www.finanz-medizin.com/#organisation"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.finanz-medizin.com/",
+      "url": "https://www.finanz-medizin.com/",
+      "name": "Finanz-Medizin — Finanzberatung für Ärzte, Praxisinhaber und Praxisteams",
+      "description": "Spezialisierte Finanzberatung für Arztpraxen, angestellte Ärztinnen und Ärzte sowie medizinische Fachangestellte.",
+      "inLanguage": "de-DE",
+      "isPartOf": {
+        "@id": "https://www.finanz-medizin.com/#website"
+      },
+      "about": {
+        "@id": "https://www.finanz-medizin.com/#organisation"
+      },
+      "provider": {
+        "@id": "https://www.finanz-medizin.com/#organisation"
+      },
+      "primaryImageOfPage": "https://www.finanz-medizin.com/assets/img/og-finanz-medizin.jpg"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.finanz-medizin.com/#faq",
+      "inLanguage": "de-DE",
+      "mainEntityOfPage": {
+        "@id": "https://www.finanz-medizin.com/"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Was kostet mich die Beratung?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Erstgespräch, Bestandsaufnahme und Konzept sind für Sie kostenfrei. Wir werden von den Produktgebern vergütet, wenn etwas umgesetzt wird — der Marktstandard bei Maklern. Auf Wunsch legen wir die Vergütung jedes einzelnen Vertrags offen, bevor Sie unterschreiben. Und wenn nichts umgesetzt wird, entstehen Ihnen keine Kosten."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Sind Sie an eine Versicherung oder Bank gebunden?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nein. Wir sind ungebundene Versicherungsmakler nach §34d GewO und Finanzanlagenvermittler nach §34f GewO. Wir arbeiten im Auftrag unserer Mandanten, nicht im Auftrag eines Konzerns, und vergleichen den gesamten Markt. Das ist der entscheidende Unterschied zum Ausschließlichkeitsvertreter, der Ihnen ins Wartezimmer geschickt wird."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Ist das Steuerberatung? Mein Steuerberater macht das doch.",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nein, und das ist wichtig: Wir dürfen und wollen keine Steuerberatung leisten. Wir zeigen Ihnen die Gestaltungsmöglichkeiten mit Fundstelle und Rechenweg — Ihr Steuerberater prüft und bestätigt sie. In der Praxis ergänzt sich das gut: Der Steuerberater rechnet das vergangene Jahr ab, wir gestalten das kommende. Auf Wunsch sprechen wir direkt mit ihm."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wir haben schon einen Berater. Lohnt sich ein Gespräch trotzdem?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Meistens ja — und oft bleibt danach vieles, wie es ist. Was wir regelmäßig finden: ungenutzter Sonderausgabenrahmen neben dem Versorgungswerk, eine Berufsunfähigkeitsversicherung ohne die für operativ Tätige entscheidende Infektionsklausel, PKV-Tarife, die seit Jahren niemand nach §204 VVG geprüft hat, und ein Praxisausfallschutz, der die Fixkosten nicht deckt. Wenn alles passt, sagen wir Ihnen das auch."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie läuft das mit dem Team ab — kostet mich das Zeit?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sie treffen die Grundsatzentscheidung, den Rest übernehmen wir. Wir halten eine Team-Sprechstunde in der Praxis oder per Video, beraten jede Mitarbeiterin einzeln und vertraulich, kümmern uns um Anträge und stimmen die Lohnbuchhaltung mit Ihrem Steuerbüro ab. Ihr Aufwand: eine Entscheidung und ein Termin."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie schnell geht das?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Erstgespräch in der Regel innerhalb einer Woche. Zwischen Bestandsaufnahme und fertigem Konzept liegen etwa zehn Tage. Maßnahmen mit Jahresfrist — etwa der Sonderausgabenabzug — sollten vor dem 31. Dezember stehen, deshalb lohnt sich ein früher Start im Jahr."
+          }
+        }
+      ]
+    }
   ]
 }
 </script>
+<!-- ===== Ende Strukturdaten ===== -->
+
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->

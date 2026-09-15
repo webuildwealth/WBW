@@ -24,6 +24,8 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `impressum.html` | Impressum + Erstinformation § 15 VersVermV | — |
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) | — |
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
+| `llms.txt` | Maschinenlesbare Kurzfassung der Website für Sprachmodelle | — |
+| `tools/strukturdaten.py` | Erzeugt die JSON-LD-Blöcke aller Seiten neu | — |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
 
@@ -275,6 +277,68 @@ Dunkle Kontexte (`.section--dark`, `.hero--dark`, `.funnel-band`) erben gemeinsa
 über `:is()` — eine neue dunkle Sektion braucht nur eine dieser Klassen.
 
 ---
+
+## Auffindbarkeit in Suche und KI-Antworten
+
+### Strukturdaten werden erzeugt, nicht gepflegt
+
+`tools/strukturdaten.py` schreibt den JSON-LD-Block jeder Seite. Ausgeführt wird
+es von Hand, das Ergebnis wird mitcommittet — es bleibt also beim Grundsatz
+„kein Build-Schritt":
+
+```bash
+python3 tools/strukturdaten.py
+```
+
+**Nach jeder Änderung an einem FAQ-Text einmal laufen lassen.** Der Grund ist
+nicht Bequemlichkeit: Die FAQ-Strukturdaten werden aus dem sichtbaren Markup
+gelesen, weil Markup, das vom sichtbaren Text abweicht, von Google abgewertet
+wird. Handgepflegt driftet das nach der zweiten Textänderung auseinander, ohne
+dass es jemand merkt.
+
+Das Skript erzeugt pro Seite einen `@graph` mit:
+
+| Knoten | Zweck |
+|---|---|
+| `FinancialService` / `ProfessionalService` | der Anbieter, einmal auf der Startseite, alles andere verweist per `@id` darauf |
+| `Person` | Benedict Hintz mit beiden Erlaubnissen als `hasCredential` |
+| `WebSite`, `WebPage`, `AboutPage` | die Seite selbst, mit Zielgruppe und Sprache |
+| `Service` | die Leistung je Landingpage mit ihren Bausteinen |
+| `FAQPage` | die Fragen und Antworten aus dem sichtbaren Akkordeon |
+| `BreadcrumbList` | Einordnung der Seite |
+
+Prüfen lässt sich das Ergebnis mit dem
+[Rich-Results-Test](https://search.google.com/test/rich-results) und dem
+[Schema-Markup-Validator](https://validator.schema.org/).
+
+### `PROFILE` in `tools/strukturdaten.py` — die wichtigste offene Stelle
+
+Die Liste ist derzeit leer. Sie füllt das `sameAs`-Feld, und `sameAs` ist die
+Verbindung zwischen dieser Website und allen anderen Orten, an denen dieselbe
+Firma steht: Google Unternehmensprofil, LinkedIn, Bewertungsportale, YouTube.
+Erst darüber erkennen Suchmaschinen und Sprachmodelle, dass es sich um **eine**
+Einheit handelt und nicht um zufällig gleichnamige Treffer. Solange die Liste
+leer ist, bleibt Finanz-Medizin für jedes dieser Systeme ein unverbundener
+Einzeleintrag.
+
+Sobald die Profile stehen: vollständige URLs eintragen, Skript erneut laufen
+lassen, committen.
+
+### `robots.txt` und `llms.txt`
+
+`robots.txt` erlaubt die KI-Crawler ausdrücklich — nicht weil sie sonst
+ausgesperrt wären (`User-agent: *` schließt sie ein), sondern damit die
+Entscheidung dokumentiert ist und ein späteres pauschales `Disallow` sie nicht
+still mitnimmt. `Google-Extended` und `Applebot-Extended` steuern dabei etwas,
+das Googlebot und Bingbot nicht abdecken: Gemini, die KI-Übersichten und Apple
+Intelligence.
+
+`llms.txt` ist eine maschinenlesbare Kurzfassung der Seite im Format von
+[llmstxt.org](https://llmstxt.org). Ehrliche Einordnung: Der Vorschlag ist noch
+kein Standard, und kein großer Anbieter hat bestätigt, dass er die Datei
+auswertet. Sie kostet wenig und schadet nicht — ein Wirkungsnachweis existiert
+aber nicht. Wer sie ändert, muss sie mit den Seiten konsistent halten; eine
+Kurzfassung, die von der Website abweicht, ist schlimmer als keine.
 
 ## Anbindung an WeBuildWealth
 
