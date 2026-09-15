@@ -63,7 +63,9 @@ GESCHAEFTSBEREICH = [
 
 LEAD_SOURCE_DETAIL = [
     # BA-Kategorien: vergibt die Pipeline (src/mfa_pipeline/lead_kategorie.py).
-    # Diese Liste MUSS mit deren OPTIONEN uebereinstimmen.
+    # Diese Liste MUSS jeden Wert aus deren OPTIONEN enthalten, sonst weist
+    # HubSpot den naechsten Pipeline-Lauf mit HTTP 400 zurueck. Zusaetzliche
+    # Werte, die die Pipeline nie schreibt (google_maps), sind unkritisch.
     ("ba_mfa", "BA — MFA"),
     ("ba_zahnmedizin", "BA — Zahnmedizin"),
     ("ba_medtechnik", "BA — Medizinische Technologie"),
@@ -72,6 +74,7 @@ LEAD_SOURCE_DETAIL = [
     ("ba_arzt", "BA — Arzt"),
     ("ba_sonstige", "BA — Sonstiger Gesundheitsberuf"),
     # Uebrige Wege
+    ("google_maps", "Google Maps — Praxis-Scraping"),
     ("website", "Website-Formular"),
     ("linkedin", "LinkedIn-Nachricht"),
     ("netzwerk", "Persoenliches Netzwerk"),
@@ -193,6 +196,15 @@ PLAN = {
                 "Pipeline besitzt und bei jedem Lauf respektiert."),
         zahl("anrufversuche", "Anrufversuche",
              "Zähler erfolgloser Kontaktversuche."),
+        text("google_kategorie", "Google — Kategorie",
+             "Fachrichtung laut Google Maps, z. B. 'Zahnarzt'. Ersetzt keine "
+             "eigene Einordnung, sortiert aber die Anrufliste nach Fachgebiet."),
+        zahl("google_bewertung", "Google — Bewertung",
+             "Sterne-Schnitt. Eine Praxis mit vielen guten Bewertungen laeuft gut "
+             "— das ist ein Hinweis auf Zahlungsfaehigkeit, kein Beweis."),
+        text("google_place_id", "Google — Place ID",
+             "Eindeutige Kennung des Eintrags. Erlaubt beim naechsten Scraping-Lauf "
+             "eine Dublettenpruefung, die nicht am Namen haengt."),
     ],
     "deals": [
         auswahl("geschaftsbereich", "Geschäftsbereich", GESCHAEFTSBEREICH),

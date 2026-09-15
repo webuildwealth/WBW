@@ -111,6 +111,7 @@ OPTIONEN: list[tuple[str, str]] = [
     ("ba_arzt", "BA — Arzt"),
     ("ba_sonstige", "BA — Sonstiger Gesundheitsberuf"),
     # Von anderen Wegen vergeben, hier nur deklariert
+    ("google_maps", "Google Maps — Praxis-Scraping"),
     ("website", "Website-Formular"),
     ("linkedin", "LinkedIn-Nachricht"),
     ("netzwerk", "Persoenliches Netzwerk"),
