@@ -5,8 +5,10 @@ Anfragen um Erlaubnis, Gesellschaftslogos auf `webuildwealth.de` in der Rubrik
 nach Beziehung zur Gesellschaft und eine fertig ausformulierte Fassung für die
 Allianz.
 
-**Offen:** Die E-Mail-Adressen der Gesellschaften liegen noch nicht vor. Sobald
-sie da sind, wird pro Gesellschaft eine fertige Fassung ergänzt (Abschnitt 7).
+Die versandfertigen Texte liegen als je eine Datei unter `versandtexte/`.
+
+**Offen:** Für die Allianz liegt noch keine Empfängeradresse vor — Abschnitt 6
+enthält den fertigen Text, es fehlt nur die Adresse.
 
 ---
 
@@ -276,13 +278,51 @@ Benedict Hintz
 
 ## 7. Versandliste
 
-Wird ausgefüllt, sobald die Adressen vorliegen.
+Die Texte in `versandtexte/` sind fertig; erste Zeile jeder Datei ist der
+Empfänger, zweite der Betreff. Beides beim Einfügen in den Mail-Client nicht
+mitkopieren.
 
-| Gesellschaft | E-Mail-Adresse | Baustein (A/B/C) | Versendet am | Antwort | Freigabe erteilt |
-|---|---|---|---|---|---|
-| Allianz | _offen_ | A | | | |
-|  |  |  |  |  |  |
-|  |  |  |  |  |  |
+| Gesellschaft | E-Mail-Adresse | Datei | Baustein | Versendet am | Antwort | Freigabe erteilt |
+|---|---|---|---|---|---|---|
+| ARAG | msc@arag.de | `versandtexte/01-arag.txt` | B | | | |
+| Barmenia | maklersupport@barmenia.de | `versandtexte/02-barmenia.txt` | B | | | |
+| universa | berlin.partner@universa.de | `versandtexte/03-universa.txt` | B | | | |
+| SIGNAL IDUNA | info@signal-iduna.de | `versandtexte/04-signal-iduna.txt` | B | | | |
+| Continentale | info@continentale.de | `versandtexte/05-continentale.txt` | B | | | |
+| Itzehoer | info@itzehoer.de | `versandtexte/06-itzehoer.txt` | B | | | |
+| DOMCURA | info@domcura.de | `versandtexte/07-domcura.txt` | B (angepasst) | | | |
+| Allianz | **Adresse fehlt** | Abschnitt 6 | A | | | |
+
+### Wichtig vor dem Versand: Baustein B prüfen
+
+Alle sieben Texte verwenden **Baustein B** — „Die Produkte Ihres Hauses
+vermittle ich bereits seit einiger Zeit". Das entspricht dem, was in Auftrag
+gegeben war (Zusammenarbeit schätzen, weiter vermitteln wollen), ist aber eine
+Tatsachenbehauptung gegenüber der Gesellschaft. Wo noch kein Geschäft
+eingereicht wurde, ist sie falsch — und in einer Anfrage, die gerade Seriosität
+belegen soll, ist das der teuerste denkbare Fehler: Die Gesellschaft sieht im
+eigenen Bestandssystem sofort, ob Verträge vorliegen.
+
+Für jede Gesellschaft ohne bisherige Vermittlung stattdessen den
+Beziehungsabsatz durch **Baustein C** aus Abschnitt 4 ersetzen. Das ist der
+zweite Absatz des Textes, direkt nach „… an Ihr Haus angebunden."
+
+### Zwei Besonderheiten in der Liste
+
+**DOMCURA** ist kein Versicherer, sondern Assekuradeur — das Haus entwickelt
+Deckungskonzepte und zeichnet für dahinterstehende Risikoträger. Der Text
+spricht deshalb von „Deckungskonzepten" statt von „Produkten". Wer hinter den
+Konzepten als Risikoträger steht, kann eigene Logo-Vorgaben haben; eine
+Freigabe durch DOMCURA deckt nicht automatisch deren Marken ab.
+
+**universa:** `berlin.partner@universa.de` ist eine regionale Partner-Adresse,
+keine Zentrale. Die Bitte um Weiterleitung am Textende ist hier besonders
+relevant.
+
+Bei den vier allgemeinen `info@`-Adressen (SIGNAL IDUNA, Continentale, Itzehoer,
+DOMCURA) landet die Anfrage zunächst im zentralen Postfach. Wenn nach zwei
+Wochen keine Antwort kommt, lohnt der Weg über den Maklerbetreuer oder blau
+direkt mehr als eine Nachfass-Mail an dieselbe Adresse.
 
 ---
 
