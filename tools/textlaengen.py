@@ -54,7 +54,7 @@ def main() -> int:
             fehler += 1
         print(f"  {status:8s} {len(block):5d} / {limit:5d}  {marke}")
 
-    leistungen = text.split("## 1.4 Leistungen")[1].split("## 1.5")[0]
+    leistungen = text.split("## 1.7 Leistungen")[1].split("## 1.8")[0]
     for name, block in re.findall(r"\*\*(.+?)\*\*\n```\n(.*?)\n```", leistungen, re.S):
         status = "ok" if len(block) <= LEISTUNGEN_LIMIT else "ZU LANG"
         if len(block) > LEISTUNGEN_LIMIT:

@@ -3,10 +3,24 @@
 Alle Texte dieser Datei sind zum Kopieren gedacht. Die Zeichenlängen sind auf die
 Limits der jeweiligen Plattform geprüft (siehe Angabe hinter jeder Überschrift).
 
-Grundregel für alle Profile: **Name, Anschrift und Telefonnummer müssen überall
-wortgleich mit dem Impressum sein.** Nicht „Str." hier und „Straße" dort. Diese
-Übereinstimmung ist es, woran Suchmaschinen und Sprachmodelle erkennen, dass es
-sich um dieselbe Firma handelt und nicht um mehrere ähnliche.
+## Zwei Marken, zwei Auftritte
+
+Finanz-Medizin tritt im Netz eigenständig auf, getrennt von We Build Wealth.
+Rechtlich bleibt es eine Marke des Einzelunternehmens — das steht vollständig im
+Impressum und bleibt dort auch stehen. **Trennung heißt eigener Auftritt, nicht
+verschwiegene Inhaberschaft.** Wer das verwechselt, handelt sich ein
+Impressumsproblem ein und gewinnt nichts.
+
+Praktisch heißt das: eigene Domain, eigene E-Mail, eigene Rufnummer, eigene
+Profile, eigene Kundengruppe. In den Profiltexten von Finanz-Medizin kommt We
+Build Wealth deshalb nicht vor.
+
+## Grundregel: überall wortgleich
+
+**Name, Anschrift und Telefonnummer müssen in jedem Profil wortgleich sein** —
+nicht „Str." hier und „Straße" dort. Diese Übereinstimmung ist es, woran
+Suchmaschinen und Sprachmodelle erkennen, dass die Einträge zu einer Firma
+gehören und nicht zu mehreren ähnlichen.
 
 Verbindliche Fassung, überall identisch:
 
@@ -14,56 +28,161 @@ Verbindliche Fassung, überall identisch:
 Finanz-Medizin
 Calvinstraße 3
 10557 Berlin
-+49 176 43229851
+[neue Rufnummer — siehe 1.2]
 info@finanz-medizin.com
 https://www.finanz-medizin.com
 ```
 
+> **Offen:** Die Rufnummer `0176 43229851` teilt sich Finanz-Medizin bislang mit
+> We Build Wealth. Solange das so ist, trägt die Trennung nicht — und beim
+> Google-Profil ist es das größte Sperrrisiko. Abschnitt 1.2 erklärt, warum und
+> was zu tun ist.
+
 ---
 
-# 1. Google Unternehmensprofil
+# 1. Google Unternehmensprofil für Finanz-Medizin
 
-Das Profil existiert bereits. Hier steht, was daran zu ändern ist.
+**Ein eigenes, zweites Profil** — getrennt vom bestehenden Profil für We Build
+Wealth. Rechtlich bleibt Finanz-Medizin eine Marke des Einzelunternehmens; nach
+außen tritt sie eigenständig auf. Beides zugleich ist möglich, aber nicht
+beiläufig: Google prüft solche Konstellationen genau.
 
-## 1.1 Zuerst prüfen: Name und Adresse
+## 1.1 Was ich hier nicht tun kann
 
-Öffnen Sie das Profil und vergleichen Sie **Name und Anschrift wortgleich** mit
-dem Kasten oben.
+Das Profil anlegen musst du selbst. Es hängt an einem Google-Konto und an einer
+Identitätsprüfung, für die Google ein Video oder eine Postkarte verlangt — beides
+kann ich nicht übernehmen. Was hier steht, ist der vollständige Ablauf und jeder
+Text, der hineingehört.
 
-Steht dort noch „We Build Wealth" und auf der Website „Finanz-Medizin", zerfällt
-die Firma für jedes System in zwei Einheiten — das ist genau der Schaden, den
-wir gerade reparieren. Entscheiden Sie sich für **einen** Namen und ziehen Sie
-ihn durch: Website, Google, LinkedIn, Rechnung, Visitenkarte.
+## 1.2 Die Hürde, die du vorher kennen musst
 
-> **Warnung, bevor Sie den Namen ändern:** Tragen Sie dort niemals etwas ein wie
-> „Finanz-Medizin | Finanzberatung für Ärzte". Zusätze mit Suchbegriffen sind
-> ein Verstoß gegen die Google-Richtlinien und ein häufiger Grund für
-> Profilsperrungen. Der Name ist der Name. Die Suchbegriffe gehören in
-> Kategorien, Leistungen und Beschreibung — dort wirken sie ohnehin stärker.
+Google sperrt Profile, die wie Dubletten aussehen. Der klassische Auslöser ist
+genau unsere Ausgangslage: **zwei Profile, eine Adresse, eine Telefonnummer, eine
+Kategorie.** Das trifft im Zweifel nicht nur das neue Profil, sondern auch das
+bestehende — eine Sperre kann beide erfassen, und die Wiederherstellung dauert
+Wochen.
 
-## 1.2 Kategorien
+Ein zweites Profil ist zulässig, wenn die Marke ein tatsächlich eigener Auftritt
+ist: eigener Name, eigene Kundengruppe, eigener Kontaktweg, eigene Website. Bei
+Finanz-Medizin trifft das zu. Es muss nur von außen erkennbar sein.
 
-Die Kategorie entscheidet mehr über die Auffindbarkeit als die Beschreibung.
+| Merkmal | We Build Wealth | Finanz-Medizin | Status |
+|---|---|---|---|
+| Name | We Build Wealth | Finanz-Medizin | getrennt |
+| Website | (WBW-Domain) | finanz-medizin.com | getrennt |
+| E-Mail | (WBW-Adresse) | info@finanz-medizin.com | getrennt |
+| Kundengruppe | allgemein | ausschließlich Heilberufe | getrennt |
+| **Telefon** | 0176 43229851 | **dieselbe Nummer** | **offen** |
+| **Primärkategorie** | vermutlich Finanzberater | Finanzberater | **offen** |
+| Anschrift | Calvinstraße 3 | Calvinstraße 3 | unkritisch, siehe 1.4 |
 
-- **Primär:** `Finanzberater`
-- **Weitere:** `Versicherungsmakler`, `Versicherungsagentur`
+### Die Telefonnummer ist der Knackpunkt
 
-Die genaue Bezeichnung weicht in der Google-Auswahlliste manchmal ab — nehmen
-Sie die nächstliegende. Primärkategorie `Finanzberater`, nicht
-`Versicherungsmakler`: Wer nach Beratung sucht, sucht nach Beratung. Der Makler
-ist die Erlaubnis, nicht das Angebot.
+Von allen Merkmalen wiegt sie am schwersten. Eine geteilte Rufnummer ist für
+Googles Abgleich das stärkste Einzelsignal dafür, dass zwei Einträge dieselbe
+Firma sind — stärker als die Adresse.
 
-## 1.3 Beschreibung (max. 750 Zeichen)
+**Besorg eine zweite Nummer für Finanz-Medizin.** Eine VoIP-Nummer bei Sipgate,
+Placetel oder einem vergleichbaren Anbieter kostet wenige Euro im Monat und lässt
+sich auf dein Handy umleiten; eine zweite SIM tut es auch. Das ist keine
+Formalität, sondern die Bedingung, unter der die Trennung überhaupt trägt — nach
+außen wie gegenüber Google.
+
+Wenn du die Nummer hast, sag mir Bescheid: Sie steht an 19 Stellen im Projekt
+(Impressum, Strukturdaten, `llms.txt` und alle Seiten), das ziehe ich in einem
+Durchgang nach.
+
+### Kategorien auseinanderziehen
+
+Haben beide Profile `Finanzberater` als Primärkategorie, sieht das nach Dublette
+aus. **Finanz-Medizin behält `Finanzberater`** — das ist die Kategorie, um die es
+uns geht. Für We Build Wealth wählst du die Kategorie, die dessen Geschäft
+tatsächlich am besten beschreibt, und nimmst `Finanzberater` dort allenfalls als
+Nebenkategorie.
+
+## 1.3 Das Google-Konto
+
+Leg das Profil unter **info@finanz-medizin.com** an, wie von dir vorgesehen. Ein
+Google-Konto lässt sich mit einer bestehenden Nicht-Gmail-Adresse anlegen
+(`accounts.google.com/signup` → „Stattdessen vorhandene E-Mail-Adresse
+verwenden").
+
+Ein Rat aus der Praxis: Füge direkt nach der Freischaltung dein persönliches
+Google-Konto als **zweiten Inhaber** hinzu. Profile, die an genau einem Konto
+hängen, sind die, die man irgendwann nicht mehr erreicht.
+
+## 1.4 Anlegen — Schritt für Schritt
+
+1. Bei `business.google.com` mit dem neuen Konto anmelden → **Unternehmen hinzufügen**.
+2. **Name:** `Finanz-Medizin`
+
+   > Niemals Suchbegriffe anhängen, also kein „Finanz-Medizin | Finanzberatung
+   > für Ärzte". Das ist ein Richtlinienverstoß und der häufigste Grund für
+   > Sperrungen — ausgerechnet an der Stelle, die für lokale KI-Antworten am
+   > meisten zählt. Die Suchbegriffe gehören in Kategorien, Leistungen und
+   > Beschreibung, wo sie ohnehin stärker wirken.
+
+3. **Primärkategorie:** `Finanzberater`. Später ergänzen:
+   `Versicherungsmakler`, `Versicherungsagentur`. Die Bezeichnungen weichen in
+   Googles Auswahlliste manchmal ab — nimm die nächstliegende.
+
+   Primär `Finanzberater`, nicht `Versicherungsmakler`: Wer nach Beratung sucht,
+   sucht nach Beratung. Der Makler ist die Erlaubnis, nicht das Angebot.
+
+4. **„Möchten Sie einen Standort hinzufügen, den Kunden besuchen können?" → Nein.**
+
+   Das ist die wichtigste Weiche im ganzen Ablauf. Mit „Nein" wird daraus ein
+   Profil mit Dienstleistungsgebiet: Die Anschrift wird erfasst, aber nicht
+   öffentlich angezeigt. Damit entfällt die sichtbare Adressgleichheit mit dem
+   WBW-Profil — der zweitstärkste Dublettenverdacht nach der Rufnummer.
+
+   Es passt außerdem zur Wirklichkeit: Die meisten Gespräche laufen per Video
+   oder in der Praxis des Mandanten, nicht bei dir im Büro.
+
+   > Und der Vollständigkeit halber: Trag niemals eine Adresse ein, unter der du
+   > nicht wirklich sitzt. Google prüft das, und eine erschlichene Adresse ist
+   > eine Sperre, aus der man nicht zurückkommt.
+
+5. **Einzugsgebiet:** Deutschland.
+6. **Kontaktdaten:** die neue Telefonnummer und `https://www.finanz-medizin.com`.
+7. **Verifizierung** anfordern — siehe 1.5.
+8. Nach der Freischaltung die Texte aus 1.6 bis 1.9 einpflegen.
+
+## 1.5 Verifizierung vorbereiten
+
+Bei einem zweiten Eintrag desselben Inhabers ist eine **Videoverifizierung**
+wahrscheinlich. Sie läuft live: Google bittet dich, Nachweise in die Kamera zu
+halten. Unvorbereitet bricht man ab und landet in einer Warteschleife.
+
+Leg dir vorher zurecht:
+
+- die Gewerbeanmeldung
+- den Erlaubnisbescheid nach § 34d GewO (Registernummer `D-5V3H-7KX3I-54`)
+- Visitenkarte oder Briefbogen **mit dem Logo von Finanz-Medizin** — nicht das
+  von We Build Wealth
+- den Arbeitsplatz und, falls vorhanden, ein Schild oder Namensschild
+- den Laptop mit geöffneter Website `finanz-medizin.com`
+
+Der rote Faden für das Gespräch: Diese Marke hat eine eigene Website, eine eigene
+Rufnummer, eigene Unterlagen und eine eigene Kundengruppe. Genau das will Google
+sehen.
+
+## 1.6 Beschreibung (max. 750 Zeichen)
 
 ```
-Finanz-Medizin ist die auf Heilberufe spezialisierte Finanz- und Versicherungsberatung von Benedict Hintz in Berlin — eine Marke von We Build Wealth. Beraten werden ausschließlich Praxisinhaberinnen und Praxisinhaber, angestellte Ärztinnen und Ärzte sowie Praxisteams. Bundesweit, auf Wunsch per Video oder in der Praxis.
+Finanz-Medizin ist die auf Heilberufe spezialisierte Finanz- und Versicherungsberatung von Benedict Hintz in Berlin. Beraten werden ausschließlich Praxisinhaberinnen und Praxisinhaber, angestellte Ärztinnen und Ärzte sowie Praxisteams. Bundesweit, auf Wunsch per Video oder in der Praxis.
 
 Themen: betriebliche Altersvorsorge und Gesundheitsbudget zur Mitarbeiterbindung, ungenutzter Sonderausgabenrahmen neben dem ärztlichen Versorgungswerk, Berufsunfähigkeitsschutz mit Infektionsklausel, Praxisausfall, private Krankenversicherung und Vermögensaufbau.
 
 Ungebundener Versicherungsmakler nach § 34d GewO, Finanzanlagenvermittler nach § 34f GewO. Erstgespräch und Konzept kostenfrei.
 ```
 
-## 1.4 Leistungen (Name + je max. 300 Zeichen)
+We Build Wealth kommt hier bewusst nicht vor. Das ist kein Verschweigen: Das
+Verhältnis beider Marken steht vollständig im Impressum, wo es hingehört. In der
+Profilbeschreibung wäre es dagegen genau das Signal, das Google zur
+Dublettenprüfung veranlasst.
+
+## 1.7 Leistungen (Name + je max. 300 Zeichen)
 
 Legen Sie diese sechs Einträge unter „Leistungen" an. Der Abschnitt wird
 unterschätzt: Er ist strukturiert, und genau strukturierte Angaben liest eine
@@ -99,7 +218,7 @@ Berufsunfähigkeitsversicherung für operativ und invasiv Tätige — mit Infekt
 Für medizinische Fachangestellte: Rentenlücke, Ausgleich von Teilzeit- und Elternzeitphasen, Betriebsrente mit Arbeitgeberzuschuss, Gesundheitsbudget über die Praxis. Ohne Fachjargon, alles in Euro, vertraulich gegenüber dem Arbeitgeber.
 ```
 
-## 1.5 Fragen und Antworten selbst anlegen
+## 1.8 Fragen und Antworten selbst anlegen
 
 Google erlaubt Inhabern ausdrücklich, eigene Fragen zu stellen und zu
 beantworten. Das ist kein Trick, sondern ein vorgesehenes Feld — und für unseren
@@ -119,7 +238,7 @@ hoch" versehen, damit sie oben steht.
 | Ist das Steuerberatung? | Nein, und das dürfen wir auch nicht sein. Wir zeigen Gestaltungsmöglichkeiten mit Fundstelle und Rechenweg — prüfen und bestätigen muss sie Ihr Steuerberater. Auf Wunsch sprechen wir direkt mit ihm. |
 | Beraten Sie auch das Praxisteam, nicht nur die Inhaber? | Ja. Für MFA und Praxisteams gibt es eine eigene Sprechstunde, einzeln und vertraulich. Was dort besprochen wird, erfährt der Arbeitgeber nicht. |
 
-## 1.6 Einstellungen, die oft übersehen werden
+## 1.9 Einstellungen, die oft übersehen werden
 
 - **Einzugsgebiet:** Deutschland ergänzen. Die Anschrift bleibt sichtbar, weil
   sie mit dem Impressum übereinstimmen muss — das Einzugsgebiet sagt zusätzlich,
@@ -132,7 +251,7 @@ hoch" versehen, damit sie oben steht.
 - **Fotos:** mindestens Logo, ein Porträt von Ihnen und drei weitere Bilder.
   Profile ohne Gesicht schneiden bei Beraterdienstleistungen messbar schlechter ab.
 
-## 1.7 Danach: die Profil-URL besorgen
+## 1.10 Danach: die Profil-URL besorgen
 
 Wird für den nächsten Schritt gebraucht (`sameAs` in den Strukturdaten).
 
@@ -166,7 +285,7 @@ Finanzberatung ausschließlich für Ärztinnen, Ärzte und Praxisteams. Erst der
 
 **Info-Text (max. 2.000 Zeichen)**
 ```
-Finanz-Medizin ist die auf Heilberufe spezialisierte Finanz- und Versicherungsberatung von Benedict Hintz — eine Marke des Einzelunternehmens We Build Wealth in Berlin.
+Finanz-Medizin ist die auf Heilberufe spezialisierte Finanz- und Versicherungsberatung von Benedict Hintz in Berlin.
 
 Wir beraten ausschließlich Angehörige der Heilberufe. Der Grund: Kaum ein Beruf verdient so gut und wird so schlecht beraten. Ärztinnen und Ärzte haben ein eigenes Versorgungswerk, eine eigene Gebührenordnung, eigene Kammern, eigene Haftungsrisiken und mit dem Praxiswert einen Vermögensgegenstand, den es in keiner anderen Branche so gibt. Trotzdem bekommen sie meist dieselbe Beratung wie alle anderen.
 

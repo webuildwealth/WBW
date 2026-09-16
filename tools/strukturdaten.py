@@ -114,6 +114,14 @@ def organisation() -> dict:
         },
         "founder": {"@id": PERSON},
         "employee": {"@id": PERSON},
+        # Bleibt drin, obwohl Finanz-Medizin nach aussen eigenstaendig auftritt.
+        # parentOrganization verschmilzt die beiden Marken nicht — es beschreibt
+        # eine eigene Einheit Finanz-Medizin MIT einer benannten Beziehung. Ohne
+        # das Feld waere die Marke nicht unabhaengiger, sondern nur schlechter
+        # bestimmt. Dazu kommt: Das Impressum nennt das Verhaeltnis ohnehin, und
+        # Strukturdaten, die etwas anderes erzaehlen als die Seite, sind ein
+        # Widerspruchssignal. Die Trennung gehoert in Profile, Rufnummer und
+        # Ansprache — nicht in weggelassene Fakten.
         "parentOrganization": {"@type": "Organization", "name": "We Build Wealth"},
         "areaServed": {"@type": "Country", "name": "Deutschland"},
         "availableLanguage": {"@type": "Language", "name": "Deutsch", "alternateName": "de"},
