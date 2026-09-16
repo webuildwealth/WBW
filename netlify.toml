@@ -56,6 +56,17 @@
     # dahin wird nichts davon geladen — Cookiebot blockiert es, und die CSP
     # erlaubt nur, sie verbietet nichts von selbst.
     #
+    # Dieselbe Überlegung gilt für die beiden Bewertungsportale:
+    #   www.provenexpert.com / images.provenexpert.com   Bewertungsanzeige
+    #   widget.trustpilot.com / *.trustpilot.com         TrustBox
+    # Die Anzeigen auf bewertungen.html werden von assets/js/bewertungen.js
+    # erst nach Einwilligung in die Kategorie „Marketing" nachgeladen. Die
+    # CSP macht das möglich, sie löst es nicht aus. ProvenExpert kommt als
+    # Rahmen ins Dokument und braucht deshalb kein script-src; Trustpilot
+    # bringt ein eigenes Skript mit, das seinerseits einen Rahmen setzt und
+    # seine Daten nachfragt — daher steht es in script-, frame- und
+    # connect-src.
+    #
     # 'unsafe-eval' ist bewusst NICHT gesetzt. Der GTM-Vorschaumodus und manche
     # benutzerdefinierten Vorlagen brauchen es; falls die Vorschau leer bleibt,
     # steht in SETUP.md, was dann zu tun ist.
@@ -63,12 +74,12 @@
     # Der Funnel sendet an /api/lead auf derselben Domain; 'self' genügt dafür.
     Content-Security-Policy = """\
 default-src 'self'; \
-script-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://www.googletagmanager.com https://tagassistant.google.com https://www.clarity.ms https://*.clarity.ms; \
+script-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://www.googletagmanager.com https://tagassistant.google.com https://www.clarity.ms https://*.clarity.ms https://widget.trustpilot.com; \
 style-src 'self' 'unsafe-inline' https://consent.cookiebot.com https://consentcdn.cookiebot.com; \
 font-src 'self' data:; \
-img-src 'self' data: https://imgsec.cookiebot.com https://consent.cookiebot.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://*.clarity.ms https://c.bing.com; \
-connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com https://tagassistant.google.com https://*.clarity.ms https://c.bing.com; \
-frame-src https://consentcdn.cookiebot.com https://www.googletagmanager.com https://tagassistant.google.com; \
+img-src 'self' data: https://imgsec.cookiebot.com https://consent.cookiebot.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://*.clarity.ms https://c.bing.com https://www.provenexpert.com https://images.provenexpert.com https://widget.trustpilot.com https://*.trustpilot.com; \
+connect-src 'self' https://consent.cookiebot.com https://consentcdn.cookiebot.com https://*.googletagmanager.com https://www.googletagmanager.com https://*.google-analytics.com https://www.google-analytics.com https://*.analytics.google.com https://tagassistant.google.com https://*.clarity.ms https://c.bing.com https://widget.trustpilot.com https://*.trustpilot.com; \
+frame-src https://consentcdn.cookiebot.com https://www.googletagmanager.com https://tagassistant.google.com https://www.provenexpert.com https://widget.trustpilot.com https://*.trustpilot.com; \
 form-action 'self'; \
 base-uri 'self'; \
 frame-ancestors 'none'; \
@@ -171,6 +182,20 @@ object-src 'none'\
 [[redirects]]
   from = "/team"
   to = "/ueber-uns.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/bewertungen"
+  to = "/bewertungen.html"
+  status = 301
+  force = true
+
+# Fuer Einladungs-E-Mails, Visitenkarten und den QR-Code im Beratungsraum:
+# führt direkt auf die beiden Wege zur Bewertung, nicht auf den Seitenanfang.
+[[redirects]]
+  from = "/bewerten"
+  to = "/bewertungen.html#bewerten"
   status = 301
   force = true
 

@@ -6,6 +6,11 @@ Statische Website mit drei zielgruppenspezifischen Landingpages und Lead-Funnels
 
 Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fertig.
 
+> **Bewertungen einrichten?** [BEWERTUNGEN.md](BEWERTUNGEN.md) enthält die fertigen
+> Profiltexte für ProvenExpert und Trustpilot, die sechs Kennungen, die dafür in
+> `bewertungen.html` einzutragen sind, und die rechtlichen Punkte, die dabei nicht
+> optional sind.
+
 > **Hosterwechsel geplant?** [DEPLOYMENT.md](DEPLOYMENT.md) listet auf, was die Seite
 > von einem Hoster braucht, und was beim Wechsel anzupassen ist. Die Close-Logik in
 > `lib/lead-core.js` ist plattformunabhängig — zu ersetzen ist nur der Adapter.
@@ -20,10 +25,12 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `praxisinhaber.html` | Praxisinhaberinnen und Praxisinhaber | Praxis-Check |
 | `angestellte-aerzte.html` | Angestellte Ärztinnen und Ärzte | Vermögens-Check |
 | `mfa-praxisteam.html` | MFA und Praxisteam | Vorsorge-Check |
+| `bewertungen.html` | Bewertungen auf ProvenExpert und Trustpilot, zitierte Stimmen, Auskunft nach § 5b Abs. 3 UWG | — |
 | `danke.html` | Bestätigungsseite, segmentspezifisch | — |
 | `impressum.html` | Impressum + Erstinformation § 15 VersVermV | — |
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) | — |
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
+| `assets/js/bewertungen.js` | Lädt die beiden Bewertungsanzeigen — erst nach Einwilligung | — |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
 

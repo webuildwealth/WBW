@@ -469,7 +469,21 @@ button { background: none; border: 0; cursor: pointer; }
 }
 
 .nav__links { display: none; align-items: center; gap: .35rem; margin-left: auto; }
-@media (min-width: 1040px) { .nav__links { display: flex; } }
+
+/* Die Schwelle lag bei 1040px, solange die Zeile vier Punkte und den Knopf
+   trug. Mit „Bewertungen" sind es fünf, und bei 1040px fehlten dann 92px:
+   Der Erstgespräch-Knopf lief über den rechten Rand hinaus. Auffällig war das
+   nicht — der Überlauf steckt unter dem abgeschnittenen Knopf und macht die
+   Seite nicht breiter —, aber der wichtigste Knopf der Seite war dort nur
+   noch halb da.
+
+   Zusammenrücken hätte es nicht gerettet: Selbst mit engeren Abständen,
+   kleinerer Schrift und ohne die Zeile unter dem Wortzeichen blieben bei
+   1040px noch 12px zu wenig. Deshalb die Schwelle statt der Abstände. Bis
+   1200px übernimmt das Klappmenü — es führt ohnehin alle Seiten und die
+   Unterpunkte jeder Zielgruppe, ist also kein Notbehelf, sondern der
+   vollständigere Weg. */
+@media (min-width: 1200px) { .nav__links { display: flex; } }
 
 .nav__link {
   padding: .55rem .85rem; border-radius: var(--r-pill);
@@ -481,6 +495,23 @@ button { background: none; border: 0; cursor: pointer; }
 .nav__link.is-active { color: var(--navy-800); font-weight: 650; }
 
 .nav__cta { margin-left: .5rem; }
+
+/* Die Startseite trägt zwei Sprungmarken mehr als die übrigen Seiten
+   („Ablauf", „Fragen") und einen längeren Knopf. Dort reicht selbst die neue
+   Schwelle nicht: Bei 1200px fehlten 95px. Zwischen 1200px und 1400px rücken
+   die Punkte deshalb enger zusammen und werden eine Spur kleiner — das
+   genügt auf allen Seiten und fällt auf den anderen kaum auf, weil dort
+   ohnehin Platz übrig ist. Ab 1400px gilt wieder der ruhige Abstand.
+
+   Der Block steht hinter den Grundregeln für .nav__link und .nav__cta, nicht
+   davor: Beide haben dieselbe Spezifität, also entscheidet die Reihenfolge.
+   Davor stehend blieb er wirkungslos — der Abstand griff, die Polsterung
+   nicht. */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .nav__links { gap: .05rem; }
+  .nav__link { padding: .5rem .5rem; font-size: .86rem; }
+  .nav__cta { margin-left: .3rem; padding-inline: .9rem; }
+}
 
 /* ---- Aufklapper der drei Zielgruppen -------------------------------------
    Die drei Hauptpunkte tragen die Unterpunkte der jeweiligen Seite bei sich.
@@ -625,7 +656,7 @@ button { background: none; border: 0; cursor: pointer; }
   border: 1px solid var(--line);
   background: rgba(255,255,255,.6);
 }
-@media (min-width: 1040px) { .nav__burger { display: none; } }
+@media (min-width: 1200px) { .nav__burger { display: none; } }
 /* Die drei Balken liegen übereinander in derselben Rasterzelle und werden
    per transform auseinandergeschoben. Vorher ergaben sich ihre Abstände aus
    der Zeilenverteilung des Rasters — gemessene 15,7px —, während die
@@ -670,7 +701,7 @@ button { background: none; border: 0; cursor: pointer; }
 }
 .nav__mobile.is-open { opacity: 1; transform: none; pointer-events: auto; }
 /* Das mobile Menü enthält nur noch drei Arten von Links: Hauptkategorie,
-   Unterpunkt und den Erstgespräch-Knopf. Alle drei sind in Abschnitt 25.2
+   Unterpunkt und den Erstgespräch-Knopf. Alle drei sind in Abschnitt 26.2
    eigens gestaltet. Die frühere Sammelregel für „jedes a im Menü" ist damit
    nicht nur überflüssig, sie war schädlich: Sie war spezifischer als die
    neuen Regeln, überschrieb deren Abstände und zog eine Trennlinie zwischen
@@ -1874,13 +1905,143 @@ mark.platzhalter {
 :is(.section--dark, .hero--dark) .creed__text b { color: #fff; }
 
 /* ==========================================================================
-   25. Mobile-Feinschliff
+   25. Bewertungen
+   Drei Bausteine der Seite bewertungen.html: die beiden Portal-Karten, die
+   zitierten Stimmen und die zwei Wege zur eigenen Bewertung.
+
+   Die Portal-Karte ist bewusst ein fester Rahmen mit eigener Kopfzeile. Die
+   Widgets von ProvenExpert und Trustpilot bringen ihr eigenes Aussehen mit,
+   das wir weder ändern dürfen noch ändern wollen — es ist der Beleg dafür,
+   dass die Anzeige von dort kommt und nicht von uns. Unsere Aufgabe ist nur,
+   ihnen einen Platz zu geben, der auf jeder Displaybreite gleich bleibt und
+   nicht springt, wenn das Widget später als der Rest eintrifft.
+   ========================================================================== */
+/* Fettschrift bekommt in Abschnitt 2 die Tintenfarbe zugewiesen. In einem
+   dunklen Band verschwindet sie damit fast vollständig — auf dieser Seite
+   betrifft das die beiden Portalnamen im Vorspann. Die Regel gilt deshalb
+   nur für Vorspann und Kleingedrucktes, die unmittelbar auf dem dunklen
+   Grund liegen; Karten mit hellem Grund innerhalb eines dunklen Abschnitts
+   bleiben unberührt, dort wäre Weiß auf Weiß das neue Problem. */
+:is(.section--dark, .hero--dark, .funnel-band) :is(p.lead, p.small) :is(b, strong) {
+  color: #fff;
+}
+
+.siegel {
+  display: grid; gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+.siegel__karte {
+  background: var(--surface); border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg); padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 1.1rem;
+  min-width: 0;
+}
+:is(.section--dark, .hero--dark, .funnel-band) .siegel__karte {
+  background: rgba(255,255,255,.045); border-color: rgba(255,255,255,.1);
+}
+.siegel__kopf { display: grid; gap: .4rem; }
+.siegel__marke {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: var(--step-1); color: var(--ink); letter-spacing: -0.02em;
+}
+:is(.section--dark, .hero--dark, .funnel-band) .siegel__marke { color: #fff; }
+.siegel__was { font-size: var(--step--1); color: var(--ink-mute); line-height: 1.55; }
+
+/* Der Platz für das Widget steht, bevor das Widget da ist. Ohne diese
+   Mindesthöhe schöbe die Anzeige beim Eintreffen den halben Abschnitt nach
+   unten — genau der Sprung, den ein Besucher als Ruckeln wahrnimmt. */
+.siegel__buehne {
+  min-height: 230px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--r-md);
+  background: var(--navy-050);
+  overflow: hidden;
+}
+:is(.section--dark, .hero--dark, .funnel-band) .siegel__buehne { background: rgba(255,255,255,.04); }
+.siegel__karte[data-zustand="widget"] .siegel__buehne { background: transparent; }
+
+.siegel__ersatz { padding: 1.4rem; display: grid; gap: 1rem; justify-items: start; }
+.siegel__ersatz-text {
+  font-size: var(--step--1); line-height: 1.6; color: var(--ink-soft); margin: 0;
+}
+:is(.section--dark, .hero--dark, .funnel-band) .siegel__ersatz-text { color: rgba(232,240,247,.8); }
+.siegel__ersatz-text b { color: var(--ink); font-weight: 650; }
+:is(.section--dark, .hero--dark, .funnel-band) .siegel__ersatz-text b { color: #fff; }
+.siegel__ersatz-wege { display: flex; flex-wrap: wrap; gap: .6rem; }
+
+/* -- Zitierte Stimmen ---------------------------------------------------- */
+.stimmen {
+  display: grid; gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+.stimme {
+  background: var(--surface); border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg); padding: 1.6rem 1.5rem;
+  display: flex; flex-direction: column; gap: 1.1rem;
+  margin: 0; min-width: 0;
+}
+:is(.section--dark, .hero--dark, .funnel-band) .stimme {
+  background: rgba(255,255,255,.045); border-color: rgba(255,255,255,.1);
+}
+.stimme__text {
+  font-family: var(--font-serif); font-style: italic;
+  font-size: var(--step-1); line-height: 1.5; color: var(--ink);
+  margin: 0; flex: 1;
+}
+:is(.section--dark, .hero--dark, .funnel-band) .stimme__text { color: rgba(232,240,247,.92); }
+.stimme__text::before { content: "„"; }
+.stimme__text::after { content: "“"; }
+.stimme__quelle {
+  display: grid; gap: .2rem;
+  padding-top: 1rem; border-top: 1px solid var(--line-soft);
+}
+:is(.section--dark, .hero--dark, .funnel-band) .stimme__quelle { border-color: rgba(255,255,255,.12); }
+.stimme__wer {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: var(--step--1); color: var(--ink);
+}
+:is(.section--dark, .hero--dark, .funnel-band) .stimme__wer { color: #fff; }
+.stimme__wo { font-size: var(--step--1); color: var(--ink-mute); }
+
+/* -- Die zwei Wege zur Bewertung ----------------------------------------
+   Stehen im dunklen Band. Solange die Bewertungsadresse fehlt, führt der
+   Kasten nur zurück zu den Profilen weiter oben; er sieht dann bewusst
+   gleich aus — ein halb ausgegrauter Knopf erklärt niemandem etwas. */
+.bewerten {
+  display: grid; gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+}
+.bewerten__weg {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--r-lg); padding: 1.6rem 1.5rem;
+  display: flex; flex-direction: column; gap: .8rem;
+  text-decoration: none; min-width: 0;
+  transition: transform .28s var(--ease), background .28s var(--ease), border-color .28s var(--ease);
+}
+.bewerten__weg:hover {
+  transform: translateY(-3px);
+  background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.22);
+}
+.bewerten__marke {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: var(--step-1); color: #fff; letter-spacing: -0.02em;
+}
+.bewerten__text { font-size: var(--step--1); line-height: 1.6; color: rgba(232,240,247,.78); flex: 1; }
+.bewerten__cta {
+  font-family: var(--font-display); font-weight: 700; font-size: var(--step--1);
+  color: #fff; display: inline-flex; align-items: center; gap: .4rem;
+}
+.bewerten__cta .arr { transition: transform .3s var(--ease); }
+.bewerten__weg:hover .bewerten__cta .arr { transform: translateX(3px); }
+
+/* ==========================================================================
+   26. Mobile-Feinschliff
    Alles in diesem Abschnitt steht in Media Queries für kleine Displays.
    Der Desktop bleibt davon unberührt — das ist die Bedingung, unter der
    hier gearbeitet wurde.
    ========================================================================== */
 
-/* -- 25.1 Ursachen für horizontalen Überlauf ------------------------------
+/* -- 26.1 Ursachen für horizontalen Überlauf ------------------------------
    Gemessen, nicht geraten. Drei Quellen, jede einzeln behoben:
 
    a) Die Reveal-Animation schiebt Blöcke vor dem Einblenden um 28px zur
@@ -1941,7 +2102,7 @@ mark.platzhalter {
   body { overflow-x: clip; }
 }
 
-/* -- 25.2 Mobile Navigation ----------------------------------------------
+/* -- 26.2 Mobile Navigation ----------------------------------------------
    Die Desktop-Navigation zeigt die drei Zielgruppen als gleichrangige
    Einstiege. Diese Rangordnung übernimmt das Telefon-Menü: Hauptkategorie
    groß und dunkel, Unterpunkte eingerückt, kleiner und leiser. Die
@@ -2030,7 +2191,7 @@ mark.platzhalter {
   .nav__mobile .mnav__cta { margin-top: .8rem; }
 }
 
-/* -- 25.3 Kopfzeile bei sehr schmalen Displays ---------------------------
+/* -- 26.3 Kopfzeile bei sehr schmalen Displays ---------------------------
    Bei 320px brauchten Wortmarke, Abstand und Burger zusammen 319px in
    einem 284px breiten Inhaltsbereich. Der Abstand schrumpft, die Marke
    darf umbrechen statt zu schieben.
@@ -2045,7 +2206,7 @@ mark.platzhalter {
   .brand__tag { display: none; }
 }
 
-/* -- 25.4 Schwebender CTA ------------------------------------------------
+/* -- 26.4 Schwebender CTA ------------------------------------------------
    Vorher nahm die Leiste 17,7 % der Bildschirmhöhe ein und legte sich über
    die Überschrift des Abschnitts, in dem der Besucher gerade las. Der Titel
    brach dabei auf drei Zeilen um, was die Höhe erst erzeugte.
@@ -2105,13 +2266,13 @@ mark.platzhalter {
 }
 
 /* --------------------------------------------------------------------------
-   26. iPhone-Feinschliff
+   27. iPhone-Feinschliff
    Abgestimmt auf 402 x 874 (iPhone 16 Pro und 17 Pro) und getestet von 320
    bis 430 px. Alles steht in Media Queries — die Desktop-Fassung bleibt
    unverändert.
    -------------------------------------------------------------------------- */
 
-/* -- 26.1 Faltbare Beleganhänge ------------------------------------------ */
+/* -- 27.1 Faltbare Beleganhänge ------------------------------------------ */
 
 /* Das details-Element steht im Quelltext offen. Auf dem Desktop verschwindet
    nur die Schaltfläche, der Inhalt steht wie bisher. Auf schmalen Geräten
@@ -2147,7 +2308,7 @@ mark.platzhalter {
   .falt[open] > .falt__inhalt { display: contents; }
 }
 
-/* -- 26.2 Typografie auf dem Handy --------------------------------------- */
+/* -- 27.2 Typografie auf dem Handy --------------------------------------- */
 
 @media (max-width: 500px) {
   /* Die Schriftgrade der Seite sind über clamp an die Breite gekoppelt und
@@ -2178,7 +2339,7 @@ mark.platzhalter {
   .grid { gap: .9rem; }
 }
 
-/* -- 26.3 Sichere Ränder ------------------------------------------------- */
+/* -- 27.3 Sichere Ränder ------------------------------------------------- */
 
 @media (max-width: 500px) {
   /* Das Dynamic Island und die Home-Anzeige des iPhone 17 Pro schneiden sonst
@@ -2190,7 +2351,7 @@ mark.platzhalter {
 }
 
 /* --------------------------------------------------------------------------
-   27. Druck
+   28. Druck
    § 15 VersVermV verlangt die Erstinformation in Textform. Wer sie aus dem
    Browser druckt oder als PDF sichert, soll ein Dokument bekommen und keinen
    Abzug der Website: keine Navigation, kein schwebender CTA, keine Farbflächen,
@@ -2201,6 +2362,13 @@ mark.platzhalter {
   .nav, .nav__mobile, .footer, .rail, .skip-link,
   .stage__canvas, .stage__foto, .hero__viz, canvas,
   .cta-band, .btn, .cookiebot-renew { display: none !important; }
+
+  /* Die Bewertungsanzeigen sind fremde Rahmen — im Ausdruck bleiben sie leer
+     und hinterließen zwei weiße Kästen. Die Aufforderung, selbst zu bewerten,
+     ist auf Papier ebenfalls sinnlos. Beides entfällt; die zitierten Stimmen
+     und der Abschnitt zur Transparenz bleiben, denn die tragen den Inhalt. */
+  .siegel__buehne, .bewerten { display: none !important; }
+  .siegel__karte, .stimme { border: 1px solid #999 !important; background: #fff !important; }
 
   html, body {
     background: #fff !important; color: #000 !important;
