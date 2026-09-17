@@ -191,3 +191,26 @@ object-src 'none'\
   to = "/datenschutz.html"
   status = 301
   force = true
+
+# -----------------------------------------------------------------------------
+#  Instagram-DM (ManyChat). Kurze, in einer Direktnachricht gut lesbare Adressen,
+#  die direkt in die Terminauswahl auf der Über-uns-Seite springen. Die
+#  UTM-Parameter stehen hier und nicht im DM-Text, damit die Nachricht kurz
+#  bleibt und die Zuordnung trotzdem in der Terminnotiz landet (main.js legt
+#  sie in sessionStorage, booking.js hängt sie an die Buchung).
+#
+#  Status 302, nicht 301: Die Kampagnenparameter ändern sich, ein dauerhaft
+#  gecachter Redirect würde alte Werte festschreiben.
+#  Einrichtung und Nachrichtentexte: manychat/README.md
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/termin"
+  to = "/ueber-uns.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung#termin"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/beratung"
+  to = "/ueber-uns.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung#termin"
+  status = 302
+  force = true

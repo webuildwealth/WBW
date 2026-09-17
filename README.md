@@ -26,6 +26,7 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
+| `manychat/` | Instagram-DM-Automation „Beratung → Termin“ — Einrichtung und Texte | Instagram |
 
 ### Zielgruppen-Ansprache
 
@@ -199,6 +200,23 @@ Alle `canonical`- und `og:url`-Angaben zeigen bereits auf
 `https://www.finanz-medizin.com/`. Bei abweichender Domain zusätzlich `sitemap.xml`
 und `robots.txt` anpassen.
 
+### 5. Instagram-Automation (optional, unabhängig vom Rest)
+
+Der Ordner `manychat/` beschreibt eine ManyChat-Strecke für Instagram: Wer in der
+Direktnachricht „Beratung“ schreibt, bekommt automatisch die Zielgruppenfrage und
+danach den Link auf die Terminauswahl. Der Link ist die Kurzadresse
+`finanz-medizin.com/termin`, die aus `netlify.toml` auf `ueber-uns.html#termin`
+umleitet und die Instagram-Herkunft als UTM-Parameter mitführt — sie steht damit
+später in der Terminbeschreibung im Kalender.
+
+Zwei Punkte, bevor die Strecke scharf gestellt wird:
+
+- Die Kalenderanbindung muss stehen. Ohne freie Zeiten zeigt `/termin` den
+  Rückruf-Block, und die Automation verspricht etwas, das die Seite nicht hält.
+- `datenschutz.html` kennt ManyChat noch nicht. Ein Entwurf für den fehlenden
+  Abschnitt liegt in `manychat/datenschutz-baustein.md` und gehört vor dem
+  Livegang in die Rechtsprüfung.
+
 ---
 
 ## Technik
@@ -326,6 +344,9 @@ Die Konfiguration liegt vollständig in `netlify.toml` — kein Build-Schritt, k
   Deploy ist garantiert die neue Fassung aktiv), Bilder 30 Tage.
 - **Kurz-URLs** für Anzeigen und Visitenkarten: `/praxisinhaber`, `/aerzte`, `/mfa`,
   `/impressum`, `/datenschutz` leiten per 301 auf die jeweilige Seite.
+  `/termin` und `/beratung` leiten per 302 in die Terminauswahl und hängen die
+  Instagram-UTM-Parameter an — 302, weil sich Kampagnenparameter ändern und ein
+  dauerhaft gecachter Redirect alte Werte festschreiben würde.
 - **`404.html`** wird von Netlify automatisch als Fehlerseite ausgeliefert.
 
 ### Wichtig, sobald der Funnel-Endpunkt steht
