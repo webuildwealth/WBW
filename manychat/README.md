@@ -1,197 +1,210 @@
 # Instagram-Automation „Beratung" (ManyChat)
 
-Schreibt jemand **„Beratung"** in die Instagram-Direktnachrichten, antwortet ManyChat
-innerhalb von Sekunden und schickt den Link auf den Check der Website. Dort wählen
-die Leute selbst Rolle und Anliegen aus und hinterlassen ihre Kontaktdaten — die
-Anfrage landet über `/api/lead` im CRM, mit allen Antworten in der Notiz.
+**Eine** Automation, **eine** Nachricht. Wer dem Instagram-Profil „Beratung"
+schreibt, bekommt binnen Sekunden eine Antwort mit drei Knöpfen — je einer pro
+Zielgruppe. Der Knopf führt nicht auf die Startseite, sondern direkt in den Check
+weiter unten auf der passenden Seite, wo Rolle, Anliegen und Kontaktdaten
+eingetragen werden. Die Anfrage läuft von dort über `/api/lead` ins CRM.
 
-**Ziel der Strecke:** DM → Link → ausgefüllter Check → Anfrage bei Ihnen.
-Kein Hin und Her in der DM, keine Rückfrage nach Telefonnummer.
+Absichtlich klein gehalten: keine Verzögerungen, keine Erinnerungen, keine Tags,
+keine Custom Fields, keine Integration. Damit läuft die Strecke im Free-Plan und
+besteht aus genau einem beweglichen Teil.
 
 ---
 
-## Was Sie brauchen
+## Was der Free-Plan hergibt
 
-| Voraussetzung | Hinweis |
+Stand September 2026, nach der Umstellung vom 2. März 2026:
+
+| | Free |
 |---|---|
-| Instagram **Professional-Konto** (Business oder Creator) | Privatkonten können nicht automatisiert werden |
-| Verknüpfte Facebook-Seite | Meta verlangt das für die Messaging-API |
-| Einstellung *Nachrichten → Zugriff auf Nachrichten erlauben* aktiv | Instagram-App → Einstellungen → Nachrichten und Story-Antworten → **Zugriff auf Nachrichten durch Tools von Drittanbietern erlauben** |
-| ManyChat-Konto, Instagram verbunden | Für Keyword-Trigger auf Instagram ist **Pro** nötig |
-| Funktionierender Check auf der Live-Domain | `/beratung` muss erreichbar sein und der Check muss absenden |
+| Aktive Automationen gleichzeitig | **4** |
+| Aktive Kontakte pro Monat | **25** |
+| Kanäle | 2 (z. B. Instagram + Messenger) |
+| Nutzer / Inbox-Plätze | 1 |
+| Keyword-Auslöser, Kommentar-zu-DM, Default Reply | enthalten |
+| Broadcasts, Integrationen, AI, WhatsApp/SMS | nicht enthalten |
 
-### Die Kurz-URLs
+**Die echte Grenze sind die 25 Kontakte, nicht die Zahl der Automationen.** Ein
+Kontakt gilt als aktiv, sobald die Automation im Abrechnungsmonat mit ihm
+interagiert. Ab dem 26. Menschen antwortet sie nicht mehr — die Nachricht läuft
+dann ins Leere, ohne dass es jemandem auffällt.
 
-In `netlify.toml` liegen fünf Adressen, die kurz genug für eine Direktnachricht sind
-und die Herkunft als UTM-Parameter mitführen:
+Praktisch heißt das:
 
-| Adresse | Ziel | wofür |
-|---|---|---|
-| `finanz-medizin.com/beratung` | Startseite, Zielgruppen-Weiche | Einstieg ohne Vorauswahl |
-| `finanz-medizin.com/check-praxis` | Praxis-Check, direkt im Formular | Rolle schon in der DM geklärt |
-| `finanz-medizin.com/check-arzt` | Vermögens-Check | dito |
-| `finanz-medizin.com/check-mfa` | Vorsorge-Check | dito |
-| `finanz-medizin.com/termin` | Terminauswahl auf der Über-uns-Seite | für alle, die lieber sofort einen Termin wählen |
+- Für eine Bio-Verlinkung und gelegentliche DMs reicht Free.
+- Sobald ein Reel läuft, ist das Kontingent an einem Tag weg. Ein einziges
+  ordentlich laufendes Video mit Kommentar-Auslöser sprengt es.
+- Deshalb: **wöchentlich in ManyChat unter Contacts nachsehen**, wie viele aktive
+  Kontakte der Monat schon verbraucht hat. Wird es regelmäßig eng, ist Pro fällig —
+  oder die Automation läuft nur in Phasen, in denen sie gebraucht wird.
 
-Die UTM-Parameter landen über `sessionStorage` in der Anfrage und stehen damit in
-der CRM-Notiz unter „Kampagne". Sie sehen bei jeder Anfrage, ob sie aus dem
-Instagram-DM kam — und bei den drei `check-`Adressen auch, welche Rolle die Person
-in der DM angegeben hat.
+Limits und Preise ändert ManyChat ohne Vorwarnung. Vor dem Einrichten einmal in
+**Settings → Billing** nachsehen, was im Konto tatsächlich steht.
 
 ---
 
-## Zwei Varianten — eine reicht
+## Die Links
 
-### A) Kurz: ein Link, alles Weitere macht die Website
+In `netlify.toml` liegen Kurzadressen, die direkt in den Check der jeweiligen Seite
+springen und die Instagram-Herkunft als UTM-Parameter mitführen:
 
-Eine einzige Nachricht mit dem Link auf `/beratung`. Die Website fragt ohnehin nach
-Rolle und Anliegen — die DM muss das nicht vorwegnehmen.
+| Adresse | landet |
+|---|---|
+| `finanz-medizin.com/check-praxis` | Praxis-Check auf `praxisinhaber.html` |
+| `finanz-medizin.com/check-arzt` | Vermögens-Check auf `angestellte-aerzte.html` |
+| `finanz-medizin.com/check-mfa` | Vorsorge-Check auf `mfa-praxisteam.html` |
+| `finanz-medizin.com/beratung` | Zielgruppen-Weiche auf der Startseite |
+| `finanz-medizin.com/termin` | Terminauswahl auf `ueber-uns.html` |
 
-```
-Auslöser: DM enthält "Beratung" (+ Varianten)
-      │
-      ▼
-[1] Nachricht mit Link auf /beratung
-      │
-      ▼
-[3] Erinnerung nach 1 Stunde, wenn nicht geklickt
-      │
-      ▼
-[4] Erinnerung nach 20 Stunden, wenn nicht geklickt
-```
+Die Parameter landen über `sessionStorage` in der Anfrage und stehen in der
+CRM-Notiz unter „Kampagne" — Sie sehen bei jeder Anfrage, dass sie aus dem
+Instagram-DM kam und welchen Knopf die Person gedrückt hat.
 
-### B) Mit Rollenfrage in der DM
+---
 
-Eine Quick-Reply-Frage vorweg, dann der passende `check-`Link. Kostet ein Antippen,
-spart der Person einen Klick auf der Website — und Sie sehen die Rolle schon, bevor
-der Check abgeschickt ist.
+## Die Nachricht
+
+### Textteil
 
 ```
-Auslöser: DM enthält "Beratung" (+ Varianten)
-      │
-      ▼
-[1] Begrüßung + Rollenfrage           ← Quick Replies
-      │
-      ├── Ich habe eine Praxis   → Field linkziel = /check-praxis
-      ├── Angestellt in Klinik   → Field linkziel = /check-arzt
-      ├── MFA / Praxisteam       → Field linkziel = /check-mfa
-      └── Etwas anderes          → Field linkziel = /beratung
-      │
-      ▼
-[2] Nachricht mit Button „Check starten" auf {{linkziel}}
-      │
-      ▼
-[3] und [4] wie oben
+Schön, dass Sie da sind — und danke für die Nachricht.
+
+Damit Sie nicht die Standardantwort bekommen: Auf der Website stehen ein paar
+Fragen zu Ihrer Situation. Rund 90 Sekunden, keine Unterlagen nötig. Danach
+weiß ich, worum es bei Ihnen geht, und melde mich mit einem konkreten
+Vorschlag statt mit Allgemeinplätzen.
+
+Suchen Sie sich unten aus, was auf Sie zutrifft — der Knopf führt direkt zu
+den Fragen.
 ```
 
-**Empfehlung: mit A anfangen.** Wenn die Klickquote steht, lässt sich die Rollenfrage
-jederzeit davorsetzen. Andersherum verliert man Leute an einem Schritt, den die
-Website ohnehin besser macht.
+### Karte mit drei Knöpfen
 
-Beide Varianten enden gleich: Wer den Link geklickt hat, bekommt keine Erinnerung
-mehr. Wer lieber schreibt, landet bei Ihnen im Live-Chat.
+| Feld | Inhalt |
+|---|---|
+| Titel | `Ihre Situation in 90 Sekunden` |
+| Untertitel | `Fünf Fragen. Danach melde ich mich persönlich.` |
+| Bild | optional, quadratisch, 1080 × 1080 px |
+| Button 1 | `Ich habe eine Praxis` → Open Website → `https://www.finanz-medizin.com/check-praxis` |
+| Button 2 | `Ich bin angestellt` → Open Website → `https://www.finanz-medizin.com/check-arzt` |
+| Button 3 | `MFA / Praxisteam` → Open Website → `https://www.finanz-medizin.com/check-mfa` |
+
+Drei Knöpfe sind auf Instagram das Maximum pro Karte — mehr Zielgruppen passen
+nicht, und mehr braucht die Seite auch nicht.
+
+### Zweite Textnachricht, direkt danach
+
+```
+Zur Einordnung: Wir sind Versicherungsvermittler nach § 34d GewO und
+Finanzanlagenvermittler nach § 34f GewO. Alle Pflichtangaben stehen hier:
+finanz-medizin.com/impressum
+```
+
+Das ist die Erstinformation nach § 15 VersVermV, fällig beim ersten
+Geschäftskontakt — eine Zeile, kein Datenschutztext. Wer sie nicht will, löscht sie
+hier mit, damit die Datei zeigt, was tatsächlich verschickt wird.
+
+### Falls Knöpfe nicht angezeigt werden
+
+Manche Instagram-Versionen zeigen Karten nicht sauber an. Dann diese Fassung als
+reine Textnachricht verwenden — Instagram macht die Adressen klickbar:
+
+```
+Schön, dass Sie da sind — und danke für die Nachricht.
+
+Auf der Website stehen ein paar Fragen zu Ihrer Situation. Rund 90 Sekunden,
+keine Unterlagen nötig. Danach melde ich mich mit einem konkreten Vorschlag.
+
+Passend zu Ihnen:
+Eigene Praxis: finanz-medizin.com/check-praxis
+Angestellt in Klinik oder Praxis: finanz-medizin.com/check-arzt
+MFA oder Praxisteam: finanz-medizin.com/check-mfa
+```
 
 ---
 
 ## Einrichtung, Schritt für Schritt
 
-### 1. Instagram verbinden
+### 1. Voraussetzungen
+
+| Voraussetzung | Hinweis |
+|---|---|
+| Instagram **Professional-Konto** (Business oder Creator) | Privatkonten können nicht automatisiert werden |
+| Verknüpfte Facebook-Seite | Meta verlangt das für die Messaging-API |
+| *Zugriff auf Nachrichten durch Tools von Drittanbietern* aktiv | Instagram-App → Einstellungen → Nachrichten und Story-Antworten |
+| Check auf der Live-Domain funktionsfähig | `finanz-medizin.com/check-praxis` muss im Formular landen und absenden |
+
+### 2. Instagram verbinden
 
 ManyChat → **Settings → Channels → Instagram → Connect**. Mit dem Facebook-Konto
-anmelden, das die verknüpfte Seite verwaltet, und alle abgefragten Berechtigungen
-erteilen. Danach in der Instagram-App prüfen, dass *Zugriff auf Nachrichten durch
-Tools von Drittanbietern* eingeschaltet ist — ohne diesen Schalter empfängt ManyChat
-keine DMs.
+anmelden, das die verknüpfte Seite verwaltet, und alle Berechtigungen erteilen.
+Ohne den Schalter aus der Tabelle oben empfängt ManyChat keine DMs — das ist die
+häufigste Ursache, wenn „nichts passiert".
 
-### 2. Tags anlegen
+### 3. Automation anlegen
 
-**Settings → Tags → New Tag:**
+**Automation → + New Automation → Start from scratch**, Name: `IG · Beratung`.
 
-`beratung-angefragt`, `link-geklickt`, `mensch-gewuenscht`
+**Trigger:** Instagram → **Keyword**, Bedingung **Message contains**:
 
-Für Variante B zusätzlich: ein Custom Field `linkziel` (Text) unter
-**Settings → Fields → User Fields** sowie die Tags `zg-praxisinhaber`,
-`zg-angestellt`, `zg-mfa`, `zg-sonstiges`.
+```
+Beratung
+beratung
+beraten
+Beratungstermin
+Erstgespräch
+```
 
-### 3. Flow anlegen
+- „Contains" statt „is exactly", sonst greift „Ich hätte gern eine Beratung" nicht.
+- Groß- und Kleinschreibung ist ManyChat egal — „BERATUNG" ist mit abgedeckt, der
+  zweite Eintrag schadet aber nicht.
+- **Keine** alltäglichen Kurzwörter aufnehmen (`Info`, `Hi`, `?`). Die fangen
+  Nachrichten ab, die eigentlich zu Ihnen gehören.
 
-**Automation → + New Automation → Start from scratch**, Name:
-`IG · Beratung → Check`.
+Dann die Nachricht aus dem Abschnitt oben eintragen: Textblock, Karte mit den drei
+Knöpfen, Impressum-Zeile. Fertig — mehr Bausteine hat diese Automation nicht.
 
-Trigger hinzufügen: **Instagram → Keyword**.
+### 4. Testen, bevor es live geht
 
-- **Message contains** (nicht „is exactly", sonst greift „Ich hätte gern eine
-  Beratung" nicht):
-  `Beratung`, `beraten`, `Termin`, `Erstgespräch`, `Gespräch`, `Beratungstermin`
-- Groß- und Kleinschreibung ist ManyChat egal, „BERATUNG" ist mit abgedeckt.
-- **Keine** sehr kurzen oder alltäglichen Wörter aufnehmen (`Info`, `Hi`, `?`) — die
-  fangen Nachrichten ab, die eigentlich zu Ihnen gehören.
+Von einem **zweiten** Instagram-Konto aus:
 
-Danach die Nachrichten aus **[`nachrichten-beratung.md`](nachrichten-beratung.md)**
-eintragen. Dort steht jeder Text fertig zum Kopieren, für beide Varianten.
-
-### 4. Erinnerungen und Klick-Erkennung
-
-- Am Button „Open Website" unter *Actions* **Add Tag `link-geklickt`** hinterlegen.
-  Nur so wissen die Erinnerungen, wann sie schweigen müssen.
-- Danach: **Smart Delay 1 Stunde** → **Condition: Tag `link-geklickt` gesetzt?**
-  → ja: Ende · nein: Erinnerung [3].
-- Dann **Smart Delay 19 Stunden** → dieselbe Bedingung → nein: Erinnerung [4].
-
-> **Das 24-Stunden-Fenster von Meta.** Nach der letzten Nachricht der Person dürfen
-> Sie 24 Stunden lang frei antworten. Danach ist Schluss — deshalb liegt die zweite
-> Erinnerung bei 20 Stunden (1 h + 19 h) und nicht später. Das ist keine Empfehlung,
-> sondern eine Grenze der Plattform: Später verschickte Automatiknachrichten werden
-> abgelehnt, und wiederholte Versuche kosten das Konto sein Messaging-Limit.
-
-### 5. Übergabe an einen Menschen
-
-Der Button „Lieber schreiben" setzt den Tag `mensch-gewuenscht`, stoppt über
-**Action → Stop Automation** alle weiteren Erinnerungen und benachrichtigt Sie per
-**Action → Send Notification → Email an info@finanz-medizin.com**. Die Konversation
-läuft dann im ManyChat-Live-Chat weiter.
-
-Das ist kein Nebenschauplatz: Menschen, die in der DM lieber schreiben als klicken,
-sind oft die ernsthaftesten Anfragen.
-
-### 6. Optional: Kommentar-Auslöser
-
-**Automation → New → Instagram → Comments.** Wer unter einem Beitrag „Beratung"
-kommentiert, bekommt automatisch dieselbe DM. Zwei Dinge dabei beachten:
-
-- Eine öffentliche Antwort auf den Kommentar mitschicken („Ist unterwegs 📩"),
-  sonst wirkt der Beitrag unbeantwortet.
-- Menschen, die Ihrem Konto noch nie geschrieben haben, erreicht die DM nur über
-  genau dieses Kommentar-Fenster.
-
-### 7. Testen, bevor es live geht
-
-Checkliste, von einem **zweiten** Instagram-Konto aus:
-
-- [ ] „beratung" klein geschrieben → Automation startet
-- [ ] „Ich hätte gerne eine Beratung" → Automation startet (Contains prüfen)
-- [ ] Link öffnet die Seite und springt in den Check, nicht an den Seitenanfang
-- [ ] Check testweise vollständig ausfüllen und absenden
+- [ ] „beratung" klein geschrieben → Antwort kommt
+- [ ] „Ich hätte gerne eine Beratung" → Antwort kommt
+- [ ] Jeder der drei Knöpfe öffnet die richtige Seite
+- [ ] Die Seite springt in den Check, nicht an den Seitenanfang
+- [ ] Check einmal komplett ausfüllen und absenden
 - [ ] Anfrage kommt an, Notiz enthält `utm_source=instagram`
-- [ ] Tag `link-geklickt` ist gesetzt → Erinnerung bleibt aus
-- [ ] Ohne Klick: Erinnerung kommt nach 1 Stunde
-- [ ] „Lieber schreiben" → E-Mail kommt an, keine weiteren Automatiknachrichten
 - [ ] Testanfrage im CRM wieder löschen
 
-Erst danach die Automation auf **Live** stellen.
+Erst danach auf **Live** stellen. Und den Testkontakt in ManyChat löschen — er zählt
+sonst gegen die 25.
+
+### 5. Wenn später mehr gebraucht wird
+
+Die drei Ausbaustufen in der Reihenfolge, in der sie sich lohnen:
+
+1. **Default Reply** (zweite Automation, auch im Free-Plan): eine kurze Antwort auf
+   alles, was kein Auslöserwort enthält, damit niemand im Leeren steht.
+2. **Kommentar-zu-DM** (dritte Automation): Wer unter einem Beitrag „Beratung"
+   kommentiert, bekommt dieselbe Nachricht. Achtung, genau das frisst die 25
+   Kontakte an einem Tag auf.
+3. **Erinnerung nach einer Stunde**, wenn niemand geklickt hat. Braucht Smart Delay
+   und eine Tag-Bedingung — sinnvoll erst mit Pro, und Meta lässt Automatiknachrichten
+   ohnehin nur 24 Stunden nach der letzten Nachricht der Person zu.
 
 ---
 
 ## Wo die Anfrage landet
 
 Der Check sendet an `/api/lead` → `netlify/functions/lead.js` → CRM. Dort entsteht
-ein Lead mit Kontakt und eine Notiz mit allen Antworten, der Erreichbarkeit, der
-Landingpage und den Kampagnenparametern. Details stehen im Haupt-`README.md`,
-Abschnitt „Close-Anbindung".
+ein Lead mit Kontakt und eine Notiz mit allen Antworten, Erreichbarkeit,
+Landingpage und Kampagnenparametern. Details im Haupt-`README.md`, Abschnitt
+„Close-Anbindung".
 
-Wenn Sie zusätzlich eine E-Mail bei jeder Anfrage wollen, ist die schnellste
-Variante die Benachrichtigungsregel im CRM. Alternativ kann `lead.js` die Mail
-selbst verschicken — steht heute bewusst nicht drin, ist aber eine Sache von
+Wenn Sie zusätzlich bei jeder Anfrage eine E-Mail wollen, ist die
+Benachrichtigungsregel im CRM der schnellste Weg. Alternativ kann `lead.js` die Mail
+selbst verschicken — steht heute bewusst nicht drin, wäre aber eine Sache von
 wenigen Zeilen.
 
 ---
@@ -200,16 +213,9 @@ wenigen Zeilen.
 
 | Was | Wie oft | Warum |
 |---|---|---|
+| Aktive Kontakte in ManyChat prüfen | wöchentlich | Bei 25 stoppt die Automation stillschweigend |
 | Testdurchlauf vom Zweitkonto | monatlich | Meta ändert Messaging-Regeln ohne Ankündigung |
 | Auslöser-Wörter gegen echte DMs prüfen | quartalsweise | Menschen schreiben anders, als man annimmt |
-| Klickquote (`link-geklickt` / `beratung-angefragt`) | monatlich | Unter 40 % stimmt etwas mit dem Text aus Schritt 1 nicht |
-| Abschlussquote (Anfragen im CRM / Klicks) | monatlich | Bricht der Check ab, liegt es an ihm, nicht an der DM |
 
-Alle Nachrichtentexte liegen in `nachrichten-beratung.md`. Ändern Sie sie dort mit,
-wenn Sie in ManyChat etwas anpassen — sonst weiß in drei Monaten niemand mehr, was
-tatsächlich verschickt wird.
-
-**Ein Hinweis zum Abhaken oder Übergehen:** In der DM-Strecke steht eine Zeile mit
-dem Link aufs Impressum (Erstinformation nach § 15 VersVermV, fällig beim ersten
-Geschäftskontakt). Sie kostet nichts und deckt einen gewerberechtlichen Punkt ab;
-wenn Sie sie nicht wollen, löschen Sie sie in `nachrichten-beratung.md` mit.
+Ändern Sie die Texte in ManyChat, ändern Sie sie hier mit — sonst weiß in drei
+Monaten niemand mehr, was tatsächlich verschickt wird.

@@ -26,7 +26,7 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
-| `manychat/` | Instagram-DM-Automation „Beratung → Termin“ — Einrichtung und Texte | Instagram |
+| `manychat/README.md` | Instagram-DM-Automation „Beratung“ — eine Automation, eine Nachricht | Instagram |
 
 ### Zielgruppen-Ansprache
 
@@ -202,21 +202,20 @@ und `robots.txt` anpassen.
 
 ### 5. Instagram-Automation (optional, unabhängig vom Rest)
 
-Der Ordner `manychat/` beschreibt eine ManyChat-Strecke für Instagram: Wer in der
-Direktnachricht „Beratung“ schreibt, bekommt automatisch den Link auf den Check.
-Rolle, Anliegen und Kontaktdaten wählen die Leute dort selbst — die Anfrage läuft
-wie jede andere über `/api/lead` ins CRM.
+`manychat/README.md` beschreibt eine ManyChat-Strecke für Instagram: Wer in der
+Direktnachricht „Beratung“ schreibt, bekommt automatisch eine Antwort mit drei
+Knöpfen — einer je Zielgruppe. Der Knopf führt direkt in den Check der passenden
+Seite, die Anfrage läuft wie jede andere über `/api/lead` ins CRM.
 
-Dafür liegen in `netlify.toml` Kurzadressen, die direkt in den jeweiligen Check
-springen und die Instagram-Herkunft als UTM-Parameter mitführen:
-`/beratung` (Weiche auf der Startseite), `/check-praxis`, `/check-arzt`,
-`/check-mfa` und `/termin` (Terminauswahl auf der Über-uns-Seite). Die Parameter
-stehen später in der CRM-Notiz unter „Kampagne“ — Sie sehen also, welche Anfrage
-aus dem DM kam.
+Dafür liegen in `netlify.toml` Kurzadressen, die in den jeweiligen Abschnitt
+springen und die Instagram-Herkunft als UTM-Parameter mitführen: `/check-praxis`,
+`/check-arzt`, `/check-mfa`, dazu `/beratung` (Zielgruppen-Weiche) und `/termin`
+(Terminauswahl). Die Parameter stehen später in der CRM-Notiz unter „Kampagne“.
 
-Die Strecke hängt an nichts außer dem Check: Solange der absendet, funktioniert
-sie. Texte und Einrichtung stehen in `manychat/README.md` und
-`manychat/nachrichten-beratung.md`.
+Die Strecke ist bewusst auf **eine** Automation mit **einer** Nachricht reduziert,
+damit sie in den ManyChat-Free-Plan passt. Dessen harte Grenze sind nicht die
+Automationen, sondern 25 aktive Kontakte je Monat — Einzelheiten stehen im
+Abschnitt „Was der Free-Plan hergibt“.
 
 
 ---
