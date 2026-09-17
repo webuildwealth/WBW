@@ -9,7 +9,7 @@ den Finanzcheck starten oder einfach weiterscrollen. Jede Anfrage aus dem Check 
 |---|---|
 | `IG · Beratung` | Beratung, beraten, Beratungstermin, Erstgespräch |
 | `IG · Arzt-Check` | Arzt-Check, Arztcheck, Arzt Check, Ärztecheck |
-| `IG · MFA-Check` | MFA-Check, MFAcheck, MFA Check |
+| `IG · MFA-Check` | MFA-Check, MFAcheck, MFA Check, ZFA-Check, ZFAcheck, ZFA Check |
 | `IG · Pflege-Check` | Pflege-Check, Pflegecheck, Pflege Check |
 
 Damit ist der Free-Plan voll: **vier gleichzeitig aktive Automationen** sind dort das
@@ -47,105 +47,113 @@ Limits und Preise ändert ManyChat ohne Vorwarnung. Vor dem Einrichten einmal in
 
 ## Die Nachrichten
 
-Alle vier enden gleich: derselbe Link, dieselbe Verabschiedung. Nur der Einstieg
-wechselt, damit die Antwort zum Auslöserwort passt.
+Aufbau überall gleich, vier Bausteine:
+
+1. **Begrüßung** — in allen vier identisch, damit die Marke wiedererkennbar bleibt
+2. **Zwei Schmerzpunkte**, die nur für diese Zielgruppe gelten — der einzige Teil,
+   der wirklich wechselt
+3. **Der Check**, unverbindlich formuliert: anfragen *oder* einfach scrollen
+4. **Abbinder** — identisch, plus der Knopf
+
+Der Link steht **nicht** im Text, sondern im Knopf darunter:
+
+| Feld | Inhalt |
+|---|---|
+| Button | `Webseite` → Open Website → `https://www.finanz-medizin.com/beratung` |
+
+Instagram zeigt keine Formatierung: kein Fett, kein Kursiv, Absätze ja. Alle vier
+Texte liegen bei rund 400 Zeichen und damit weit unter der Grenze von 1.000.
 
 ### `IG · Beratung`
 
 ```
-Hey! Cool, dass du deine Finanzen selbst in die Hand nimmst — die meisten
-schieben genau das jahrelang vor sich her.
+Hey, cool dass du deine Zukunft selber in die Hand nimmst :)
 
-Wir sind Bene und Zoe von Finanz-Medizin. Wir machen Geld für Leute im
-Gesundheitswesen verständlich: kein Fachchinesisch, kein Verkaufsgespräch,
-alles in Euro.
+Hier kannst du deinen eigenen Finanzcheck selber anfragen oder einfach auf
+unserer Webseite scrollen.
 
-Wo du gerade stehst, findest du in rund 90 Sekunden raus:
-finanz-medizin.com/beratung
+Falls du dann noch Fragen hast, schreib uns gern wieder
 
-Da kannst du deinen Finanzcheck anfragen oder erstmal in Ruhe stöbern — ganz
-wie du magst. Und wenn du Fragen hast: einfach hier schreiben, wir lesen jede
-Nachricht selbst.
-
-Viel Spaß damit
+Dein Finanz Medizin Team
 Bene & Zoe
 ```
 
 ### `IG · Arzt-Check`
 
 ```
-Hey! Cool, dass du das angehst. Als Arzt oder Ärztin verdienst du gut — nur
-bleibt davon oft deutlich weniger hängen, als es müsste. Steuer, Zeit und ein
-paar Verträge, die keiner liest: genau da liegen die größten Hebel.
+Hey, cool dass du deine Zukunft selber in die Hand nimmst :)
 
-Wir sind Bene und Zoe von Finanz-Medizin. Kein Fachchinesisch, kein
-Verkaufsgespräch, alles in Euro.
+Als Ärztin oder Arzt verdienst du gut — nur bleibt nach Steuern oft deutlich
+weniger übrig als gedacht. Und ob das Versorgungswerk im Ernstfall wirklich
+reicht, hat kaum jemand mal durchgerechnet.
 
-Wo du gerade stehst, findest du in rund 90 Sekunden raus:
-finanz-medizin.com/beratung
+Genau da schauen wir mit dir drauf. Hier kannst du deinen eigenen Finanzcheck
+anfragen oder einfach auf unserer Webseite scrollen.
 
-Da kannst du deinen Finanzcheck anfragen oder erstmal in Ruhe stöbern. Fragen?
-Schreib einfach hier — wir lesen jede Nachricht selbst.
+Falls du dann noch Fragen hast, schreib uns gern wieder
 
-Viel Spaß damit
+Dein Finanz Medizin Team
 Bene & Zoe
 ```
 
-### `IG · MFA-Check`
+### `IG · MFA-Check` (auch für ZFAs)
 
 ```
-Hey! Cool, dass du das angehst. Im Praxisteam heißt es oft, für Vorsorge sei
-kein Geld da — dabei zahlt einen großen Teil davon die Praxis und nicht du.
-Das wissen die wenigsten.
+Hey, cool dass du deine Zukunft selber in die Hand nimmst :)
 
-Wir sind Bene und Zoe von Finanz-Medizin. Kein Fachchinesisch, kein
-Verkaufsgespräch, alles in Euro. Und was du uns erzählst, bleibt bei uns —
-auch gegenüber deinem Chef oder deiner Chefin.
+Teilzeit und Familienzeit reißen später die größten Löcher in die Rente — und
+genau das trifft MFAs und ZFAs am härtesten. Das Gute: Einen großen Teil der
+Vorsorge zahlt die Praxis, nicht du. Wissen die wenigsten.
 
-Wo du gerade stehst, findest du in rund 90 Sekunden raus:
-finanz-medizin.com/beratung
+Was für dich drin ist, schauen wir uns zusammen an. Hier kannst du deinen
+eigenen Finanzcheck anfragen oder einfach auf unserer Webseite scrollen.
 
-Da kannst du deinen Finanzcheck anfragen oder erstmal in Ruhe stöbern. Fragen?
-Schreib einfach hier — wir lesen jede Nachricht selbst.
+Falls du dann noch Fragen hast, schreib uns gern wieder
 
-Viel Spaß damit
+Dein Finanz Medizin Team
 Bene & Zoe
+```
+
+Wenn die Nachricht noch eine Zeile verträgt, ist das hier die wirksamste — die
+Sorge, dass der Chef davon erfährt, hält viele vom Schreiben ab:
+
+```
+Und keine Sorge: Was du uns erzählst, bleibt bei uns. Auch gegenüber deiner
+Praxis.
 ```
 
 ### `IG · Pflege-Check`
 
 ```
-Hey! Cool, dass du das angehst. In der Pflege bleibt für sowas selten Zeit und
-noch seltener Kopf — umso stärker, dass du es machst. Schichtdienst, Teilzeit,
-früher Ausstieg: das sind genau die Dinge, die später an der Rente ziehen.
+Hey, cool dass du deine Zukunft selber in die Hand nimmst :)
 
-Wir sind Bene und Zoe von Finanz-Medizin. Kein Fachchinesisch, kein
-Verkaufsgespräch, alles in Euro.
+In der Pflege gehst du körperlich ans Limit — ausgerechnet da ist die
+Absicherung meistens am dünnsten. Dazu Schichten, Teilzeit und Zulagen: bei der
+Rente macht das später einen riesigen Unterschied.
 
-Wo du gerade stehst, findest du in rund 90 Sekunden raus:
-finanz-medizin.com/beratung
+Was das für dich heißt, rechnen wir dir in Ruhe aus. Hier kannst du deinen
+eigenen Finanzcheck anfragen oder einfach auf unserer Webseite scrollen.
 
-Da kannst du deinen Finanzcheck anfragen oder erstmal in Ruhe stöbern. Fragen?
-Schreib einfach hier — wir lesen jede Nachricht selbst.
+Falls du dann noch Fragen hast, schreib uns gern wieder
 
-Viel Spaß damit
+Dein Finanz Medizin Team
 Bene & Zoe
 ```
 
-Alle vier liegen bei rund 600 Zeichen und damit weit unter der
-Instagram-Grenze von 1.000. Instagram zeigt **keine** Formatierung: kein Fett,
-kein Kursiv, Absätze ja.
+### Warum diese Schmerzpunkte
 
-### Optional: Knopf statt Textlink
+Jeweils zwei, nicht fünf — eine DM ist kein Landingpage-Text, und wer alles
+aufzählt, trifft nichts.
 
-Instagram macht die Adresse im Text klickbar, das genügt. Wer es auffälliger will,
-hängt hinter den Text eine Karte:
+| Zielgruppe | Punkt 1 | Punkt 2 |
+|---|---|---|
+| Ärztinnen und Ärzte | Steuerlast: hohes Brutto, ernüchterndes Netto | Versorgungswerk — kaum jemand weiß, was im Ernstfall wirklich kommt |
+| MFA und ZFA | Teilzeit und Familienzeit reißen die Rentenlücke | Die Praxis zahlt mit — der einzige Punkt, der gute Nachricht statt Problem ist |
+| Pflege | Körperlich harter Job, dünne Absicherung | Schicht, Teilzeit, Zulagen — Rentenwirkung wird unterschätzt |
 
-| Feld | Inhalt |
-|---|---|
-| Titel | `Dein Finanzcheck` |
-| Untertitel | `Ein paar Fragen, rund 90 Sekunden.` |
-| Button | `Zur Seite` → Open Website → `https://www.finanz-medizin.com/beratung` |
+Alle drei enden unverbindlich: „anfragen **oder** einfach scrollen". Kein „jetzt
+sichern", keine Frist, kein Countdown. Bei dieser Zielgruppe kostet Druck genau die
+Leute, die man haben will.
 
 ### Optional: Impressum-Zeile
 
