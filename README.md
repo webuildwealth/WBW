@@ -203,19 +203,21 @@ und `robots.txt` anpassen.
 ### 5. Instagram-Automation (optional, unabhängig vom Rest)
 
 Der Ordner `manychat/` beschreibt eine ManyChat-Strecke für Instagram: Wer in der
-Direktnachricht „Beratung“ schreibt, bekommt automatisch die Zielgruppenfrage und
-danach den Link auf die Terminauswahl. Der Link ist die Kurzadresse
-`finanz-medizin.com/termin`, die aus `netlify.toml` auf `ueber-uns.html#termin`
-umleitet und die Instagram-Herkunft als UTM-Parameter mitführt — sie steht damit
-später in der Terminbeschreibung im Kalender.
+Direktnachricht „Beratung“ schreibt, bekommt automatisch den Link auf den Check.
+Rolle, Anliegen und Kontaktdaten wählen die Leute dort selbst — die Anfrage läuft
+wie jede andere über `/api/lead` ins CRM.
 
-Zwei Punkte, bevor die Strecke scharf gestellt wird:
+Dafür liegen in `netlify.toml` Kurzadressen, die direkt in den jeweiligen Check
+springen und die Instagram-Herkunft als UTM-Parameter mitführen:
+`/beratung` (Weiche auf der Startseite), `/check-praxis`, `/check-arzt`,
+`/check-mfa` und `/termin` (Terminauswahl auf der Über-uns-Seite). Die Parameter
+stehen später in der CRM-Notiz unter „Kampagne“ — Sie sehen also, welche Anfrage
+aus dem DM kam.
 
-- Die Kalenderanbindung muss stehen. Ohne freie Zeiten zeigt `/termin` den
-  Rückruf-Block, und die Automation verspricht etwas, das die Seite nicht hält.
-- `datenschutz.html` kennt ManyChat noch nicht. Ein Entwurf für den fehlenden
-  Abschnitt liegt in `manychat/datenschutz-baustein.md` und gehört vor dem
-  Livegang in die Rechtsprüfung.
+Die Strecke hängt an nichts außer dem Check: Solange der absendet, funktioniert
+sie. Texte und Einrichtung stehen in `manychat/README.md` und
+`manychat/nachrichten-beratung.md`.
+
 
 ---
 
@@ -344,9 +346,10 @@ Die Konfiguration liegt vollständig in `netlify.toml` — kein Build-Schritt, k
   Deploy ist garantiert die neue Fassung aktiv), Bilder 30 Tage.
 - **Kurz-URLs** für Anzeigen und Visitenkarten: `/praxisinhaber`, `/aerzte`, `/mfa`,
   `/impressum`, `/datenschutz` leiten per 301 auf die jeweilige Seite.
-  `/termin` und `/beratung` leiten per 302 in die Terminauswahl und hängen die
-  Instagram-UTM-Parameter an — 302, weil sich Kampagnenparameter ändern und ein
-  dauerhaft gecachter Redirect alte Werte festschreiben würde.
+  Dazu die Instagram-Adressen `/beratung`, `/check-praxis`, `/check-arzt`,
+  `/check-mfa` und `/termin` — sie springen in den jeweiligen Abschnitt und hängen
+  die UTM-Parameter an. Hier 302 statt 301, weil sich Kampagnenparameter ändern und
+  ein dauerhaft gecachter Redirect alte Werte festschreiben würde.
 - **`404.html`** wird von Netlify automatisch als Fehlerseite ausgeliefert.
 
 ### Wichtig, sobald der Funnel-Endpunkt steht

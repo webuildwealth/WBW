@@ -193,24 +193,49 @@ object-src 'none'\
   force = true
 
 # -----------------------------------------------------------------------------
-#  Instagram-DM (ManyChat). Kurze, in einer Direktnachricht gut lesbare Adressen,
-#  die direkt in die Terminauswahl auf der Über-uns-Seite springen. Die
-#  UTM-Parameter stehen hier und nicht im DM-Text, damit die Nachricht kurz
-#  bleibt und die Zuordnung trotzdem in der Terminnotiz landet (main.js legt
-#  sie in sessionStorage, booking.js hängt sie an die Buchung).
+#  Instagram-DM (ManyChat). Kurze, in einer Direktnachricht gut lesbare Adressen.
+#  Ziel ist der Check auf der jeweiligen Landingpage: Dort waehlen die Leute Rolle
+#  und Anliegen selbst aus und hinterlassen ihre Kontaktdaten -- die Anfrage laeuft
+#  dann ueber /api/lead ins CRM.
 #
-#  Status 302, nicht 301: Die Kampagnenparameter ändern sich, ein dauerhaft
-#  gecachter Redirect würde alte Werte festschreiben.
+#  Die UTM-Parameter stehen hier und nicht im DM-Text, damit die Nachricht kurz
+#  bleibt und die Herkunft trotzdem in der Anfrage landet (main.js legt sie in
+#  sessionStorage, funnel.js haengt sie an den Lead).
+#
+#  Status 302, nicht 301: Die Kampagnenparameter aendern sich, ein dauerhaft
+#  gecachter Redirect wuerde alte Werte festschreiben.
 #  Einrichtung und Nachrichtentexte: manychat/README.md
 # -----------------------------------------------------------------------------
+
+# Einstieg ohne Vorauswahl -- die Zielgruppen-Weiche auf der Startseite.
 [[redirects]]
-  from = "/termin"
-  to = "/ueber-uns.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung#termin"
+  from = "/beratung"
+  to = "/?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung#weiche"
+  status = 302
+  force = true
+
+# Direkt in den Check, wenn die Rolle schon in der DM geklaert wurde.
+[[redirects]]
+  from = "/check-praxis"
+  to = "/praxisinhaber.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung&utm_content=praxisinhaber#check"
   status = 302
   force = true
 
 [[redirects]]
-  from = "/beratung"
+  from = "/check-arzt"
+  to = "/angestellte-aerzte.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung&utm_content=angestellt#check"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/check-mfa"
+  to = "/mfa-praxisteam.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung&utm_content=mfa#check"
+  status = 302
+  force = true
+
+# Fuer alle, die lieber sofort einen Termin waehlen als ein Formular auszufuellen.
+[[redirects]]
+  from = "/termin"
   to = "/ueber-uns.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung#termin"
   status = 302
   force = true

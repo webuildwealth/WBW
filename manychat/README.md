@@ -1,12 +1,12 @@
 # Instagram-Automation „Beratung" (ManyChat)
 
 Schreibt jemand **„Beratung"** in die Instagram-Direktnachrichten, antwortet ManyChat
-innerhalb von Sekunden, fragt die Zielgruppe ab und schickt den Link auf die
-Terminauswahl. Dort trägt sich die Person selbst in einen freien Slot ein — der
-Termin landet direkt im Geschäftskalender, ohne Zwischenschritt und ohne Rückfrage.
+innerhalb von Sekunden und schickt den Link auf den Check der Website. Dort wählen
+die Leute selbst Rolle und Anliegen aus und hinterlassen ihre Kontaktdaten — die
+Anfrage landet über `/api/lead` im CRM, mit allen Antworten in der Notiz.
 
-**Ziel der Strecke:** DM → Zielgruppe geklärt → Terminlink → gebuchter Termin.
-Ein Klick, ein Formular, fertig.
+**Ziel der Strecke:** DM → Link → ausgefüllter Check → Anfrage bei Ihnen.
+Kein Hin und Her in der DM, keine Rückfrage nach Telefonnummer.
 
 ---
 
@@ -18,94 +18,78 @@ Ein Klick, ein Formular, fertig.
 | Verknüpfte Facebook-Seite | Meta verlangt das für die Messaging-API |
 | Einstellung *Nachrichten → Zugriff auf Nachrichten erlauben* aktiv | Instagram-App → Einstellungen → Nachrichten und Story-Antworten → **Zugriff auf Nachrichten durch Tools von Drittanbietern erlauben** |
 | ManyChat-Konto, Instagram verbunden | Für Keyword-Trigger auf Instagram ist **Pro** nötig |
-| Live-Domain mit funktionierender Terminbuchung | `/termin` muss erreichbar sein, siehe unten |
-
-### Vorher prüfen: Führt der Link zu echten Terminen?
-
-Die Terminauswahl zieht freie Zeiten aus dem Google-Kalender
-(`netlify/functions/slots.js`). Ist der Kalender nicht eingerichtet, zeigt die Seite
-still einen Rückruf-Block statt Terminen — die Automation liefe dann ins Leere.
-
-Testen Sie deshalb **vor** dem Scharfschalten im Browser:
-
-```
-https://www.finanz-medizin.com/termin
-```
-
-Erwartung: Die Seite springt zur Terminauswahl und zeigt Tage mit Uhrzeiten. Sehen
-Sie stattdessen „Wir rufen Sie zurück", erst die Kalenderanbindung fertigstellen
-(siehe `SETUP.md`), dann die Automation aktivieren.
+| Funktionierender Check auf der Live-Domain | `/beratung` muss erreichbar sein und der Check muss absenden |
 
 ### Die Kurz-URLs
 
-In `netlify.toml` sind zwei Adressen hinterlegt, die direkt in die Terminauswahl
-springen und die Herkunft mitführen:
+In `netlify.toml` liegen fünf Adressen, die kurz genug für eine Direktnachricht sind
+und die Herkunft als UTM-Parameter mitführen:
 
-| Adresse | Ziel |
-|---|---|
-| `finanz-medizin.com/termin` | `ueber-uns.html#termin` + `utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung` |
-| `finanz-medizin.com/beratung` | dasselbe (zweite Schreibweise für Story und Bio) |
+| Adresse | Ziel | wofür |
+|---|---|---|
+| `finanz-medizin.com/beratung` | Startseite, Zielgruppen-Weiche | Einstieg ohne Vorauswahl |
+| `finanz-medizin.com/check-praxis` | Praxis-Check, direkt im Formular | Rolle schon in der DM geklärt |
+| `finanz-medizin.com/check-arzt` | Vermögens-Check | dito |
+| `finanz-medizin.com/check-mfa` | Vorsorge-Check | dito |
+| `finanz-medizin.com/termin` | Terminauswahl auf der Über-uns-Seite | für alle, die lieber sofort einen Termin wählen |
 
-Die UTM-Parameter landen über `sessionStorage` in der Buchung und stehen damit in
-der Terminbeschreibung im Kalender. Sie sehen also bei jedem Termin, ob er aus dem
-Instagram-DM kam.
-
-Für die Zielgruppen-Zuordnung hängen Sie in ManyChat je Zweig `&utm_content=…` an:
-
-```
-https://www.finanz-medizin.com/termin?utm_content=praxisinhaber
-https://www.finanz-medizin.com/termin?utm_content=angestellt
-https://www.finanz-medizin.com/termin?utm_content=mfa
-https://www.finanz-medizin.com/termin?utm_content=sonstiges
-```
-
-> Die Kurz-URL ergänzt die Parameter automatisch; ein zusätzlicher `utm_content` in
-> der aufgerufenen Adresse wird durch den Redirect **nicht** übernommen. Wenn Sie
-> `utm_content` je Zweig auswerten wollen, verlinken Sie in ManyChat direkt die
-> vollständige Adresse:
->
-> ```
-> https://www.finanz-medizin.com/ueber-uns.html?utm_source=instagram&utm_medium=dm&utm_campaign=manychat-beratung&utm_content=praxisinhaber#termin
-> ```
->
-> In den Nachrichtentexten (`nachrichten-beratung.md`) stehen beide Varianten.
+Die UTM-Parameter landen über `sessionStorage` in der Anfrage und stehen damit in
+der CRM-Notiz unter „Kampagne". Sie sehen bei jeder Anfrage, ob sie aus dem
+Instagram-DM kam — und bei den drei `check-`Adressen auch, welche Rolle die Person
+in der DM angegeben hat.
 
 ---
 
-## Aufbau der Automation
+## Zwei Varianten — eine reicht
+
+### A) Kurz: ein Link, alles Weitere macht die Website
+
+Eine einzige Nachricht mit dem Link auf `/beratung`. Die Website fragt ohnehin nach
+Rolle und Anliegen — die DM muss das nicht vorwegnehmen.
 
 ```
 Auslöser: DM enthält "Beratung" (+ Varianten)
       │
       ▼
-[1] Begrüßung + Frage nach der Zielgruppe        ← Quick Replies
+[1] Nachricht mit Link auf /beratung
       │
-      ├── Praxisinhaber:in ──┐
-      ├── Angestellte:r Arzt/Ärztin ──┤
-      ├── MFA / Praxisteam ──┤        → Tag setzen, utm_content setzen
-      └── Etwas anderes ─────┘
-                             │
-                             ▼
-              [2] Terminkarte mit Button „Freie Zeiten ansehen"
-                             │
-             ┌───────────────┴───────────────┐
-      Link geklickt                    nicht geklickt
-             │                                │
-      Tag „Termin-Link geklickt"     [3] Erinnerung nach 1 Stunde
-             │                                │
-             │                       [4] Erinnerung nach 20 Stunden
-             │                                │
-             └──────────► Ende ◄──────────────┘
-
-Jederzeit: „Lieber schreiben" → Human-Agent-Übergabe + Benachrichtigung an Sie
+      ▼
+[3] Erinnerung nach 1 Stunde, wenn nicht geklickt
+      │
+      ▼
+[4] Erinnerung nach 20 Stunden, wenn nicht geklickt
 ```
 
-**Warum die Zwischenfrage?** Sie kostet eine Antippen-Sekunde, bringt aber die
-Segmentierung, die die Website ohnehin fährt (Praxisinhaber / angestellte Ärzte /
-MFA). Die Antwort landet als Tag in ManyChat und als `utm_content` im Termin — Sie
-gehen ins Gespräch und wissen, mit wem Sie sprechen. Wer die Frage überspringen
-will, baut Schritt 1 auf eine einzige Nachricht mit Terminbutton um; alles Übrige
-bleibt gleich.
+### B) Mit Rollenfrage in der DM
+
+Eine Quick-Reply-Frage vorweg, dann der passende `check-`Link. Kostet ein Antippen,
+spart der Person einen Klick auf der Website — und Sie sehen die Rolle schon, bevor
+der Check abgeschickt ist.
+
+```
+Auslöser: DM enthält "Beratung" (+ Varianten)
+      │
+      ▼
+[1] Begrüßung + Rollenfrage           ← Quick Replies
+      │
+      ├── Ich habe eine Praxis   → Field linkziel = /check-praxis
+      ├── Angestellt in Klinik   → Field linkziel = /check-arzt
+      ├── MFA / Praxisteam       → Field linkziel = /check-mfa
+      └── Etwas anderes          → Field linkziel = /beratung
+      │
+      ▼
+[2] Nachricht mit Button „Check starten" auf {{linkziel}}
+      │
+      ▼
+[3] und [4] wie oben
+```
+
+**Empfehlung: mit A anfangen.** Wenn die Klickquote steht, lässt sich die Rollenfrage
+jederzeit davorsetzen. Andersherum verliert man Leute an einem Schritt, den die
+Website ohnehin besser macht.
+
+Beide Varianten enden gleich: Wer den Link geklickt hat, bekommt keine Erinnerung
+mehr. Wer lieber schreibt, landet bei Ihnen im Live-Chat.
 
 ---
 
@@ -119,63 +103,53 @@ erteilen. Danach in der Instagram-App prüfen, dass *Zugriff auf Nachrichten dur
 Tools von Drittanbietern* eingeschaltet ist — ohne diesen Schalter empfängt ManyChat
 keine DMs.
 
-### 2. Custom Fields und Tags anlegen
-
-**Settings → Fields → User Fields → New Field:**
-
-| Feld | Typ | Zweck |
-|---|---|---|
-| `zielgruppe` | Text | praxisinhaber / angestellt / mfa / sonstiges |
-| `terminlink` | Text | die je Zweig gesetzte vollständige Buchungsadresse |
+### 2. Tags anlegen
 
 **Settings → Tags → New Tag:**
 
-`beratung-angefragt`, `zg-praxisinhaber`, `zg-angestellt`, `zg-mfa`,
-`zg-sonstiges`, `terminlink-geklickt`, `mensch-gewuenscht`
+`beratung-angefragt`, `link-geklickt`, `mensch-gewuenscht`
+
+Für Variante B zusätzlich: ein Custom Field `linkziel` (Text) unter
+**Settings → Fields → User Fields** sowie die Tags `zg-praxisinhaber`,
+`zg-angestellt`, `zg-mfa`, `zg-sonstiges`.
 
 ### 3. Flow anlegen
 
 **Automation → + New Automation → Start from scratch**, Name:
-`IG · Beratung → Termin`.
+`IG · Beratung → Check`.
 
 Trigger hinzufügen: **Instagram → Keyword**.
 
 - **Message contains** (nicht „is exactly", sonst greift „Ich hätte gern eine
   Beratung" nicht):
   `Beratung`, `beraten`, `Termin`, `Erstgespräch`, `Gespräch`, `Beratungstermin`
-- Groß- und Kleinschreibung ist ManyChat egal, Varianten wie „BERATUNG" sind
-  abgedeckt.
+- Groß- und Kleinschreibung ist ManyChat egal, „BERATUNG" ist mit abgedeckt.
 - **Keine** sehr kurzen oder alltäglichen Wörter aufnehmen (`Info`, `Hi`, `?`) — die
   fangen Nachrichten ab, die eigentlich zu Ihnen gehören.
 
 Danach die Nachrichten aus **[`nachrichten-beratung.md`](nachrichten-beratung.md)**
-eintragen. Dort steht jeder Text fertig zum Kopieren, mit Buttons und Verzweigungen.
+eintragen. Dort steht jeder Text fertig zum Kopieren, für beide Varianten.
 
-### 4. Verzweigung und Verzögerungen
+### 4. Erinnerungen und Klick-Erkennung
 
-- Nach den Quick Replies je Zweig: **Action → Set Custom Field** (`zielgruppe`,
-  `terminlink`) und **Add Tag** (`zg-…`), dann weiter zur gemeinsamen Terminkarte.
-- Die Terminkarte nutzt einen **Button vom Typ „Open Website"** mit
-  `{{terminlink}}`. So genügt eine Karte für alle vier Zweige.
-- Danach: **Smart Delay 1 Stunde** → **Condition: Tag `terminlink-geklickt` gesetzt?**
+- Am Button „Open Website" unter *Actions* **Add Tag `link-geklickt`** hinterlegen.
+  Nur so wissen die Erinnerungen, wann sie schweigen müssen.
+- Danach: **Smart Delay 1 Stunde** → **Condition: Tag `link-geklickt` gesetzt?**
   → ja: Ende · nein: Erinnerung [3].
 - Dann **Smart Delay 19 Stunden** → dieselbe Bedingung → nein: Erinnerung [4].
-- Am Button „Open Website" unter *Actions* zusätzlich **Add Tag
-  `terminlink-geklickt`** hinterlegen. Nur so wissen die Erinnerungen, wann sie
-  schweigen müssen.
 
 > **Das 24-Stunden-Fenster von Meta.** Nach der letzten Nachricht der Person dürfen
 > Sie 24 Stunden lang frei antworten. Danach ist Schluss — deshalb liegt die zweite
-> Erinnerung bei 20 Stunden (1 h + 19 h) und nicht später. Wer länger nachfassen
-> will, braucht das **Human Agent Tag** (7 Tage, nur für echte, individuelle
-> Antworten eines Menschen) — kein Werkzeug für automatische Serienerinnerungen.
+> Erinnerung bei 20 Stunden (1 h + 19 h) und nicht später. Das ist keine Empfehlung,
+> sondern eine Grenze der Plattform: Später verschickte Automatiknachrichten werden
+> abgelehnt, und wiederholte Versuche kosten das Konto sein Messaging-Limit.
 
 ### 5. Übergabe an einen Menschen
 
-Der Button „Lieber schreiben" in Schritt 2 setzt den Tag `mensch-gewuenscht`,
-stoppt über **Action → Remove from Sequence / Stop Automation** alle weiteren
-Erinnerungen und benachrichtigt Sie per **Action → Send Notification → Email an
-info@finanz-medizin.com**. Die Konversation läuft dann im ManyChat-Live-Chat weiter.
+Der Button „Lieber schreiben" setzt den Tag `mensch-gewuenscht`, stoppt über
+**Action → Stop Automation** alle weiteren Erinnerungen und benachrichtigt Sie per
+**Action → Send Notification → Email an info@finanz-medizin.com**. Die Konversation
+läuft dann im ManyChat-Live-Chat weiter.
 
 Das ist kein Nebenschauplatz: Menschen, die in der DM lieber schreiben als klicken,
 sind oft die ernsthaftesten Anfragen.
@@ -187,8 +161,8 @@ kommentiert, bekommt automatisch dieselbe DM. Zwei Dinge dabei beachten:
 
 - Eine öffentliche Antwort auf den Kommentar mitschicken („Ist unterwegs 📩"),
   sonst wirkt der Beitrag unbeantwortet.
-- Menschen, die Ihrem Konto noch nie geschrieben haben, erreicht die DM nur, wenn
-  sie den Kommentar geschrieben haben — Meta erlaubt genau dieses eine Fenster.
+- Menschen, die Ihrem Konto noch nie geschrieben haben, erreicht die DM nur über
+  genau dieses Kommentar-Fenster.
 
 ### 7. Testen, bevor es live geht
 
@@ -196,49 +170,29 @@ Checkliste, von einem **zweiten** Instagram-Konto aus:
 
 - [ ] „beratung" klein geschrieben → Automation startet
 - [ ] „Ich hätte gerne eine Beratung" → Automation startet (Contains prüfen)
-- [ ] Jeder der vier Quick Replies führt zur Terminkarte mit passendem Link
-- [ ] Button öffnet die Terminauswahl und zeigt **echte freie Zeiten**
-- [ ] Testtermin buchen → Eintrag erscheint im Google-Kalender, Beschreibung enthält
-      `utm_source=instagram`
-- [ ] Tag `terminlink-geklickt` ist gesetzt → Erinnerung bleibt aus
+- [ ] Link öffnet die Seite und springt in den Check, nicht an den Seitenanfang
+- [ ] Check testweise vollständig ausfüllen und absenden
+- [ ] Anfrage kommt an, Notiz enthält `utm_source=instagram`
+- [ ] Tag `link-geklickt` ist gesetzt → Erinnerung bleibt aus
 - [ ] Ohne Klick: Erinnerung kommt nach 1 Stunde
-- [ ] „Lieber schreiben" → E-Mail an info@finanz-medizin.com kommt an, keine
-      weiteren Automatiknachrichten
-- [ ] Testtermin im Kalender wieder löschen
+- [ ] „Lieber schreiben" → E-Mail kommt an, keine weiteren Automatiknachrichten
+- [ ] Testanfrage im CRM wieder löschen
 
 Erst danach die Automation auf **Live** stellen.
 
 ---
 
-## Rechtliches — nicht überspringen
+## Wo die Anfrage landet
 
-### Erstinformation nach § 15 VersVermV
+Der Check sendet an `/api/lead` → `netlify/functions/lead.js` → CRM. Dort entsteht
+ein Lead mit Kontakt und eine Notiz mit allen Antworten, der Erreichbarkeit, der
+Landingpage und den Kampagnenparametern. Details stehen im Haupt-`README.md`,
+Abschnitt „Close-Anbindung".
 
-Sie treten als Versicherungsvermittler (§ 34d GewO) und Finanzanlagenvermittler
-(§ 34f GewO) auf. Die Erstinformation ist **beim ersten Geschäftskontakt** zu geben,
-und eine Beratungsanfrage in der DM ist ein solcher. Deshalb steht in Schritt 2 der
-Hinweis mit dem Link auf `impressum.html` — der Absatz gehört dort hin und darf
-nicht wegen der Länge gekürzt werden.
-
-### Datenschutz
-
-ManyChat verarbeitet Instagram-Profilname, Instagram-ID und den gesamten
-Nachrichtenverlauf und sitzt in den USA. Das ist eine Auftragsverarbeitung, die in
-`datenschutz.html` fehlt. Einen fertigen Textbaustein zum Einfügen finden Sie in
-**[`datenschutz-baustein.md`](datenschutz-baustein.md)** — vor dem Livegang von
-Ihrer Rechtsberatung prüfen lassen, das ist kein juristisches Gutachten.
-
-Zusätzlich:
-
-- DPA bei ManyChat abschließen (Settings → Billing → Data Processing Addendum) und
-  die dortige Anschrift in den Textbaustein übernehmen.
-- Die automatischen Erinnerungen bleiben innerhalb der von der Person selbst
-  begonnenen Konversation. Werbliche Nachrichten an Kontakte, die nur einmal
-  geschrieben und danach nicht reagiert haben, brauchen eine Einwilligung — die
-  holt diese Automation bewusst nicht ein und verschickt daher auch nichts
-  dergleichen.
-- Kontakte, die `mensch-gewuenscht` gesetzt haben, nicht in Broadcast-Listen
-  übernehmen.
+Wenn Sie zusätzlich eine E-Mail bei jeder Anfrage wollen, ist die schnellste
+Variante die Benachrichtigungsregel im CRM. Alternativ kann `lead.js` die Mail
+selbst verschicken — steht heute bewusst nicht drin, ist aber eine Sache von
+wenigen Zeilen.
 
 ---
 
@@ -247,10 +201,15 @@ Zusätzlich:
 | Was | Wie oft | Warum |
 |---|---|---|
 | Testdurchlauf vom Zweitkonto | monatlich | Meta ändert Messaging-Regeln ohne Ankündigung |
-| Freie Zeiten im Kalender prüfen | wöchentlich | Ein leerer Kalender macht die ganze Strecke wertlos |
 | Auslöser-Wörter gegen echte DMs prüfen | quartalsweise | Menschen schreiben anders, als man annimmt |
-| Klickquote (Tag `terminlink-geklickt` / Tag `beratung-angefragt`) | monatlich | Unter 40 % stimmt etwas mit dem Text von Schritt 2 nicht |
+| Klickquote (`link-geklickt` / `beratung-angefragt`) | monatlich | Unter 40 % stimmt etwas mit dem Text aus Schritt 1 nicht |
+| Abschlussquote (Anfragen im CRM / Klicks) | monatlich | Bricht der Check ab, liegt es an ihm, nicht an der DM |
 
 Alle Nachrichtentexte liegen in `nachrichten-beratung.md`. Ändern Sie sie dort mit,
 wenn Sie in ManyChat etwas anpassen — sonst weiß in drei Monaten niemand mehr, was
 tatsächlich verschickt wird.
+
+**Ein Hinweis zum Abhaken oder Übergehen:** In der DM-Strecke steht eine Zeile mit
+dem Link aufs Impressum (Erstinformation nach § 15 VersVermV, fällig beim ersten
+Geschäftskontakt). Sie kostet nichts und deckt einen gewerberechtlichen Punkt ab;
+wenn Sie sie nicht wollen, löschen Sie sie in `nachrichten-beratung.md` mit.
