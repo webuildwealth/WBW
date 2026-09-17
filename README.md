@@ -26,7 +26,7 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
-| `manychat/README.md` | Instagram-DM-Automation „Beratung“ — eine Automation, eine Nachricht | Instagram |
+| `manychat/README.md` | Vier Instagram-DM-Automationen, ein gemeinsames Ziel | Instagram |
 
 ### Zielgruppen-Ansprache
 
@@ -200,22 +200,25 @@ Alle `canonical`- und `og:url`-Angaben zeigen bereits auf
 `https://www.finanz-medizin.com/`. Bei abweichender Domain zusätzlich `sitemap.xml`
 und `robots.txt` anpassen.
 
-### 5. Instagram-Automation (optional, unabhängig vom Rest)
+### 5. Instagram-Automationen (optional, unabhängig vom Rest)
 
-`manychat/README.md` beschreibt eine ManyChat-Strecke für Instagram: Wer in der
-Direktnachricht „Beratung“ schreibt, bekommt automatisch eine Antwort mit drei
-Knöpfen — einer je Zielgruppe. Der Knopf führt direkt in den Check der passenden
-Seite, die Anfrage läuft wie jede andere über `/api/lead` ins CRM.
+`manychat/README.md` beschreibt vier ManyChat-Automationen für Instagram: Die
+Auslöserwörter `Beratung`, `Arzt-Check`, `MFA-Check` und `Pflege-Check` beantworten
+sich jeweils selbst und führen alle auf dieselbe Adresse —
+`finanz-medizin.com/beratung`, also die Zielgruppen-Weiche auf der Startseite. Von
+dort geht es in den Check, die Anfrage läuft wie jede andere über `/api/lead`.
 
-Dafür liegen in `netlify.toml` Kurzadressen, die in den jeweiligen Abschnitt
-springen und die Instagram-Herkunft als UTM-Parameter mitführen: `/check-praxis`,
-`/check-arzt`, `/check-mfa`, dazu `/beratung` (Zielgruppen-Weiche) und `/termin`
-(Terminauswahl). Die Parameter stehen später in der CRM-Notiz unter „Kampagne“.
+Vier Automationen sind im ManyChat-Free-Plan das Maximum; dessen harte Grenze sind
+aber 25 aktive Kontakte je Monat über alle vier zusammen. Einzelheiten stehen dort
+im Abschnitt „Was der Free-Plan hergibt“.
 
-Die Strecke ist bewusst auf **eine** Automation mit **einer** Nachricht reduziert,
-damit sie in den ManyChat-Free-Plan passt. Dessen harte Grenze sind nicht die
-Automationen, sondern 25 aktive Kontakte je Monat — Einzelheiten stehen im
-Abschnitt „Was der Free-Plan hergibt“.
+In `netlify.toml` liegen dafür Kurzadressen, die in den jeweiligen Abschnitt
+springen und die Instagram-Herkunft als UTM-Parameter mitführen: `/beratung`,
+`/check-praxis`, `/check-arzt`, `/check-mfa` und `/termin`. Die Parameter stehen
+später in der CRM-Notiz unter „Kampagne“.
+
+Die DM-Texte duzen, die Landingpages siezen — bewusst, aber der Bruch fällt beim
+ersten Klick auf.
 
 
 ---
