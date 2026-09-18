@@ -62,7 +62,9 @@ PROFILE: list[str] = [
 #
 #  Profile, die zur Person Benedict Hintz gehoeren — nicht zur Marke.
 #  Hier gehoert das persoenliche LinkedIn-Profil hinein, sobald es steht.
-PROFILE_PERSON: list[str] = []
+PROFILE_PERSON: list[str] = [
+    "https://www.linkedin.com/in/benedict-hintz/",
+]
 
 ORG = f"{BASIS}/#organisation"
 PERSON = f"{BASIS}/#benedict-hintz"
