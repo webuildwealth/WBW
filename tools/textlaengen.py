@@ -25,6 +25,8 @@ LIMITS = {
     "Info-Text (max. 2.000 Zeichen)": 2000,
     "Schlagzeile (max. 220 Zeichen)": 220,
     "Info-Text (max. 2.600 Zeichen)": 2600,
+    "Bio (max. 101 Zeichen)": 101,
+    "Beschreibung (max. 255 Zeichen)": 255,
 }
 
 # Die Leistungen im Google-Profil haben alle dasselbe Limit.

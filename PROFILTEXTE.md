@@ -574,3 +574,139 @@ statistisch wenig; darüber wird die Firma für Bewertungsaggregatoren und damit
 für zitierende Modelle zum ernstzunehmenden Eintrag.
 
 Zehn ist erreichbar: Es sind zehn Mandanten, die Sie ohnehin gerade beraten.
+
+---
+
+# 4. Facebook
+
+## 4.1 Befund: Das ist ein privates Konto, keine Seite
+
+Der bestehende Auftritt „Finanz Medizin" ist ein **persönliches Profil**, keine
+Unternehmensseite. Erkennbar an drei Stellen:
+
+- „2 **Freunde**" — Freunde haben nur Profile. Seiten haben Follower und Abonnenten.
+- Die Schaltflächen „In Story posten" und „**Profil** bearbeiten"
+- Der Reiter „Erinnerungen"
+
+Das muss sich ändern, aus zwei voneinander unabhängigen Gründen.
+
+### Grund 1: Es verstößt gegen Metas Bedingungen
+
+Ein persönliches Profil darf nur eine **Person** darstellen, nicht ein
+Unternehmen oder eine Marke. Meta setzt das durch, und die Folge ist nicht eine
+Verwarnung, sondern im Zweifel die dauerhafte Sperre des Kontos. Bei einem
+Konto, das den Firmennamen trägt und die Firmen-E-Mail hinterlegt hat, ist der
+Verstoß offensichtlich.
+
+### Grund 2: Für unser Ziel ist es wirkungslos
+
+Genau die Eigenschaften, wegen derer wir Facebook überhaupt anfassen, hat ein
+privates Profil nicht:
+
+| | privates Profil | Unternehmensseite |
+|---|---|---|
+| Von Suchmaschinen indexiert | nein | ja |
+| Branche und Kategorien | — | ja |
+| Adresse, Öffnungszeiten, Leistungen | — | ja |
+| Empfehlungen (Bewertungen) | — | ja |
+| Impressumsfeld | — | ja |
+| Verknüpfung mit Instagram | — | ja |
+| Reichweite | max. 5.000 Freunde | unbegrenzt |
+
+Ein privates Profil wird von Sprachmodellen und Suchmaschinen schlicht nicht als
+Unternehmen gelesen. Als `sameAs`-Eintrag ist es deshalb auch nichts wert — ich
+habe es bewusst **nicht** in die Strukturdaten aufgenommen.
+
+## 4.2 Was zu tun ist: neue Seite anlegen
+
+Es gibt bei Meta ein Umwandlungswerkzeug
+(`facebook.com/pages/create/migrate`), das Profilbild und Freunde in Follower
+überführt. **In deinem Fall lohnt es nicht.** Bei 2 Freunden und 3 Beiträgen
+gibt es nichts zu retten, das Werkzeug ist außerdem nicht mehr für jedes Konto
+verfügbar, und es überträgt ohnehin nur Profilbild und Freunde — keine
+Beiträge, keine Fotos.
+
+Der saubere Weg:
+
+1. **Beiträge und Fotos sichern**, falls du etwas davon behalten willst.
+2. Eine **neue Seite** anlegen: `facebook.com/pages/create` → Kategorie
+   **Unternehmen**. Angelegt wird sie aus deinem *persönlichen* Konto heraus —
+   wie bei LinkedIn gibt es auch bei Facebook keinen Firmen-Login, und das ist
+   dort genauso wenig ein Problem.
+3. Das Konto „Finanz Medizin" anschließend **umbenennen oder löschen**. Solange
+   es unter dem Firmennamen weiterläuft, bleibt das Sperrrisiko bestehen.
+4. **Instagram verknüpfen** — Meta Business Suite → Einstellungen → Verknüpfte
+   Konten. Damit gehören Seite und Instagram-Konto für Meta zusammen, und das
+   Instagram-Konto bekommt die Geschäftsfunktionen (Kategorie,
+   Kontaktschaltfläche, Statistiken).
+
+> **Bei der Gelegenheit prüfen:** Ist `finanz.medizin` auf Instagram ein
+> **Business-Konto**? Falls es noch ein privates Konto ist, gilt dort dasselbe
+> wie hier — ohne Kategorie, Kontaktdaten und Statistiken fehlt genau das, was
+> ein Profil für Suchmaschinen zu einem Unternehmen macht. Umstellen unter
+> Einstellungen → Kontotyp → Zu Business-Konto wechseln.
+
+## 4.3 Zwei Fehler aus dem alten Profil, die nicht mitwandern dürfen
+
+**„Wir tuen es!"** — richtig ist **„Wir tun es!"**. Auf einem Profil, das
+Ärztinnen und Ärzte von der eigenen Sorgfalt überzeugen soll, ist ein
+Rechtschreibfehler in der ersten sichtbaren Zeile teuer.
+
+**„Finanz Medizin" mit Leerzeichen.** Überall sonst heißt die Marke
+**Finanz-Medizin** mit Bindestrich. Genau diese Abweichungen verhindern, dass
+Suchmaschinen die Einträge einer Firma zuordnen — es ist derselbe Fehler wie
+„Str." hier und „Straße" dort, nur auffälliger.
+
+## 4.4 Seitenname und Kategorien
+
+**Name:** `Finanz-Medizin`
+
+**Kategorien:** `Finanzberater` als erste, dazu `Versicherungsmakler` und
+`Unternehmensberater`. Bis zu drei sind möglich — alle drei nutzen.
+
+## 4.5 Bio (max. 101 Zeichen)
+
+```
+Finanzberatung ausschließlich für Ärztinnen, Ärzte und Praxisteams. Erstgespräch kostenfrei.
+```
+
+## 4.6 Beschreibung (max. 255 Zeichen)
+
+```
+Studium oder Ausbildung — über Geld hat keiner geredet. Wir tun es. Betriebliche Altersvorsorge, Steuerhebel neben dem Versorgungswerk und Absicherung für Praxis und Praxisteam. Ungebundener Makler, jede Zahl mit Fundstelle.
+```
+
+Der Ton des alten Profils bleibt damit erhalten — er ist gut und trifft die
+Zielgruppe. Nur eben ohne den Fehler.
+
+## 4.7 Impressum — Pflichtfeld, nicht Kür
+
+Facebook-Seiten deutscher Anbieter brauchen ein Impressum. Es gibt dafür ein
+eigenes Feld (**Seite bearbeiten → Info → Impressum**). Fehlt es, ist das
+abmahnfähig — und bei einem erlaubnispflichtigen Gewerbe schaut man genauer hin.
+
+```
+Anbieter: Benedict Hintz, Einzelunternehmer
+Calvinstraße 3, 10557 Berlin, Deutschland
+Telefon: [neue Rufnummer] · E-Mail: info@finanz-medizin.com
+
+Finanz-Medizin ist eine Marke und ein Geschäftsbereich des Einzelunternehmens
+We Build Wealth, Inhaber Benedict Hintz. Vertragspartner ist in allen Fällen
+Benedict Hintz als Inhaber des Einzelunternehmens.
+
+Versicherungsmakler nach § 34d Abs. 1 GewO: D-5V3H-7KX3I-54
+Finanzanlagenvermittler nach § 34f Abs. 1 S. 1 Nr. 1 GewO: D-F-107-RV51-31
+Aufsicht: IHK Berlin · Register: DIHK, www.vermittlerregister.info
+
+Vollständige Angaben: https://www.finanz-medizin.com/impressum.html
+```
+
+Hier steht We Build Wealth ausdrücklich drin — anders als in der
+Profilbeschreibung. Das ist kein Widerspruch, sondern die Linie, die wir überall
+fahren: **Trennung in der Ansprache, vollständige Offenlegung im Rechtstext.**
+
+## 4.8 Danach
+
+Seiten-URL auf `facebook.com/finanzmedizin` setzen (Seite bearbeiten →
+Nutzername) und mir schicken. Dann trage ich sie zusammen mit LinkedIn in
+`sameAs` nach.
