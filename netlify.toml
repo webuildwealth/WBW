@@ -132,6 +132,27 @@ object-src 'none'\
 #  Bequeme Kurz-URLs für Anzeigen und Visitenkarten.
 #  Ziel ist immer die .html-Variante, damit es genau eine kanonische Adresse gibt.
 # -----------------------------------------------------------------------------
+# Der Kurzcheck. /beratung ist die Adresse fuer die Instagram-Biografie,
+# /instagram und /insta sind Zweitwege fuer Story-Sticker und Kommentare —
+# alle drei landen auf derselben Datei, damit es genau eine Fassung gibt.
+[[redirects]]
+  from = "/beratung"
+  to = "/beratung.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/instagram"
+  to = "/beratung.html"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/insta"
+  to = "/beratung.html"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/praxisinhaber"
   to = "/praxisinhaber.html"

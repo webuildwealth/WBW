@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover ist auf dieser Seite Pflicht: Nur damit liefert
+     env(safe-area-inset-bottom) einen Wert, und nur dann sitzt der Knopf
+     der Fussleiste ueber der Wischleiste des iPhone statt darunter. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- ==========================================================================
+     1. Cookiebot (CMP) — muss vor allen anderen Skripten stehen.
+        data-blockingmode="auto" lässt Cookiebot Tracking-Skripte selbst
+        blockieren, bis eine Einwilligung vorliegt.
+     ========================================================================== -->
+<script id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        data-cbid="dc9e5b3c-0d46-44ba-9432-5a00df77d01b"
+        data-blockingmode="auto"
+        type="text/javascript"></script>
+
+<!-- ==========================================================================
+     2. Google Consent Mode v2 — Standard auf "denied".
+        Muss VOR dem GTM-Container laufen, sonst feuern Tags einmal, bevor der
+        Standard greift. wait_for_update gibt Cookiebot Zeit, eine bereits
+        erteilte Einwilligung nachzureichen, ohne dass solange gemessen wird.
+
+        data-cookieconsent="ignore" ist hier Pflicht: Ohne das Attribut hielte
+        Cookiebots automatische Blockierung diesen Block selbst an. Der
+        "denied"-Standard stuende dann erst nach der Einwilligung — also genau
+        dann, wenn er nichts mehr schuetzt.
+     ========================================================================== -->
+<script data-cookieconsent="ignore">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('consent', 'default', {
+    ad_storage:             'denied',
+    ad_user_data:           'denied',
+    ad_personalization:     'denied',
+    analytics_storage:      'denied',
+    functionality_storage:  'denied',
+    personalization_storage:'denied',
+    security_storage:       'denied',
+    wait_for_update: 500
+  });
+  gtag('set', 'ads_data_redaction', true);
+  gtag('set', 'url_passthrough', false);
+</script>
+
+<!-- ==========================================================================
+     3. Google Tag Manager, Google Analytics und Microsoft Clarity. Alle drei
+        werden hier geladen, nicht als Tag im Container — und alle drei erst
+        nach der Einwilligung (siehe SETUP.md, Abschnitt 2).
+
+        Abweichend vom Standard-Snippet lädt der Container NICHT sofort. Grund:
+        Schon das Anfordern von gtm.js überträgt die IP-Adresse des Besuchers an
+        Google. Das Standard-Snippet verlässt sich darauf, dass Cookiebot die
+        Einfügung zur Laufzeit abfängt — das tut es meistens, aber eben nicht
+        nachweisbar. Nachweisbar ist nur, was gar nicht erst passiert.
+
+        Deshalb wartet der Container hier auf ein ausdrückliches Signal von
+        Cookiebot und wird erst danach nachgeladen. Das deckt sich mit der
+        Zusage in der Datenschutzerklärung ("wird erst geladen, nachdem Sie
+        eingewilligt haben") und mit § 25 Abs. 1 TDDDG.
+
+        Nebenwirkung, die man kennen sollte: Ohne geladenen Container erreichen
+        auch die "denied"-Signale des Consent Mode Google nicht, es gibt also
+        keine cookielose Modellierung. Wer die möchte, ersetzt starteGtm() durch
+        einen unbedingten Aufruf — siehe SETUP.md, Abschnitt 2.2.
+
+        data-cookieconsent="ignore" haelt Cookiebots Auto-Blockierung von
+        diesem Ladeblock fern. Das ist keine Umgehung: Der Block prueft die
+        Einwilligung selbst (pruefeUndStarte) und laedt ohne sie nichts. Bliebe
+        er blockiert, haenge der Start zusaetzlich an Cookiebots eigener
+        Einstufung des Snippets — die Pruefung waere doppelt, der Zeitpunkt
+        unbestimmt und ein Fehler in der Einstufung wuerde die Messung
+        stillschweigend abschalten.
+     ========================================================================== -->
+<script data-cookieconsent="ignore">
+(function (w, d, s, l, i) {
+  var gestartet = false;
+
+  function starteGtm() {
+    if (gestartet) return;
+    gestartet = true;
+    w[l] = w[l] || [];
+    w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+    j.async = true;
+    j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+    f.parentNode.insertBefore(j, f);
+  }
+
+  /* Google-Tag (GA4). Dasselbe Tor wie beim Container: Das mitgelieferte
+     Standard-Snippet lädt gtag.js sofort und mit async — damit stünde eine
+     Messung, bevor jemand zugestimmt hat. Die Funktion gtag() ist bereits
+     oben im Consent-Mode-Block definiert und wird hier nur benutzt, nicht
+     neu angelegt; ein zweites Mal definiert überschriebe sie den Standard. */
+  var ga4Gestartet = false;
+
+  function starteGa4() {
+    if (ga4Gestartet) return;
+    ga4Gestartet = true;
+    var g = d.createElement(s);
+    g.async = true;
+    g.src = 'https://www.googletagmanager.com/gtag/js?id=G-HXRCEKDVBD';
+    d.getElementsByTagName(s)[0].parentNode.insertBefore(g, null);
+    w.gtag('js', new Date());
+    w.gtag('config', 'G-HXRCEKDVBD');
+  }
+
+  /* Microsoft Clarity. Dasselbe Tor wie bei GA4, aus demselben Grund: Schon
+     der Abruf von clarity.ms/tag überträgt die IP-Adresse an Microsoft, und
+     Clarity zeichnet Sitzungen auf — das ist kein Zählpixel, das man einmal
+     zu früh feuern lassen kann. Geladen wird erst bei Einwilligung in die
+     Kategorie Statistik.
+
+     clarity('consent') direkt danach ist kein Widerspruch, sondern die
+     Gegenprobe: Ohne diesen Aufruf liefe Clarity im cookielosen Notbetrieb,
+     obwohl die Einwilligung vorliegt. Wir melden ihm also genau den Stand,
+     den Cookiebot uns gemeldet hat. */
+  var clarityGestartet = false;
+
+  function starteClarity() {
+    if (clarityGestartet) return;
+    clarityGestartet = true;
+    w.clarity = w.clarity || function () { (w.clarity.q = w.clarity.q || []).push(arguments); };
+    var t = d.createElement(s);
+    t.async = true;
+    t.src = 'https://www.clarity.ms/tag/yd2puqee2j';
+    var y = d.getElementsByTagName(s)[0];
+    y.parentNode.insertBefore(t, y);
+    w.clarity('consent');
+  }
+
+  // Cookiebot meldet den Einwilligungsstand über diese Ereignisse. Statistik
+  // ODER Marketing genügt — für beides gibt es Tags im Container.
+  function pruefeUndStarte() {
+    var c = w.Cookiebot && w.Cookiebot.consent;
+    if (c && (c.statistics || c.marketing)) starteGtm();
+    if (c && c.statistics) { starteGa4(); starteClarity(); }
+  }
+
+  w.addEventListener('CookiebotOnAccept', pruefeUndStarte);
+  w.addEventListener('CookiebotOnConsentReady', pruefeUndStarte);
+  // Wiederkehrende Besucher: Cookiebot kann die gespeicherte Einwilligung
+  // bereits gesetzt haben, bevor dieses Skript seine Listener registriert.
+  d.addEventListener('DOMContentLoaded', pruefeUndStarte);
+  pruefeUndStarte();
+})(window, document, 'script', 'dataLayer', 'GTM-T2KGZ25V');
+</script>
+
+<script>document.documentElement.classList.add("js");</script>
+<title>Kostenfreies Erstgespräch für Heilberufe | Finanz-Medizin</title>
+<meta name="description" content="Fünf Fragen zu deiner Lage, danach suchst du dir direkt einen Termin aus. Kostenfrei und unverbindlich — für Ärztinnen und Ärzte, Praxisinhaber und Praxisteams.">
+
+<!-- Kampagnenseite: Sie soll Verkehr aus Instagram annehmen, nicht in der
+     Google-Suche stehen. Ohne Inhalt ausser den Fragen hätte sie dort keinen
+     Wert und würde nur mit den Zielgruppenseiten um dieselben Begriffe
+     konkurrieren. Deshalb noindex — aber bewusst „follow", damit die Links auf
+     Impressum und Datenschutz weiterverfolgt werden.
+     In robots.txt steht sie absichtlich NICHT: Was nicht gelesen werden darf,
+     kann auch das noindex nicht mitteilen. -->
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#F4F0EF">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Finanz-Medizin">
+<meta property="og:url" content="https://www.finanz-medizin.com/beratung.html">
+<meta property="og:title" content="Dein Erstgespräch — in 60 Sekunden vorbereitet">
+<meta property="og:description" content="Fünf Fragen, dann suchst du dir direkt einen Termin aus. Kostenfrei, unverbindlich, kein Verkaufsgespräch.">
+<meta property="og:image" content="https://www.finanz-medizin.com/assets/img/og-finanz-medizin.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/favicon-180.png">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/manrope-normal-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/inter-normal-latin.woff2">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/beratung.css">
+</head>
+<body class="bq-seite">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T2KGZ25V"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+<!-- ==========================================================================
+     Kurzcheck — eine Frage je Bildschirm
+
+     data-segment  landet als „Bereich" im Kalendereintrag und im CRM
+     data-funnel   greift nur auf dem Rückruf-Weg (/api/lead) und benennt dort
+                   die Herkunft; lib/lead-core.js kennt den Namen und setzt
+                   daraus die Überschrift der Notiz.
+     ========================================================================== -->
+<div class="bq" data-bq data-segment="Instagram-Kurzcheck" data-funnel="instagram">
+
+  <header class="bq__top">
+    <div class="bq__kopfzeile">
+      <button class="bq__zurueck" type="button" data-bq-zurueck hidden>
+        <span aria-hidden="true">←</span> zurück
+      </button>
+
+      <a class="bq__marke" href="index.html" aria-label="Finanz-Medizin — Startseite">
+        <picture>
+          <source srcset="assets/img/mark-finanz-medizin.webp" type="image/webp">
+          <img src="assets/img/mark-finanz-medizin.png" alt="" width="26" height="26">
+        </picture>
+        <span>finanz<span>-</span>medizin</span>
+      </a>
+
+      <span class="bq__zaehler" data-bq-zaehler aria-live="polite"></span>
+    </div>
+
+    <div class="bq__balken" data-bq-balken-spur role="progressbar"
+         aria-label="Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <i data-bq-balken></i>
+    </div>
+  </header>
+
+  <main class="bq__buehne" id="main">
+    <form class="bq__form" data-bq-form novalidate>
+
+      <!-- ------------------------------------------------------------ Start -->
+      <section class="bq__schritt bq__start ist-aktiv" data-start data-weiter="Los geht’s">
+        <picture>
+          <source srcset="assets/img/mark-finanz-medizin.webp" type="image/webp">
+          <img class="bq__signet" src="assets/img/mark-finanz-medizin.png" alt=""
+               width="62" height="62">
+        </picture>
+
+        <h2 class="bq__frage">Dein Erstgespräch — in 60 Sekunden vorbereitet.</h2>
+        <p class="bq__hinweis">
+          Fünf Fragen zu deiner Lage. Danach suchst du dir direkt einen Termin aus,
+          der dir passt.
+        </p>
+
+        <ul class="bq__marker">
+          <li>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Kostenfrei und unverbindlich — kein Verkaufsgespräch</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>25 Minuten, per Telefon oder Video</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Keine Weitergabe deiner Daten, kein Newsletter</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- --------------------------------------------------------- 1 · Rolle -->
+      <section class="bq__schritt" data-frage data-name="rolle" data-label="Rolle"
+               data-weiter="Ok">
+        <span class="bq__nummer">Frage 1</span>
+        <h2 class="bq__frage">Was trifft auf dich zu?</h2>
+        <p class="bq__hinweis">Davon hängt ab, mit welchen Zahlen wir rechnen —
+          Versorgungswerk, Praxisgewinn und Tarifgehalt sind drei verschiedene Welten.</p>
+
+        <div class="bq__opts">
+          <button class="opt" data-value="In Ausbildung oder Studium">
+            <span class="opt__text">Ich bin in Ausbildung oder Studium</span></button>
+          <button class="opt" data-value="Angestellt in Klinik oder Praxis">
+            <span class="opt__text">Ich bin angestellt in Klinik oder Praxis</span></button>
+          <button class="opt" data-value="Eigene Praxis">
+            <span class="opt__text">Ich habe eine eigene Praxis</span></button>
+          <button class="opt" data-value="MFA oder Praxisteam">
+            <span class="opt__text">Ich arbeite als MFA im Praxisteam</span></button>
+          <button class="opt" data-value="Anderer Hintergrund">
+            <span class="opt__text">Nichts davon trifft zu</span></button>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- 2 · Ziel -->
+      <section class="bq__schritt" data-frage data-name="ziel" data-label="Wichtigstes Ziel"
+               data-multi data-weiter="Weiter">
+        <span class="bq__nummer">Frage 2</span>
+        <h2 class="bq__frage">Worum geht es dir gerade am meisten?</h2>
+        <p class="bq__hinweis">Mehrfachauswahl möglich. Wir sortieren das Gespräch danach.</p>
+
+        <div class="bq__opts">
+          <button class="opt" data-value="Steuern senken">
+            <span class="opt__text">Weniger Steuern zahlen</span></button>
+          <button class="opt" data-value="Vermögen aufbauen">
+            <span class="opt__text">Vermögen aufbauen
+              <small>Gehalt oder Gewinn anlegen statt parken</small></span></button>
+          <button class="opt" data-value="Absicherung">
+            <span class="opt__text">Mich richtig absichern
+              <small>Arbeitskraft, Gesundheit, Familie</small></span></button>
+          <button class="opt" data-value="Altersvorsorge">
+            <span class="opt__text">Altersvorsorge sortieren
+              <small>Versorgungswerk, Rürup, Betriebsrente</small></span></button>
+          <button class="opt" data-value="Immobilie">
+            <span class="opt__text">Eine Immobilie kaufen</span></button>
+          <button class="opt" data-value="Praxis und Team">
+            <span class="opt__text">Praxis und Team
+              <small>Gründung, Übernahme, Mitarbeitende binden</small></span></button>
+        </div>
+      </section>
+
+      <!-- ----------------------------------------------------- 3 · Spielraum -->
+      <section class="bq__schritt" data-frage data-name="spielraum"
+               data-label="Monatlicher Spielraum" data-weiter="Ok">
+        <span class="bq__nummer">Frage 3</span>
+        <h2 class="bq__frage">Wie viel bleibt dir am Monatsende übrig?</h2>
+        <p class="bq__hinweis">Grob geschätzt genügt. Es geht nur um die Größenordnung —
+          davon hängt ab, welche Wege überhaupt sinnvoll sind.</p>
+
+        <div class="bq__opts">
+          <button class="opt" data-value="Aktuell nichts">
+            <span class="opt__text">Im Moment nichts</span></button>
+          <button class="opt" data-value="bis 250 € im Monat">
+            <span class="opt__text">Bis 250 €</span></button>
+          <button class="opt" data-value="250 bis 750 € im Monat">
+            <span class="opt__text">250 bis 750 €</span></button>
+          <button class="opt" data-value="750 bis 2.000 € im Monat">
+            <span class="opt__text">750 bis 2.000 €</span></button>
+          <button class="opt" data-value="mehr als 2.000 € im Monat">
+            <span class="opt__text">Mehr als 2.000 €</span></button>
+          <button class="opt" data-value="unklar">
+            <span class="opt__text">Weiß ich nicht genau</span></button>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------ 4 · Bestand -->
+      <section class="bq__schritt" data-frage data-name="bestand" data-label="Ist-Zustand"
+               data-weiter="Ok">
+        <span class="bq__nummer">Frage 4</span>
+        <h2 class="bq__frage">Wie sieht es heute bei dir aus?</h2>
+        <p class="bq__hinweis">Ehrliche Antwort hilft dir mehr als eine schöne —
+          wir bewerten nichts.</p>
+
+        <div class="bq__opts">
+          <button class="opt" data-value="Noch nichts vorhanden">
+            <span class="opt__text">Da ist noch nichts
+              <small>ich fange bei null an</small></span></button>
+          <button class="opt" data-value="Einzelne Verträge, historisch gewachsen">
+            <span class="opt__text">Ein paar Verträge, historisch gewachsen
+              <small>vom Bekannten, von der Bank, aus dem Studium</small></span></button>
+          <button class="opt" data-value="Überblick verloren">
+            <span class="opt__text">Es läuft, aber ich habe den Überblick verloren</span></button>
+          <button class="opt" data-value="Sortiert, will zweite Meinung">
+            <span class="opt__text">Alles sortiert — ich will eine zweite Meinung</span></button>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------- 5 · Zeithorizont -->
+      <section class="bq__schritt" data-frage data-name="zeithorizont" data-label="Zeithorizont"
+               data-weiter="Ok">
+        <span class="bq__nummer">Frage 5</span>
+        <h2 class="bq__frage">Wie schnell willst du das angehen?</h2>
+        <p class="bq__hinweis">Letzte Frage — danach kommt der Terminkalender.</p>
+
+        <div class="bq__opts">
+          <button class="opt" data-value="So schnell wie möglich">
+            <span class="opt__text">So schnell wie möglich</span></button>
+          <button class="opt" data-value="In den nächsten Wochen">
+            <span class="opt__text">In den nächsten Wochen</span></button>
+          <button class="opt" data-value="Dieses Jahr noch">
+            <span class="opt__text">Dieses Jahr noch</span></button>
+          <button class="opt" data-value="Erst informieren">
+            <span class="opt__text">Ich sammle erst mal Informationen</span></button>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- 6 · Termin
+           Inhalt kommt aus assets/js/beratung.js: Sind freie Zeiten da, stehen
+           hier Tage und Uhrzeiten. Ist der Kalender nicht eingerichtet oder
+           nicht erreichbar, wird an dieser Stelle nach der Erreichbarkeit
+           gefragt und der Lead geht als Rückruf-Anfrage ins CRM.
+           Bis dahin: ein Ladehinweis, denn ohne Skript steht dieser Schritt
+           ohnehin nie zur Verfügung. -->
+      <section class="bq__schritt" data-termin data-weiter="Ok">
+        <div class="book__lade">
+          <div class="book__spinner" aria-hidden="true"></div>
+          <span>Freie Termine werden geladen …</span>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------------- 7 · Kontakt -->
+      <section class="bq__schritt" data-kontakt data-weiter="Termin verbindlich buchen">
+        <!-- Der gewählte Termin als Erinnerung. Wird von beratung.js gefüllt und
+             bleibt auf dem Rückruf-Weg leer. -->
+        <div class="book__gewaehlt" data-bq-gewaehlt hidden></div>
+
+        <span class="bq__nummer">Fast fertig</span>
+        <h2 class="bq__frage">
+          <span data-wenn="termin">Wohin schicken wir die Einladung?</span>
+          <span data-wenn="rueckruf" hidden>Wohin dürfen wir uns melden?</span>
+        </h2>
+        <p class="bq__hinweis">
+          <span data-wenn="termin">Du bekommst die Bestätigung mit den Einwahldaten
+            per E-Mail. Die Telefonnummer brauchen wir nur, falls die Technik klemmt.</span>
+          <span data-wenn="rueckruf" hidden>Wir melden uns innerhalb von 24 Stunden —
+            persönlich, nicht per Newsletter.</span>
+        </p>
+
+        <div class="fields-2">
+          <div class="field">
+            <label for="bq-vorname">Vorname</label>
+            <input id="bq-vorname" name="vorname" type="text" autocomplete="given-name"
+                   data-pflicht data-min="2">
+            <span class="field__err">Bitte trag deinen Vornamen ein.</span>
+          </div>
+          <div class="field">
+            <label for="bq-nachname">Nachname</label>
+            <input id="bq-nachname" name="nachname" type="text" autocomplete="family-name"
+                   data-pflicht data-min="2">
+            <span class="field__err">Bitte trag deinen Nachnamen ein.</span>
+          </div>
+        </div>
+
+        <div class="fields-2">
+          <div class="field">
+            <label for="bq-mail">E-Mail</label>
+            <input id="bq-mail" name="email" type="email" autocomplete="email"
+                   inputmode="email" data-pflicht>
+            <span class="field__err">Bitte prüf die E-Mail-Adresse.</span>
+          </div>
+          <div class="field">
+            <label for="bq-tel">Telefon</label>
+            <input id="bq-tel" name="telefon" type="tel" autocomplete="tel"
+                   inputmode="tel" data-pflicht data-min="6">
+            <span class="field__err">Ohne Telefonnummer können wir nicht zurückrufen.</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="bq-anliegen">Willst du uns noch etwas mitgeben? (optional)</label>
+          <textarea id="bq-anliegen" name="anliegen" rows="3"
+                    placeholder="Ein, zwei Sätze genügen — dann können wir uns vorbereiten."></textarea>
+        </div>
+
+        <!-- Honeypot. Menschen sehen das Feld nicht; Bots füllen es aus und die
+             Absendung wird verworfen. -->
+        <div style="position:absolute;left:-9999px" aria-hidden="true">
+          <label for="bq-hp">Bitte leer lassen</label>
+          <input id="bq-hp" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <label class="consent">
+          <input type="checkbox" name="einwilligung" data-pflicht>
+          <span>
+            <span data-wenn="termin">Ich möchte diesen Termin verbindlich vereinbaren und
+              habe die</span>
+            <span data-wenn="rueckruf" hidden>Ich möchte kontaktiert werden und habe die</span>
+            <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzhinweise</a>
+            gelesen. Meine Angaben werden ausschließlich zur Bearbeitung dieser Anfrage
+            verwendet und nicht an Dritte weitergegeben. Die Einwilligung kann ich
+            jederzeit formlos widerrufen.
+          </span>
+        </label>
+      </section>
+
+      <!-- ------------------------------------------------------- 8 · Abschluss -->
+      <section class="bq__schritt bq__fertig" data-fertig>
+        <div class="bq__haken" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6">
+            <path d="M4 12.5l5 5L20 6.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <h2 class="bq__frage">
+          <span data-wenn="termin">Der Termin steht.</span>
+          <span data-wenn="rueckruf" hidden>Angekommen.</span>
+        </h2>
+
+        <span class="bq__termin" data-bq-termin hidden></span>
+
+        <p class="bq__hinweis">
+          Danke<span data-bq-name></span>!
+          <span data-wenn="termin">Du bekommst in Kürze eine Bestätigung per E-Mail.
+            Wenn etwas dazwischenkommt, genügt eine kurze Nachricht.</span>
+          <span data-wenn="rueckruf" hidden>Wir schauen uns deine Angaben an und melden
+            uns innerhalb von 24 Stunden.</span>
+        </p>
+
+        <p class="bq__kleingedruckt">
+          Fragen vorab? <a href="mailto:info@finanz-medizin.com">info@finanz-medizin.com</a>
+        </p>
+
+        <div class="bq__weiterlesen">
+          <a class="btn btn--ghost btn--sm" href="index.html">Zur Website</a>
+          <a class="btn btn--ghost btn--sm" href="ueber-uns.html">Wer wir sind</a>
+        </div>
+      </section>
+
+      <p class="bq__fehler" data-bq-fehler hidden role="alert"></p>
+    </form>
+  </main>
+
+  <!-- Ohne JavaScript gibt es keine Schritte. Statt einer halben Oberfläche
+       stehen dann die beiden Wege da, die ohne Skript funktionieren. -->
+  <div class="bq__ohne-js">
+    <h2 class="bq__frage">Kostenfreies Erstgespräch</h2>
+    <p class="bq__hinweis">
+      Für das Formular braucht dein Browser JavaScript. Du erreichst uns auch direkt:
+      <a href="mailto:info@finanz-medizin.com">info@finanz-medizin.com</a>.
+      Alle Angebote und Rechenwege stehen auf
+      <a href="index.html">finanz-medizin.com</a>.
+    </p>
+  </div>
+
+  <footer class="bq__unten">
+    <div class="bq__unten-inner">
+      <button class="btn btn--primary bq__weiter" type="button" data-bq-weiter>Los geht’s</button>
+      <span class="bq__tastenhinweis" data-bq-tastenhinweis>Weiter mit <kbd>Enter</kbd></span>
+    </div>
+    <!-- Die Trennpunkte setzt das Stylesheet, nicht das Markup: Den Knopf für
+         die Cookie-Einstellungen blendet main.js aus, solange Cookiebot nicht
+         geladen ist — ein Trennpunkt im Text bliebe dann allein stehen. -->
+    <p class="bq__recht">
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <button type="button" data-cookie-renew>Cookie-Einstellungen</button>
+    </p>
+  </footer>
+</div>
+
+<script src="assets/js/main.js" defer></script>
+<script src="assets/js/beratung.js" defer></script>
+</body>
+</html>

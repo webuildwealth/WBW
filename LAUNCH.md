@@ -135,6 +135,8 @@ Nach dem Setzen von Umgebungsvariablen einmal *Deploys* → *Trigger deploy*
 | Einen Check ausfüllen | Neuer Lead in Close, mit Notiz und allen Antworten |
 | Einen Termin buchen | Eintrag im Google Kalender **und** ein Lead in Close |
 | Buchung im Kalender | Titel „Erstgespräch · Vorname Name", Sie sind der einzige Teilnehmer |
+| `https://…/beratung` aufrufen | Der Kurzcheck startet; nach fünf Fragen stehen freie Zeiten. Erscheint dort stattdessen „Wann erreichen wir dich am besten?", ist Schritt 4 noch nicht durch — die Anfrage geht dann als Rückruf-Bitte nach Close, es geht nichts verloren |
+| Kurzcheck bis zum Ende ausfüllen | Im Kalendereintrag und in der Close-Notiz steht der Abschnitt „Angaben aus dem Kurzcheck" mit allen fünf Antworten |
 
 Der gebuchte Termin lädt Sie **nicht** per Mail ein — ein Dienstkonto darf
 das ohne domainweite Delegation nicht. Der Eintrag steht direkt im
@@ -166,6 +168,14 @@ Staaten". Das genügt Art. 13 Abs. 1 lit. e DSGVO, der ausdrücklich
 Empfänger **oder Kategorien von Empfängern** verlangt. Sobald Sie den
 DPA vorliegen haben, können Sie dort die genaue Firmierung und Anschrift
 eintragen — schöner, aber nicht erforderlich.
+
+Der Kurzcheck unter `/beratung` meldet seinen Abschluss als Ereignis in den
+`dataLayer` (`kurzcheck_termin_gebucht` beziehungsweise
+`kurzcheck_lead_gesendet`), weil er am Ende nicht auf `danke.html` umleitet.
+Solange im GTM kein Trigger vom Typ „Benutzerdefiniertes Ereignis" darauf
+hört, zählt für diese Seite keine Conversion — die Buchung selbst läuft
+davon unabhängig. Einzelheiten stehen in README.md unter „Kurzcheck für
+Social Media".
 
 Auf der Über-uns-Seite steht statt eines Porträts eine Signet-Fläche.
 Wenn ein Foto vorliegt, tritt es an ihre Stelle; die Gestaltung dafür

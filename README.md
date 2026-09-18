@@ -20,10 +20,12 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `praxisinhaber.html` | Praxisinhaberinnen und Praxisinhaber | Praxis-Check |
 | `angestellte-aerzte.html` | Angestellte Ärztinnen und Ärzte | Vermögens-Check |
 | `mfa-praxisteam.html` | MFA und Praxisteam | Vorsorge-Check |
+| `beratung.html` | Vollbild-Kurzcheck für Social Media (`/beratung`) | Kurzcheck |
 | `danke.html` | Bestätigungsseite, segmentspezifisch | — |
 | `impressum.html` | Impressum + Erstinformation § 15 VersVermV | — |
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) | — |
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
+| `assets/js/beratung.js` | Ablauf des Kurzchecks: Fragen, Terminwahl, Absenden | Kurzcheck |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
 
@@ -259,6 +261,73 @@ die Renderschleife läuft nur, solange mindestens ein Canvas sichtbar ist.
 - UTM- und Klick-Parameter werden aus der URL in den `sessionStorage` übernommen und
   beim Absenden mitgeschickt
 
+### Kurzcheck für Social Media (`beratung.html`)
+
+Eine Frage je Bildschirm, am Ende ein echter Termin — gedacht für den Link in der
+Instagram-Biografie und für Story-Sticker. Die Seite ist bewusst eigenständig und
+benutzt die Funnel-Engine **nicht**: Sie hat eine andere Schale (Vollbild statt
+Karte im Seitenfluss), spricht per „du" statt „Sie" und endet in der Terminbuchung
+statt in einer Weiterleitung.
+
+| Datei | Rolle |
+|---|---|
+| `beratung.html` | Fragen und Schritte, deklarativ im Markup |
+| `assets/js/beratung.js` | Ablauf, Terminwahl, Absenden |
+| `assets/css/beratung.css` | nur die Vollbild-Schale; setzt `site.css` voraus |
+
+**Adressen** — `/beratung`, `/instagram` und `/insta` führen alle auf
+`beratung.html` (Weiterleitungen in `netlify.toml`). Für die Auswertung an den Link
+in der Biografie `?utm_source=instagram&utm_medium=bio` anhängen; `main.js` legt
+die Parameter im `sessionStorage` ab und schickt sie beim Absenden als `kampagne`
+mit ins CRM.
+
+**Zwei Wege, je nachdem was der Kalender hergibt**
+
+1. `/api/slots` liefert freie Zeiten → der Interessent wählt selbst, die Buchung
+   läuft über `/api/booking`, der Termin steht sofort.
+2. Kalender nicht eingerichtet, nicht erreichbar oder ohne freie Zeit → an der
+   Stelle der Uhrzeiten wird nach der Erreichbarkeit gefragt und die Anfrage geht
+   über `/api/lead` als Rückruf-Bitte ins CRM (`funnel: "instagram"`).
+
+Der Kalender wird schon beim Laden der Seite abgefragt, nicht erst beim
+Terminschritt — bis die fünf Fragen beantwortet sind, ist die Antwort längst da.
+Wird ein Termin zwischen Anzeige und Klick von jemand anderem belegt, antwortet
+`/api/booking` mit 409; die Seite springt dann mit frisch geholten Zeiten zurück
+zur Auswahl und behält die eingegebenen Kontaktdaten.
+
+**Die Antworten im CRM** — sie gehen als Liste `antworten: [{ feld, wert }]` an
+`/api/booking` und stehen danach im Kalendereintrag unter „Angaben aus dem
+Kurzcheck" sowie in der Close-Notiz unter `ANGABEN AUS DEM KURZCHECK`. Die Grenzen
+setzt `lib/booking-core.js` (höchstens 20 Angaben, 80 Zeichen je Feldname, 300 je
+Wert), nicht der Aufrufer.
+
+**Messung** — die Seite leitet am Ende bewusst nicht auf `danke.html` um, weil ein
+Seitenwechsel die gerade gebuchte Bestätigung wegnähme. Statt des Seitenaufrufs
+meldet sie den Abschluss selbst in den `dataLayer`:
+
+| Ereignis | wann |
+|---|---|
+| `kurzcheck_gestartet` | das Startbild ist weggeklickt |
+| `kurzcheck_termin_gebucht` | Termin steht |
+| `kurzcheck_lead_gesendet` | Rückruf-Anfrage ist raus |
+
+Jedes Ereignis trägt `kurzcheck_modus` (`termin` oder `rueckruf`) und
+`kurzcheck_rolle` mit. Im GTM daraus einen Trigger vom Typ „Benutzerdefiniertes
+Ereignis" bauen, sonst zählt für diese Seite keine Conversion.
+
+**Absichten, die man beim Ändern kennen sollte**
+
+- `noindex, follow` im Kopf: Die Seite soll Verkehr aus Social Media annehmen,
+  nicht in der Google-Suche mit den Zielgruppenseiten konkurrieren. In `robots.txt`
+  steht sie deshalb absichtlich **nicht** — was nicht gelesen werden darf, kann
+  auch das `noindex` nicht mitteilen.
+- Höhenangaben in `svh`/`dvh` und `viewport-fit=cover`: Der In-App-Browser von
+  Instagram blendet seine Leisten beim Scrollen ein und aus. Mit `100vh` stünde der
+  Knopf darunter und wäre nicht erreichbar.
+- Eingabefelder mit `font-size: 16px`: Darunter zoomt iOS beim Hineintippen.
+- Die Fussleiste blendet nur ihren Knopf aus, nie sich selbst — in ihr stehen
+  Impressum und Datenschutz, und die müssen von jeder Ansicht aus erreichbar sein.
+
 ### Design-System
 
 `assets/css/site.css`, ein Datei-Stylesheet in 21 kommentierten Abschnitten.
@@ -286,8 +355,8 @@ kann. Für die Verknüpfung mit `webuildwealth.de` bieten sich an:
 2. **Gemeinsame Rechtsseiten** — falls dieselbe juristische Person dahintersteht,
    können `impressum.html` und `datenschutz.html` auf die bestehenden Seiten von
    webuildwealth.de verweisen statt eigene zu führen.
-3. **Gemeinsames CRM** — alle drei Funnels senden an denselben Endpunkt und lassen
-   sich über das Feld `funnel` auseinanderhalten.
+3. **Gemeinsames CRM** — alle Funnels senden an denselben Endpunkt und lassen sich
+   über das Feld `funnel` auseinanderhalten; gebuchte Termine über `segment`.
 4. **Unterverzeichnis statt Subdomain** — SEO-seitig stärker wäre
    `webuildwealth.de/finanz-medizin/`; dann alle absoluten Pfade in `canonical`,
    `og:url` und `sitemap.xml` anpassen.

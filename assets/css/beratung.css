@@ -1,0 +1,488 @@
+/* ==========================================================================
+   finanz-medizin.com — Kurzcheck (beratung.html)
+
+   Vollbild-Formular für Social-Media-Verkehr: eine Frage je Bildschirm,
+   grosse Flächen, Daumen-Bedienung. Gedacht für den Link in der Instagram-
+   Biografie und für Story-Sticker.
+
+   Diese Datei wird ausschliesslich von beratung.html geladen. Sie setzt
+   site.css voraus (Tokens, Schriften, .opt, .field, .consent, .book__*) und
+   ergänzt nur die Schale, die keine andere Seite braucht. Deshalb steht sie
+   nicht im Design-System-Stylesheet: jede andere Seite müsste sie sonst
+   mitladen, ohne eine Zeile davon zu benutzen.
+
+   Grundsatz für die Schale: Die Höhe kommt aus svh/dvh, nicht aus vh. Der
+   In-App-Browser von Instagram blendet seine Leisten beim Scrollen ein und
+   aus; mit 100vh stünde der Knopf dann unter der Leiste und wäre nicht
+   erreichbar. Die Fussleiste klebt (position: sticky), statt fest zu stehen —
+   so wandert sie beim offenen Tastenfeld mit dem Layout mit und verdeckt
+   niemals das Feld, in das gerade geschrieben wird.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Schale
+   -------------------------------------------------------------------------- */
+.bq-seite {
+  /* Der weiche Verlauf nach oben zitiert die dunklen Marken-Sektionen, ohne
+     die Lesbarkeit bei Sonne auf dem Handy zu kosten. */
+  background:
+    radial-gradient(120% 60% at 50% 0%, var(--navy-050) 0%, rgba(237, 242, 247, 0) 70%),
+    var(--ivory);
+  background-attachment: fixed;
+}
+
+.bq {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;    /* Fallback für alte Browser */
+  min-height: 100svh;   /* kleinste Höhe: Leisten sichtbar */
+  min-height: 100dvh;   /* wandert mit den Leisten mit */
+}
+
+/* --------------------------------------------------------------------------
+   2. Kopf — Fortschritt, Marke, Zähler
+   -------------------------------------------------------------------------- */
+.bq__top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: .55rem var(--gutter) .7rem;
+  padding-top: max(.55rem, env(safe-area-inset-top));
+  background: rgba(244, 240, 239, .88);
+  backdrop-filter: saturate(150%) blur(10px);
+  -webkit-backdrop-filter: saturate(150%) blur(10px);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.bq__kopfzeile {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: 2.4rem;
+}
+
+.bq__marke {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-inline: auto;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: .95rem;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+.bq__marke img { width: 26px; height: 26px; }
+.bq__marke span span { color: var(--red-700); }
+
+/* Zurück und Zähler sind gleich breit, damit die Marke wirklich mittig steht
+   und beim Schrittwechsel nicht springt. */
+.bq__zurueck,
+.bq__zaehler {
+  flex: none;
+  width: 5.2rem;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--ink-mute);
+}
+.bq__zurueck {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .45rem 0;
+  text-align: left;
+}
+.bq__zurueck[hidden] { display: none; }
+.bq__zurueck:hover { color: var(--ink); }
+.bq__zaehler {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-display);
+}
+
+.bq__balken {
+  height: 3px;
+  margin-top: .6rem;
+  border-radius: 999px;
+  background: var(--navy-100);
+  overflow: hidden;
+}
+.bq__balken i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--navy-800), var(--red-700));
+  transition: width .45s var(--ease);
+}
+
+/* --------------------------------------------------------------------------
+   3. Bühne — eine Frage, mittig
+   -------------------------------------------------------------------------- */
+.bq__buehne {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.bq__form {
+  /* margin: auto zentriert senkrecht, solange der Schritt kürzer ist als der
+     Bildschirm. Wird er länger, wächst er nach unten und die Seite scrollt. */
+  margin: auto;
+  width: 100%;
+  max-width: 33rem;
+  padding: clamp(1.4rem, 5vw, 2.6rem) var(--gutter);
+}
+
+.bq__schritt { display: none; }
+.bq__schritt.ist-aktiv {
+  display: block;
+  animation: bq-auf .42s var(--ease) both;
+}
+@keyframes bq-auf {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bq__schritt.ist-aktiv { animation: none; }
+  .bq__balken i { transition: none; }
+}
+
+.bq__nummer {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--font-display);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--red-700);
+  margin-bottom: .7rem;
+}
+.bq__nummer::after {
+  content: "";
+  width: 1.6rem;
+  height: 1px;
+  background: var(--red-700);
+  opacity: .45;
+}
+
+.bq__frage {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 1.15rem + 1.9vw, 2.1rem);
+  line-height: 1.12;
+  letter-spacing: -.028em;
+  color: var(--ink);
+  text-wrap: balance;
+  /* Der Fokus springt beim Schrittwechsel auf die Frage, damit Screenreader
+     sie vorlesen. Ein Rahmen darum wäre dabei irritierend — die Frage ist
+     kein Bedienelement. */
+  outline: none;
+}
+
+.bq__hinweis {
+  margin-top: .7rem;
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--ink-mute);
+}
+
+/* --------------------------------------------------------------------------
+   4. Antwortflächen
+   Die Optik kommt aus site.css (.opt). Hier wird sie nur fürs Handy
+   vergrössert: mindestens 56 px hoch, damit sie sicher mit dem Daumen
+   getroffen wird.
+   -------------------------------------------------------------------------- */
+.bq__opts {
+  display: grid;
+  gap: .55rem;
+  margin-top: 1.4rem;
+}
+
+.bq .opt {
+  min-height: 3.5rem;
+  padding: .95rem 1.05rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, .92);
+  font-size: 1rem;
+  box-shadow: var(--shadow-sm);
+  -webkit-tap-highlight-color: transparent;
+}
+.bq .opt small { font-size: .84rem; margin-top: 3px; }
+
+/* Auf dem Handy gibt es kein Hover, aber ein Antippen. Ohne diese Rückmeldung
+   wirkt die Fläche beim Warten auf den automatischen Weiterschritt tot. */
+.bq .opt:active { transform: scale(.985); }
+
+/* Kürzel wie bei Typeform: A, B, C … Auf der Tastatur wählt der Buchstabe die
+   Antwort direkt aus, deshalb steht er sichtbar dran. */
+.bq .opt__taste {
+  flex: none;
+  display: none;
+  min-width: 1.55rem;
+  height: 1.55rem;
+  margin-left: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xs);
+  font-family: var(--font-display);
+  font-size: .76rem;
+  font-weight: 700;
+  color: var(--ink-mute);
+  align-items: center;
+  justify-content: center;
+}
+@media (hover: hover) and (min-width: 700px) {
+  .bq .opt__taste { display: inline-flex; }
+}
+.bq .opt.is-picked .opt__taste {
+  border-color: var(--red-700);
+  color: var(--red-700);
+}
+
+/* --------------------------------------------------------------------------
+   5. Felder
+   -------------------------------------------------------------------------- */
+.bq .field { margin-top: .9rem; }
+.bq .field input,
+.bq .field select,
+.bq .field textarea {
+  /* 16 px ist keine Geschmacksfrage: Darunter zoomt iOS beim Hineintippen in
+     das Feld hinein und die Seite steht danach verschoben. */
+  font-size: 16px;
+  padding: .85rem .95rem;
+  border-radius: var(--r-sm);
+  background: #fff;
+}
+.bq .fields-2 { gap: 0 .8rem; }
+.bq .consent { margin-top: 1.2rem; font-size: .86rem; }
+
+.bq__kleingedruckt {
+  margin-top: 1.1rem;
+  font-size: .78rem;
+  line-height: 1.5;
+  color: var(--ink-mute);
+}
+.bq__kleingedruckt a { text-decoration: underline; text-underline-offset: 2px; }
+
+/* --------------------------------------------------------------------------
+   6. Startbild
+   -------------------------------------------------------------------------- */
+.bq__start { text-align: center; }
+.bq__start .bq__frage { font-size: clamp(1.75rem, 1.2rem + 2.9vw, 2.6rem); }
+.bq__signet {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 1.3rem;
+  filter: drop-shadow(0 12px 22px rgba(7, 27, 50, .18));
+}
+.bq__start .bq__hinweis {
+  max-width: 26rem;
+  margin-inline: auto;
+  font-size: 1rem;
+}
+
+.bq__marker {
+  display: grid;
+  gap: .55rem;
+  margin: 1.8rem auto 0;
+  max-width: 22rem;
+  text-align: left;
+}
+.bq__marker li {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  font-size: .92rem;
+  color: var(--ink-soft);
+}
+.bq__marker svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: .25rem;
+  color: var(--gruen-700);
+}
+
+/* --------------------------------------------------------------------------
+   7. Terminwahl
+   Tagesreiter, Zeiten und die Zusammenfassung des gewählten Termins kommen
+   unverändert aus site.css (.book__*) — dieselbe Optik wie das Widget auf
+   „Über uns", nur in der Vollbild-Schale.
+   -------------------------------------------------------------------------- */
+.bq .book__tage { margin-top: 1.4rem; }
+.bq .book__zeit { padding: .8rem .4rem; font-size: 1rem; }
+.bq .book__tag { min-width: 4.8rem; }
+.bq .book__lade { padding: 2.4rem 1rem; }
+
+/* --------------------------------------------------------------------------
+   8. Abschluss
+   -------------------------------------------------------------------------- */
+.bq__fertig { text-align: center; }
+.bq__haken {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 1.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gruen-050);
+  color: var(--gruen-700);
+}
+.bq__haken svg { width: 28px; height: 28px; }
+
+.bq__termin {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: .75rem 1.3rem;
+  border-radius: var(--r-pill);
+  background: var(--navy-050);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.bq__weiterlesen {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .6rem;
+  margin-top: 2rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. Fussleiste mit dem Knopf
+   -------------------------------------------------------------------------- */
+.bq__unten {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  padding: .9rem var(--gutter);
+  padding-bottom: max(.9rem, env(safe-area-inset-bottom));
+  /* Der Verlauf deckt schnell ab: Beim Scrollen im Kontaktschritt läuft Text
+     unter die Leiste, und halb durchscheinende Buchstaben unter dem Knopf
+     sehen nach Fehler aus. Die Unschärfe fängt den Rest. */
+  background: linear-gradient(180deg, rgba(244, 240, 239, 0) 0%, var(--ivory) 28%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+/* Ausgeblendet wird nur der Knopf — die Leiste selbst bleibt stehen, weil in
+   ihr Impressum und Datenschutz verlinkt sind. */
+.bq__weiter[hidden],
+.bq__tastenhinweis[hidden] { display: none; }
+
+.bq__unten-inner {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  width: 100%;
+  max-width: 33rem;
+  margin-inline: auto;
+}
+
+.bq__weiter {
+  flex: 1 1 auto;
+  justify-content: center;
+  min-height: 3.35rem;
+  font-size: 1.05rem;
+}
+.bq__weiter:disabled { opacity: .55; cursor: default; transform: none; }
+
+.bq__tastenhinweis {
+  flex: none;
+  font-size: .76rem;
+  color: var(--ink-mute);
+  display: none;
+}
+.bq__tastenhinweis kbd {
+  font-family: var(--font-display);
+  font-size: .72rem;
+  font-weight: 700;
+  padding: .16rem .4rem;
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: var(--r-xs);
+  background: #fff;
+}
+@media (hover: hover) and (min-width: 700px) {
+  .bq__tastenhinweis { display: block; }
+}
+
+/* Die Meldung steht in der Bühne, direkt unter dem laufenden Schritt: Bei der
+   Terminwahl trägt die Fussleiste keinen Knopf und ist ausgeblendet — eine
+   Meldung darin wäre unsichtbar, genau wenn sie gebraucht wird (belegter
+   Termin). */
+.bq__recht {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: .25rem .55rem;
+  margin: .7rem auto 0;
+  max-width: 33rem;
+  font-size: .74rem;
+  color: var(--ink-mute);
+}
+.bq__recht a,
+.bq__recht button {
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+/* Der Trennpunkt gehört zum Eintrag dahinter. Verschwindet der Eintrag,
+   verschwindet der Punkt mit ihm. */
+.bq__recht > *:not(:first-child)::before {
+  content: "·";
+  display: inline-block;
+  margin-right: .55rem;
+  text-decoration: none;
+  color: var(--ink-mute);
+}
+.bq__recht a:hover,
+.bq__recht button:hover { color: var(--ink); }
+
+.bq__fehler {
+  margin-top: 1.2rem;
+  padding: .85rem 1rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--red-100);
+  background: var(--red-050);
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--red-800);
+  font-weight: 600;
+}
+.bq__fehler[hidden] { display: none; }
+
+/* --------------------------------------------------------------------------
+   10. Ohne JavaScript
+   Ohne Skript gibt es keine Schritte — dann steht hier ein ehrlicher Hinweis
+   mit den beiden Wegen, die ohne Skript funktionieren.
+   -------------------------------------------------------------------------- */
+.bq__ohne-js {
+  max-width: 33rem;
+  margin: 0 auto;
+  padding: var(--gutter);
+  text-align: center;
+}
+.js .bq__ohne-js { display: none; }
+/* Umgekehrt: Solange kein Skript läuft, bleibt die Schale verborgen. Sonst
+   stünden alle Fragen als eine lange Liste untereinander. */
+html:not(.js) .bq__buehne,
+html:not(.js) .bq__unten { display: none; }
+
+/* --------------------------------------------------------------------------
+   11. Grössere Bildschirme
+   Die Seite bleibt auch am Rechner ein Vollbild-Formular — sie wird nur
+   luftiger. Ein zweispaltiges Layout würde die Führung „eine Frage, eine
+   Entscheidung" aufgeben.
+   -------------------------------------------------------------------------- */
+@media (min-width: 700px) {
+  .bq__form { padding-block: 3rem; }
+  .bq__opts { gap: .65rem; }
+  .bq .opt { min-height: 3.3rem; }
+  .bq__weiter { flex: 0 0 auto; min-width: 14rem; }
+  .bq__unten-inner { justify-content: space-between; }
+}
