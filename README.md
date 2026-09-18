@@ -275,11 +275,24 @@ und endet in einer Zusage statt in einer Weiterleitung.
 | `assets/js/beratung.js` | Ablauf, Wunschzeiten, Absenden |
 | `assets/css/beratung.css` | nur die Vollbild-Schale; setzt `site.css` voraus |
 
-**Adressen** — `/beratung`, `/instagram` und `/insta` führen alle auf
-`beratung.html` (Weiterleitungen in `netlify.toml`). Für die Auswertung an den Link
-in der Biografie `?utm_source=instagram&utm_medium=bio` anhängen; `main.js` legt
-die Parameter im `sessionStorage` ab und schickt sie beim Absenden als `kampagne`
-mit ins CRM.
+**Adressen** — vier Wege, eine Datei (Weiterleitungen in `netlify.toml`):
+
+| Adresse | gedacht für | Kennung |
+|---|---|---|
+| `/beratungsanfrage` | Instagram-Biografie | `utm_source=instagram&utm_medium=bio`, im Ziel der Weiterleitung |
+| `/beratung` | Visitenkarte, Signatur, alles ohne Quelle | keine |
+| `/instagram`, `/insta` | Story-Sticker, Kommentare | keine |
+
+Die Kennung der Bio-Adresse steht bewusst im Ziel der Weiterleitung und nicht im
+Link selbst: In der Biografie soll `finanz-medizin.com/beratungsanfrage` stehen,
+nicht dieselbe Adresse mit angehängtem `?utm_source=…`. Der Besucher landet
+trotzdem auf der Fassung mit den Parametern, `main.js` legt sie im
+`sessionStorage` ab und schickt sie beim Absenden als `kampagne` mit ins CRM.
+
+Für eine weitere Quelle (Story, Anzeige, Newsletter) eine Zeile nach demselben
+Muster ergänzen. Achtung: Trägt das Ziel eine eigene Abfragezeichenkette, reicht
+Netlify die des Aufrufs nicht mehr durch — angehängte Parameter am Aufruf gehen
+dann verloren.
 
 #### Vorschläge, keine Buchung
 

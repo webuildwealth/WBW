@@ -132,9 +132,28 @@ object-src 'none'\
 #  Bequeme Kurz-URLs für Anzeigen und Visitenkarten.
 #  Ziel ist immer die .html-Variante, damit es genau eine kanonische Adresse gibt.
 # -----------------------------------------------------------------------------
-# Der Kurzcheck. /beratung ist die Adresse fuer die Instagram-Biografie,
-# /instagram und /insta sind Zweitwege fuer Story-Sticker und Kommentare —
-# alle drei landen auf derselben Datei, damit es genau eine Fassung gibt.
+# Der Kurzcheck. Alle Adressen landen auf derselben Datei, damit es genau eine
+# Fassung gibt.
+#
+# /beratungsanfrage ist die Adresse fuer die Instagram-Biografie. Sie traegt die
+# Kampagnen-Kennung nicht im Link, sondern hier im Ziel: In der Bio soll
+# "finanz-medizin.com/beratungsanfrage" stehen und kein angehaengtes
+# "?utm_source=instagram&utm_medium=bio" — das liest sich schlecht und laedt zum
+# Abtippen von Fehlern ein. Der Besucher landet trotzdem auf der Adresse mit den
+# Parametern, main.js legt sie im sessionStorage ab und schickt sie beim
+# Absenden als "kampagne" mit ins CRM. So bleibt sichtbar, woher die Anfrage kam.
+#
+# Wichtig beim Aendern: Traegt das Ziel eine eigene Abfragezeichenkette, reicht
+# Netlify die des Aufrufs NICHT mehr durch. Wer hier Parameter ergaenzt,
+# ueberschreibt also alles, was am Aufruf hing.
+[[redirects]]
+  from = "/beratungsanfrage"
+  to = "/beratung.html?utm_source=instagram&utm_medium=bio"
+  status = 301
+  force = true
+
+# Die neutrale Adresse ohne Kennung — fuer Visitenkarten, E-Mail-Signaturen und
+# ueberall dort, wo Instagram nicht die Quelle ist.
 [[redirects]]
   from = "/beratung"
   to = "/beratung.html"
