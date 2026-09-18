@@ -4,6 +4,16 @@ Statische Website mit drei zielgruppenspezifischen Landingpages und Lead-Funnels
 **Finanz-Medizin** — die auf Heilberufe spezialisierte Marke von We Build Wealth
 (Einzelunternehmen, Inhaber Benedict Hintz).
 
+> **Dieses Repository enthält ausschließlich finanz-medizin.com.** We Build Wealth
+> hat ein eigenes Repository. Die Trennung ist gewollt: Beide Marken treten im Netz
+> eigenständig auf — rechtlich bleibt Finanz-Medizin eine Marke des
+> Einzelunternehmens, was das Impressum vollständig ausweist.
+>
+> **Das Repository ist privat und soll es bleiben.** Solange es öffentlich war,
+> stand es bei der Suche nach „Finanz-Medizin Benedict Hintz" vor der Website
+> selbst — Suchmaschinen und Sprachmodelle fanden den Quelltext statt des
+> Angebots.
+
 Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fertig.
 
 > **Hosterwechsel geplant?** [DEPLOYMENT.md](DEPLOYMENT.md) listet auf, was die Seite

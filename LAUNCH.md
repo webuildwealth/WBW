@@ -22,7 +22,7 @@ Zeitbedarf: Schritt 1 fünf Minuten, Schritt 3 zehn, Schritt 4 zwanzig.
 
 Damit deployt jede Änderung automatisch.
 
-1. *Add new site* → *Import an existing project* → GitHub → Repository `webuildwealth/WBW`
+1. *Add new site* → *Import an existing project* → GitHub → Repository `webuildwealth/finanz-medizin`
 2. Branch: `claude/finanzen-medizin-website-9set7w`
 3. Build command: **leer lassen**
 4. Publish directory: **`.`**

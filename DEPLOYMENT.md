@@ -99,7 +99,7 @@ Der schnellste Weg vom eigenen Rechner aus. Dauert beim ersten Mal etwa fünf Mi
 
 ```bash
 # 1 · Repo holen
-git clone https://github.com/webuildwealth/WBW.git
+git clone https://github.com/webuildwealth/finanz-medizin.git
 cd WBW
 git checkout claude/finanzen-medizin-website-9set7w
 
