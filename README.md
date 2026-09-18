@@ -37,6 +37,7 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `llms.txt` | Maschinenlesbare Kurzfassung der Website für Sprachmodelle | — |
 | `PROFILTEXTE.md` | Fertige Texte für Google-Profil, LinkedIn und Bewertungen | — |
 | `tools/textlaengen.py` | Prüft die Profiltexte gegen die Zeichenlimits der Plattformen | — |
+| `marke/` | Ausgangsdateien der Marke (Archiv, nicht die Web-Fassungen) | — |
 | `tools/strukturdaten.py` | Erzeugt die JSON-LD-Blöcke aller Seiten neu | — |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
