@@ -29,19 +29,33 @@ ENDE = "<!-- ===== Ende Strukturdaten ===== -->"
 #  Profile, unter denen die Marke sonst noch auffindbar ist.
 #
 #  Das ist das wichtigste Feld dieser ganzen Datei. sameAs ist die Verbindung
-#  zwischen der Website und allen anderen Orten, an denen dieselbe Firma steht —
-#  Google Unternehmensprofil, LinkedIn, Bewertungsportale, YouTube. Erst darueber
-#  erkennen Suchmaschinen und Sprachmodelle, dass es sich um EINE Einheit handelt
-#  und nicht um zufaellig gleichnamige Treffer. Ohne sameAs bleibt Finanz-Medizin
-#  fuer jedes System ein unverbundener Einzeleintrag.
+#  zwischen der Website und allen anderen Orten, an denen dieselbe Firma steht.
+#  Erst darueber erkennen Suchmaschinen und Sprachmodelle, dass es sich um EINE
+#  Einheit handelt und nicht um zufaellig gleichnamige Treffer.
 #
-#  Hier die vollstaendigen URLs eintragen, sobald die Profile stehen, dann das
-#  Skript erneut laufen lassen. Beispiel:
-#      "https://www.linkedin.com/company/finanz-medizin/",
-#      "https://www.google.com/maps/place/?cid=...",
-#      "https://www.provenexpert.com/finanz-medizin/",
+#  Getrennt nach Firma und Person, weil sameAs am falschen Knoten schadet: Ein
+#  Instagram-Konto der Marke ist kein Profil von Benedict Hintz, und ein
+#  persoenliches LinkedIn-Profil ist keines der Firma.
+#
+#  Regel fuer neue Eintraege: immer die blanke Profil-URL, ohne Parameter.
+#  Share-Tokens (stkn=), Kampagnenkennungen (utm_source=) und Sitzungsdaten
+#  gehoeren nicht in Strukturdaten — sie sind fluechtig, teils personenbezogen,
+#  und machen aus einer stabilen Kennung eine, die in einem halben Jahr ins
+#  Leere zeigt.
 # -----------------------------------------------------------------------------
-PROFILE: list[str] = []
+PROFILE: list[str] = [
+    "https://www.provenexpert.com/de-de/finanz-medizin/",
+    "https://de.trustpilot.com/review/finanz-medizin.com",
+    "https://www.instagram.com/finanz.medizin/",
+    # Google Unternehmensprofil. Der Kurzlink ist die Fassung, die das Profil
+    # selbst unter "Profil teilen" ausgibt. Falls spaeter die ausgeschriebene
+    # maps.google.com-Adresse vorliegt, ist die stabiler — dann hier ersetzen.
+    "https://maps.app.goo.gl/RutqhUqfo4KG87rTA",
+]
+
+#  Profile, die zur Person Benedict Hintz gehoeren — nicht zur Marke.
+#  Hier gehoert das persoenliche LinkedIn-Profil hinein, sobald es steht.
+PROFILE_PERSON: list[str] = []
 
 ORG = f"{BASIS}/#organisation"
 PERSON = f"{BASIS}/#benedict-hintz"
@@ -247,8 +261,8 @@ def person() -> dict:
             },
         ],
     }
-    if PROFILE:
-        knoten["sameAs"] = PROFILE
+    if PROFILE_PERSON:
+        knoten["sameAs"] = PROFILE_PERSON
     return knoten
 
 
