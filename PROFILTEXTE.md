@@ -28,15 +28,15 @@ Verbindliche Fassung, überall identisch:
 Finanz-Medizin
 Calvinstraße 3
 10557 Berlin
-[neue Rufnummer — siehe 1.2]
+0174 2920781
 info@finanz-medizin.com
 https://www.finanz-medizin.com
 ```
 
-> **Offen:** Die Rufnummer `0176 43229851` teilt sich Finanz-Medizin bislang mit
-> We Build Wealth. Solange das so ist, trägt die Trennung nicht — und beim
-> Google-Profil ist es das größte Sperrrisiko. Abschnitt 1.2 erklärt, warum und
-> was zu tun ist.
+> **Erledigt:** Finanz-Medizin hat eine eigene Rufnummer (`0174 2920781`), We
+> Build Wealth behält `0176 43229851`. Damit ist das größte Sperrrisiko beim
+> zweiten Google-Profil aus dem Weg. Abschnitt 1.2 erklärt, warum das der
+> wichtigste Einzelpunkt war.
 
 ---
 
@@ -72,25 +72,24 @@ Finanz-Medizin trifft das zu. Es muss nur von außen erkennbar sein.
 | Website | (WBW-Domain) | finanz-medizin.com | getrennt |
 | E-Mail | (WBW-Adresse) | info@finanz-medizin.com | getrennt |
 | Kundengruppe | allgemein | ausschließlich Heilberufe | getrennt |
-| **Telefon** | 0176 43229851 | **dieselbe Nummer** | **offen** |
+| Telefon | 0176 43229851 | 0174 2920781 | getrennt |
 | **Primärkategorie** | vermutlich Finanzberater | Finanzberater | **offen** |
 | Anschrift | Calvinstraße 3 | Calvinstraße 3 | unkritisch, siehe 1.4 |
 
-### Die Telefonnummer ist der Knackpunkt
+### Die Telefonnummer war der Knackpunkt — sie ist erledigt
 
-Von allen Merkmalen wiegt sie am schwersten. Eine geteilte Rufnummer ist für
+Von allen Merkmalen wiegt sie am schwersten: Eine geteilte Rufnummer ist für
 Googles Abgleich das stärkste Einzelsignal dafür, dass zwei Einträge dieselbe
 Firma sind — stärker als die Adresse.
 
-**Besorg eine zweite Nummer für Finanz-Medizin.** Eine VoIP-Nummer bei Sipgate,
-Placetel oder einem vergleichbaren Anbieter kostet wenige Euro im Monat und lässt
-sich auf dein Handy umleiten; eine zweite SIM tut es auch. Das ist keine
-Formalität, sondern die Bedingung, unter der die Trennung überhaupt trägt — nach
-außen wie gegenüber Google.
+Finanz-Medizin hat jetzt `0174 2920781`, We Build Wealth behält
+`0176 43229851`. Die neue Nummer ist durch das gesamte Projekt gezogen: 32
+Stellen in Impressum, Strukturdaten, `llms.txt` und allen Seiten, in allen drei
+Schreibweisen (sichtbarer Text, `tel:`-Links, internationale Form).
 
-Wenn du die Nummer hast, sag mir Bescheid: Sie steht an 19 Stellen im Projekt
-(Impressum, Strukturdaten, `llms.txt` und alle Seiten), das ziehe ich in einem
-Durchgang nach.
+**Wichtig beim Eintragen ins Google-Profil:** exakt diese Schreibweise
+verwenden. Weicht sie ab, fällt genau der Abgleich wieder aus, den sie
+herstellen soll.
 
 ### Kategorien auseinanderziehen
 
@@ -688,7 +687,7 @@ abmahnfähig — und bei einem erlaubnispflichtigen Gewerbe schaut man genauer h
 ```
 Anbieter: Benedict Hintz, Einzelunternehmer
 Calvinstraße 3, 10557 Berlin, Deutschland
-Telefon: [neue Rufnummer] · E-Mail: info@finanz-medizin.com
+Telefon: 0174 2920781 · E-Mail: info@finanz-medizin.com
 
 Finanz-Medizin ist eine Marke und ein Geschäftsbereich des Einzelunternehmens
 We Build Wealth, Inhaber Benedict Hintz. Vertragspartner ist in allen Fällen
