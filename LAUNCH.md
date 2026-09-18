@@ -118,7 +118,7 @@ akzeptiert.
 | `BOOKING_TIMEZONE` | `Europe/Berlin` | Zeitzone der angezeigten Zeiten |
 | `BOOKING_HOURS` | `9-18` | frühester und spätester Beginn |
 | `BOOKING_DAYS` | `1,2,3,4,5` | Wochentage, 1 = Montag |
-| `BOOKING_DURATION_MIN` | `25` | Gesprächsdauer |
+| `BOOKING_DURATION_MIN` | `15` | Gesprächsdauer — so lang wird der Kalendereintrag |
 | `BOOKING_LEAD_HOURS` | `24` | Mindestvorlauf bis zum Termin |
 | `BOOKING_HORIZON_DAYS` | `14` | wie weit im Voraus buchbar |
 
@@ -180,10 +180,13 @@ Anders als das Buchungs-Widget auf „Über uns" legt der Kurzcheck **keinen**
 Kalendereintrag an: Der Interessent schlägt bis zu drei Zeiten vor, Sie
 melden sich und bestätigen eine davon. Der Kalender aus Schritt 4 dient ihm
 nur als Vorschlagsliste — er zeigt nur Zeiten, in denen Sie wirklich können.
-Die Seite nennt „rund 15 Minuten"; das ist eine Zusage im Text und
-unabhängig von `BOOKING_DURATION_MIN` (Vorgabe 25), das nur die Rasterung
-der angebotenen Zeiten bestimmt. Einzelheiten stehen in README.md unter
-„Kurzcheck für Social Media".
+Das Erstgespräch dauert auf allen Seiten „rund 15 Minuten"; ebenso lang
+ist die Vorgabe für `BOOKING_DURATION_MIN`, also für die Kalendereinträge
+des Buchungs-Widgets. Wenn Sie die Länge ändern wollen, gehören beide
+Stellen zusammen: der Text auf den Seiten und die Variable in Netlify.
+Achtung: Eine dort bereits gesetzte Variable sticht die Vorgabe im Code —
+steht in Netlify noch `25`, bleibt es bei 25. Einzelheiten stehen in
+README.md unter „Kurzcheck für Social Media".
 
 Auf der Über-uns-Seite steht statt eines Porträts eine Signet-Fläche.
 Wenn ein Foto vorliegt, tritt es an ihre Stelle; die Gestaltung dafür

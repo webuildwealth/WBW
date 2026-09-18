@@ -308,10 +308,12 @@ aussteht, verschwindet der Weiter-Knopf: Sonst käme man per Tastatur an der
 Auswahl vorbei und landete bei Tageszeiten, obwohl der Kalender gleich darauf
 echte Uhrzeiten liefert.
 
-**Gesprächsdauer** — die Seite nennt „rund 15 Minuten". Das ist eine Zusage im
-Text und hat nichts mit `BOOKING_DURATION_MIN` zu tun: Diese Variable (Vorgabe
-25) bestimmt nur, welche Startzeiten `/api/slots` als frei ansieht. Wer die
-Vorschlagsliste enger stellen will, setzt sie in Netlify auf `15`.
+**Gesprächsdauer** — „rund 15 Minuten", und zwar überall: im Text dieser Seite,
+auf den Landingpages und als Vorgabe für `BOOKING_DURATION_MIN`. Die Variable
+bestimmt, welche Startzeiten `/api/slots` als frei ansieht und wie lang der
+Kalendereintrag des Buchungs-Widgets wird. Wer die Länge ändert, ändert beides —
+sonst verspricht die Seite etwas anderes, als der Kalender blockt. Eine in
+Netlify gesetzte Variable sticht dabei die Vorgabe im Code.
 
 **Im CRM** — die Wunschzeiten bekommen in der Close-Notiz einen eigenen
 Abschnitt `WANN ZURÜCKRUFEN`, jede Zeit in einer Zeile. Sie stehen dafür in

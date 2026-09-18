@@ -7,7 +7,7 @@
 
      unter 25 %   unsichtbar   — er soll erst verstehen
      25 – 42 %    weich        — „Ihre Situation prüfen"
-     über 42 %    bestimmt     — „25 Minuten, kostenfrei" mit Vertrauenszeile
+     über 42 %    bestimmt     — „15 Minuten, kostenfrei" mit Vertrauenszeile
 
    Die 42 % sind gemessen, nicht geraten: Auf den Landingpages rückt der Funnel
    je nach Seite ab 56 bis 78 % Lesetiefe ins Bild, und dort schweigt die Leiste.
@@ -52,7 +52,7 @@
       btn:   von('weich-btn',   'Ihre Situation prüfen')
     },
     fest: {
-      titel: von('fest-titel', '25 Minuten Erstgespräch'),
+      titel: von('fest-titel', '15 Minuten Erstgespräch'),
       text:  von('fest-text',  'Kostenfrei und unverbindlich.'),
       btn:   von('fest-btn',   'Termin ansehen')
     }
