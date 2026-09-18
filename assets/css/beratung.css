@@ -256,6 +256,22 @@
   background: #fff;
 }
 .bq .fields-2 { gap: 0 .8rem; }
+
+/* Telefon und E-Mail sind beide Pflicht — das steht am Feld, nicht nur im
+   Fehlerfall. Ein Sternchen erklärt sich nicht von selbst. */
+.bq__pflicht {
+  font-family: var(--font-body);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--red-700);
+  background: var(--red-050);
+  border-radius: var(--r-xs);
+  padding: .08rem .32rem;
+  margin-left: .3rem;
+  vertical-align: .05em;
+}
 .bq .consent { margin-top: 1.2rem; font-size: .86rem; }
 
 .bq__kleingedruckt {
@@ -306,15 +322,82 @@
 }
 
 /* --------------------------------------------------------------------------
-   7. Terminwahl
-   Tagesreiter, Zeiten und die Zusammenfassung des gewählten Termins kommen
-   unverändert aus site.css (.book__*) — dieselbe Optik wie das Widget auf
-   „Über uns", nur in der Vollbild-Schale.
+   7. Wunschzeiten
+   Tagesreiter und Uhrzeiten kommen unverändert aus site.css (.book__*) —
+   dieselbe Optik wie das Buchungs-Widget auf „Über uns", nur in der
+   Vollbild-Schale. Anders als dort wird hier nichts gebucht: Es sind bis zu
+   drei Vorschläge, und deshalb bleiben mehrere Zeiten gleichzeitig gewählt.
    -------------------------------------------------------------------------- */
 .bq .book__tage { margin-top: 1.4rem; }
 .bq .book__zeit { padding: .8rem .4rem; font-size: 1rem; }
 .bq .book__tag { min-width: 4.8rem; }
 .bq .book__lade { padding: 2.4rem 1rem; }
+
+/* Ein Tagesreiter mit schon gewählten Zeiten wird markiert. Ohne das müsste
+   man die Reiter durchklicken, um die eigene Auswahl wiederzufinden. */
+.bq .book__tag.hat-wahl {
+  border-color: var(--red-700);
+  background: var(--red-050);
+}
+
+/* Die gewählten Zeiten als Liste — unter der Auswahl, auf dem Kontaktschritt
+   und im Abschluss. Dort jeweils nur zum Lesen. */
+.bq__gewaehlt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  align-items: center;
+  margin-top: 1.3rem;
+  padding: .9rem 1rem;
+  border-radius: var(--r-md);
+  background: var(--navy-050);
+}
+.bq__gewaehlt[hidden] { display: none; }
+.bq__gewaehlt--mitte { justify-content: center; }
+
+.bq__gewaehlt-titel {
+  flex: 1 0 100%;
+  font-family: var(--font-display);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: .15rem;
+}
+
+.bq__marke-zeit {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .4rem .3rem .4rem .7rem;
+  border-radius: var(--r-pill);
+  background: #fff;
+  border: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: .84rem;
+  font-weight: 700;
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+/* Ohne Wegnehm-Knopf (nur zum Lesen) fehlt rechts der Ausgleich. Die Klasse
+   setzt beratung.js — :has() wäre kürzer, wird aber von älteren Fassungen von
+   Safari nicht verstanden, und der In-App-Browser von Instagram ist genau die
+   Stelle, an der alte WebKit-Fassungen auftauchen. */
+.bq__marke-zeit--lesen { padding-right: .7rem; }
+
+.bq__weg {
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background: var(--navy-050);
+  color: var(--ink-mute);
+  font-size: .95rem;
+  line-height: 1;
+}
+.bq__weg:hover { background: var(--red-050); color: var(--red-700); }
 
 /* --------------------------------------------------------------------------
    8. Abschluss
@@ -331,17 +414,6 @@
   color: var(--gruen-700);
 }
 .bq__haken svg { width: 28px; height: 28px; }
-
-.bq__termin {
-  display: inline-block;
-  margin-top: 1.2rem;
-  padding: .75rem 1.3rem;
-  border-radius: var(--r-pill);
-  background: var(--navy-050);
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--ink);
-}
 
 .bq__weiterlesen {
   display: flex;

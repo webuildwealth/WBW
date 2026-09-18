@@ -1,25 +1,32 @@
 /* ==========================================================================
    finanz-medizin.com — Kurzcheck (beratung.html)
 
-   Eine Frage je Bildschirm, am Ende ein echter Termin. Gedacht für Verkehr
-   aus Instagram: Der Link in der Biografie führt hierher, nicht auf eine
-   Landingpage mit 3.000 Wörtern.
+   Eine Frage je Bildschirm, am Ende Wunschzeiten für den Rückruf. Gedacht für
+   Verkehr aus Instagram: Der Link in der Biografie führt hierher, nicht auf
+   eine Landingpage mit 3.000 Wörtern.
 
    Ablauf
-     Startbild → fünf Fragen → Terminwahl → Kontakt → Bestätigung
+     Startbild → fünf Fragen → bis zu drei Wunschzeiten → Kontakt → Bestätigung
 
-   Zwei Wege, je nachdem was der Kalender hergibt:
-     „termin"   /api/slots liefert freie Zeiten → Buchung über /api/booking.
-                Der Interessent wählt selbst, der Termin steht sofort.
+   Der Termin wird hier ausdrücklich NICHT verbindlich gebucht. Der
+   Interessent schlägt eine bis drei Zeiten vor, wir melden uns und bestätigen
+   eine davon. Das ist der Unterschied zum Widget auf „Über uns", das über
+   /api/booking sofort einen Kalendereintrag anlegt: Dort weiss der Besucher,
+   worauf er sich einlässt — wer aus einer Story kommt, will erst wissen, ob
+   das überhaupt etwas für ihn ist. Drei Vorschläge kosten ihn nichts und
+   ersparen uns das Hin und Her per Nachricht.
+
+   Woher die angebotenen Zeiten kommen, hängt vom Kalender ab:
+     „termin"   /api/slots liefert freie Zeiten → zur Auswahl stehen echte
+                Zeiten, in denen wir tatsächlich können. Gebucht wird nichts,
+                der Kalender dient nur als Vorschlagsliste.
      „rueckruf" Kalender nicht eingerichtet, nicht erreichbar oder voll →
-                statt der Zeiten wird nach der Erreichbarkeit gefragt und der
-                Lead geht über /api/lead ins CRM.
+                zur Auswahl stehen Tageszeiten („vormittags", „abends").
+   In beiden Fällen geht die Anfrage über /api/lead ins CRM.
 
-   Der Grundsatz ist derselbe wie beim Widget auf „Über uns": Die Seite
-   verspricht nie einen Termin, den sie nicht vergeben kann. Deshalb wird der
-   Kalender schon beim Laden abgefragt — bis der Interessent fünf Fragen
-   beantwortet hat, ist die Antwort längst da und niemand wartet auf einen
-   Ladebalken.
+   Der Kalender wird schon beim Laden abgefragt, nicht erst beim Terminschritt
+   — bis der Interessent fünf Fragen beantwortet hat, ist die Antwort längst
+   da und niemand wartet auf einen Ladebalken.
 
    Kein Aufruf an Dritte: Alles läuft über die eigenen Endpunkte, es gibt
    keinen fremden Rahmen und keine fremde Einbettung.
@@ -31,8 +38,8 @@
   if (!wurzel) return;
 
   var form = wurzel.querySelector('[data-bq-form]');
-  var tastenhinweis = wurzel.querySelector('[data-bq-tastenhinweis]');
   var knopf = wurzel.querySelector('[data-bq-weiter]');
+  var tastenhinweis = wurzel.querySelector('[data-bq-tastenhinweis]');
   var zurueckKnopf = wurzel.querySelector('[data-bq-zurueck]');
   var balken = wurzel.querySelector('[data-bq-balken]');
   var balkenSpur = wurzel.querySelector('[data-bq-balken-spur]');
@@ -42,6 +49,10 @@
 
   var schritte = Array.prototype.slice.call(form.querySelectorAll('.bq__schritt'));
   if (!schritte.length) return;
+
+  /* Mehr als drei Vorschläge helfen niemandem: Wer alles anklickt, sagt nichts
+     aus — und wir müssten trotzdem eine Zeit auswählen und bestätigen. */
+  var MAX_WUENSCHE = 3;
 
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
   var BUCHSTABEN = 'ABCDEFGHIJ';
@@ -55,15 +66,13 @@
 
   var zustand = {
     i: 0,
-    daten: {},          /* Feldname → Antwort, für CRM und Kalender */
+    daten: {},          /* Feldname → Antwort, wandert so ins CRM */
     beschriftung: {},   /* Feldname → lesbare Beschriftung */
+    kontakt: {},        /* Vorname, E-Mail … aus dem letzten Schritt */
     modus: null,        /* "termin" | "rueckruf", steht nach /api/slots fest */
     tage: [],
     tag: null,
-    slot: null,
-    kontakt: {},        /* Vorname, E-Mail … aus dem letzten Schritt */
-    dauer: 25,
-    zone: 'Europe/Berlin',
+    wuensche: [],       /* gewählte Zeiten: { iso, text } */
     gesendet: false,
     t0: Date.now()
   };
@@ -91,8 +100,7 @@
         if (!d || !d.ok || !d.tage || !d.tage.length) { zustand.modus = 'rueckruf'; return; }
         zustand.tage = d.tage;
         zustand.tag = d.tage[0];
-        zustand.dauer = d.dauer || zustand.dauer;
-        zustand.zone = d.zone || zustand.zone;
+        zustand.zone = d.zone || 'Europe/Berlin';
         zustand.modus = 'termin';
       })
       .catch(function () { zustand.modus = 'rueckruf'; });
@@ -101,19 +109,25 @@
   var kalenderBereit = ladeKalender();
 
   /* --------------------------------------------------------- Zeit formatieren */
+  function zone() { return zustand.zone || 'Europe/Berlin'; }
+
   function uhrzeit(iso) {
     return new Intl.DateTimeFormat('de-DE', {
-      timeZone: zustand.zone, hour: '2-digit', minute: '2-digit', hour12: false
+      timeZone: zone(), hour: '2-digit', minute: '2-digit', hour12: false
     }).format(new Date(iso));
   }
 
   function langesDatum(iso) {
     var teile = new Intl.DateTimeFormat('de-DE', {
-      timeZone: zustand.zone, weekday: 'short', day: 'numeric', month: 'long'
+      timeZone: zone(), weekday: 'short', day: 'numeric', month: 'long'
     }).formatToParts(new Date(iso));
     var t = {};
     teile.forEach(function (p) { if (p.type !== 'literal') t[p.type] = p.value; });
     return t.weekday + ', ' + t.day + '. ' + t.month;
+  }
+
+  function alsText(iso) {
+    return langesDatum(iso) + ', ' + uhrzeit(iso) + ' Uhr';
   }
 
   /* -------------------------------------------------------- Antwortflächen */
@@ -149,6 +163,16 @@
     var mehrfach = schritt.hasAttribute('data-multi');
 
     if (mehrfach) {
+      var grenze = parseInt(schritt.getAttribute('data-max'), 10);
+      var schon = schritt.querySelectorAll('.opt.is-picked').length;
+      /* Grenze erreicht und das hier ist eine zusätzliche Auswahl: nicht
+         stillschweigend etwas anderes abwählen, sondern sagen, was los ist. */
+      if (grenze && schon >= grenze && !opt.classList.contains('is-picked')) {
+        ruckeln(opt);
+        zeigeFehler('Mehr als ' + grenze + ' brauchen wir nicht — nimm eine Auswahl weg, ' +
+          'wenn du sie tauschen willst.');
+        return;
+      }
       var an = opt.classList.toggle('is-picked');
       opt.setAttribute('aria-pressed', String(an));
     } else {
@@ -259,13 +283,14 @@
       zurueckKnopf.hidden = zustand.i === 0 || schritt.hasAttribute('data-fertig');
     }
 
-    /* Der Knopf trägt je Schritt eine eigene Aufschrift; beim Schlussbild und
-       bei der Terminwahl (dort führt die gewählte Zeit weiter) gibt es keinen.
-       Ausgeblendet wird nur der Knopf, nicht die Leiste: In ihr stehen
+    /* Der Knopf trägt je Schritt eine eigene Aufschrift. Weg ist er nur auf dem
+       Schlussbild und solange der Kalender noch antwortet — dann gibt es nichts
+       zu wählen und nichts zu bestätigen.
+       Ausgeblendet wird immer nur der Knopf, nie die Leiste: In ihr stehen
        Impressum und Datenschutz, und die müssen von jeder Ansicht aus
        erreichbar bleiben. */
     knopf.hidden = schritt.hasAttribute('data-fertig') ||
-      (schritt.hasAttribute('data-termin') && zustand.modus === 'termin');
+      (schritt.hasAttribute('data-termin') && !zustand.modus);
     knopf.textContent = schritt.getAttribute('data-weiter') || 'Ok';
     knopf.disabled = false;
     if (tastenhinweis) tastenhinweis.hidden = knopf.hidden;
@@ -291,16 +316,17 @@
     var schritt = jetzigerSchritt();
     sammle(schritt);
 
-    /* Von der Terminwahl führt nur eine gewählte Uhrzeit weiter. Der Knopf ist
-       dort ausgeblendet, die Tastatur aber nicht: Ohne diese Sperre käme man
-       mit der Eingabetaste an der Auswahl vorbei und landete im Rückruf,
-       obwohl der Kalender freie Zeiten hat. Dasselbe gilt, solange der
-       Kalender noch antwortet (modus noch unbekannt).
-       Nur wenn statt der Zeiten nach der Erreichbarkeit gefragt wird
-       (modus „rueckruf"), ist dieser Schritt eine ganz normale Frage. */
-    if (schritt.hasAttribute('data-termin') && zustand.modus !== 'rueckruf' && !zustand.slot) {
-      ruckeln(schritt);
-      return;
+    /* Vom Wunschzeiten-Schritt führt nur eine gewählte Zeit weiter. Solange der
+       Kalender noch antwortet, steht dort nichts zur Wahl — dann bleibt auch
+       die Eingabetaste ohne Wirkung, sonst käme man an der Auswahl vorbei.
+       Im Modus „rueckruf" ist der Schritt eine ganz normale Mehrfachauswahl;
+       die Prüfung darunter greift dann von selbst. */
+    if (schritt.hasAttribute('data-termin') && zustand.modus !== 'rueckruf') {
+      if (!zustand.modus || !zustand.wuensche.length) {
+        ruckeln(schritt);
+        if (zustand.modus) zeigeFehler('Bitte wähle mindestens eine Zeit, die dir passt.');
+        return;
+      }
     }
 
     /* Auswahlschritt ohne Auswahl: nicht weiter, aber auch nicht schimpfen —
@@ -332,7 +358,7 @@
     if (zustand.i > 0) zeige(zustand.i - 1);
   }
 
-  /* -------------------------------------------------------- Terminschritt */
+  /* --------------------------------------------------- Wunschzeiten-Schritt */
   function richteTerminSchritt() {
     var schritt = form.querySelector('[data-termin]');
     if (!schritt) return;
@@ -340,16 +366,12 @@
     if (zustand.modus) { zeichneTermin(schritt); return; }
 
     /* Der Kalender antwortet noch. Über die Tastatur ist das in einer Sekunde
-       zu schaffen, also muss dieser Fall sitzen: Solange unklar ist, ob es
-       Zeiten gibt, verschwindet der Knopf. Sonst liesse sich die Terminwahl
-       überspringen und der Interessent landete im Rückruf, obwohl der
-       Kalender kurz darauf freie Zeiten meldet. zeige() setzt den Knopf
-       wieder richtig, sobald die Antwort da ist. */
-    knopf.hidden = true;
-    if (tastenhinweis) tastenhinweis.hidden = true;
+       zu schaffen, also muss dieser Fall sitzen. zeige() nimmt den Knopf
+       solange weg und setzt ihn wieder, sobald die Antwort da ist. */
     schritt.innerHTML =
       '<div class="book__lade"><div class="book__spinner" aria-hidden="true"></div>' +
-      '<span>Freie Termine werden geladen …</span></div>';
+      '<span>Freie Zeiten werden geladen …</span></div>';
+    zeige(zustand.i, true);
     kalenderBereit.then(function () {
       if (jetzigerSchritt() === schritt) { zeichneTermin(schritt); zeige(zustand.i, true); }
     });
@@ -357,39 +379,52 @@
 
   function zeichneTermin(schritt) {
     if (zustand.modus === 'termin') {
-      /* Stand hier vorher die Erreichbarkeitsfrage (Kalender war noch nicht
+      /* Stand hier vorher die Tageszeiten-Frage (Kalender war noch nicht
          erreichbar), wird ihre Antwort mit der Frage zusammen entfernt. */
       schritt.removeAttribute('data-name');
-      delete zustand.daten.erreichbarkeit;
+      schritt.removeAttribute('data-multi');
+      delete zustand.daten.terminwuensche;
+
       schritt.innerHTML =
-        '<span class="bq__nummer">Termin</span>' +
-        '<h2 class="bq__frage">Wann passt es dir?</h2>' +
-        '<p class="bq__hinweis">' + zustand.dauer + ' Minuten, per Telefon oder Video. ' +
-        'Alle Zeiten in deutscher Zeit — du wählst, wir richten uns danach.</p>' +
+        '<span class="bq__nummer">Wunschzeiten</span>' +
+        '<h2 class="bq__frage">Wann sollen wir dich erreichen?</h2>' +
+        '<p class="bq__hinweis">Wähle bis zu drei Zeiten, die dir passen — wir melden ' +
+        'uns und bestätigen eine davon. Rund 15 Minuten, per Telefon oder Video, ' +
+        'alle Zeiten in deutscher Zeit.</p>' +
         '<div class="book__tage" data-bq-tage></div>' +
         '<div class="book__zeiten" data-bq-zeiten></div>' +
-        '<p class="bq__kleingedruckt">Kein Verkaufsgespräch. Wir hören zu, ordnen ein und ' +
-        'sagen dir ehrlich, ob bei dir etwas zu holen ist.</p>';
+        '<div class="bq__gewaehlt" data-bq-liste></div>' +
+        '<p class="bq__kleingedruckt">Noch nichts ist damit verbindlich. Kein ' +
+        'Verkaufsgespräch: Wir hören zu, ordnen ein und sagen dir ehrlich, ob bei dir ' +
+        'etwas zu holen ist.</p>';
       zeichneZeiten(schritt);
 
     } else {
-      /* Ohne Kalender wird aus der Terminwahl eine ganz normale Frage. */
-      schritt.setAttribute('data-name', 'erreichbarkeit');
-      schritt.setAttribute('data-label', 'Erreichbarkeit');
-      schritt.setAttribute('data-weiter', 'Ok');
+      /* Ohne Kalender wird aus der Zeitauswahl eine ganz normale Frage — die
+         Vorschläge sind dann Tageszeiten statt Uhrzeiten. */
+      zustand.wuensche = [];
+      schritt.setAttribute('data-name', 'terminwuensche');
+      schritt.setAttribute('data-label', 'Terminvorschläge');
+      schritt.setAttribute('data-multi', '');
+      schritt.setAttribute('data-max', String(MAX_WUENSCHE));
+      schritt.setAttribute('data-weiter', 'Weiter');
       schritt.innerHTML =
-        '<span class="bq__nummer">Erreichbarkeit</span>' +
-        '<h2 class="bq__frage">Wann erreichen wir dich am besten?</h2>' +
-        '<p class="bq__hinweis">Wir rufen an, wenn es dir passt — nicht mitten in der ' +
-        'Sprechstunde.</p>' +
+        '<span class="bq__nummer">Wunschzeiten</span>' +
+        '<h2 class="bq__frage">Wann sollen wir dich erreichen?</h2>' +
+        '<p class="bq__hinweis">Mehrfachauswahl, bis zu drei — wir melden uns und ' +
+        'schlagen dir eine passende Zeit vor. Rund 15 Minuten, per Telefon oder Video.</p>' +
         '<div class="bq__opts">' +
-        ['Vormittags (8 – 12 Uhr)', 'Mittagspause (12 – 14 Uhr)',
-         'Nachmittags (14 – 18 Uhr)', 'Abends (nach 18 Uhr)', 'Ist mir gleich'
+        ['Werktags vormittags (8 – 12 Uhr)', 'In der Mittagspause (12 – 14 Uhr)',
+         'Werktags nachmittags (14 – 18 Uhr)', 'Werktags abends (nach 18 Uhr)',
+         'Am Wochenende'
         ].map(function (t) {
           return '<button class="opt" data-value="' + esc(t) + '">' +
             '<span class="opt__text">' + esc(t) + '</span></button>';
         }).join('') +
-        '</div>';
+        '</div>' +
+        '<p class="bq__kleingedruckt">Noch nichts ist damit verbindlich. Kein ' +
+        'Verkaufsgespräch: Wir hören zu, ordnen ein und sagen dir ehrlich, ob bei dir ' +
+        'etwas zu holen ist.</p>';
       ruesteOptionen(schritt);
     }
   }
@@ -403,52 +438,106 @@
       /* Mittag in UTC: So liegt der Tag sicher im richtigen Datum, egal in
          welcher Zeitzone das Gerät steht. */
       var d = new Date(t.datum + 'T12:00:00Z');
+      var gewaehltHier = t.slots.filter(istGewaehlt).length;
       return '<button type="button" class="book__tag' +
-        (t === zustand.tag ? ' is-on' : '') + '" data-bq-tag="' + i + '">' +
+        (t === zustand.tag ? ' is-on' : '') + (gewaehltHier ? ' hat-wahl' : '') +
+        '" data-bq-tag="' + i + '">' +
         '<i>' + TAGE[d.getUTCDay()] + '</i><b>' + d.getUTCDate() + '</b>' +
-        '<small>' + MONATE[d.getUTCMonth()] + '</small></button>';
+        '<small>' + (gewaehltHier ? gewaehltHier + ' gewählt' : MONATE[d.getUTCMonth()]) +
+        '</small></button>';
     }).join('');
 
     zeitenBox.innerHTML = (zustand.tag ? zustand.tag.slots : []).map(function (s) {
-      return '<button type="button" class="book__zeit" data-bq-slot="' + esc(s) + '">' +
-        uhrzeit(s) + '</button>';
+      return '<button type="button" class="book__zeit' + (istGewaehlt(s) ? ' is-on' : '') +
+        '" aria-pressed="' + (istGewaehlt(s) ? 'true' : 'false') +
+        '" data-bq-slot="' + esc(s) + '">' + uhrzeit(s) + '</button>';
     }).join('');
+
+    zeichneListe(schritt);
+  }
+
+  function istGewaehlt(iso) {
+    return zustand.wuensche.some(function (w) { return w.iso === iso; });
+  }
+
+  /* Die gewählten Zeiten stehen unter der Auswahl noch einmal als Liste. Ohne
+     sie müsste man sich über mehrere Tagesreiter hinweg merken, was schon
+     angeklickt ist.
+
+     nurLesen gilt ab dem Kontaktschritt: Dort ist die Liste eine Erinnerung,
+     kein Bedienfeld. Sonst könnte man dort den letzten Vorschlag wegnehmen und
+     stünde ohne Zeit vor dem Absenden — die Prüfung darauf sitzt einen Schritt
+     davor. Wer etwas ändern will, geht mit „zurück" hin. */
+  function zeichneListe(bereich, nurLesen) {
+    var box = (bereich || form).querySelector('[data-bq-liste]');
+    if (!box) return;
+
+    if (!zustand.wuensche.length) {
+      box.innerHTML = '';
+      box.hidden = true;
+      return;
+    }
+    box.hidden = false;
+    box.innerHTML =
+      '<span class="bq__gewaehlt-titel">Deine Vorschläge (' + zustand.wuensche.length +
+      ' von ' + MAX_WUENSCHE + ')</span>' +
+      zustand.wuensche.map(function (w) {
+        return '<span class="bq__marke-zeit' + (nurLesen ? ' bq__marke-zeit--lesen' : '') +
+          '">' + esc(w.text) + (nurLesen ? '' :
+          '<button type="button" class="bq__weg" data-bq-weg="' + esc(w.iso) + '" ' +
+          'aria-label="' + esc(w.text) + ' wieder abwählen">×</button>') + '</span>';
+      }).join('');
+  }
+
+  function waehleZeit(btn) {
+    var iso = btn.getAttribute('data-bq-slot');
+
+    if (istGewaehlt(iso)) { entferneZeit(iso); return; }
+
+    if (zustand.wuensche.length >= MAX_WUENSCHE) {
+      ruckeln(btn);
+      zeigeFehler('Drei Vorschläge genügen — nimm einen weg, wenn du ihn tauschen willst.');
+      return;
+    }
+
+    zustand.wuensche.push({ iso: iso, text: alsText(iso) });
+    sortiereWuensche();
+    verbergeFehler();
+    zeichneZeiten(jetzigerSchritt());
+  }
+
+  function entferneZeit(iso) {
+    zustand.wuensche = zustand.wuensche.filter(function (w) { return w.iso !== iso; });
+    /* Nicht nur die Liste am Bildschirm: Ohne das bliebe der alte Stand in
+       zustand.daten stehen und eine abgewählte Zeit landete trotzdem im CRM. */
+    sortiereWuensche();
+    verbergeFehler();
+    zeichneZeiten(form.querySelector('[data-termin]'));
+  }
+
+  /* Der Reihe nach, nicht in der Reihenfolge des Anklickens: Wer die Notiz im
+     CRM liest, will den frühesten Vorschlag zuerst sehen. */
+  function sortiereWuensche() {
+    zustand.wuensche.sort(function (a, b) { return a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : 0; });
+    if (!zustand.wuensche.length) {
+      delete zustand.daten.terminwuensche;
+      return;
+    }
+    zustand.daten.terminwuensche = zustand.wuensche.map(function (w) { return w.text; }).join(' · ');
+    zustand.beschriftung.terminwuensche = 'Terminvorschläge';
   }
 
   /* -------------------------------------------------------- Kontaktschritt */
   function richteKontaktSchritt() {
     var schritt = form.querySelector('[data-kontakt]');
     if (!schritt) return;
-
-    var termin = zustand.modus === 'termin' && zustand.slot;
-    var kasten = schritt.querySelector('[data-bq-gewaehlt]');
-
-    if (kasten) {
-      kasten.hidden = !termin;
-      if (termin) {
-        kasten.innerHTML =
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
-          'aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/>' +
-          '<path d="M3.5 9.5h17M8 3v4M16 3v4" stroke-linecap="round"/></svg>' +
-          '<span><b>' + esc(langesDatum(zustand.slot)) + ', ' + esc(uhrzeit(zustand.slot)) +
-          ' Uhr</b><small>' + zustand.dauer + ' Minuten</small></span>' +
-          '<button type="button" class="book__aendern" data-bq-anderer>ändern</button>';
-      }
-    }
-
-    schritt.querySelectorAll('[data-wenn]').forEach(function (el) {
-      el.hidden = el.getAttribute('data-wenn') !== (termin ? 'termin' : 'rueckruf');
-    });
-    schritt.setAttribute('data-weiter', termin ? 'Termin verbindlich buchen' : 'Rückruf anfragen');
+    /* Bei echten Uhrzeiten stehen die Vorschläge hier noch einmal — bei
+       Tageszeiten wäre es eine wörtliche Wiederholung der Antwort von
+       eben und damit nur Platzverbrauch. */
+    zeichneListe(schritt, true);
   }
 
   /* --------------------------------------------------------------- Absenden */
-  function antworten() {
-    return Object.keys(zustand.daten).map(function (k) {
-      return { feld: zustand.beschriftung[k] || k, wert: zustand.daten[k] };
-    });
-  }
-
   function kampagne() {
     try { return sessionStorage.getItem('fm_campaign') || ''; } catch (e) { return ''; }
   }
@@ -472,43 +561,30 @@
     /* Honeypot: Menschen sehen dieses Feld nicht, Bots füllen es aus. */
     if (werte.website) { zeigeAbschluss(); return; }
 
-    var termin = zustand.modus === 'termin' && zustand.slot;
-    var nutzlast, ziel;
+    var nutzlast = {
+      funnel: wurzel.getAttribute('data-funnel') || 'kurzcheck',
+      seite: location.pathname,
+      verweis: document.referrer || '',
+      zeitpunkt: new Date().toISOString(),
+      dauer_sek: Math.round((Date.now() - zustand.t0) / 1000),
+      _labels: {}
+    };
 
-    if (termin) {
-      ziel = '/api/booking';
-      nutzlast = {
-        beginn: zustand.slot,
-        segment: wurzel.getAttribute('data-segment') || 'Kurzcheck',
-        seite: location.pathname,
-        antworten: antworten()
-      };
-    } else {
-      ziel = '/api/lead';
-      nutzlast = {
-        funnel: wurzel.getAttribute('data-funnel') || 'kurzcheck',
-        seite: location.pathname,
-        verweis: document.referrer || '',
-        zeitpunkt: new Date().toISOString(),
-        _labels: {}
-      };
-      Object.keys(zustand.daten).forEach(function (k) {
-        nutzlast[k] = zustand.daten[k];
-        nutzlast._labels[k] = zustand.beschriftung[k] || k;
-      });
-    }
+    Object.keys(zustand.daten).forEach(function (k) {
+      nutzlast[k] = zustand.daten[k];
+      nutzlast._labels[k] = zustand.beschriftung[k] || k;
+    });
 
-    nutzlast.dauer_sek = Math.round((Date.now() - zustand.t0) / 1000);
     var k = kampagne();
     if (k) nutzlast.kampagne = k;
     Object.keys(werte).forEach(function (n) { nutzlast[n] = werte[n]; });
 
     knopf.disabled = true;
     var aufschrift = knopf.textContent;
-    knopf.textContent = termin ? 'Wird gebucht …' : 'Wird gesendet …';
+    knopf.textContent = 'Wird gesendet …';
     verbergeFehler();
 
-    fetch(ziel, {
+    fetch('/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(nutzlast)
@@ -520,32 +596,8 @@
       })
       .then(function (a) {
         if (a.ok && a.body.ok !== false) { zeigeAbschluss(); return; }
-
         knopf.disabled = false;
         knopf.textContent = aufschrift;
-
-        /* 409 heisst: in der Zwischenzeit hat jemand anders gebucht. Dann
-           zurück zur Terminwahl, mit frisch geholten Zeiten.
-
-           Die Reihenfolge ist wichtig: erst den Inhalt aufbauen, dann
-           hinspringen, dann melden. zeige() räumt die Meldung auf — sie darf
-           also erst danach gesetzt werden, sonst wäre sie sofort wieder weg.
-           Und der Inhalt muss vor zeige() stehen, weil sich der Kalender
-           beim erneuten Laden als leer erweisen kann: Dann wird aus der
-           Terminwahl die Frage nach der Erreichbarkeit, und der Knopf in der
-           Fussleiste ist wieder nötig. */
-        if (a.status === 409 && termin) {
-          var meldung = a.body.fehler || 'Dieser Termin wurde gerade vergeben.';
-          zustand.slot = null;
-          kalenderBereit = ladeKalender().then(function () {
-            var terminSchritt = form.querySelector('[data-termin]');
-            if (!terminSchritt) return;
-            richteTerminSchritt();
-            zeige(schritte.indexOf(terminSchritt));
-            zeigeFehler(meldung + ' Bitte wähle eine andere Zeit.');
-          });
-          return;
-        }
         zeigeFehler((a.body.fehler ? a.body.fehler + ' ' : 'Das hat gerade nicht geklappt. ') +
           'Schreib uns kurz an info@finanz-medizin.com — wir melden uns umgehend.');
       })
@@ -562,29 +614,30 @@
     var schritt = form.querySelector('[data-fertig]');
     if (!schritt) return;
 
-    var termin = zustand.modus === 'termin' && zustand.slot;
-    schritt.querySelectorAll('[data-wenn]').forEach(function (el) {
-      el.hidden = el.getAttribute('data-wenn') !== (termin ? 'termin' : 'rueckruf');
-    });
-
-    var zeile = schritt.querySelector('[data-bq-termin]');
-    if (zeile) {
-      zeile.hidden = !termin;
-      if (termin) {
-        zeile.textContent = langesDatum(zustand.slot) + ', ' + uhrzeit(zustand.slot) + ' Uhr';
-      }
-    }
-
     var name = schritt.querySelector('[data-bq-name]');
     var vorname = (zustand.kontakt.vorname || '').trim();
     if (name) name.textContent = vorname ? ' ' + vorname : '';
 
+    /* Die eigenen Vorschläge noch einmal schwarz auf weiss: Danach weiss der
+       Interessent, worauf er wartet — und wir haben es zugesagt. */
+    var liste = schritt.querySelector('[data-bq-vorschlaege]');
+    if (liste) {
+      var wuensche = zustand.daten.terminwuensche;
+      liste.hidden = !wuensche;
+      if (wuensche) {
+        liste.innerHTML = '<span class="bq__gewaehlt-titel">Das hast du vorgeschlagen</span>' +
+          wuensche.split(' · ').map(function (t) {
+            return '<span class="bq__marke-zeit bq__marke-zeit--lesen">' + esc(t) + '</span>';
+          }).join('');
+      }
+    }
+
     zeige(schritte.indexOf(schritt));
 
     /* Für die Messung im GTM. Die Seite leitet bewusst nicht auf danke.html
-       um — ein Seitenwechsel würde die gerade gebuchte Bestätigung wegnehmen.
+       um — ein Seitenwechsel würde die gerade gegebene Zusage wegnehmen.
        Deshalb meldet sie den Abschluss selbst. */
-    meldeEreignis(termin ? 'kurzcheck_termin_gebucht' : 'kurzcheck_lead_gesendet');
+    meldeEreignis('kurzcheck_abgeschickt');
   }
 
   function meldeEreignis(name) {
@@ -593,7 +646,9 @@
       window.dataLayer.push({
         event: name,
         kurzcheck_modus: zustand.modus || 'unbekannt',
-        kurzcheck_rolle: zustand.daten.rolle || ''
+        kurzcheck_rolle: zustand.daten.rolle || '',
+        kurzcheck_vorschlaege: zustand.wuensche.length ||
+          (zustand.daten.terminwuensche || '').split(' · ').filter(Boolean).length
       });
     } catch (e) { /* ohne Messung geht es auch */ }
   }
@@ -602,6 +657,9 @@
   schritte.forEach(ruesteOptionen);
 
   form.addEventListener('click', function (e) {
+    var weg = e.target.closest('[data-bq-weg]');
+    if (weg) { entferneZeit(weg.getAttribute('data-bq-weg')); return; }
+
     var opt = e.target.closest('.opt');
     if (opt) { waehle(opt); return; }
 
@@ -613,22 +671,7 @@
     }
 
     var slot = e.target.closest('[data-bq-slot]');
-    if (slot) {
-      zustand.slot = slot.getAttribute('data-bq-slot');
-      slot.classList.add('is-on');
-      window.setTimeout(function () {
-        richteKontaktSchritt();
-        var kontakt = form.querySelector('[data-kontakt]');
-        if (kontakt) zeige(schritte.indexOf(kontakt));
-      }, 240);
-      return;
-    }
-
-    if (e.target.closest('[data-bq-anderer]')) {
-      zustand.slot = null;
-      var terminSchritt = form.querySelector('[data-termin]');
-      if (terminSchritt) { zeige(schritte.indexOf(terminSchritt)); richteTerminSchritt(); }
-    }
+    if (slot) { waehleZeit(slot); }
   });
 
   form.addEventListener('submit', function (e) { e.preventDefault(); weiter(); });
@@ -655,7 +698,7 @@
 
     if (e.key === 'Enter') {
       if (e.target.tagName === 'TEXTAREA') return;
-      if (e.target.closest('.opt, [data-bq-slot], [data-bq-tag], [data-bq-zurueck]')) return;
+      if (e.target.closest('.opt, [data-bq-slot], [data-bq-tag], [data-bq-weg]')) return;
       e.preventDefault();
       weiter();
       return;

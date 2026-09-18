@@ -135,8 +135,9 @@ Nach dem Setzen von Umgebungsvariablen einmal *Deploys* → *Trigger deploy*
 | Einen Check ausfüllen | Neuer Lead in Close, mit Notiz und allen Antworten |
 | Einen Termin buchen | Eintrag im Google Kalender **und** ein Lead in Close |
 | Buchung im Kalender | Titel „Erstgespräch · Vorname Name", Sie sind der einzige Teilnehmer |
-| `https://…/beratung` aufrufen | Der Kurzcheck startet; nach fünf Fragen stehen freie Zeiten. Erscheint dort stattdessen „Wann erreichen wir dich am besten?", ist Schritt 4 noch nicht durch — die Anfrage geht dann als Rückruf-Bitte nach Close, es geht nichts verloren |
-| Kurzcheck bis zum Ende ausfüllen | Im Kalendereintrag und in der Close-Notiz steht der Abschnitt „Angaben aus dem Kurzcheck" mit allen fünf Antworten |
+| `https://…/beratung` aufrufen | Der Kurzcheck startet; nach fünf Fragen stehen echte Uhrzeiten zur Auswahl. Stehen dort stattdessen Tageszeiten („werktags vormittags"), ist Schritt 4 noch nicht durch — die Anfrage geht trotzdem nach Close, es geht nichts verloren |
+| Kurzcheck bis zum Ende ausfüllen | Neuer Lead in Close. In der Notiz steht oben „ANGABEN AUS DEM CHECK" und darunter „WANN ZURÜCKRUFEN" mit den vorgeschlagenen Zeiten |
+| Absenden ohne Telefonnummer | Wird abgewiesen — Telefon und E-Mail sind beide Pflicht, auch am Server |
 
 Der gebuchte Termin lädt Sie **nicht** per Mail ein — ein Dienstkonto darf
 das ohne domainweite Delegation nicht. Der Eintrag steht direkt im
@@ -170,12 +171,19 @@ DPA vorliegen haben, können Sie dort die genaue Firmierung und Anschrift
 eintragen — schöner, aber nicht erforderlich.
 
 Der Kurzcheck unter `/beratung` meldet seinen Abschluss als Ereignis in den
-`dataLayer` (`kurzcheck_termin_gebucht` beziehungsweise
-`kurzcheck_lead_gesendet`), weil er am Ende nicht auf `danke.html` umleitet.
-Solange im GTM kein Trigger vom Typ „Benutzerdefiniertes Ereignis" darauf
-hört, zählt für diese Seite keine Conversion — die Buchung selbst läuft
-davon unabhängig. Einzelheiten stehen in README.md unter „Kurzcheck für
-Social Media".
+`dataLayer` (`kurzcheck_abgeschickt`), weil er am Ende nicht auf
+`danke.html` umleitet. Solange im GTM kein Trigger vom Typ
+„Benutzerdefiniertes Ereignis" darauf hört, zählt für diese Seite keine
+Conversion — die Anfragen selbst laufen davon unabhängig.
+
+Anders als das Buchungs-Widget auf „Über uns" legt der Kurzcheck **keinen**
+Kalendereintrag an: Der Interessent schlägt bis zu drei Zeiten vor, Sie
+melden sich und bestätigen eine davon. Der Kalender aus Schritt 4 dient ihm
+nur als Vorschlagsliste — er zeigt nur Zeiten, in denen Sie wirklich können.
+Die Seite nennt „rund 15 Minuten"; das ist eine Zusage im Text und
+unabhängig von `BOOKING_DURATION_MIN` (Vorgabe 25), das nur die Rasterung
+der angebotenen Zeiten bestimmt. Einzelheiten stehen in README.md unter
+„Kurzcheck für Social Media".
 
 Auf der Über-uns-Seite steht statt eines Porträts eine Signet-Fläche.
 Wenn ein Foto vorliegt, tritt es an ihre Stelle; die Gestaltung dafür

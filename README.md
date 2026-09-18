@@ -20,12 +20,12 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `praxisinhaber.html` | Praxisinhaberinnen und Praxisinhaber | Praxis-Check |
 | `angestellte-aerzte.html` | Angestellte Ärztinnen und Ärzte | Vermögens-Check |
 | `mfa-praxisteam.html` | MFA und Praxisteam | Vorsorge-Check |
-| `beratung.html` | Vollbild-Kurzcheck für Social Media (`/beratung`) | Kurzcheck |
+| `beratung.html` | Vollbild-Kurzcheck für Social Media (`/beratung`), endet in Terminvorschlägen | Kurzcheck |
 | `danke.html` | Bestätigungsseite, segmentspezifisch | — |
 | `impressum.html` | Impressum + Erstinformation § 15 VersVermV | — |
 | `datenschutz.html` | Datenschutzerklärung (DSGVO) | — |
 | `404.html` | Fehlerseite, von Netlify automatisch ausgeliefert | — |
-| `assets/js/beratung.js` | Ablauf des Kurzchecks: Fragen, Terminwahl, Absenden | Kurzcheck |
+| `assets/js/beratung.js` | Ablauf des Kurzchecks: Fragen, Wunschzeiten, Absenden | Kurzcheck |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
 
@@ -263,16 +263,16 @@ die Renderschleife läuft nur, solange mindestens ein Canvas sichtbar ist.
 
 ### Kurzcheck für Social Media (`beratung.html`)
 
-Eine Frage je Bildschirm, am Ende ein echter Termin — gedacht für den Link in der
-Instagram-Biografie und für Story-Sticker. Die Seite ist bewusst eigenständig und
-benutzt die Funnel-Engine **nicht**: Sie hat eine andere Schale (Vollbild statt
-Karte im Seitenfluss), spricht per „du" statt „Sie" und endet in der Terminbuchung
-statt in einer Weiterleitung.
+Eine Frage je Bildschirm, am Ende bis zu drei Wunschzeiten für den Rückruf —
+gedacht für den Link in der Instagram-Biografie und für Story-Sticker. Die Seite
+ist bewusst eigenständig und benutzt die Funnel-Engine **nicht**: Sie hat eine
+andere Schale (Vollbild statt Karte im Seitenfluss), spricht per „du" statt „Sie"
+und endet in einer Zusage statt in einer Weiterleitung.
 
 | Datei | Rolle |
 |---|---|
 | `beratung.html` | Fragen und Schritte, deklarativ im Markup |
-| `assets/js/beratung.js` | Ablauf, Terminwahl, Absenden |
+| `assets/js/beratung.js` | Ablauf, Wunschzeiten, Absenden |
 | `assets/css/beratung.css` | nur die Vollbild-Schale; setzt `site.css` voraus |
 
 **Adressen** — `/beratung`, `/instagram` und `/insta` führen alle auf
@@ -281,39 +281,64 @@ in der Biografie `?utm_source=instagram&utm_medium=bio` anhängen; `main.js` leg
 die Parameter im `sessionStorage` ab und schickt sie beim Absenden als `kampagne`
 mit ins CRM.
 
-**Zwei Wege, je nachdem was der Kalender hergibt**
+#### Vorschläge, keine Buchung
 
-1. `/api/slots` liefert freie Zeiten → der Interessent wählt selbst, die Buchung
-   läuft über `/api/booking`, der Termin steht sofort.
-2. Kalender nicht eingerichtet, nicht erreichbar oder ohne freie Zeit → an der
-   Stelle der Uhrzeiten wird nach der Erreichbarkeit gefragt und die Anfrage geht
-   über `/api/lead` als Rückruf-Bitte ins CRM (`funnel: "instagram"`).
+Anders als das Widget auf „Über uns" legt diese Seite **keinen** Kalendereintrag
+an. Der Interessent schlägt eine bis drei Zeiten vor, wir melden uns und
+bestätigen eine davon. Wer aus einer Story kommt, will erst wissen, ob das
+überhaupt etwas für ihn ist — drei Vorschläge kosten ihn nichts und ersparen das
+Hin und Her per Nachricht. Deshalb geht die Anfrage immer über `/api/lead`,
+niemals über `/api/booking`.
 
-Der Kalender wird schon beim Laden der Seite abgefragt, nicht erst beim
-Terminschritt — bis die fünf Fragen beantwortet sind, ist die Antwort längst da.
-Wird ein Termin zwischen Anzeige und Klick von jemand anderem belegt, antwortet
-`/api/booking` mit 409; die Seite springt dann mit frisch geholten Zeiten zurück
-zur Auswahl und behält die eingegebenen Kontaktdaten.
+Woher die angebotenen Zeiten kommen, hängt am Kalender:
 
-**Die Antworten im CRM** — sie gehen als Liste `antworten: [{ feld, wert }]` an
-`/api/booking` und stehen danach im Kalendereintrag unter „Angaben aus dem
-Kurzcheck" sowie in der Close-Notiz unter `ANGABEN AUS DEM KURZCHECK`. Die Grenzen
-setzt `lib/booking-core.js` (höchstens 20 Angaben, 80 Zeichen je Feldname, 300 je
-Wert), nicht der Aufrufer.
+1. `/api/slots` liefert freie Zeiten → zur Auswahl stehen echte Uhrzeiten, in
+   denen wir auch können. Gebucht wird nichts, der Kalender ist nur die
+   Vorschlagsliste. Ein Tagesreiter mit eigener Auswahl wird markiert, die
+   gewählten Zeiten stehen darunter noch einmal als Liste.
+2. Kalender nicht eingerichtet, nicht erreichbar oder ohne freie Zeit → an
+   derselben Stelle stehen Tageszeiten zur Wahl („werktags vormittags",
+   „abends", „am Wochenende").
+
+In beiden Fällen sind es höchstens drei Auswahlen; die vierte wird mit einem
+Hinweis abgelehnt, statt stillschweigend eine andere zu verdrängen. Der Kalender
+wird schon beim Laden der Seite abgefragt, nicht erst beim Wunschzeiten-Schritt —
+bis die fünf Fragen beantwortet sind, ist die Antwort längst da. Solange sie
+aussteht, verschwindet der Weiter-Knopf: Sonst käme man per Tastatur an der
+Auswahl vorbei und landete bei Tageszeiten, obwohl der Kalender gleich darauf
+echte Uhrzeiten liefert.
+
+**Gesprächsdauer** — die Seite nennt „rund 15 Minuten". Das ist eine Zusage im
+Text und hat nichts mit `BOOKING_DURATION_MIN` zu tun: Diese Variable (Vorgabe
+25) bestimmt nur, welche Startzeiten `/api/slots` als frei ansieht. Wer die
+Vorschlagsliste enger stellen will, setzt sie in Netlify auf `15`.
+
+**Im CRM** — die Wunschzeiten bekommen in der Close-Notiz einen eigenen
+Abschnitt `WANN ZURÜCKRUFEN`, jede Zeit in einer Zeile. Sie stehen dafür in
+`lib/lead-core.js` auf der Liste der reservierten Schlüssel; wer die Notiz
+öffnet, um zurückzurufen, sucht genau diese Zeilen und soll sie nicht zwischen
+den Antworten suchen müssen.
+
+**Telefon und E-Mail sind Pflicht** — beide Felder sind im Formular gekennzeichnet
+und werden zusätzlich in `lib/lead-core.js` geprüft (Telefon mindestens sechs
+Zeichen). Eine Prüfung im Browser ist keine Prüfung: Wer die Anfrage von Hand
+zusammensetzt, käme sonst ohne Nummer durch — und für ein Erstgespräch am Telefon
+ist ein Lead ohne Rückrufnummer nur die halbe Adresse. Das gilt damit auch für die
+drei Landingpage-Funnels, die Telefon im Browser ohnehin schon verlangen.
 
 **Messung** — die Seite leitet am Ende bewusst nicht auf `danke.html` um, weil ein
-Seitenwechsel die gerade gebuchte Bestätigung wegnähme. Statt des Seitenaufrufs
-meldet sie den Abschluss selbst in den `dataLayer`:
+Seitenwechsel die gerade gegebene Zusage wegnähme. Statt des Seitenaufrufs meldet
+sie den Abschluss selbst in den `dataLayer`:
 
 | Ereignis | wann |
 |---|---|
 | `kurzcheck_gestartet` | das Startbild ist weggeklickt |
-| `kurzcheck_termin_gebucht` | Termin steht |
-| `kurzcheck_lead_gesendet` | Rückruf-Anfrage ist raus |
+| `kurzcheck_abgeschickt` | Anfrage ist raus, die Zusage steht |
 
-Jedes Ereignis trägt `kurzcheck_modus` (`termin` oder `rueckruf`) und
-`kurzcheck_rolle` mit. Im GTM daraus einen Trigger vom Typ „Benutzerdefiniertes
-Ereignis" bauen, sonst zählt für diese Seite keine Conversion.
+Beide tragen `kurzcheck_modus` (`termin` bei echten Uhrzeiten, `rueckruf` bei
+Tageszeiten), `kurzcheck_rolle` und `kurzcheck_vorschlaege` (Anzahl) mit. Im GTM
+daraus einen Trigger vom Typ „Benutzerdefiniertes Ereignis" bauen, sonst zählt
+für diese Seite keine Conversion.
 
 **Absichten, die man beim Ändern kennen sollte**
 
@@ -327,6 +352,9 @@ Ereignis" bauen, sonst zählt für diese Seite keine Conversion.
 - Eingabefelder mit `font-size: 16px`: Darunter zoomt iOS beim Hineintippen.
 - Die Fussleiste blendet nur ihren Knopf aus, nie sich selbst — in ihr stehen
   Impressum und Datenschutz, und die müssen von jeder Ansicht aus erreichbar sein.
+- Ab dem Kontaktschritt ist die Liste der Wunschzeiten nur noch zu lesen. Könnte
+  man dort den letzten Vorschlag wegnehmen, stünde man ohne Zeit vor dem
+  Absenden — die Prüfung darauf sitzt einen Schritt davor.
 
 ### Design-System
 

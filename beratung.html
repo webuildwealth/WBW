@@ -153,7 +153,7 @@
 
 <script>document.documentElement.classList.add("js");</script>
 <title>Kostenfreies Erstgespräch für Heilberufe | Finanz-Medizin</title>
-<meta name="description" content="Fünf Fragen zu deiner Lage, danach suchst du dir direkt einen Termin aus. Kostenfrei und unverbindlich — für Ärztinnen und Ärzte, Praxisinhaber und Praxisteams.">
+<meta name="description" content="Fünf Fragen zu deiner Lage, dann sagst du uns, wann es dir passt — wir melden uns. Kostenfrei und unverbindlich, für Ärztinnen und Ärzte, Praxisinhaber und Praxisteams.">
 
 <!-- Kampagnenseite: Sie soll Verkehr aus Instagram annehmen, nicht in der
      Google-Suche stehen. Ohne Inhalt ausser den Fragen hätte sie dort keinen
@@ -170,7 +170,7 @@
 <meta property="og:site_name" content="Finanz-Medizin">
 <meta property="og:url" content="https://www.finanz-medizin.com/beratung.html">
 <meta property="og:title" content="Dein Erstgespräch — in 60 Sekunden vorbereitet">
-<meta property="og:description" content="Fünf Fragen, dann suchst du dir direkt einen Termin aus. Kostenfrei, unverbindlich, kein Verkaufsgespräch.">
+<meta property="og:description" content="Fünf Fragen, dann sagst du uns, wann es dir passt — wir melden uns. Kostenfrei, unverbindlich, kein Verkaufsgespräch.">
 <meta property="og:image" content="https://www.finanz-medizin.com/assets/img/og-finanz-medizin.jpg">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -232,8 +232,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <h2 class="bq__frage">Dein Erstgespräch — in 60 Sekunden vorbereitet.</h2>
         <p class="bq__hinweis">
-          Fünf Fragen zu deiner Lage. Danach suchst du dir direkt einen Termin aus,
-          der dir passt.
+          Fünf Fragen zu deiner Lage. Danach sagst du uns, wann es dir passt —
+          wir melden uns bei dir.
         </p>
 
         <ul class="bq__marker">
@@ -243,7 +243,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </li>
           <li>
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>25 Minuten, per Telefon oder Video</span>
+            <span>Rund 15 Minuten, per Telefon oder Video</span>
           </li>
           <li>
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -352,7 +352,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                data-weiter="Ok">
         <span class="bq__nummer">Frage 5</span>
         <h2 class="bq__frage">Wie schnell willst du das angehen?</h2>
-        <p class="bq__hinweis">Letzte Frage — danach kommt der Terminkalender.</p>
+        <p class="bq__hinweis">Letzte Frage — danach nur noch deine Wunschzeiten.</p>
 
         <div class="bq__opts">
           <button class="opt" data-value="So schnell wie möglich">
@@ -366,36 +366,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </section>
 
-      <!-- ---------------------------------------------------------- 6 · Termin
-           Inhalt kommt aus assets/js/beratung.js: Sind freie Zeiten da, stehen
-           hier Tage und Uhrzeiten. Ist der Kalender nicht eingerichtet oder
-           nicht erreichbar, wird an dieser Stelle nach der Erreichbarkeit
-           gefragt und der Lead geht als Rückruf-Anfrage ins CRM.
-           Bis dahin: ein Ladehinweis, denn ohne Skript steht dieser Schritt
+      <!-- ----------------------------------------------------- 6 · Wunschzeiten
+           Hier wird nichts verbindlich gebucht: Der Interessent schlägt eine
+           bis drei Zeiten vor, wir melden uns und bestätigen eine davon.
+
+           Den Inhalt setzt assets/js/beratung.js. Liefert /api/slots freie
+           Zeiten, stehen hier Tage und Uhrzeiten, in denen wir wirklich
+           können. Ist der Kalender nicht eingerichtet oder nicht erreichbar,
+           stehen an derselben Stelle Tageszeiten zur Auswahl — vormittags,
+           mittags, abends. In beiden Fällen geht die Anfrage über /api/lead.
+
+           Bis dahin: ein Ladehinweis. Ohne Skript steht dieser Schritt
            ohnehin nie zur Verfügung. -->
-      <section class="bq__schritt" data-termin data-weiter="Ok">
+      <section class="bq__schritt" data-termin data-weiter="Weiter">
         <div class="book__lade">
           <div class="book__spinner" aria-hidden="true"></div>
-          <span>Freie Termine werden geladen …</span>
+          <span>Freie Zeiten werden geladen …</span>
         </div>
       </section>
 
       <!-- --------------------------------------------------------- 7 · Kontakt -->
-      <section class="bq__schritt" data-kontakt data-weiter="Termin verbindlich buchen">
-        <!-- Der gewählte Termin als Erinnerung. Wird von beratung.js gefüllt und
-             bleibt auf dem Rückruf-Weg leer. -->
-        <div class="book__gewaehlt" data-bq-gewaehlt hidden></div>
+      <section class="bq__schritt" data-kontakt data-weiter="Termin anfragen">
+        <!-- Die gewählten Zeiten noch einmal als Erinnerung. Wird von
+             beratung.js gefüllt und bleibt bei Tageszeiten leer — dort wäre es
+             die wörtliche Wiederholung der Antwort von eben. -->
+        <div class="bq__gewaehlt" data-bq-liste hidden></div>
 
         <span class="bq__nummer">Fast fertig</span>
-        <h2 class="bq__frage">
-          <span data-wenn="termin">Wohin schicken wir die Einladung?</span>
-          <span data-wenn="rueckruf" hidden>Wohin dürfen wir uns melden?</span>
-        </h2>
+        <h2 class="bq__frage">Wohin dürfen wir uns melden?</h2>
         <p class="bq__hinweis">
-          <span data-wenn="termin">Du bekommst die Bestätigung mit den Einwahldaten
-            per E-Mail. Die Telefonnummer brauchen wir nur, falls die Technik klemmt.</span>
-          <span data-wenn="rueckruf" hidden>Wir melden uns innerhalb von 24 Stunden —
-            persönlich, nicht per Newsletter.</span>
+          Wir brauchen beides: Angerufen wird unter deiner Nummer, die Bestätigung
+          des Termins kommt per E-Mail. Wir melden uns innerhalb von 24 Stunden —
+          persönlich, nicht per Newsletter.
         </p>
 
         <div class="fields-2">
@@ -415,16 +417,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="fields-2">
           <div class="field">
-            <label for="bq-mail">E-Mail</label>
+            <label for="bq-mail">E-Mail <span class="bq__pflicht">Pflicht</span></label>
             <input id="bq-mail" name="email" type="email" autocomplete="email"
                    inputmode="email" data-pflicht>
             <span class="field__err">Bitte prüf die E-Mail-Adresse.</span>
           </div>
           <div class="field">
-            <label for="bq-tel">Telefon</label>
+            <label for="bq-tel">Telefon <span class="bq__pflicht">Pflicht</span></label>
             <input id="bq-tel" name="telefon" type="tel" autocomplete="tel"
                    inputmode="tel" data-pflicht data-min="6">
-            <span class="field__err">Ohne Telefonnummer können wir nicht zurückrufen.</span>
+            <span class="field__err">Ohne Telefonnummer können wir dich nicht anrufen.</span>
           </div>
         </div>
 
@@ -444,9 +446,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <label class="consent">
           <input type="checkbox" name="einwilligung" data-pflicht>
           <span>
-            <span data-wenn="termin">Ich möchte diesen Termin verbindlich vereinbaren und
-              habe die</span>
-            <span data-wenn="rueckruf" hidden>Ich möchte kontaktiert werden und habe die</span>
+            Ich möchte zu meinen Wunschzeiten kontaktiert werden und habe die
             <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzhinweise</a>
             gelesen. Meine Angaben werden ausschließlich zur Bearbeitung dieser Anfrage
             verwendet und nicht an Dritte weitergegeben. Die Einwilligung kann ich
@@ -463,19 +463,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </svg>
         </div>
 
-        <h2 class="bq__frage">
-          <span data-wenn="termin">Der Termin steht.</span>
-          <span data-wenn="rueckruf" hidden>Angekommen.</span>
-        </h2>
-
-        <span class="bq__termin" data-bq-termin hidden></span>
+        <h2 class="bq__frage">Wir melden uns bei dir.</h2>
 
         <p class="bq__hinweis">
-          Danke<span data-bq-name></span>!
-          <span data-wenn="termin">Du bekommst in Kürze eine Bestätigung per E-Mail.
-            Wenn etwas dazwischenkommt, genügt eine kurze Nachricht.</span>
-          <span data-wenn="rueckruf" hidden>Wir schauen uns deine Angaben an und melden
-            uns innerhalb von 24 Stunden.</span>
+          Danke<span data-bq-name></span>! Deine Angaben sind bei uns. Wir schauen sie
+          uns an und melden uns innerhalb von 24 Stunden — telefonisch oder per
+          E-Mail — und bestätigen dir eine deiner Wunschzeiten.
+        </p>
+
+        <!-- Die eigenen Vorschläge noch einmal: Danach weiss der Interessent,
+             worauf er wartet — und wir haben es ihm zugesagt. -->
+        <div class="bq__gewaehlt bq__gewaehlt--mitte" data-bq-vorschlaege hidden></div>
+
+        <p class="bq__hinweis" style="margin-top:1.2rem">
+          Verbindlich ist noch nichts: Passt dir keine der Zeiten mehr, sag es uns
+          einfach im Gespräch.
         </p>
 
         <p class="bq__kleingedruckt">
