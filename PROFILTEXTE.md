@@ -262,14 +262,111 @@ diesen Link, dann trage ich ihn ein.
 
 # 2. LinkedIn
 
-Zwei Auftritte, die verschiedene Aufgaben haben: Die **Unternehmensseite** ist
-der Anker für `sameAs` und damit für die Entitätserkennung. Das **persönliche
-Profil** ist das, was Menschen und Modelle tatsächlich lesen — Personen werden
-in Empfehlungen häufiger zitiert als Firmen.
+## 2.0 Warum die Verbindung über die E-Mail nicht zu vermeiden ist
 
-Beide anlegen. Das persönliche Profil ist das wichtigere von beiden.
+Das ist der Punkt, an dem du hängst — und es ist keine Fehlbedienung.
 
-## 2.1 Unternehmensseite
+**LinkedIn kennt keinen Firmen-Login.** Eine Unternehmensseite ist kein Konto,
+sondern ein Objekt, das einem persönlichen Profil gehört. Sie kann gar nicht
+anders entstehen als aus einem Personenprofil heraus, und dieses Profil bleibt
+dauerhaft Inhaber der Seite. Anders als beim Google-Unternehmensprofil gibt es
+hier nichts zu trennen: Es gibt nichts, was man getrennt anlegen könnte.
+
+Die Firmen-E-Mail ist dabei nicht das Bindeglied, sondern der **Domain-Nachweis**.
+LinkedIn will sehen, dass du über `finanz-medizin.com` verfügst, bevor es dir
+erlaubt, eine Seite mit diesem Namen anzulegen. Freemail-Adressen (Gmail, GMX,
+Web.de) werden dafür abgelehnt. Deshalb kommst du um das Hinterlegen der Adresse
+nicht herum — und deshalb wirkt es so, als würde LinkedIn dauernd Verbindungen
+herstellen, die du nicht willst.
+
+Zwei Regeln ergeben sich daraus:
+
+- **Eine Domain = genau eine Unternehmensseite.** `finanz-medizin.com` führt zur
+  Seite Finanz-Medizin, die WBW-Domain zur Seite We Build Wealth. Die beiden
+  kollidieren nicht.
+- **Niemals ein zweites persönliches Konto anlegen.** LinkedIn erlaubt pro Person
+  genau ein Profil. Ein zweites ist ein Verstoß gegen die Nutzungsbedingungen und
+  gefährdet beide Konten — auch das gewachsene. Das ist der Weg, den man intuitiv
+  einschlägt und der am teuersten endet.
+
+Für unsere Markentrennung ist das kein Problem: Das Dublettenrisiko, das beim
+Google-Profil besteht, gibt es auf LinkedIn nicht. Eine Person darf beliebig
+viele Unternehmensseiten verwalten.
+
+## 2.1 Was davon öffentlich sichtbar ist
+
+Die eigentliche Sorge lässt sich beziffern:
+
+| | öffentlich sichtbar? |
+|---|---|
+| Zweit-E-Mail-Adresse auf deinem Profil | **nein** — E-Mail-Adressen sind nicht öffentlich |
+| Wer eine Unternehmensseite verwaltet | **nein** — LinkedIn listet Seitenadmins nicht öffentlich |
+| Dein Eintrag „Inhaber bei Finanz-Medizin" unter Berufserfahrung | **ja** |
+
+Nur die letzte Zeile ist sichtbar — und die ist gewollt. Personenprofile werden
+in Empfehlungen häufiger zitiert als Firmenseiten, und ohne diesen Eintrag
+stehen Person und Marke für jeden Crawler unverbunden nebeneinander.
+
+Ob du **We Build Wealth** ebenfalls in deiner Berufserfahrung führst, ist allein
+deine Entscheidung. Für die Trennung im Netz ist es unerheblich; die Seiten
+bleiben in beiden Fällen getrennt.
+
+## 2.2 Persönliches Profil vorbereiten
+
+LinkedIn lässt dich erst dann eine Seite anlegen, wenn dein Profil ein paar
+Mindestanforderungen erfüllt. Fehlt eine davon, bricht der Vorgang ohne
+brauchbare Fehlermeldung ab — daher vorher prüfen:
+
+- [ ] echter Vor- und Nachname
+- [ ] Profilfoto vorhanden
+- [ ] Profil älter als sieben Tage
+- [ ] mehr als zehn Kontakte
+- [ ] die Position `Inhaber` bei `Finanz-Medizin` unter **Berufserfahrung**
+      eingetragen (zunächst als freier Text — nach dem Anlegen der Seite
+      verknüpfst du den Eintrag mit ihr, dann erscheint auch das Logo)
+- [ ] die mit dem Konto verknüpfte E-Mail-Adresse bestätigt
+
+Wenn das Profil neu ist: erst Foto, Schlagzeile und Info-Text aus 2.5 einpflegen,
+dreißig bis fünfzig Kontakte aus dem Berufsumfeld hinzufügen, ein paar Tage
+vergehen lassen. Ein frisches Profil ohne Kontakte wird beim Anlegen abgelehnt.
+
+## 2.3 Firmen-E-Mail-Adresse hinterlegen
+
+Das ist der Schritt, der die Seite freischaltet.
+
+**Einstellungen & Datenschutz → Anmeldung und Sicherheit → E-Mail-Adressen →
+E-Mail-Adresse hinzufügen.** Danach den Bestätigungslink im Postfach anklicken.
+
+> Menüpfade ändern sich bei LinkedIn gelegentlich. Wenn der Pfad nicht passt:
+> in den Einstellungen nach „E-Mail-Adressen" suchen.
+
+Welche Adresse: `benedict@finanz-medizin.com` ist LinkedIn lieber als eine
+Funktionsadresse, weil die Verifizierung auf persönliche Arbeitsadressen
+ausgelegt ist. Wenn sich das Postfach schnell einrichten lässt, nimm sie.
+`info@finanz-medizin.com` funktioniert erfahrungsgemäß ebenfalls.
+
+Die Adresse wird dadurch **nicht** zu deiner Anmelde- oder Hauptadresse. Sie
+liegt als zusätzliche Adresse im Konto und ist für niemanden sichtbar.
+
+## 2.4 Unternehmensseite anlegen
+
+1. `linkedin.com/company/setup/new` aufrufen — oder oben rechts auf das
+   Raster-Symbol **„Für Unternehmen" → „Unternehmensseite erstellen"**.
+2. Seitentyp: **Unternehmen** (nicht Bildungseinrichtung, nicht Showcase-Seite).
+3. **Name:** `Finanz-Medizin`
+4. **Öffentliche URL:** `linkedin.com/company/finanz-medizin` — falls vergeben,
+   `finanz-medizin-beratung`. Diese URL brauchen wir später für `sameAs`.
+5. **Website:** `https://www.finanz-medizin.com`
+6. **Branche:** Finanzdienstleistungen · **Größe:** 0–1 Mitarbeiter ·
+   **Unternehmenstyp:** Einzelunternehmen
+7. Logo hochladen und den Slogan aus 2.5 einsetzen.
+8. Bestätigungshäkchen setzen („Ich bin berechtigt, im Namen des Unternehmens zu
+   handeln") und anlegen.
+
+Danach die Texte aus 2.5 einpflegen und unter **Einstellungen → Verwaltete
+Konten** prüfen, dass du als Super-Admin eingetragen bist.
+
+## 2.5 Unternehmensseite — Texte
 
 **Name:** `Finanz-Medizin`
 
@@ -308,7 +405,7 @@ Ungebundener Versicherungsmakler nach § 34d GewO (D-5V3H-7KX3I-54) und Finanzan
 Erstgespräch, Bestandsaufnahme und Konzept sind kostenfrei.
 ```
 
-## 2.2 Persönliches Profil Benedict Hintz
+## 2.6 Persönliches Profil — Texte
 
 **Schlagzeile (max. 220 Zeichen)** — das meistgelesene Feld auf LinkedIn:
 ```
