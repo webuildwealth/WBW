@@ -47,12 +47,19 @@ PROFILE: list[str] = [
     "https://www.provenexpert.com/de-de/finanz-medizin/",
     "https://de.trustpilot.com/review/finanz-medizin.com",
     "https://www.instagram.com/finanz.medizin/",
+    "https://www.linkedin.com/company/finanz-medizin/",
     # Google Unternehmensprofil. Der Kurzlink ist die Fassung, die das Profil
     # selbst unter "Profil teilen" ausgibt. Falls spaeter die ausgeschriebene
     # maps.google.com-Adresse vorliegt, ist die stabiler — dann hier ersetzen.
     "https://maps.app.goo.gl/RutqhUqfo4KG87rTA",
 ]
 
+#  Offen: die Facebook-Unternehmensseite. Geliefert wurde bisher nur ein
+#  Teilen-Link (facebook.com/share/...). Der taugt hier nicht — er ist ein
+#  undurchsichtiger Weiterleiter, aus dem niemand ablesen kann, wohin er zeigt,
+#  und Teilen-Links koennen sich aendern. Gebraucht wird die Adresse der Seite
+#  selbst: facebook.com/<nutzername> oder facebook.com/profile.php?id=<nummer>.
+#
 #  Profile, die zur Person Benedict Hintz gehoeren — nicht zur Marke.
 #  Hier gehoert das persoenliche LinkedIn-Profil hinein, sobald es steht.
 PROFILE_PERSON: list[str] = []

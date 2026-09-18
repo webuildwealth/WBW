@@ -705,8 +705,23 @@ Hier steht We Build Wealth ausdrücklich drin — anders als in der
 Profilbeschreibung. Das ist kein Widerspruch, sondern die Linie, die wir überall
 fahren: **Trennung in der Ansprache, vollständige Offenlegung im Rechtstext.**
 
-## 4.8 Danach
+## 4.8 Danach: die richtige Adresse besorgen
 
-Seiten-URL auf `facebook.com/finanzmedizin` setzen (Seite bearbeiten →
-Nutzername) und mir schicken. Dann trage ich sie zusammen mit LinkedIn in
-`sameAs` nach.
+Ein **Teilen-Link** (`facebook.com/share/…`) taugt für `sameAs` nicht. Er ist
+ein undurchsichtiger Weiterleiter — niemand kann ihm ansehen, wohin er zeigt,
+er trägt eine Kampagnenkennung (`mibextid=`), und er kann sich ändern. In
+Strukturdaten gehört die Adresse der Seite selbst.
+
+So kommst du dran: Seite im Browser öffnen und in die Adresszeile schauen.
+
+- Ist ein Nutzername gesetzt, steht dort `facebook.com/finanzmedizin`.
+- Sonst `facebook.com/profile.php?id=` gefolgt von einer langen Zahl.
+
+Beides funktioniert. Besser ist der Nutzername — er ist lesbar und bleibt
+gleich, auch wenn die Seite umzieht. Setzen unter **Seite bearbeiten →
+Nutzername**, sinnvoll wäre `finanzmedizin`.
+
+> **Vorher prüfen:** Zeigt die Adresse auf die neue **Unternehmensseite** oder
+> noch auf das alte persönliche Konto? Am Kopf der Seite erkennbar: Steht dort
+> „Follower", ist es die Seite. Steht dort „Freunde", ist es noch das Profil —
+> und das gehört nicht in die Strukturdaten.
