@@ -28,13 +28,13 @@ Verbindliche Fassung, überall identisch:
 Finanz-Medizin
 Calvinstraße 3
 10557 Berlin
-0174 2920781
+01742920781
 info@finanz-medizin.com
 https://www.finanz-medizin.com
 ```
 
-> **Erledigt:** Finanz-Medizin hat eine eigene Rufnummer (`0174 2920781`), We
-> Build Wealth behält `0176 43229851`. Damit ist das größte Sperrrisiko beim
+> **Erledigt:** Finanz-Medizin hat eine eigene Rufnummer (`01742920781`), We
+> Build Wealth behält `017643229851`. Damit ist das größte Sperrrisiko beim
 > zweiten Google-Profil aus dem Weg. Abschnitt 1.2 erklärt, warum das der
 > wichtigste Einzelpunkt war.
 
@@ -72,7 +72,7 @@ Finanz-Medizin trifft das zu. Es muss nur von außen erkennbar sein.
 | Website | (WBW-Domain) | finanz-medizin.com | getrennt |
 | E-Mail | (WBW-Adresse) | info@finanz-medizin.com | getrennt |
 | Kundengruppe | allgemein | ausschließlich Heilberufe | getrennt |
-| Telefon | 0176 43229851 | 0174 2920781 | getrennt |
+| Telefon | 017643229851 | 01742920781 | getrennt |
 | **Primärkategorie** | vermutlich Finanzberater | Finanzberater | **offen** |
 | Anschrift | Calvinstraße 3 | Calvinstraße 3 | unkritisch, siehe 1.4 |
 
@@ -82,8 +82,8 @@ Von allen Merkmalen wiegt sie am schwersten: Eine geteilte Rufnummer ist für
 Googles Abgleich das stärkste Einzelsignal dafür, dass zwei Einträge dieselbe
 Firma sind — stärker als die Adresse.
 
-Finanz-Medizin hat jetzt `0174 2920781`, We Build Wealth behält
-`0176 43229851`. Die neue Nummer ist durch das gesamte Projekt gezogen: 32
+Finanz-Medizin hat jetzt `01742920781`, We Build Wealth behält
+`017643229851`. Die neue Nummer ist durch das gesamte Projekt gezogen: 32
 Stellen in Impressum, Strukturdaten, `llms.txt` und allen Seiten, in allen drei
 Schreibweisen (sichtbarer Text, `tel:`-Links, internationale Form).
 
@@ -687,7 +687,7 @@ abmahnfähig — und bei einem erlaubnispflichtigen Gewerbe schaut man genauer h
 ```
 Anbieter: Benedict Hintz, Einzelunternehmer
 Calvinstraße 3, 10557 Berlin, Deutschland
-Telefon: 0174 2920781 · E-Mail: info@finanz-medizin.com
+Telefon: 01742920781 · E-Mail: info@finanz-medizin.com
 
 Finanz-Medizin ist eine Marke und ein Geschäftsbereich des Einzelunternehmens
 We Build Wealth, Inhaber Benedict Hintz. Vertragspartner ist in allen Fällen

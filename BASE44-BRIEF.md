@@ -152,7 +152,7 @@ muss stehen bleiben.** Ohne ihn widerspricht die Werbung dem eigenen Impressum.
 Beispielrechnungen sind als Modellrechnungen gekennzeichnet und mit Vorbehalten
 versehen. Beides ist bei Finanzwerbung Pflicht.
 
-**Kontaktdaten.** `info@finanz-medizin.com`, `0174 2920781`,
+**Kontaktdaten.** `info@finanz-medizin.com`, `01742920781`,
 Calvinstraße 3, 10557 Berlin.
 
 ---
