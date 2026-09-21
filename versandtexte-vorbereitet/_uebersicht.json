@@ -1,0 +1,266 @@
+[
+ {
+  "nr": 1,
+  "marke": "Alte Leipziger",
+  "kategorie": "Vorsorge",
+  "datei": "01-alte-leipziger.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 2,
+  "marke": "LV 1871",
+  "kategorie": "Vorsorge",
+  "datei": "02-lv-1871.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 3,
+  "marke": "Volkswohl Bund",
+  "kategorie": "Vorsorge",
+  "datei": "03-volkswohl-bund.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 4,
+  "marke": "Condor",
+  "kategorie": "Vorsorge",
+  "datei": "04-condor.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 5,
+  "marke": "Standard Life",
+  "kategorie": "Vorsorge",
+  "datei": "05-standard-life.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 6,
+  "marke": "Canada Life",
+  "kategorie": "Vorsorge",
+  "datei": "06-canada-life.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 7,
+  "marke": "Swiss Life",
+  "kategorie": "Vorsorge",
+  "datei": "07-swiss-life.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 8,
+  "marke": "myLife",
+  "kategorie": "Vorsorge",
+  "datei": "08-mylife.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 9,
+  "marke": "die Bayerische",
+  "kategorie": "Vorsorge/BU",
+  "datei": "09-die-bayerische.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 10,
+  "marke": "Stuttgarter",
+  "kategorie": "Vorsorge/BU",
+  "datei": "10-stuttgarter.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 11,
+  "marke": "Nürnberger",
+  "kategorie": "BU",
+  "datei": "11-nuernberger.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 12,
+  "marke": "HDI",
+  "kategorie": "BU/Komposit",
+  "datei": "12-hdi.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 13,
+  "marke": "Gothaer",
+  "kategorie": "BU/Komposit",
+  "datei": "13-gothaer.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 14,
+  "marke": "Baloise",
+  "kategorie": "BU/Komposit",
+  "datei": "14-baloise.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 15,
+  "marke": "Debeka",
+  "kategorie": "PKV",
+  "datei": "15-debeka.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 16,
+  "marke": "DKV",
+  "kategorie": "PKV",
+  "datei": "16-dkv.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 17,
+  "marke": "Hallesche",
+  "kategorie": "PKV",
+  "datei": "17-hallesche.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 18,
+  "marke": "HanseMerkur",
+  "kategorie": "PKV",
+  "datei": "18-hansemerkur.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 19,
+  "marke": "Münchener Verein",
+  "kategorie": "PKV",
+  "datei": "19-muenchener-verein.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 20,
+  "marke": "SDK",
+  "kategorie": "PKV",
+  "datei": "20-sdk.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 21,
+  "marke": "INTER",
+  "kategorie": "PKV",
+  "datei": "21-inter.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 22,
+  "marke": "HUK-COBURG",
+  "kategorie": "Sach/Kfz",
+  "datei": "22-huk-coburg.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 23,
+  "marke": "VHV",
+  "kategorie": "Sach/Kfz",
+  "datei": "23-vhv.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 24,
+  "marke": "Haftpflichtkasse",
+  "kategorie": "Sach",
+  "datei": "24-haftpflichtkasse.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 25,
+  "marke": "InterRisk",
+  "kategorie": "Sach",
+  "datei": "25-interrisk.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 26,
+  "marke": "Janitos",
+  "kategorie": "Sach",
+  "datei": "26-janitos.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 27,
+  "marke": "AXA",
+  "kategorie": "Komposit",
+  "datei": "27-axa.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 28,
+  "marke": "Generali",
+  "kategorie": "Komposit",
+  "datei": "28-generali.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 29,
+  "marke": "Zurich",
+  "kategorie": "Komposit",
+  "datei": "29-zurich.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 30,
+  "marke": "ERGO",
+  "kategorie": "Komposit",
+  "datei": "30-ergo.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 31,
+  "marke": "R+V",
+  "kategorie": "Komposit",
+  "datei": "31-r-plus-v.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 32,
+  "marke": "DEVK",
+  "kategorie": "Komposit",
+  "datei": "32-devk.txt",
+  "adresse": "",
+  "baustein": "B"
+ },
+ {
+  "nr": 33,
+  "marke": "Württembergische",
+  "kategorie": "Komposit",
+  "datei": "33-wuerttembergische.txt",
+  "adresse": "",
+  "baustein": "B"
+ }
+]
