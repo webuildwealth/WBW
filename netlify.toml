@@ -17,6 +17,12 @@
   node_bundler = "esbuild"
   included_files = ["lib/**"]
 
+# Terminerinnerungen: alle 15 Minuten. Der Takt bestimmt die Genauigkeit der
+# 3-Stunden-Stufe — bei stuendlich koennte sie bis zu eine Stunde daneben
+# liegen, was bei einem Termin um 14:30 Uhr auffaellt.
+[functions."erinnerungen"]
+  schedule = "*/15 * * * *"
+
 # Post-Processing vollständig aus. Wichtig aus zwei Gründen:
 #  1. „Pretty URLs" würde /seite.html auf /seite umleiten — die canonical-Tags
 #     zeigen aber auf die .html-Variante. Das gäbe widersprüchliche SEO-Signale.
