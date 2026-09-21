@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
 
-const { ermittleEmpfaenger } = require('../src/recipient.js');
+const { ermittleEmpfaenger, istInhaber } = require('../src/recipient.js');
 const { FakeHubSpot, testKonfig, musterKontakt } = require('./helpers.js');
 
 function aufbau(ueberschreibungen) {
@@ -165,4 +165,79 @@ test('Lead ganz ohne Verknuepfung', async () => {
   await assert.rejects(async () => {
     await ermittleEmpfaenger('leads', await alsDatensatz(hubspot, 'leads', '77'), hubspot, cfg);
   }, /keinen verknuepften Kontakt/);
+});
+
+/* ------------------------------------------- Die Praxisinhaberin zuerst */
+
+test('bei mehreren Kontakten wird die Praxisinhaberin angeschrieben', async () => {
+  const { cfg, hubspot } = aufbau();
+  hubspot.lege('companies', '10', { name: 'Gemeinschaftspraxis' });
+  hubspot.lege('contacts', '1', musterKontakt({ email: 'empfang@praxis.example', jobtitle: 'Empfang' }));
+  hubspot.lege('contacts', '2', musterKontakt({ email: 'dr.schoeller@praxis.example', jobtitle: 'Praxisinhaberin' }));
+  hubspot.lege('contacts', '3', musterKontakt({ email: 'mfa@praxis.example', jobtitle: 'MFA' }));
+  hubspot.verknuepfe('companies', '10', 'contacts', ['1', '2', '3']);
+
+  const ziel = await ermittleEmpfaenger('companies', await alsDatensatz(hubspot, 'companies', '10'), hubspot, cfg);
+  assert.strictEqual(ziel.email, 'dr.schoeller@praxis.example');
+  assert.strictEqual(ziel.quelle, 'unternehmen.inhaber');
+});
+
+test('die Position wird auch mitten im Titel erkannt', async () => {
+  const { cfg, hubspot } = aufbau();
+  hubspot.lege('companies', '10', { name: 'Praxis' });
+  hubspot.lege('contacts', '1', musterKontakt({ email: 'a@praxis.example', jobtitle: 'MFA' }));
+  hubspot.lege('contacts', '2', musterKontakt({ email: 'b@praxis.example', jobtitle: 'Fachärztin und Praxisinhaberin' }));
+  hubspot.verknuepfe('companies', '10', 'contacts', ['1', '2']);
+
+  const ziel = await ermittleEmpfaenger('companies', await alsDatensatz(hubspot, 'companies', '10'), hubspot, cfg);
+  assert.strictEqual(ziel.email, 'b@praxis.example');
+});
+
+test('zwei Inhaber bleiben mehrdeutig — es wird weiterhin nicht geraten', async () => {
+  const { cfg, hubspot } = aufbau();
+  hubspot.lege('companies', '10', { name: 'Gemeinschaftspraxis' });
+  hubspot.lege('contacts', '1', musterKontakt({ email: 'a@praxis.example', jobtitle: 'Praxisinhaber' }));
+  hubspot.lege('contacts', '2', musterKontakt({ email: 'b@praxis.example', jobtitle: 'Praxisinhaberin' }));
+  hubspot.verknuepfe('companies', '10', 'contacts', ['1', '2']);
+
+  await assert.rejects(async () => {
+    await ermittleEmpfaenger('companies', await alsDatensatz(hubspot, 'companies', '10'), hubspot, cfg);
+  }, (e) => {
+    assert.strictEqual(e.code, 'EMPFAENGER_MEHRDEUTIG');
+    assert.match(e.message, /davon 2 mit einer Position/);
+    return true;
+  });
+});
+
+test('ohne erkennbare Position bleibt es bei der Mehrdeutigkeit', async () => {
+  const { cfg, hubspot } = aufbau();
+  hubspot.lege('companies', '10', { name: 'Praxis' });
+  hubspot.lege('contacts', '1', musterKontakt({ email: 'a@praxis.example', jobtitle: 'MFA' }));
+  hubspot.lege('contacts', '2', musterKontakt({ email: 'b@praxis.example', jobtitle: '' }));
+  hubspot.verknuepfe('companies', '10', 'contacts', ['1', '2']);
+
+  await assert.rejects(async () => {
+    await ermittleEmpfaenger('companies', await alsDatensatz(hubspot, 'companies', '10'), hubspot, cfg);
+  }, /keiner davon ist als Inhaberin oder Inhaber gekennzeichnet/);
+});
+
+test('der benannte Ansprechpartner schlaegt auch die Positionserkennung', async () => {
+  const { cfg, hubspot } = aufbau();
+  hubspot.lege('companies', '10', { name: 'Praxis', automation_email_contact_id: '1' });
+  hubspot.lege('contacts', '1', musterKontakt({ email: 'a@praxis.example', jobtitle: 'MFA' }));
+  hubspot.lege('contacts', '2', musterKontakt({ email: 'b@praxis.example', jobtitle: 'Praxisinhaberin' }));
+  hubspot.verknuepfe('companies', '10', 'contacts', ['1', '2']);
+
+  const ziel = await ermittleEmpfaenger('companies', await alsDatensatz(hubspot, 'companies', '10'), hubspot, cfg);
+  assert.strictEqual(ziel.email, 'a@praxis.example');
+  assert.strictEqual(ziel.quelle, 'unternehmen.ansprechpartner');
+});
+
+test('istInhaber prueft ohne Ruecksicht auf Gross- und Kleinschreibung', () => {
+  const titel = ['Inhaberin', 'Praxisinhaber', 'Geschäftsführerin'];
+  assert.strictEqual(istInhaber('PRAXISINHABER', titel), true);
+  assert.strictEqual(istInhaber('Leitende Geschäftsführerin', titel), true);
+  assert.strictEqual(istInhaber('MFA', titel), false);
+  assert.strictEqual(istInhaber('', titel), false);
+  assert.strictEqual(istInhaber(null, titel), false);
 });

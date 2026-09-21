@@ -6,7 +6,7 @@ const assert = require('node:assert');
 const { baueTestPipeline, musterKontakt, musterKampagne } = require('./helpers.js');
 const { STATUS } = require('../src/status.js');
 const { SEQ_STATUS, pruefeSequenz, naechsterSchritt, faelligkeitDanach } = require('../src/sequence.js');
-const { baueAnrede, betreffMitRe } = require('../src/pipeline.js');
+const { baueAnrede, anredeErsatz, betreffMitRe } = require('../src/pipeline.js');
 
 const TAG = 86400000;
 
@@ -367,11 +367,12 @@ test('die Anrede wird gebaut, aber niemals geraten', () => {
   assert.strictEqual(baueAnrede('Mr.', 'Brown'), 'Sehr geehrter Herr Brown');
   assert.strictEqual(baueAnrede('Ms', 'Brown'), 'Sehr geehrte Frau Brown');
 
-  /* Ohne Geschlecht lieber neutral als falsch. */
-  assert.strictEqual(baueAnrede('', 'Meier'), 'Guten Tag');
-  assert.strictEqual(baueAnrede('Dr.', 'Meier'), 'Guten Tag');
-  assert.strictEqual(baueAnrede('Herr', ''), 'Guten Tag');
-  assert.strictEqual(baueAnrede(null, null), 'Guten Tag');
+  /* Ohne Geschlecht wird nichts gebildet. Was dann geschieht,
+     entscheidet ANREDE_POLICY — nicht diese Funktion. */
+  assert.strictEqual(baueAnrede('', 'Meier'), '');
+  assert.strictEqual(baueAnrede('Dr.', 'Meier'), '');
+  assert.strictEqual(baueAnrede('Herr', ''), '');
+  assert.strictEqual(baueAnrede(null, null), '');
 });
 
 test('die Anrede landet in der Mail', async () => {
@@ -434,4 +435,74 @@ test('die echte Kampagne mfa-fluktuation ist gueltig', () => {
   /* Die letzte Mail muss einen Ausweg anbieten. Wer keinen anbietet, wird
      als Spam markiert — und das kostet die Domain, nicht den Kontakt. */
   assert.match(echte.schritte[2].rumpf, /kein Interesse/i);
+});
+
+/* ========================================================================== */
+/*  Die Anrede — immer Frau/Herr, niemals geraten                             */
+/* ========================================================================== */
+
+test('ohne Anrede am Kontakt geht die Mail nicht raus (strict)', async () => {
+  const t = baueTestPipeline({ ANREDE_POLICY: 'strict' }, [musterKampagne()]);
+  t.hubspot.lege('contacts', '1', kampagnenKontakt({ salutation: '' }));
+
+  const ergebnis = await t.pipeline.verarbeite('contacts', '1', 'webhook');
+
+  assert.strictEqual(ergebnis.ergebnis, 'failed');
+  assert.strictEqual(ergebnis.grund, 'ANREDE_FEHLT');
+  assert.strictEqual(t.gmail.versendet.length, 0);
+
+  const meldung = t.hubspot.letzterWert('automation_email_error');
+  assert.match(meldung, /salutation/, 'nennt das Feld');
+  assert.match(meldung, /Meier/, 'nennt den Kontakt');
+  assert.match(meldung, /ANREDE_POLICY=formal/, 'nennt den Ausweg');
+});
+
+test('ein Titel ohne Geschlecht reicht nicht', async () => {
+  const t = baueTestPipeline({ ANREDE_POLICY: 'strict' }, [musterKampagne()]);
+  t.hubspot.lege('contacts', '1', kampagnenKontakt({ salutation: 'Dr.' }));
+
+  const ergebnis = await t.pipeline.verarbeite('contacts', '1', 'webhook');
+  assert.strictEqual(ergebnis.grund, 'ANREDE_FEHLT');
+  assert.strictEqual(t.gmail.versendet.length, 0);
+});
+
+test('mit ANREDE_POLICY=formal geht sie mit "Sehr geehrte Damen und Herren" raus', async () => {
+  const t = baueTestPipeline({ ANREDE_POLICY: 'formal' }, [musterKampagne()]);
+  t.hubspot.lege('contacts', '1', kampagnenKontakt({ salutation: '' }));
+
+  const ergebnis = await t.pipeline.verarbeite('contacts', '1', 'webhook');
+  assert.strictEqual(ergebnis.ergebnis, 'sent');
+
+  const text = Buffer.from(
+    t.gmail.versendet[0].roh.split(/--wbw_[0-9a-f]+/)[1].split('\r\n\r\n')[1].trim(), 'base64'
+  ).toString('utf8');
+  assert.ok(text.indexOf('Sehr geehrte Damen und Herren,') !== -1, text.slice(0, 60));
+});
+
+test('die Praxisinhaberin wird mit Frau angeschrieben, der Praxisinhaber mit Herr', async () => {
+  const t = baueTestPipeline({}, [musterKampagne()]);
+  t.hubspot.lege('contacts', '1', kampagnenKontakt({ salutation: 'Frau Dr. med.', lastname: 'Schöller' }));
+  t.hubspot.lege('contacts', '2', kampagnenKontakt({ salutation: 'Herr Dr.', lastname: 'Meier', email: 'm@example.com' }));
+
+  await t.pipeline.verarbeite('contacts', '1', 'webhook');
+  await t.pipeline.verarbeite('contacts', '2', 'webhook');
+
+  const lies = (i) => Buffer.from(
+    t.gmail.versendet[i].roh.split(/--wbw_[0-9a-f]+/)[1].split('\r\n\r\n')[1].trim(), 'base64'
+  ).toString('utf8');
+
+  assert.ok(lies(0).indexOf('Sehr geehrte Frau Dr. med. Schöller,') !== -1);
+  assert.ok(lies(1).indexOf('Sehr geehrter Herr Dr. Meier,') !== -1);
+});
+
+test('der Ersatz haengt an der Regel', () => {
+  assert.strictEqual(anredeErsatz('strict'), '');
+  assert.strictEqual(anredeErsatz('formal'), 'Sehr geehrte Damen und Herren');
+  assert.strictEqual(anredeErsatz('neutral'), 'Guten Tag');
+});
+
+test('die echte Kampagne nennt das Einverstaendnis', () => {
+  const echte = require('../sequences/mfa-fluktuation.js');
+  assert.match(echte.schritte[0].rumpf, /Einverständnis/,
+    'die Erstansprache sagt, warum sie kommen darf');
 });

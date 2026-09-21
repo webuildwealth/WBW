@@ -127,6 +127,21 @@ function pruefeSequenz(sequenz) {
     const tage = Number(schritt.nachTagen);
     if (!Number.isFinite(tage) || tage < 0) probleme.push('Schritt ' + nr + ': nachTagen muss eine Zahl >= 0 sein');
     if (i === 0 && tage !== 0) probleme.push('Schritt 1: nachTagen muss 0 sein — der erste Schritt geht sofort raus');
+
+    if (schritt.anhaenge !== undefined) {
+      if (!Array.isArray(schritt.anhaenge)) {
+        probleme.push('Schritt ' + nr + ': anhaenge muss eine Liste von Dateinamen sein');
+      } else {
+        for (const name of schritt.anhaenge) {
+          if (typeof name !== 'string' || !name.trim()) {
+            probleme.push('Schritt ' + nr + ': ein Anhang ohne Dateinamen');
+          } else if (name !== require('path').basename(name)) {
+            probleme.push('Schritt ' + nr + ': "' + name + '" ist ein Pfad. Erlaubt sind nur Dateinamen; ' +
+              'die Datei gehoert in das Anhangverzeichnis.');
+          }
+        }
+      }
+    }
   });
 
   return probleme;

@@ -6,14 +6,17 @@
   "license": "UNLICENSED",
   "type": "commonjs",
   "main": "server.js",
-  "engines": { "node": ">=20.0.0" },
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "test": "node --test test/*.test.js",
     "setup:properties": "node scripts/setup-hubspot-properties.js",
     "check": "node scripts/check-config.js",
     "send:test": "node scripts/send-test.js",
-    "import:signature": "node scripts/import-signature.js"
+    "import:signature": "node scripts/import-signature.js",
+    "build:flyer": "node scripts/build-flyer.js"
   },
   "dependencies": {},
   "devDependencies": {}

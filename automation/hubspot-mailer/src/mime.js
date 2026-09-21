@@ -219,11 +219,16 @@ function baueNachricht(n) {
   /* Automatisch erzeugte Post gehoert markiert: Abwesenheitsnotizen und
      andere Automaten antworten darauf nicht, das erspart Schleifen. */
   kopfzeilen.push(['Auto-Submitted', 'auto-generated']);
-  kopfzeilen.push(['Content-Type', 'multipart/alternative; boundary="' + grenze + '"']);
 
-  const kopf = kopfzeilen.map((z) => z[0] + ': ' + z[1]).join(CRLF);
+  const anhaenge = (n.anhaenge || []).filter((a) => a && a.inhalt && a.inhalt.length);
 
-  const teile = [
+  /* Der Textteil bleibt in jedem Fall multipart/alternative: Nur-Text und
+     HTML sind zwei Fassungen derselben Nachricht, das Mailprogramm waehlt.
+     Kommen Anhaenge dazu, wandert dieser Block unveraendert in ein
+     multipart/mixed — Anhaenge sind keine Alternative zum Text, sondern
+     etwas daneben. Wer beides in eine Ebene wirft, bekommt Postfaecher, die
+     den Anhang anzeigen und den Text verschlucken. */
+  const textteil = [
     '--' + grenze,
     'Content-Type: text/plain; charset="UTF-8"',
     'Content-Transfer-Encoding: base64',
@@ -240,10 +245,81 @@ function baueNachricht(n) {
     ''
   ].join(CRLF);
 
+  let rumpf;
+
+  if (!anhaenge.length) {
+    kopfzeilen.push(['Content-Type', 'multipart/alternative; boundary="' + grenze + '"']);
+    rumpf = textteil;
+  } else {
+    const aussen = 'wbwmix_' + crypto.randomBytes(16).toString('hex');
+    kopfzeilen.push(['Content-Type', 'multipart/mixed; boundary="' + aussen + '"']);
+
+    const stuecke = [
+      '--' + aussen,
+      'Content-Type: multipart/alternative; boundary="' + grenze + '"',
+      '',
+      textteil
+    ];
+
+    for (const anhang of anhaenge) {
+      const name = dateinameFeld(anhang.dateiname);
+      stuecke.push(
+        '--' + aussen,
+        'Content-Type: ' + (anhang.typ || 'application/octet-stream') + '; ' + name,
+        'Content-Transfer-Encoding: base64',
+        'Content-Disposition: attachment; ' + name,
+        '',
+        base64Puffer(anhang.inhalt),
+        ''
+      );
+    }
+
+    stuecke.push('--' + aussen + '--', '');
+    rumpf = stuecke.join(CRLF);
+  }
+
+  const kopf = kopfzeilen.map((z) => z[0] + ': ' + z[1]).join(CRLF);
+
   const objekt = {};
   for (const z of kopfzeilen) objekt[z[0]] = z[1];
 
-  return { raw: kopf + CRLF + CRLF + teile, messageId: messageId, kopf: objekt };
+  return {
+    raw: kopf + CRLF + CRLF + rumpf,
+    messageId: messageId,
+    kopf: objekt,
+    anhaenge: anhaenge.map((a) => a.dateiname)
+  };
+}
+
+/**
+ * Der Dateiname eines Anhangs, in beiden Schreibweisen.
+ *
+ * filename="…" versteht jedes Programm, vertraegt aber nur ASCII.
+ * filename*=UTF-8''… (RFC 2231) traegt Umlaute, kennen aber nicht alle.
+ * Beide nebeneinander: Wer 2231 kann, nimmt es; der Rest bekommt eine
+ * lesbare Ersatzschreibweise statt eines zerhackten Namens.
+ */
+function dateinameFeld(roh) {
+  const name = saubereKopfzeile(roh).replace(/["\\]/g, '').slice(0, 120) || 'anhang';
+
+  const ascii = name
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue')
+    .replace(/Ä/g, 'Ae').replace(/Ö/g, 'Oe').replace(/Ü/g, 'Ue').replace(/ß/g, 'ss')
+    .replace(/[^\x20-\x7E]/g, '_');
+
+  const kodiert = encodeURIComponent(name).replace(/[!'()*]/g, (c) =>
+    '%' + c.charCodeAt(0).toString(16).toUpperCase());
+
+  return 'filename="' + ascii + '"' +
+    (ascii === name ? '' : "; filename*=UTF-8''" + kodiert);
+}
+
+/** Wie base64Block, nur fuer Binaerdaten statt Text. */
+function base64Puffer(puffer) {
+  const b = Buffer.from(puffer).toString('base64');
+  const zeilen = [];
+  for (let i = 0; i < b.length; i += 76) zeilen.push(b.slice(i, i + 76));
+  return zeilen.join(CRLF);
 }
 
 /** Die Gmail-API erwartet die Nachricht base64url-kodiert. */
@@ -252,5 +328,6 @@ const alsBase64Url = (roh) => Buffer.from(roh, 'utf8').toString('base64')
 
 module.exports = {
   baueNachricht, alsBase64Url, istAdresse, saubereKopfzeile,
-  kodiereWort, adressfeld, datumsfeld, base64Block, inSpitzklammern
+  kodiereWort, adressfeld, datumsfeld, base64Block, inSpitzklammern,
+  dateinameFeld, base64Puffer
 };

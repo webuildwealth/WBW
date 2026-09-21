@@ -25,6 +25,7 @@ const { GoogleAuth } = require('../src/google-auth.js');
 const { Gmail } = require('../src/gmail.js');
 const { Ledger } = require('../src/store.js');
 const { Sequenzen } = require('../src/sequence.js');
+const { ladeAnhaenge } = require('../src/anhang.js');
 
 const schreib = (s) => process.stdout.write(s + '\n');
 const OK = '  [ok]   ';
@@ -61,6 +62,12 @@ async function main() {
   schreib(HINWEIS + 'Zeitzone ' + cfg.zeitzone + ', Objektarten: ' + cfg.objekte.join(', '));
   schreib(HINWEIS + 'Absender: ' + Object.values(cfg.absender.konten).map((k) => k.key + '=' + k.email).join(', '));
   if (cfg.versand.trockenlauf) schreib(HINWEIS + 'DRY_RUN ist an — es geht keine echte Mail raus.');
+  schreib(HINWEIS + 'Anrede: ' + ({
+    strict: 'nur Frau/Herr mit Namen — sonst geht die Mail nicht raus',
+    formal: 'Frau/Herr mit Namen, sonst "Sehr geehrte Damen und Herren"',
+    neutral: 'Frau/Herr mit Namen, sonst "Guten Tag"'
+  }[cfg.versand.anredeRegel] || cfg.versand.anredeRegel));
+
   if (cfg.versand.erlaubteEmpfaenger.length) {
     schreib(HINWEIS + 'SEND_ALLOWLIST aktiv: ' + cfg.versand.erlaubteEmpfaenger.join(', '));
   }
@@ -233,6 +240,23 @@ async function main() {
       if (s.absender && !cfg.absender.konten[s.absender]) {
         gescheitert(schluessel + ': Absenderkonto "' + s.absender + '" ist nicht konfiguriert.',
           'In SENDER_ACCOUNTS ergaenzen oder in sequences/' + schluessel + '.js aendern.');
+      }
+
+      /* Ein Text, der einen Anhang verspricht, darf nicht ohne ihn
+         rausgehen — und das faellt besser hier auf als im Betrieb. */
+      for (const schritt of s.schritte) {
+        for (const anhang of (schritt.anhaenge || [])) {
+          try {
+            const geladen = ladeAnhaenge([anhang], cfg.anhang);
+            schreib(OK + '  Anhang ' + anhang + ' (' +
+              (geladen[0].inhalt.length / 1024).toFixed(0) + ' KB, ' + geladen[0].typ + ')');
+          } catch (e) {
+            gescheitert(schluessel + ': ' + e.message,
+              e.code === 'ANHANG_FEHLT'
+                ? 'Den Flyer bauen mit: npm run build:flyer'
+                : '');
+          }
+        }
       }
     }
 

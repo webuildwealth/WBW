@@ -247,7 +247,17 @@ function baueKonfig() {
       /* Genau ein verknuepfter Kontakt am Unternehmen gilt als eindeutig.
          Alles andere (null, zwei, zehn) wird nie geraten. */
       einzelkontaktErlaubt: jaNein('RECIPIENT_SINGLE_CONTACT_FALLBACK', true),
-      maxAssoziationen: zahl('RECIPIENT_MAX_ASSOCIATIONS', 50)
+      maxAssoziationen: zahl('RECIPIENT_MAX_ASSOCIATIONS', 50),
+
+      /* Hat ein Unternehmen mehrere Kontakte, entscheidet die Position:
+         Angeschrieben wird die Praxisinhaberin oder der Praxisinhaber, nicht
+         die Empfangskraft. Trifft genau einer zu, ist der Empfaenger damit
+         eindeutig; treffen mehrere zu, wird weiterhin nicht geraten. */
+      inhaberTitel: liste('RECIPIENT_OWNER_TITLES', [
+        'Inhaber', 'Inhaberin', 'Praxisinhaber', 'Praxisinhaberin',
+        'Praxisleitung', 'Geschäftsführer', 'Geschäftsführerin',
+        'Geschaeftsfuehrer', 'Geschaeftsfuehrerin', 'Ärztliche Leitung', 'Owner'
+      ])
     },
 
     /* ------------------------------------------------------------ Versand */
@@ -266,6 +276,14 @@ function baueKonfig() {
          'blank' setzt Leerstring ein. */
       platzhalterRegel: text('PLACEHOLDER_POLICY', 'strict'),
       signaturAn: jaNein('SIGNATURE_ENABLED', true),
+
+      /* Wie {{anrede}} gebildet wird, wenn am Kontakt keine Anrede steht:
+           strict  gar nicht — die Mail geht nicht raus (Standard)
+           formal  "Sehr geehrte Damen und Herren"
+           neutral "Guten Tag"
+         Das Geschlecht wird nie aus dem Vornamen erraten. Eine Praxisinhaberin
+         mit "Sehr geehrter Herr" anzuschreiben ist schlimmer als gar nicht. */
+      anredeRegel: text('ANREDE_POLICY', 'strict'),
 
       /* Feste Werte, die in jeder Mail zur Verfuegung stehen — der
          Buchungslink vor allem. Sie stehen hier und nicht im Mailtext,
@@ -305,6 +323,16 @@ function baueKonfig() {
       oeffentlicheUrl: text('PUBLIC_BASE_URL', ''),
       signaturPflicht: jaNein('WEBHOOK_REQUIRE_SIGNATURE', true),
       maxBodyBytes: zahl('WEBHOOK_MAX_BODY_BYTES', 1048576)
+    },
+
+    /* ----------------------------------------------------------- Anhaenge */
+    anhang: {
+      verzeichnis: text('ATTACHMENT_DIR', path.join(WURZEL, 'attachments')),
+      /* Gmail nimmt 25 MB je Nachricht, und die Kodierung fuer den Versand
+         schlaegt rund ein Drittel drauf. 10 MB je Datei sind reichlich fuer
+         einen Flyer und lassen Luft nach oben. */
+      maxBytes: zahl('ATTACHMENT_MAX_BYTES', 10 * 1024 * 1024),
+      maxGesamtBytes: zahl('ATTACHMENT_MAX_TOTAL_BYTES', 15 * 1024 * 1024)
     },
 
     /* ------------------------------------------------------------ Ablagen */
@@ -371,6 +399,11 @@ function pruefeKonfig(cfg) {
 
   if (['strict', 'blank'].indexOf(cfg.versand.platzhalterRegel) === -1) {
     probleme.push('PLACEHOLDER_POLICY muss "strict" oder "blank" sein.');
+  }
+
+  if (['strict', 'formal', 'neutral'].indexOf(cfg.versand.anredeRegel) === -1) {
+    probleme.push('ANREDE_POLICY muss "strict", "formal" oder "neutral" sein, ist aber "' +
+      cfg.versand.anredeRegel + '".');
   }
 
   if (cfg.versand.maxVersuche < 1 || cfg.versand.maxVersuche > 10) {

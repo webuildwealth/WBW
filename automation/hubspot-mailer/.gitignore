@@ -12,6 +12,11 @@ data/
 *.jsonl
 *.eml
 vorschau-*.html
+
+# Zwischenstand beim Flyerbau. Der fertige Flyer selbst gehoert ins Git —
+# er wird mit ausgeliefert, und ohne ihn geht die Nachfassmail nicht raus.
+attachments/quelle/.build.html
+templates/*.bak
 vorschau-*.txt
 
 node_modules/

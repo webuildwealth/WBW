@@ -132,12 +132,31 @@ async function empfaengerAusUnternehmen(unternehmen, hubspot, cfg) {
   }
 
   if (mitAdresse.length > 1) {
+    /* Bei mehreren Kontakten entscheidet die Position: Angeschrieben wird
+       die Praxisinhaberin oder der Praxisinhaber, nicht die Empfangskraft.
+       Das ist keine Notloesung, sondern die richtige Auswahl — nur muss sie
+       eindeutig sein. Passen zwei, wird weiterhin nicht geraten. */
+    const inhaber = mitAdresse.filter((k) => istInhaber(feld(k, 'jobtitle'), cfg.empfaenger.inhaberTitel));
+
+    if (inhaber.length === 1) {
+      return {
+        email: String(feld(inhaber[0], 'email')).trim().toLowerCase(),
+        kontakt: inhaber[0],
+        unternehmen: unternehmen,
+        quelle: 'unternehmen.inhaber'
+      };
+    }
+
     /* Hier koennte man "den zuerst angelegten" nehmen. Man koennte auch
        wuerfeln. Beides waere dasselbe. */
     throw fehler(
-      'Mit dem Unternehmen sind ' + mitAdresse.length + ' Kontakte mit E-Mail-Adresse verknuepft — ' +
-      'damit ist der Empfaenger nicht eindeutig. Bitte die Kontakt-ID des gewuenschten Ansprechpartners in ' +
-      cfg.props.contactId + ' eintragen. Zur Auswahl stehen: ' + mitAdresse.map((k) => k.id).join(', ') + '.',
+      'Mit dem Unternehmen sind ' + mitAdresse.length + ' Kontakte mit E-Mail-Adresse verknuepft' +
+      (inhaber.length > 1
+        ? ', davon ' + inhaber.length + ' mit einer Position aus ' + cfg.empfaenger.inhaberTitel.join('/')
+        : ' und keiner davon ist als Inhaberin oder Inhaber gekennzeichnet') +
+      ' — damit ist der Empfaenger nicht eindeutig. Entweder die Position im Feld "jobtitle" ' +
+      'nachtragen oder die Kontakt-ID des gewuenschten Ansprechpartners in ' + cfg.props.contactId +
+      ' eintragen. Zur Auswahl stehen: ' + mitAdresse.map((k) => k.id).join(', ') + '.',
       'EMPFAENGER_MEHRDEUTIG',
       { kandidaten: mitAdresse.map((k) => k.id) }
     );
@@ -149,6 +168,13 @@ async function empfaengerAusUnternehmen(unternehmen, hubspot, cfg) {
     unternehmen: unternehmen,
     quelle: 'unternehmen.einzelkontakt'
   };
+}
+
+/** Steht im Positionsfeld etwas, das auf die Praxisleitung hindeutet? */
+function istInhaber(position, titel) {
+  const p = String(position || '').toLowerCase();
+  if (!p) return false;
+  return (titel || []).some((t) => p.indexOf(String(t).toLowerCase()) !== -1);
 }
 
 /* ----------------------------------------------------------------- Lead */
@@ -221,4 +247,4 @@ async function begleitdaten(typ, datensatz, hubspot, cfg) {
   return { kontakt: null, unternehmen: null };
 }
 
-module.exports = { ermittleEmpfaenger, KONTAKT_FELDER, UNTERNEHMEN_FELDER };
+module.exports = { ermittleEmpfaenger, istInhaber, KONTAKT_FELDER, UNTERNEHMEN_FELDER };

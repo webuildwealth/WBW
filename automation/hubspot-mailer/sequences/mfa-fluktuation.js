@@ -44,7 +44,9 @@ module.exports = {
       rumpf:
 `{{anrede}},
 
-mein Name ist Benedict Hintz, ich bin Geschäftsführer von Finanz Medizin. Der häufigste Grund, warum Praxispersonal kündigt: Mehr Gehalt kommt nicht im Portemonnaie an. Wer einfach das Brutto erhöht, erreicht damit nicht automatisch mehr Netto.
+Sie hatten uns Ihr Einverständnis gegeben, dass wir uns per E-Mail bei Ihnen melden dürfen — vielen Dank dafür. Hier ist der versprochene Überblick.
+
+Mein Name ist Benedict Hintz, ich bin Geschäftsführer von Finanz Medizin. Der häufigste Grund, warum Praxispersonal kündigt: Mehr Gehalt kommt nicht im Portemonnaie an. Wer einfach das Brutto erhöht, erreicht damit nicht automatisch mehr Netto.
 
 Erfahrungsgemäß denkt fast jeder Praxisinhaber, er zahle gut genug, damit seine Leute bleiben. Genau das ist der Trugschluss. Häufig sind die Mitarbeiter längst weg, bevor es überhaupt zur Gehaltserhöhung kommt — weil am Markt bereits andere Angebote liegen.
 
@@ -73,12 +75,18 @@ Ihr Finanz-Medizin-Team`
       nachTagen: 7,
       betreff: 'Nachgefragt: was 500 Euro mehr Brutto wirklich bringen',
       antwortAufVorherige: true,
+      /* Der Flyer liegt in attachments/. Fehlt er, geht die Mail nicht ohne
+         ihn raus, sondern gar nicht — sonst verweist der Text auf einen
+         Anhang, den es nicht gibt. */
+      anhaenge: ['finanz-medizin-leistungsumfang.pdf'],
       rumpf:
 `{{anrede}},
 
 kurz konkret, weil die Zahl fast immer überrascht: Von 500 Euro mehr Brutto bleiben einer MFA je nach Steuerklasse oft nur rund 250 bis 300 Euro netto. Die Praxis zahlt zusätzlich die Arbeitgeberanteile — es kostet also deutlich mehr, als beim Mitarbeiter ankommt.
 
 Genau an dieser Lücke setzen wir an. Es gibt Bausteine, bei denen fast der volle Betrag beim Mitarbeiter landet und die Praxis trotzdem weniger zahlt als für die Gehaltserhöhung.
+
+Im Anhang finden Sie unseren Leistungsumfang auf zwei Seiten: die sieben Hebel, die wir in Praxen einsetzen, jeweils mit dem Effekt pro Jahr und der Rechtsgrundlage. Die Musterrechnung geht von einer Einzelpraxis mit vier MFA aus. Dieselben Zahlen samt Rechenwegen stehen auch auf finanz-medizin.com/praxisinhaber, falls Ihnen das lieber ist als ein PDF.
 
 Welche davon für Ihre Praxis in Frage kommen, hängt von Ihrer Struktur ab. Das lässt sich in einem kurzen Gespräch klären:
 {{booking_link}}

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Finanz &amp; Medizin — Leistungsumfang</title>
+
+<!-- =============================================================================
+     Quelle des Flyers, der der ersten Nachfassmail beiliegt.
+     Bauen mit:  npm run build:flyer
+     Ergebnis:   attachments/finanz-medizin-leistungsumfang.pdf
+
+     Alle Zahlen stammen aus praxisinhaber.html, Abschnitt "Das Praxiskonzept".
+     Wer sie dort aendert, aendert sie bitte auch hier — und umgekehrt.
+     Die Platzhalter __LOGO__ und __FONT_*__ setzt das Bauskript ein.
+     ========================================================================== -->
+
+<style>
+  @font-face { font-family: 'Manrope'; src: url(__FONT_MANROPE__) format('woff2');
+               font-weight: 200 800; font-display: block; }
+  @font-face { font-family: 'Inter'; src: url(__FONT_INTER__) format('woff2');
+               font-weight: 100 900; font-display: block; }
+
+  :root {
+    --navy:      #0C2C4F;
+    --navy-tief: #071B32;
+    --navy-hell: #6F93B4;
+    --wein:      #751524;
+    --ivory:     #F4F0EF;
+    --bone:      #E3DCD6;
+    --gruen:     #17683F;
+    --ink-soft:  #3D5064;
+    --ink-mute:  #6B7B8C;
+    --linie:     rgba(12, 44, 79, 0.14);
+  }
+
+  @page { size: A4; margin: 0; }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--navy);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .seite {
+    width: 210mm; height: 297mm;
+    padding: 16mm 16mm 14mm;
+    background: #FFFFFF;
+    position: relative;
+    display: flex; flex-direction: column;
+    page-break-after: always;
+    overflow: hidden;
+  }
+  .seite:last-child { page-break-after: auto; }
+
+  /* ------------------------------------------------------------- Kopf */
+  .kopf { display: flex; align-items: flex-start; justify-content: space-between;
+          padding-bottom: 5mm; border-bottom: 2px solid var(--navy); }
+  .kopf img { height: 13mm; width: auto; }
+  .kopf .zeile { text-align: right; font-size: 8pt; line-height: 1.5; color: var(--ink-mute); }
+
+  h1 { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 25pt;
+       line-height: 1.12; letter-spacing: -0.02em; margin-top: 8mm; }
+  h1 .leicht { display: block; font-weight: 300; color: var(--navy-hell); font-size: 15pt;
+               letter-spacing: 0; margin-top: 2.5mm; }
+
+  h2 { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 12.5pt;
+       margin-top: 7mm; margin-bottom: 3mm; letter-spacing: -0.01em; }
+
+  p { font-size: 9.5pt; line-height: 1.6; color: var(--ink-soft); }
+
+  .vorspann { margin-top: 5mm; padding: 4.5mm 5mm; background: var(--ivory);
+              border-left: 3px solid var(--wein); }
+  .vorspann p { font-size: 10pt; color: var(--navy); }
+  .vorspann strong { font-weight: 700; }
+
+  /* ------------------------------------------------------------ Hebel */
+  table { width: 100%; border-collapse: collapse; margin-top: 3mm; }
+  thead th { font-family: 'Manrope', sans-serif; font-size: 7.5pt; font-weight: 700;
+             text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-mute);
+             text-align: left; padding: 0 0 2mm; border-bottom: 1px solid var(--linie); }
+  thead th.rechts { text-align: right; }
+
+  tbody td { padding: 3.2mm 0; border-bottom: 1px solid var(--linie); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .nr { width: 7mm; font-family: 'Manrope', sans-serif; font-weight: 800;
+        font-size: 10pt; color: var(--bone); padding-right: 2mm; }
+  .was { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 10pt;
+         color: var(--navy); }
+  .was span { display: block; font-family: 'Inter', sans-serif; font-weight: 400;
+              font-size: 8.5pt; line-height: 1.5; color: var(--ink-soft); margin-top: 1mm; }
+  .wirkung { width: 42mm; text-align: right; font-family: 'Manrope', sans-serif;
+             font-weight: 700; font-size: 9.5pt; color: var(--gruen); white-space: nowrap; }
+  .wirkung.neutral { color: var(--ink-mute); }
+  .wirkung small { display: block; font-family: 'Inter', sans-serif; font-weight: 400;
+                   font-size: 7.5pt; color: var(--ink-mute); margin-top: 0.8mm;
+                   white-space: normal; }
+
+  /* --------------------------------------------------------- Bilanz */
+  .bilanz { display: flex; gap: 4mm; margin-top: 3mm; }
+  .karte { flex: 1; padding: 5mm 4.5mm; background: var(--navy); color: #FFFFFF;
+           border-radius: 2mm; }
+  .karte.hell { background: var(--ivory); color: var(--navy); }
+  .karte .titel { font-size: 7.5pt; text-transform: uppercase; letter-spacing: 0.08em;
+                  opacity: 0.72; }
+  .karte .zahl { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 19pt;
+                 margin: 2mm 0 1.5mm; letter-spacing: -0.02em; }
+  .karte .dazu { font-size: 8pt; line-height: 1.45; opacity: 0.85; }
+
+  /* ------------------------------------------------------ Fundstellen */
+  .recht { margin-top: 3mm; border-top: 1px solid var(--linie); }
+  .recht div { display: flex; gap: 4mm; padding: 2.4mm 0; border-bottom: 1px solid var(--linie);
+               font-size: 8.5pt; }
+  .recht div:last-child { border-bottom: none; }
+  .recht .norm { flex: 0 0 52mm; font-family: 'Manrope', sans-serif; font-weight: 700;
+                 color: var(--navy); }
+  .recht .text { color: var(--ink-soft); line-height: 1.5; }
+
+  .hinweis { margin-top: 4mm; padding: 4mm 4.5mm; background: var(--ivory);
+             border-radius: 2mm; }
+  .hinweis p { font-size: 8.5pt; }
+
+  /* ------------------------------------------------------------ Fuss */
+  .abbinder { margin-top: auto; padding-top: 5mm; border-top: 2px solid var(--navy);
+              display: flex; justify-content: space-between; align-items: flex-end; gap: 6mm; }
+  .abbinder .kontakt { font-size: 8.5pt; line-height: 1.6; color: var(--ink-soft); }
+  .abbinder .kontakt strong { display: block; font-family: 'Manrope', sans-serif;
+                              font-weight: 700; font-size: 10pt; color: var(--navy);
+                              margin-bottom: 1mm; }
+  .abbinder a { color: var(--wein); text-decoration: none; }
+
+  .termin { flex: 0 0 66mm; padding: 4mm; background: var(--navy); color: #FFFFFF;
+            border-radius: 2mm; text-align: center; }
+  .termin .titel { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 9.5pt; }
+  .termin .adresse { font-size: 8.5pt; margin-top: 1.5mm; color: #FFFFFF; word-break: break-all; }
+  .termin .dauer { font-size: 7.5pt; margin-top: 1.5mm; opacity: 0.7; }
+
+  .kleingedruckt { margin-top: 4mm; font-size: 7pt; line-height: 1.5; color: var(--ink-mute); }
+  .seitenzahl { position: absolute; bottom: 8mm; right: 16mm; font-size: 7.5pt;
+                color: var(--ink-mute); }
+</style>
+</head>
+<body>
+
+<!-- ======================================================== Seite 1 ===== -->
+<section class="seite">
+
+  <header class="kopf">
+    <img src="__LOGO__" alt="Finanz &amp; Medizin">
+    <div class="zeile">
+      Beratung für Ärztinnen und Ärzte<br>
+      Stand __STAND__
+    </div>
+  </header>
+
+  <h1>
+    Leistungsumfang
+    <span class="leicht">Sieben Hebel für Ihre Praxis, sortiert nach Wirkung</span>
+  </h1>
+
+  <div class="vorspann">
+    <p>
+      Damit bei <strong>3.100 € brutto</strong> am Monatsende <strong>50 € netto</strong> mehr
+      ankommen, brauchen Sie rund <strong>91 € mehr Gehalt</strong> — den Rest holen sich Steuer
+      und Sozialversicherung. Über betriebliche Bausteine bleiben von 50 € auch 50 €.
+      Das ist der ganze Unterschied, und er trägt weiter, als es zunächst aussieht.
+    </p>
+  </div>
+
+  <h2>Was wir umsetzen</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th colspan="2">Baustein</th>
+        <th class="rechts">Effekt pro Jahr</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="nr">01</td>
+        <td class="was">MFA halten statt nachbesetzen
+          <span>Jeder Abgang kostet Recruiting, Einarbeitung und Vertretung. Personal ist mit 58 % der größte Kostenblock der Praxis.</span></td>
+        <td class="wirkung">+ 15.000 €<small>je verhindertem Abgang</small></td>
+      </tr>
+      <tr>
+        <td class="nr">02</td>
+        <td class="was">Basisrente neben dem Versorgungswerk
+          <span>Freier Sonderausgabenrahmen nach Anrechnung der Kammerbeiträge — voll abzugsfähig, investmentbasiert angelegt.</span></td>
+        <td class="wirkung">+ 4.400 – 6.600 €<small>Steuerersparnis</small></td>
+      </tr>
+      <tr>
+        <td class="nr">03</td>
+        <td class="was">Sachbezug statt Gehaltserhöhung
+          <span>50 € Sachbezug kommen netto vollständig an. Für dieselben 50 € netto per Gehalt zahlt die Praxis rund 110 €.</span></td>
+        <td class="wirkung">+ 2.900 €<small>bei vier MFA</small></td>
+      </tr>
+      <tr>
+        <td class="nr">04</td>
+        <td class="was">PKV-Tarifwechsel nach § 204 VVG
+          <span>Interner Wechsel in einen gleichwertigen Tarif — Alterungsrückstellungen bleiben erhalten, keine Gesundheitsprüfung.</span></td>
+        <td class="wirkung">+ 1.200 – 3.000 €<small>Beitragsersparnis</small></td>
+      </tr>
+      <tr>
+        <td class="nr">05</td>
+        <td class="was">bAV per Entgeltumwandlung + 15 % Zuschuss
+          <span>100 € Umwandlung kosten die MFA netto rund 55 €. Gesparte Arbeitgeberabgaben decken den Pflichtzuschuss weitgehend ab.</span></td>
+        <td class="wirkung neutral">± 0 €<small>für die Praxis</small></td>
+      </tr>
+      <tr>
+        <td class="nr">06</td>
+        <td class="was">§ 100 EStG — Förderung für Teilzeitkräfte
+          <span>30 % des Arbeitgeberbeitrags erstattet das Finanzamt direkt über die Lohnsteuer-Anmeldung.</span></td>
+        <td class="wirkung">+ 288 €<small>je berechtigter MFA</small></td>
+      </tr>
+      <tr>
+        <td class="nr">07</td>
+        <td class="was">Betriebliche Krankenversicherung, 600 € Budget
+          <span>Zahnersatz, Sehhilfen, Vorsorge, Chefarzt — ohne Gesundheitsprüfung. Stärkstes Bindungsinstrument im MFA-Markt.</span></td>
+        <td class="wirkung neutral">– 770 €<small>nach Steuer, für vier MFA</small></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="hinweis">
+    <p>
+      <strong>Musterpraxis:</strong> Einzelpraxis, ein Inhaber (PKV, Versorgungswerk,
+      Spitzensteuersatz), vier MFA in Vollzeit à 3.100 € brutto. Alle Werte pro Jahr und
+      gerundet. Bei Ihrer Praxis können die Werte abweichen — genau deshalb rechnen wir sie
+      vor der Umsetzung durch.
+    </p>
+  </div>
+
+  <div class="seitenzahl">1 / 2</div>
+</section>
+
+<!-- ======================================================== Seite 2 ===== -->
+<section class="seite">
+
+  <header class="kopf">
+    <img src="__LOGO__" alt="Finanz &amp; Medizin">
+    <div class="zeile">
+      Leistungsumfang<br>
+      Seite 2
+    </div>
+  </header>
+
+  <h2 style="margin-top:8mm">Unterm Strich</h2>
+
+  <div class="bilanz">
+    <div class="karte">
+      <div class="titel">Die Praxis</div>
+      <div class="zahl">+ 2.500 €</div>
+      <div class="dazu">netto pro Jahr — zusätzlich rund 15.000 € je MFA, die bleibt</div>
+    </div>
+    <div class="karte hell">
+      <div class="titel">Sie privat</div>
+      <div class="zahl">+ 6.000 – 10.000 €</div>
+      <div class="dazu">pro Jahr, bei gleichem oder besserem Schutz</div>
+    </div>
+    <div class="karte hell">
+      <div class="titel">Jede MFA</div>
+      <div class="zahl">+ 1.900 €</div>
+      <div class="dazu">spürbarer Mehrwert — mehr, als 100 € Gehaltserhöhung netto bringen</div>
+    </div>
+  </div>
+
+  <h2>Worauf das beruht</h2>
+
+  <div class="recht">
+    <div><span class="norm">§ 8 Abs. 2 S. 11 EStG</span>
+      <span class="text">Sachbezug 50 € im Monat, steuer- und abgabenfrei</span></div>
+    <div><span class="norm">§ 3 Nr. 63 EStG</span>
+      <span class="text">Entgeltumwandlung in die betriebliche Altersversorgung</span></div>
+    <div><span class="norm">§ 100 EStG</span>
+      <span class="text">Förderbetrag zur bAV für Geringverdiener, 2026 max. 288 € je Person
+        (Lohngrenze 2.575 € im Monat)</span></div>
+    <div><span class="norm">§ 204 VVG</span>
+      <span class="text">Tarifwechsel in der privaten Krankenversicherung unter Mitnahme der
+        Alterungsrückstellungen</span></div>
+  </div>
+
+  <div class="hinweis">
+    <p>
+      <strong>Ab 2027:</strong> Mit dem 2. Betriebsrentenstärkungsgesetz steigt der Förderbetrag
+      nach § 100 EStG auf maximal 360 €, der geförderte Arbeitgeberbeitrag auf bis zu 1.200 €,
+      und die Lohngrenze wird an 3 % der Beitragsbemessungsgrenze gekoppelt. Wer jetzt startet,
+      profitiert ab 2027 automatisch von der höheren Förderung.
+    </p>
+  </div>
+
+  <h2>Wie das abläuft</h2>
+  <p>
+    Einmalig ein Setup, danach Routine. Ihr Steuerbüro bekommt von uns Lohnarten, Beträge und
+    Fundstellen in einer Übersicht; auf Wunsch sprechen wir direkt mit dem Lohnbüro, damit Sie
+    gar nicht erst zum Übersetzer werden. Für bKV und Sachbezug dürfen Sie sachlich abgrenzbare
+    Gruppen bilden — in der Praxis fahren die meisten besser damit, das Paket allen zu geben.
+  </p>
+  <p style="margin-top:2.5mm">
+    Wenn Sie bereits einen Berater für die Praxis haben, prüfen wir dessen Konzept, statt es zu
+    ersetzen. Und wenn nach unserer Bestandsaufnahme nichts zu tun ist, sagen wir Ihnen das.
+  </p>
+
+  <div class="abbinder">
+    <div class="kontakt">
+      <strong>Benedict Hintz</strong>
+      Finanz &amp; Medizin · We Build Wealth<br>
+      Calvinstraße 3 · 10557 Berlin<br>
+      <a href="tel:+4917643229851">0176 43229851</a> ·
+      <a href="mailto:info@finanz-medizin.com">info@finanz-medizin.com</a>
+    </div>
+    <div class="termin">
+      <div class="titel">Erstgespräch vereinbaren</div>
+      <div class="adresse">__BOOKING__</div>
+      <div class="dauer">15 Minuten, telefonisch</div>
+    </div>
+  </div>
+
+  <div class="kleingedruckt">
+    Alle Angaben sind Beispielrechnungen für die oben beschriebene Musterpraxis, Rechengrößen 2026,
+    und ersetzen keine steuerliche oder rechtliche Beratung im Einzelfall. Die vollständigen
+    Rechenwege und Quellen sind unter finanz-medizin.com/praxisinhaber veröffentlicht.
+    Benedict Hintz ist Versicherungsmakler nach § 34d Abs. 1 GewO und Finanzanlagenvermittler
+    nach § 34f Abs. 1 Satz 1 Nr. 1 GewO.
+  </div>
+
+  <div class="seitenzahl">2 / 2</div>
+</section>
+
+</body>
+</html>

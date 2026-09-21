@@ -134,6 +134,8 @@ kein Notbetrieb, sondern eine vollwertige Betriebsart.
 | `src/app.js` | Baut alles zusammen. Hosterunabhängig — wie `lib/lead-core.js` im selben Repository. |
 | `src/pipeline.js` | Der Ablauf einer Mail von `queued` bis `sent`. |
 | `src/sequence.js` | Kampagnen mit Nachfassmails — vor allem: wann aufgehört wird. |
+| `src/anhang.js` | Anhänge laden. Dateinamen statt Pfade, mit Größen- und Formatgrenze. |
+| `attachments/` | Was mitgeschickt wird, plus die Quelle des Flyers. |
 | `sequences/*.js` | Die Kampagnen selbst. Reiner Text, ohne Code bearbeitbar. |
 | `src/store.js` | Das Ledger. Hier scheitern doppelte Mails. |
 | `src/recipient.js` | Wer bekommt die Mail. Kontakt / Unternehmen / Lead. |
@@ -433,7 +435,7 @@ openssl rand -base64 32
 
 npm run setup:properties   # Properties in HubSpot anlegen
 npm run check              # Selbsttest
-npm test                   # 133 Testfälle
+npm test                   # 162 Testfälle
 npm start                  # starten
 ```
 
@@ -455,7 +457,7 @@ sudo useradd --system --no-create-home --shell /usr/sbin/nologin hubspot-mailer
 sudo mkdir -p /opt/hubspot-mailer /etc/hubspot-mailer
 
 # Anwendung
-sudo cp -r src scripts templates sequences server.js package.json /opt/hubspot-mailer/
+sudo cp -r src scripts templates sequences attachments server.js package.json /opt/hubspot-mailer/
 sudo chown -R root:root /opt/hubspot-mailer
 
 # Zugangsdaten
@@ -506,7 +508,7 @@ Nach außen gehören nur `/hubspot/webhook`, `/hubspot/trigger` und `/healthz`.
 
 ```bash
 sudo systemctl stop hubspot-mailer     # wartet auf laufende Versände
-sudo cp -r src scripts templates sequences server.js /opt/hubspot-mailer/
+sudo cp -r src scripts templates sequences attachments server.js /opt/hubspot-mailer/
 sudo systemctl start hubspot-mailer
 ```
 
@@ -553,6 +555,7 @@ Speichern. Nach wenigen Sekunden (Webhook) oder spätestens einer Minute
 | `{{company}}` | verknüpftes Unternehmen, sonst Feld *Firma* am Kontakt |
 | `{{meeting_date}}` | `automation_meeting_at`, z. B. *Dienstag, 22.09.2026* |
 | `{{meeting_time}}` | `automation_meeting_at`, z. B. *10:30 Uhr* |
+| `{{anrede}}` | „Sehr geehrte Frau Dr. Meier" / „Sehr geehrter Herr Dr. Meier" — aus `salutation` + `lastname` |
 | `{{sender_name}}` `{{sender_email}}` | Absenderkonto |
 | `{{email}}` | Empfängeradresse |
 
@@ -573,12 +576,44 @@ PLACEHOLDER_MAP={"praxis":"company:name","fachgebiet":"contact:fachgebiet","bera
 Quellen: `record:` (auslösender Datensatz), `contact:`, `company:`, `recipient:`,
 `sender:`, `meeting:`, `const:`.
 
+### Die Anrede
+
+`{{anrede}}` baut die vollständige Briefanrede aus den HubSpot-Feldern
+`salutation` und `lastname`:
+
+| `salutation` | `lastname` | Ergebnis |
+|---|---|---|
+| Frau Dr. med. | Schöller | Sehr geehrte Frau Dr. med. Schöller |
+| Herr Dr. | Meier | Sehr geehrter Herr Dr. Meier |
+| Mr. | Brown | Sehr geehrter Herr Brown |
+| *(leer)* | Meier | — siehe unten |
+| Dr. | Meier | — siehe unten |
+
+**Das Geschlecht wird nie aus dem Vornamen erraten.** Es gäbe Bibliotheken
+dafür, und sie liegen bei jedem zehnten Namen daneben — eine Praxisinhaberin
+mit „Sehr geehrter Herr" anzuschreiben verbrennt den Kontakt zuverlässiger als
+gar keine Mail.
+
+Was stattdessen passiert, steuert `ANREDE_POLICY`:
+
+| Wert | Verhalten |
+|---|---|
+| `strict` **(Vorgabe)** | Die Mail geht **nicht** raus. Status `failed`, mit dem Hinweis, an welchem Kontakt die Anrede fehlt. |
+| `formal` | „Sehr geehrte Damen und Herren" |
+| `neutral` | „Guten Tag" |
+
+`strict` ist die Vorgabe, weil in der Ansprache an Praxen immer eine
+persönliche Anrede stehen soll. Der Preis: Eine Liste ohne gepflegtes
+`salutation`-Feld bleibt vollständig liegen, bis jemand nachträgt. Wer das
+nicht will, setzt `formal` — dann geht keine Mail verloren, und die ohne
+Anrede beginnen förmlich statt persönlich.
+
 ### Empfänger
 
 | Objekt | Reihenfolge |
 |---|---|
 | **Kontakt** | 1. `automation_email_recipient` → 2. `email` |
-| **Unternehmen** | 1. `automation_email_recipient` → 2. `automation_email_contact_id` → 3. genau **ein** verknüpfter Kontakt mit Adresse |
+| **Unternehmen** | 1. `automation_email_recipient` → 2. `automation_email_contact_id` → 3. genau **ein** verknüpfter Kontakt mit Adresse → 4. bei mehreren: genau **eine** Person mit Inhaber-Position im Feld `jobtitle` |
 | **Lead** | 1. `automation_email_recipient` → 2. genau **ein** verknüpfter Kontakt → 3. über das verknüpfte Unternehmen, nach dessen Regeln |
 
 **Bei mehreren möglichen Empfängern wird nicht gesendet.** Der Status geht auf
@@ -684,6 +719,10 @@ Fall trifft Ihr Anwalt. Was die Software dazu beiträgt:
   das Feld nicht auf wahr steht, startet keine Kampagne. Ihre Funnels auf der
   Website erfassen die Einwilligung bereits (`einwilligung` in `lib/lead-core.js`);
   wenn diese Kontakte in HubSpot landen, tragen sie das Feld mit.
+* **Der Text nennt es.** Die Erstansprache beginnt mit „Sie hatten uns Ihr
+  Einverständnis gegeben, dass wir uns per E-Mail bei Ihnen melden dürfen" —
+  das ist der Satz, der dem Empfänger erklärt, warum diese Mail kommen darf.
+  Er gehört nur dort hin, wenn er stimmt; er ist keine Formel.
 * **Ausstieg in Schritt 3.** „Einfach kurz *kein Interesse* antworten, dann
   melde ich mich nicht wieder.“ Das ist kein Beiwerk: Wer keinen Ausweg
   anbietet, wird als Spam markiert — und das kostet die Domain mehr, als der
@@ -850,7 +889,56 @@ sein; Platzhalter funktionieren wie überall.
 — wer ihn ändert, während Kontakte mittendrin stecken, verschiebt für diese die
 Identität der Mail. Legen Sie stattdessen eine neue Kampagne an.
 
-### 9.9 Die echte Gmail-Signatur übernehmen
+### 9.9 Anhänge
+
+Ein Kampagnenschritt kann Dateien mitschicken:
+
+```js
+{ nachTagen: 7, betreff: '…', anhaenge: ['finanz-medizin-leistungsumfang.pdf'], rumpf: '…' }
+```
+
+Die Dateien liegen in `attachments/` (`ATTACHMENT_DIR`). Eine Kampagne nennt
+**nur den Dateinamen, nie einen Pfad** — alles mit `/` oder `..` wird
+abgewiesen. Das ist keine Förmlichkeit: Wäre `../../etc/hubspot-mailer.env`
+erlaubt, ließe sich die Konfiguration samt Zugangsdaten an eine beliebige
+Adresse verschicken.
+
+Grenzen: 10 MB je Datei, 15 MB zusammen (Gmail nimmt 25 MB je Nachricht, und
+die Kodierung schlägt rund ein Drittel drauf). Erlaubt sind PDF, die gängigen
+Bildformate, Text/CSV und die Office-Formate.
+
+**Fehlt eine Datei, geht die Mail gar nicht raus** — nicht etwa ohne sie. Ein
+Text, der auf „im Anhang finden Sie" verweist, und dann kommt nichts: das ist
+schlimmer als eine Mail, die einen Tag später kommt.
+
+#### Der Flyer
+
+`sequences/mfa-fluktuation.js` hängt an die **erste Nachfassmail** den
+Leistungsumfang als zweiseitiges PDF.
+
+```bash
+npm run build:flyer
+```
+
+Quelle ist `attachments/quelle/leistungsumfang.html` — normales HTML mit CSS,
+das Chromium nach A4 druckt. Logo und Hausschriften kommen aus dem
+Website-Repository und werden eingebettet.
+
+**Alle Zahlen im Flyer stammen aus `praxisinhaber.html`**, Abschnitt „Das
+Praxiskonzept": die sieben Hebel mit ihren Jahreswerten, die Musterpraxis
+(Einzelpraxis, vier MFA à 3.100 €), die Fundstellen (§ 8 Abs. 2 S. 11 EStG,
+§ 3 Nr. 63 EStG, § 100 EStG, § 204 VVG) und der Ausblick auf 2027. Es ist
+nichts hinzuerfunden. Wer die Zahlen auf der Website ändert, ändert sie bitte
+auch hier — und umgekehrt.
+
+Eine Eigenheit: Die Hausschriften sind Variable Fonts, die das PDF-Format nicht
+abbilden kann. Chromium legt sie deshalb als Type-3-Schriften an, also jedes
+Zeichen als Vektorzeichnung. Das sieht überall und im Druck richtig aus, aber
+der Text lässt sich nicht markieren, durchsuchen oder vorlesen. Deshalb nennt
+die Nachfassmail zusätzlich `finanz-medizin.com/praxisinhaber`, wo dieselben
+Zahlen als normales HTML stehen.
+
+### 9.10 Die echte Gmail-Signatur übernehmen
 
 `templates/signature.html` enthält eine vollständige Signatur, gebaut aus den
 Angaben in `impressum.html`. Wenn Sie stattdessen genau die Signatur wollen,
@@ -1036,18 +1124,19 @@ der Ledger-Eintrag steht auf `failed` und lässt einen neuen Anspruch zu.
 npm test
 ```
 
-133 Testfälle, keine Netzwerkverbindung nötig, unter zwei Sekunden.
+162 Testfälle, keine Netzwerkverbindung nötig, unter zwei Sekunden.
 
 | Datei | Fälle | prüft |
 |---|---|---|
 | `test/store.test.js` | 11 | **Dublettenschutz:** Anspruch, Absturz zwischen Anspruch und Versand, abgeschnittene Zeile nach Stromausfall, 1 000 Ansprüche → genau eine Freigabe, Verdichtung |
 | `test/pipeline.test.js` | 31 | **Der ganze Ablauf:** Versand, Nachführen in HubSpot, fünf gleichzeitige Webhooks → eine Mail, Neustart nach Absturz, Zeitsteuerung, jeder Fehlerpfad |
-| `test/recipient.test.js` | 14 | **Empfänger:** Kontakt, Unternehmen mit einem/mehreren/benanntem Kontakt, Lead über Kontakt und über Unternehmen |
+| `test/recipient.test.js` | 20 | **Empfänger:** Kontakt, Unternehmen mit einem/mehreren/benanntem Kontakt, Lead über Kontakt und über Unternehmen |
 | `test/mime.test.js` | 12 | **Die Nachricht:** Umlaute nach RFC 2047, Schnitt an Zeichengrenzen, Header-Injection über Betreff und Absendername, Zeilenlängen, Sommer-/Winterzeit |
 | `test/template.test.js` | 16 | **Text:** Platzhalter, Ersatzwerte, HTML-Maskierung, Klartext↔HTML, Skript-Entfernung, deutsche Entitäten |
 | `test/webhook.test.js` | 18 | **Eingang:** Signatur v3 echt/verfälscht/fremd/abgelaufen, Ereignisformate, Wiederholbarkeit, Warteschlange |
-| `test/sequence.test.js` | 25 | **Kampagnen:** Ablauf über drei Schritte, Stopp bei Antwort, Stopp per Bedingung, Einwilligungssperre, Sendefenster, Verlauf, Anrede |
+| `test/sequence.test.js` | 31 | **Kampagnen:** Ablauf über drei Schritte, Stopp bei Antwort, Stopp per Bedingung, Einwilligungssperre, Sendefenster, Verlauf, Anrede |
 | `test/signatur.test.js` | 6 | **Signaturimport:** Signaturblock vollständig herausschneiden, nichts erraten |
+| `test/anhang.test.js` | 17 | **Anhänge:** Pfadausbruch, Größe, Format, multipart/mixed, Inhalt unversehrt |
 
 Die wichtigsten davon im Klartext:
 

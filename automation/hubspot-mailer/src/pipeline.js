@@ -33,6 +33,7 @@ const { istWiederholbar, wartezeit, schlafe } = require('./retry.js');
 const {
   pruefeAbbruch, naechsterSchritt, faelligkeitDanach, SEQ_STATUS
 } = require('./sequence.js');
+const { ladeAnhaenge } = require('./anhang.js');
 
 /* Platzhalter -> Herkunft. "record" ist der ausloesende Datensatz selbst. */
 const STANDARD_HERKUNFT = {
@@ -209,6 +210,20 @@ class Pipeline {
     });
 
     if (mail.fehlend.length && this.cfg.versand.platzhalterRegel === 'strict') {
+      /* Die Anrede bekommt eine eigene Meldung: Sie ist der mit Abstand
+         haeufigste Grund, aus dem ein Datensatz haengen bleibt, und der
+         Handgriff dagegen ist ein anderer als "Feld ausfuellen". */
+      if (mail.fehlend.indexOf('anrede') !== -1) {
+        const nachname = (ziel.kontakt && ziel.kontakt.properties && ziel.kontakt.properties.lastname) || '';
+        return this._scheitern(objektTyp, objektId, null,
+          'Es fehlt die Anrede: Am Kontakt' + (nachname ? ' "' + nachname + '"' : '') +
+          ' steht im Feld "salutation" weder Frau noch Herr, deshalb laesst sich weder ' +
+          '"Sehr geehrte Frau …" noch "Sehr geehrter Herr …" bilden. Erraten wird nichts. ' +
+          'Entweder die Anrede am Kontakt nachtragen, oder ANREDE_POLICY=formal setzen — dann ' +
+          'steht in solchen Faellen "Sehr geehrte Damen und Herren".',
+          'ANREDE_FEHLT', kennung);
+      }
+
       return this._scheitern(objektTyp, objektId, null,
         'Zu diesen Platzhaltern fehlt der Wert: ' + mail.fehlend.join(', ') +
         '. Entweder die Felder in HubSpot fuellen oder im Text einen Ersatz angeben, z. B. {{' +
@@ -223,7 +238,8 @@ class Pipeline {
       vorlage: String(props[this.cfg.props.template] || ''),
       freigabe: String(props[this.cfg.props.sendKey] || ''),
       sequenz: sequenz ? sequenz.schluessel : '',
-      schritt: schrittNr
+      schritt: schrittNr,
+      anhaenge: (schritt && schritt.anhaenge) || []
     });
     kennung.sendId = sendId;
 
@@ -341,6 +357,19 @@ class Pipeline {
     const anschluss = (schritt && schritt.antwortAufVorherige && vorgaenger) ? vorgaenger.eintrag : null;
     const imThread = !!(anschluss && anschluss.rfcId);
 
+    /* Anhaenge erst hier laden — nach dem Anspruch, aber vor dem Versand.
+       Fehlt der Flyer, soll das ein sauberer Fehler sein und keine Mail,
+       die ohne ihn rausgeht und den Empfaenger ratlos zuruecklaesst. */
+    let anhaenge = [];
+    if (schritt && schritt.anhaenge && schritt.anhaenge.length) {
+      try {
+        anhaenge = ladeAnhaenge(schritt.anhaenge, this.cfg.anhang);
+      } catch (e) {
+        this.ledger.markiereFehler(sendId, { fehlerCode: e.code || 'ANHANG', fehlerText: (e.message || '').slice(0, 300) });
+        return await this._scheitern(objektTyp, objektId, sendId, e.message, e.code || 'ANHANG', kennung);
+      }
+    }
+
     const nachricht = baueNachricht({
       von: { email: absender.email, name: this.rendereEinzeln(absender.name, werte) },
       an: ziel.email,
@@ -356,7 +385,8 @@ class Pipeline {
       objectRef: objektTyp + '/' + objektId,
       zeitzone: this.cfg.zeitzone,
       antwortAuf: imThread ? anschluss.rfcId : '',
-      verweise: imThread ? (anschluss.verweise || anschluss.rfcId) : ''
+      verweise: imThread ? (anschluss.verweise || anschluss.rfcId) : '',
+      anhaenge: anhaenge
     });
 
     return this.sendeMitWiederholung(nachricht, absender, ziel, objektTyp, objektId, sendId, kennung, begonnen, {
@@ -738,7 +768,8 @@ class Pipeline {
         case 'computed':
           if (name === 'anrede') {
             wert = baueAnrede(kontaktProps.salutation || props.salutation,
-                              kontaktProps.lastname || props.lastname);
+                              kontaktProps.lastname || props.lastname)
+                   || anredeErsatz(this.cfg.versand.anredeRegel);
           }
           break;
         default: wert = '';
@@ -777,7 +808,11 @@ class Pipeline {
          Kampagne sind zwei verschiedene Mails, auch wenn der Text einmal
          zufaellig derselbe waere. */
       String(teile.sequenz || ''),
-      String(teile.schritt || 0)
+      String(teile.schritt || 0),
+      /* Nur die Namen der Anhaenge, nicht ihr Inhalt. Ein korrigierter
+         Flyer unter gleichem Namen ist eine Korrektur, kein Anlass, die
+         Mail noch einmal zu verschicken. */
+      (teile.anhaenge || []).join(',')
     ].join('\u0000');
 
     return crypto.createHash('sha256').update(quelle, 'utf8').digest('hex').slice(0, 32);
@@ -845,24 +880,29 @@ class Pipeline {
 
 /* ------------------------------------------------------------- Anrede */
 /**
- * Baut die deutsche Briefanrede. Ohne bekanntes Geschlecht wird nicht
- * geraten — "Sehr geehrte Frau Meier" an einen Herrn Meier ist schlimmer
- * als ein neutrales "Guten Tag".
+ * Baut die persoenliche Briefanrede.
  *
  *   ("Herr", "Meier")        -> Sehr geehrter Herr Meier
  *   ("Frau Dr.", "Schmidt")  -> Sehr geehrte Frau Dr. Schmidt
- *   ("", "Meier")            -> Guten Tag
  *   ("Mr.", "Brown")         -> Sehr geehrter Herr Brown
+ *   ("", "Meier")            -> ''   (nicht bildbar)
+ *   ("Dr.", "Meier")         -> ''   (Titel ohne Geschlecht)
+ *
+ * Leer heisst: nicht bildbar. Was dann geschieht, entscheidet ANREDE_POLICY —
+ * hier wird nicht geraten. Das Geschlecht aus dem Vornamen abzuleiten waere
+ * technisch moeglich und bei jedem zehnten Namen falsch; eine Praxisinhaberin
+ * mit "Sehr geehrter Herr" anzuschreiben verbrennt den Kontakt sicherer als
+ * gar keine Mail.
  */
 function baueAnrede(anredeFeld, nachname) {
   const anrede = String(anredeFeld || '').trim();
   const name = String(nachname || '').trim();
-  if (!anrede || !name) return 'Guten Tag';
+  if (!anrede || !name) return '';
 
   /* HubSpot-Portale mit englischer Grundeinstellung liefern Mr./Ms. */
-  const weiblich = /^(frau|ms|mrs|miss)\b/i.test(anrede);
-  const maennlich = /^(herr|mr)\b/i.test(anrede);
-  if (!weiblich && !maennlich) return 'Guten Tag';
+  const weiblich = /^(frau|ms|mrs|miss)\b\.?/i.test(anrede);
+  const maennlich = /^(herr|mr)\b\.?/i.test(anrede);
+  if (!weiblich && !maennlich) return '';
 
   const titel = anrede
     .replace(/^(frau|ms|mrs|miss|herr|mr)\.?\s*/i, '')
@@ -870,6 +910,13 @@ function baueAnrede(anredeFeld, nachname) {
 
   return (weiblich ? 'Sehr geehrte Frau' : 'Sehr geehrter Herr') +
          (titel ? ' ' + titel : '') + ' ' + name;
+}
+
+/** Der Ersatz, wenn keine persoenliche Anrede gebildet werden konnte. */
+function anredeErsatz(regel) {
+  if (regel === 'formal') return 'Sehr geehrte Damen und Herren';
+  if (regel === 'neutral') return 'Guten Tag';
+  return '';   /* strict — der Versand bleibt stehen */
 }
 
 /* "Re:" genau einmal davor — auch wenn der Betreff es schon traegt. */
@@ -888,4 +935,4 @@ function normalisiere(text) {
     .trim();
 }
 
-module.exports = { Pipeline, STANDARD_HERKUNFT, normalisiere, baueAnrede, betreffMitRe };
+module.exports = { Pipeline, STANDARD_HERKUNFT, normalisiere, baueAnrede, anredeErsatz, betreffMitRe };
