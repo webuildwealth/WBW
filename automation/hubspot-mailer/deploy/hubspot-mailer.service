@@ -1,0 +1,81 @@
+# =============================================================================
+#  systemd-Dienst
+#
+#  Ablage:  /etc/systemd/system/hubspot-mailer.service
+#
+#      sudo systemctl daemon-reload
+#      sudo systemctl enable --now hubspot-mailer
+#      sudo journalctl -u hubspot-mailer -f
+#
+#  Zum Ledger: StateDirectory legt /var/lib/hubspot-mailer an und gibt es dem
+#  Dienstbenutzer. Dort liegt die Datei, die doppelte Mails verhindert — sie
+#  darf weder nach /tmp noch in ein Verzeichnis, das bei einem Deployment
+#  ueberschrieben wird.
+# =============================================================================
+
+[Unit]
+Description=HubSpot-Mailer — versendet in HubSpot hinterlegte E-Mails ueber Gmail
+Documentation=file:/opt/hubspot-mailer/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hubspot-mailer
+Group=hubspot-mailer
+WorkingDirectory=/opt/hubspot-mailer
+ExecStart=/usr/bin/node /opt/hubspot-mailer/server.js
+
+# Zugangsdaten als Datei, nicht in dieser Unit: was hier steht, liest jeder
+# mit "systemctl cat".
+EnvironmentFile=/etc/hubspot-mailer/hubspot-mailer.env
+Environment=NODE_ENV=production
+Environment=STORE_FILE=/var/lib/hubspot-mailer/ledger.jsonl
+
+# /var/lib/hubspot-mailer, ueberlebt Neustarts und Deployments
+StateDirectory=hubspot-mailer
+StateDirectoryMode=0750
+
+Restart=always
+RestartSec=5s
+# Haengt der Dienst in einer Startschleife, nicht endlos weiterversuchen.
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+# Beim Beenden wird angenommene Arbeit noch fertig gemacht, damit kein
+# Anspruch im Ledger offen stehen bleibt.
+KillSignal=SIGTERM
+TimeoutStopSec=45
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hubspot-mailer
+
+# ---- Absicherung ----------------------------------------------------------
+# Der Dienst braucht: ausgehendes HTTPS, einen lauschenden Port, ein
+# Datenverzeichnis. Sonst nichts.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+ProtectProc=invisible
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+LockPersonality=true
+MemoryDenyWriteExecute=false
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+CapabilityBoundingSet=
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

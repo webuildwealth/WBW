@@ -1,0 +1,50 @@
+<!-- =============================================================================
+     Unternehmenssignatur
+     -----------------------------------------------------------------------------
+     Wird an jede Mail angehaengt, solange SIGNATURE_ENABLED nicht auf false
+     steht. Platzhalter funktionieren hier genauso wie im Mailtext.
+
+     Zur Gestaltung: Tabellen und Inline-Styles sind in E-Mails kein
+     schlechter Stil, sondern die einzige Technik, die Outlook, Apple Mail,
+     Gmail und Thunderbird gleich darstellen. Externe Stylesheets, <style>-
+     Bloecke und Flexbox fallen bei mindestens einem dieser Programme aus.
+
+     Die Farben sind aus assets/css/site.css uebernommen:
+       Navy  #0C2C4F   Ivory #F4F0EF   Weinrot #751524
+
+     NOCH EINZUTRAGEN: Registernummer und Aufsichtsbehoerde. Die Zeile steht
+     auskommentiert am Ende — bitte mit den Angaben aus impressum.html
+     fuellen und einkommentieren.
+     ========================================================================== -->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"
+       style="margin-top:28px;border-collapse:collapse;font-family:Helvetica,Arial,sans-serif;">
+  <tr>
+    <td style="padding-top:20px;border-top:2px solid #0C2C4F;">
+
+      <div style="font-size:15px;line-height:1.45;color:#0C2C4F;font-weight:700;">
+        {{sender_name|Benedict Hintz}}
+      </div>
+      <div style="font-size:13px;line-height:1.45;color:#3D5064;padding-top:2px;">
+        Finanz &amp; Medizin &mdash; Beratung f&uuml;r &Auml;rztinnen und &Auml;rzte
+      </div>
+
+      <div style="font-size:13px;line-height:1.7;color:#3D5064;padding-top:12px;">
+        Calvinstra&szlig;e 3 &middot; 10557 Berlin<br>
+        Telefon <a href="tel:+4917643229851" style="color:#751524;text-decoration:none;">0176 43229851</a><br>
+        <a href="mailto:info@finanz-medizin.com" style="color:#751524;text-decoration:none;">info@finanz-medizin.com</a><br>
+        <a href="https://finanz-medizin.com" style="color:#751524;text-decoration:none;">finanz-medizin.com</a>
+      </div>
+
+      <div style="font-size:11px;line-height:1.6;color:#6B7B8C;padding-top:14px;max-width:520px;">
+        We Build Wealth &middot; Inhaber Benedict Hintz &middot; Einzelunternehmen<br>
+        <!-- Versicherungsmakler nach &sect; 34d Abs. 1 GewO und Finanzanlagenvermittler nach
+             &sect; 34f Abs. 1 Satz 1 Nr. 1 GewO &middot; Registernummer: TODO &middot;
+             Aufsicht: IHK Berlin -->
+        Diese Nachricht kann vertrauliche Angaben enthalten. Sollten Sie nicht der
+        richtige Empf&auml;nger sein, geben Sie uns bitte kurz Bescheid und l&ouml;schen
+        Sie die Nachricht.
+      </div>
+
+    </td>
+  </tr>
+</table>

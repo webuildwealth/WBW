@@ -1,0 +1,47 @@
+<!-- =============================================================================
+     Geruest der HTML-Mail
+     -----------------------------------------------------------------------------
+     {{content}} wird durch Mailtext plus Signatur ersetzt. Weitere Platzhalter
+     funktionieren auch hier.
+
+     Wer lieber ohne Geruest arbeitet, loescht diese Datei oder setzt
+     WRAPPER_FILE auf einen leeren Wert — dann geht der Text unverpackt raus.
+
+     Bewusst schlicht gehalten: Eine Mail aus einer Beratung soll wie ein Brief
+     aussehen und nicht wie ein Newsletter. Kein Logo-Banner, keine bunten
+     Knoepfe, keine Zaehlpixel. Das laesst sie auch seltener im Spam landen.
+     ========================================================================== -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{email_title|Nachricht}}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F4F0EF;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background-color:#F4F0EF;border-collapse:collapse;">
+    <tr>
+      <td align="center" style="padding:28px 16px;">
+
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"
+               style="width:100%;max-width:600px;background-color:#FFFFFF;border-collapse:collapse;
+                      border-radius:6px;border:1px solid rgba(12,44,79,0.12);">
+          <tr>
+            <td style="padding:36px 36px 32px 36px;font-family:Helvetica,Arial,sans-serif;
+                       font-size:15px;line-height:1.65;color:#0C2C4F;">
+              {{content}}
+            </td>
+          </tr>
+        </table>
+
+        <div style="font-family:Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;
+                    color:#6B7B8C;padding-top:16px;max-width:600px;">
+          Sie erhalten diese Nachricht, weil Sie mit uns in Kontakt stehen.
+        </div>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

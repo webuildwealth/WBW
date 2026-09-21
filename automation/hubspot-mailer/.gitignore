@@ -1,0 +1,18 @@
+# Zugangsdaten — niemals ins Git
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+dienstkonto*.json
+service-account*.json
+
+# Betriebsdaten
+data/
+*.jsonl
+*.eml
+vorschau-*.html
+vorschau-*.txt
+
+node_modules/
+npm-debug.log*

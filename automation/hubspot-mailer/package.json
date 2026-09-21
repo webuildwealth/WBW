@@ -1,0 +1,19 @@
+{
+  "name": "hubspot-mailer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Versendet E-Mails, die in HubSpot an Kontakten, Unternehmen oder Leads hinterlegt sind, ueber Google Workspace (Gmail API).",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "main": "server.js",
+  "engines": { "node": ">=20.0.0" },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js",
+    "setup:properties": "node scripts/setup-hubspot-properties.js",
+    "check": "node scripts/check-config.js",
+    "send:test": "node scripts/send-test.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

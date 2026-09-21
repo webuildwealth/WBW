@@ -451,6 +451,36 @@ Formularverarbeitung mit, inklusive Spamschutz und E-Mail-Benachrichtigung — o
 Backend und ohne zusätzlichen Auftragsverarbeiter. Das würde den Endpunkt erledigen
 und läge datenschutzrechtlich beim ohnehin bereits beauftragten Anbieter.
 
+## E-Mail-Automation für HubSpot
+
+In `automation/hubspot-mailer/` liegt ein eigenständiger Dienst: Er verschickt
+E-Mails, die in HubSpot an einem Kontakt, Unternehmen oder Lead hinterlegt sind,
+über das Google-Workspace-Postfach `info@finanz-medizin.com`.
+
+Wer in HubSpot Betreff und Text einträgt, den Status auf `queued` stellt und den
+Haken bei *E-Mail senden* setzt, hat die Mail damit verschickt — Empfänger
+bestimmen, Platzhalter füllen, Signatur anhängen, senden und den Status
+zurückschreiben erledigt der Dienst.
+
+Wie die Funnel-Anbindung braucht er keine einzige Abhängigkeit: Node 20 oder
+neuer, sonst nichts. Der Google-Zugriff läuft über dasselbe Verfahren wie die
+Terminbuchung in `lib/booking-core.js` — ein selbst signiertes JWT gegen die
+Google-API, hier zusätzlich mit domainweiter Delegierung, damit im Namen des
+Postfachs gesendet werden darf.
+
+Der Kern der Sache ist der Schutz vor doppelten Mails: Jede Mail bekommt einen
+Fingerabdruck aus Empfänger, Betreff und Text, und der Anspruch darauf wird auf
+die Platte geschrieben, **bevor** Gmail aufgerufen wird. Ein Absturz mitten im
+Versand führt damit nie zu einer zweiten Mail.
+
+Anders als die Funnels läuft das nicht auf Netlify, sondern als kleiner
+Dauerprozess — das flüchtige Dateisystem einer Function würde genau diesen
+Schutz aushebeln. `deploy/` enthält eine systemd-Unit, ein Dockerfile und eine
+Caddy-Konfiguration.
+
+Einrichtung, Betrieb, Testfälle und alles Weitere:
+[`automation/hubspot-mailer/README.md`](automation/hubspot-mailer/README.md)
+
 ## Lokal ansehen
 
 ```bash

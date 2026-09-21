@@ -1,0 +1,47 @@
+# =============================================================================
+#  Reverse-Proxy mit Caddy
+#
+#  Ablage:  /etc/caddy/Caddyfile   danach:  sudo systemctl reload caddy
+#
+#  Caddy statt nginx, weil das Zertifikat damit ohne weiteres Zutun kommt und
+#  sich erneuert. HubSpot verlangt fuer Webhooks eine oeffentlich erreichbare
+#  https-Adresse mit gueltigem Zertifikat.
+#
+#  Wichtig sind die weitergereichten Kopfzeilen: Ohne X-Forwarded-Proto und
+#  X-Forwarded-Host sieht der Dienst nur http://127.0.0.1 — und die Signatur
+#  von HubSpot ist ueber die oeffentliche https-Adresse gebildet. (Wer
+#  PUBLIC_BASE_URL setzt, ist davon unabhaengig; beides zusammen ist richtig.)
+# =============================================================================
+
+automation.finanz-medizin.com {
+	encode gzip
+
+	# Die Endpunkte, die es von aussen gibt — mehr nicht.
+	@erlaubt path /hubspot/webhook /hubspot/trigger /healthz
+	handle @erlaubt {
+		reverse_proxy 127.0.0.1:8080 {
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-Host {host}
+			header_up X-Forwarded-For {remote_host}
+		}
+	}
+
+	# /metrics und /readyz bleiben im eigenen Netz. Wer sie von aussen
+	# braucht, nimmt den Block hier und traegt seine Adressen ein.
+	# @intern {
+	#	path /metrics /readyz
+	#	remote_ip 203.0.113.0/24
+	# }
+	# handle @intern {
+	#	reverse_proxy 127.0.0.1:8080
+	# }
+
+	handle {
+		respond 404
+	}
+
+	log {
+		output file /var/log/caddy/hubspot-mailer.log
+		format json
+	}
+}
