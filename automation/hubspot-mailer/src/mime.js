@@ -95,6 +95,13 @@ function adressfeld(adresse, anzeigename) {
   return kodiereWort(name) + ' <' + mail + '>';
 }
 
+/** Eine Message-ID gehoert in spitze Klammern — mit oder ohne kommt sie an. */
+function inSpitzklammern(wert) {
+  const s = saubereKopfzeile(wert).replace(/[<>\s]/g, '');
+  if (!s || s.indexOf('@') === -1) return '';
+  return '<' + s + '>';
+}
+
 /** Base64 in Zeilen zu 76 Zeichen, wie MIME es vorschreibt. */
 function base64Block(text) {
   const b = Buffer.from(text, 'utf8').toString('base64');
@@ -174,6 +181,27 @@ function baueNachricht(n) {
     kopfzeilen.push(['Reply-To', adressfeld(n.antwortAn, n.von.name)]);
   }
 
+  /* Nachfassmail im selben Verlauf: In-Reply-To nennt die Vorgaengermail,
+     References die ganze Kette. Ohne References haengen Mailprogramme die
+     Nachricht zwar an, verlieren aber die Reihenfolge — und Gmail nimmt
+     die Verlaufskennung beim Versand nur an, wenn beide Zeilen stimmen. */
+  if (n.antwortAuf) {
+    const bezug = inSpitzklammern(n.antwortAuf);
+    if (bezug) {
+      kopfzeilen.push(['In-Reply-To', bezug]);
+
+      const kette = String(n.verweise || '')
+        .split(/\s+/)
+        .map(inSpitzklammern)
+        .filter(Boolean);
+      if (kette.indexOf(bezug) === -1) kette.push(bezug);
+
+      /* References darf lang werden; mehr als die letzten zehn Glieder
+         braucht kein Mailprogramm, und die Kopfzeile bleibt handlich. */
+      kopfzeilen.push(['References', kette.slice(-10).join(' ')]);
+    }
+  }
+
   if (n.bcc) {
     const adressen = String(n.bcc).split(',').map((a) => a.trim()).filter(istAdresse);
     if (adressen.length) kopfzeilen.push(['Bcc', adressen.join(', ')]);
@@ -224,5 +252,5 @@ const alsBase64Url = (roh) => Buffer.from(roh, 'utf8').toString('base64')
 
 module.exports = {
   baueNachricht, alsBase64Url, istAdresse, saubereKopfzeile,
-  kodiereWort, adressfeld, datumsfeld, base64Block
+  kodiereWort, adressfeld, datumsfeld, base64Block, inSpitzklammern
 };

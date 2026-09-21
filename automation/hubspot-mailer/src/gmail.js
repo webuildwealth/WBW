@@ -58,17 +58,114 @@ class Gmail {
    *
    * @returns {{id:string, threadId:string}}
    */
-  async sende(postfach, rohNachricht) {
+  async sende(postfach, rohNachricht, threadId) {
     await this.limit.nimm(1);
 
+    const rumpf = { raw: alsBase64Url(rohNachricht) };
+    /* Gmail haengt die Nachricht an einen bestehenden Verlauf, wenn die
+       Kennung mitgegeben wird. Es verlangt dafuer passende In-Reply-To-
+       und References-Kopfzeilen; die setzt mime.js. Fehlen sie, wird die
+       Kennung gar nicht erst mitgeschickt — sonst antwortet Gmail mit 400
+       und eine harmlose Formalie kostet die ganze Mail. */
+    if (threadId) rumpf.threadId = threadId;
+
     try {
-      const daten = await this._ruf(postfach, '/users/me/messages/send', {
-        method: 'POST',
-        body: { raw: alsBase64Url(rohNachricht) }
-      });
-      return { id: (daten && daten.id) || '', threadId: (daten && daten.threadId) || '' };
+      const daten = await this._ruf(postfach, '/users/me/messages/send', { method: 'POST', body: rumpf });
+      return { id: (daten && daten.id) || '', threadId: (daten && daten.threadId) || '', rfcId: '' };
     } catch (e) {
+      /* Nimmt Gmail den Verlauf nicht an, ist das kein Grund, die Mail
+         ausfallen zu lassen. Einmal ohne Verlauf nachsetzen — sie geht
+         dann eigenstaendig raus, was immer funktioniert. */
+      if (threadId && e.status === 400) {
+        log.warn('gmail.thread_abgelehnt', {
+          postfach: postfach,
+          hinweis: 'Gmail hat den Verlauf nicht angenommen. Die Mail geht eigenstaendig raus.'
+        });
+        const daten = await this._ruf(postfach, '/users/me/messages/send', {
+          method: 'POST', body: { raw: alsBase64Url(rohNachricht) }
+        }).catch((e2) => { throw deutlicherGmailFehler(e2, postfach); });
+        return { id: (daten && daten.id) || '', threadId: (daten && daten.threadId) || '', rfcId: '' };
+      }
       throw deutlicherGmailFehler(e, postfach);
+    }
+  }
+
+  /**
+   * Die Kopfzeilen einer verschickten Nachricht — vor allem die Message-ID,
+   * die Gmail tatsaechlich vergeben hat. Die selbst gesetzte wird beim
+   * Versand ersetzt, deshalb muss sie hinterher geholt werden, wenn eine
+   * Nachfassmail im selben Verlauf landen soll.
+   *
+   * Braucht Lesezugriff. Ohne ihn: null, und der Aufrufer kommt ohne aus.
+   */
+  async messageKopf(postfach, messageId) {
+    if (!this.cfg.google.verifizieren || !messageId) return null;
+
+    try {
+      const daten = await this._ruf(postfach,
+        '/users/me/messages/' + encodeURIComponent(messageId) +
+        '?format=metadata&metadataHeaders=Message-ID&metadataHeaders=References');
+
+      const zeilen = (daten && daten.payload && daten.payload.headers) || [];
+      const finde = (name) => {
+        const t = zeilen.find((z) => String(z.name).toLowerCase() === name);
+        return t ? String(t.value).trim() : '';
+      };
+
+      return {
+        rfcId: finde('message-id'),
+        verweise: finde('references'),
+        threadId: (daten && daten.threadId) || ''
+      };
+    } catch (e) {
+      log.warn('gmail.kopf_nicht_lesbar', { postfach: postfach, status: e.status || 0, fehler: e.message });
+      return null;
+    }
+  }
+
+  /**
+   * Hat jemand anderes als wir in den Verlauf geschrieben?
+   *
+   * Das ist die Frage, an der eine Nachfassmail haengt. Wer auf die
+   * Erstansprache geantwortet hat und trotzdem zweimal nachgefasst wird,
+   * ist als Kunde verloren — und markiert die Mail als Spam, was der
+   * Domain mehr schadet als der Kontakt wert war.
+   *
+   * @returns {{gefunden:boolean, von:string, pruefbar:boolean}}
+   *   pruefbar=false heisst: konnte nicht nachgesehen werden. Der Aufrufer
+   *   darf das nie als "hat nicht geantwortet" auslegen.
+   */
+  async threadHatFremdeAntwort(postfach, threadId, eigeneAdresse) {
+    if (!this.cfg.google.verifizieren || !threadId) return { gefunden: false, von: '', pruefbar: false };
+
+    try {
+      const daten = await this._ruf(postfach,
+        '/users/me/threads/' + encodeURIComponent(threadId) + '?format=metadata&metadataHeaders=From');
+
+      const nachrichten = (daten && daten.messages) || [];
+      const eigene = String(eigeneAdresse || postfach).toLowerCase();
+
+      for (const n of nachrichten) {
+        const zeilen = (n.payload && n.payload.headers) || [];
+        const von = zeilen.find((z) => String(z.name).toLowerCase() === 'from');
+        if (!von) continue;
+
+        const adresse = adresseAus(von.value);
+        /* Alles, was nicht von uns selbst kommt, zaehlt als Antwort —
+           auch eine Weiterleitung aus dem Sekretariat. */
+        if (adresse && adresse !== eigene) {
+          return { gefunden: true, von: adresse, pruefbar: true };
+        }
+      }
+
+      return { gefunden: false, von: '', pruefbar: true };
+    } catch (e) {
+      /* Ein geloeschter Verlauf ist keine Antwort — aber auch kein Beleg
+         dafuer, dass keine kam. Also: nicht pruefbar. */
+      log.warn('gmail.thread_nicht_lesbar', {
+        postfach: postfach, status: e.status || 0, fehler: e.message
+      });
+      return { gefunden: false, von: '', pruefbar: false };
     }
   }
 
@@ -98,7 +195,13 @@ class Gmail {
 
         if (treffer && String(treffer.value).trim() === sendId) {
           const mid = zeilen.find((z) => String(z.name).toLowerCase() === 'message-id');
-          return { gefunden: true, messageId: (mid && mid.value) || n.id, pruefbar: true };
+          return {
+            gefunden: true,
+            messageId: n.id,
+            rfcId: (mid && String(mid.value).trim()) || '',
+            threadId: kopf.threadId || n.threadId || '',
+            pruefbar: true
+          };
         }
       }
 
@@ -115,6 +218,26 @@ class Gmail {
   async profil(postfach) {
     return this._ruf(postfach, '/users/me/profile');
   }
+
+  /** Die juengsten Nachrichten aus einem Ordner — fuer den Signaturimport. */
+  async letzteNachrichten(postfach, label, anzahl) {
+    const daten = await this._ruf(postfach,
+      '/users/me/messages?labelIds=' + encodeURIComponent(label || 'SENT') +
+      '&maxResults=' + (anzahl || 10));
+    return (daten && daten.messages) || [];
+  }
+
+  /** Eine Nachricht samt Rumpf. */
+  async nachrichtVoll(postfach, messageId) {
+    return this._ruf(postfach, '/users/me/messages/' + encodeURIComponent(messageId) + '?format=full');
+  }
+}
+
+/** Aus '"Dr. Meier" <a@b.de>' wird 'a@b.de'. */
+function adresseAus(kopfzeile) {
+  const s = String(kopfzeile || '');
+  const spitz = /<([^>]+)>/.exec(s);
+  return String(spitz ? spitz[1] : s).trim().toLowerCase();
 }
 
 /* Die vier Gmail-Fehler, die in der Praxis vorkommen, im Klartext. */
@@ -142,4 +265,4 @@ function deutlicherGmailFehler(e, postfach) {
   return e;
 }
 
-module.exports = { Gmail, deutlicherGmailFehler, GMAIL_API };
+module.exports = { Gmail, deutlicherGmailFehler, adresseAus, GMAIL_API };

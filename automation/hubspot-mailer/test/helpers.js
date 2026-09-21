@@ -85,20 +85,38 @@ class FakeGmail {
     this.fehlerFolge = [];        /* Fehler, die sende() der Reihe nach wirft */
     this.pruefungAntwort = { gefunden: false, messageId: '', pruefbar: false };
     this.pruefungen = 0;
+
+    /* Antwortpruefung fuer Kampagnen. Standard: nicht pruefbar — das ist
+       der Zustand ohne Lesezugriff, und der muss der Standard sein, damit
+       kein Test versehentlich gegen die guenstige Annahme laeuft. */
+    this.antwortAntwort = { gefunden: false, von: '', pruefbar: false };
+    this.antwortpruefungen = 0;
+    this.kopfLesbar = false;
   }
 
-  async sende(postfach, roh) {
+  async sende(postfach, roh, threadId) {
     const fehler = this.fehlerFolge.shift();
     if (fehler) throw fehler;
 
-    const id = 'gmail-' + (this.versendet.length + 1);
-    this.versendet.push({ postfach: postfach, roh: roh, id: id });
-    return { id: id, threadId: 't-' + id };
+    const nummer = this.versendet.length + 1;
+    const id = 'gmail-' + nummer;
+    this.versendet.push({ postfach: postfach, roh: roh, id: id, threadId: threadId || '' });
+    return { id: id, threadId: threadId || ('t-' + id), rfcId: '' };
   }
 
   async pruefeVersand() {
     this.pruefungen++;
     return this.pruefungAntwort;
+  }
+
+  async messageKopf(postfach, messageId) {
+    if (!this.kopfLesbar) return null;
+    return { rfcId: '<' + messageId + '@finanz-medizin.com>', verweise: '', threadId: 't-' + messageId };
+  }
+
+  async threadHatFremdeAntwort() {
+    this.antwortpruefungen++;
+    return this.antwortAntwort;
   }
 
   /** Wie oft ging eine Nachricht mit dieser Send-ID raus? */
@@ -164,13 +182,16 @@ function testKonfig(ueberschreibungen) {
     DRY_RUN: 'false',
     SEND_ALLOWLIST: '',
     PLACEHOLDER_POLICY: 'strict',
-    GMAIL_VERIFY_ENABLED: 'false'
+    GMAIL_VERIFY_ENABLED: 'false',
+    SEQUENCE_REQUIRE_REPLY_CHECK: 'true'
   };
 
   /* Alte Werte wegraeumen, damit Tests sich nicht gegenseitig beeinflussen. */
   for (const schluessel of Object.keys(basis)) delete process.env[schluessel];
   for (const schluessel of ['PLACEHOLDER_MAP', 'SENDER_ACCOUNTS', 'PROP_ENABLED', 'OBJECT_TYPES',
-    'SEND_DAILY_LIMIT', 'POLL_LOOKAHEAD_MS', 'RECIPIENT_SINGLE_CONTACT_FALLBACK']) {
+    'SEND_DAILY_LIMIT', 'POLL_LOOKAHEAD_MS', 'RECIPIENT_SINGLE_CONTACT_FALLBACK',
+    'SEQUENCE_STOP_IF', 'SEQUENCE_CONSENT_PROPERTY', 'SEQUENCE_SEND_WINDOW',
+    'SEQUENCE_SEND_DAYS', 'EXTRA_PLACEHOLDERS', 'BOOKING_LINK', 'SEQUENCE_DIR']) {
     delete process.env[schluessel];
   }
 
@@ -183,7 +204,7 @@ function testKonfig(ueberschreibungen) {
 }
 
 /** Eine Pipeline mit Attrappen — der uebliche Aufbau fuer die Ablauftests. */
-function baueTestPipeline(ueberschreibungen) {
+function baueTestPipeline(ueberschreibungen, kampagnen) {
   const { Pipeline } = require('../src/pipeline.js');
   const { Ledger } = require('../src/store.js');
 
@@ -192,9 +213,33 @@ function baueTestPipeline(ueberschreibungen) {
   const gmail = new FakeGmail(cfg);
   const ledger = new Ledger(cfg.ablage).oeffne();
 
-  const pipeline = new Pipeline({ cfg: cfg, hubspot: hubspot, gmail: gmail, ledger: ledger });
+  /* Kampagnen werden im Test direkt hereingereicht, statt Dateien
+     anzulegen — die Ladelogik hat ihre eigenen Tests. */
+  const liste = new Map();
+  for (const k of (kampagnen || [])) liste.set(k.schluessel, k);
+  const sequenzen = {
+    fuer: (s) => liste.get(String(s || '').trim()) || null,
+    schluessel: () => Array.from(liste.keys())
+  };
 
-  return { cfg: cfg, hubspot: hubspot, gmail: gmail, ledger: ledger, pipeline: pipeline };
+  const pipeline = new Pipeline({
+    cfg: cfg, hubspot: hubspot, gmail: gmail, ledger: ledger, sequenzen: sequenzen
+  });
+
+  return { cfg: cfg, hubspot: hubspot, gmail: gmail, ledger: ledger, pipeline: pipeline, sequenzen: sequenzen };
+}
+
+/** Eine dreistufige Kampagne, wie die echte — nur kurz. */
+function musterKampagne(ueberschreibungen) {
+  return Object.assign({
+    schluessel: 'test-kampagne',
+    name: 'Testkampagne',
+    schritte: [
+      { nachTagen: 0, betreff: 'Erstansprache', rumpf: '{{anrede}},\n\nerster Text.\n\n{{booking_link}}' },
+      { nachTagen: 7, betreff: 'Nachfass eins', antwortAufVorherige: true, rumpf: '{{anrede}},\n\nzweiter Text.' },
+      { nachTagen: 7, betreff: 'Nachfass zwei', antwortAufVorherige: true, rumpf: '{{anrede}},\n\ndritter Text.' }
+    ]
+  }, ueberschreibungen || {});
 }
 
 /** Ein Kontakt, an dem alles stimmt. */
@@ -213,5 +258,5 @@ function musterKontakt(ueberschreibungen) {
 
 module.exports = {
   FakeHubSpot, FakeGmail, httpFehler, netzFehler,
-  testKonfig, baueTestPipeline, musterKontakt, tempVerzeichnis
+  testKonfig, baueTestPipeline, musterKontakt, musterKampagne, tempVerzeichnis
 };

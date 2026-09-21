@@ -24,6 +24,7 @@ const { HubSpot } = require('../src/hubspot.js');
 const { GoogleAuth } = require('../src/google-auth.js');
 const { Gmail } = require('../src/gmail.js');
 const { Ledger } = require('../src/store.js');
+const { Sequenzen } = require('../src/sequence.js');
 
 const schreib = (s) => process.stdout.write(s + '\n');
 const OK = '  [ok]   ';
@@ -215,8 +216,63 @@ async function main() {
     }
   }
 
-  /* ------------------------------------------------------------ 6. Webhook */
-  schreib('\n6. Webhook-Endpunkt');
+  /* ---------------------------------------------------------- 6. Kampagnen */
+  schreib('\n6. Kampagnen');
+  const kampagnen = new Sequenzen(cfg.sequenz.verzeichnis).lade();
+  const namen = kampagnen.schluessel();
+
+  if (!namen.length) {
+    schreib(HINWEIS + 'keine hinterlegt (' + cfg.sequenz.verzeichnis + ')');
+  } else {
+    for (const schluessel of namen) {
+      const s = kampagnen.fuer(schluessel);
+      const tage = s.schritte.map((x) => '+' + x.nachTagen + 'd').join(' ');
+      schreib(OK + schluessel + ': ' + s.schritte.length + ' Schritte (' + tage + ')' +
+        (s.absender ? ', Absender ' + s.absender : ''));
+
+      if (s.absender && !cfg.absender.konten[s.absender]) {
+        gescheitert(schluessel + ': Absenderkonto "' + s.absender + '" ist nicht konfiguriert.',
+          'In SENDER_ACCOUNTS ergaenzen oder in sequences/' + schluessel + '.js aendern.');
+      }
+    }
+
+    /* Der teuerste Fehler in der Kaltakquise: nach einer Antwort weiter
+       nachfassen. Das gehoert hier gesagt, nicht erst im Betrieb. */
+    if (!cfg.google.verifizieren) {
+      if (cfg.sequenz.antwortpruefungPflicht) {
+        gescheitert('Nachfassmails koennen nicht verschickt werden: es ist nicht nachzusehen, ob geantwortet wurde.',
+          'GMAIL_VERIFY_ENABLED=true setzen und in der domainweiten Delegierung den Scope\n' +
+          'gmail.readonly ergaenzen. Alternativ SEQUENCE_REQUIRE_REPLY_CHECK=false — dann gehen\n' +
+          'Nachfassmails blind raus und die Abbrueche muessen in HubSpot von Hand gepflegt werden.');
+      } else {
+        schreib(FEHLER + 'Nachfassmails gehen blind raus: GMAIL_VERIFY_ENABLED ist aus und die');
+        schreib('         Antwortpruefung ist abgeschaltet. Wer antwortet, wird trotzdem zweimal');
+        schreib('         nachgefasst — es sei denn, Sie pflegen ' + cfg.props.sequenceStatus + ' von Hand.');
+      }
+    } else {
+      schreib(OK + 'Antworten werden erkannt — wer antwortet, bekommt keine Nachfassmail mehr');
+    }
+
+    if (cfg.sequenz.einwilligungProperty) {
+      schreib(OK + 'Einwilligungssperre aktiv: ' + cfg.sequenz.einwilligungProperty);
+    } else {
+      schreib(HINWEIS + 'SEQUENCE_CONSENT_PROPERTY ist nicht gesetzt — Kampagnen starten fuer jeden ' +
+        'Datensatz mit Haken. Bei Kaltakquise an Unternehmen empfohlen (siehe README).');
+    }
+
+    schreib(HINWEIS + (cfg.sequenz.sendefenster
+      ? 'Sendefenster ' + cfg.sequenz.sendefenster + ' Uhr an Tagen ' + cfg.sequenz.sendetage.join(',') +
+        ' (' + cfg.zeitzone + ')'
+      : 'kein Sendefenster — Kampagnenmails gehen auch nachts raus'));
+
+    const abbrueche = Object.keys(cfg.sequenz.abbruchWenn || {});
+    schreib(HINWEIS + (abbrueche.length
+      ? 'globale Abbruchbedingungen: ' + abbrueche.join(', ')
+      : 'keine globalen Abbruchbedingungen (SEQUENCE_STOP_IF)'));
+  }
+
+  /* ------------------------------------------------------------ 7. Webhook */
+  schreib('\n7. Webhook-Endpunkt');
   if (cfg.server.oeffentlicheUrl) {
     schreib(OK + 'Signatur wird gegen ' + cfg.server.oeffentlicheUrl + cfg.server.webhookPfad + ' geprueft');
   } else {

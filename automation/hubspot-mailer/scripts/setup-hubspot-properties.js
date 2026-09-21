@@ -22,6 +22,7 @@
 const { konfig, pruefeKonfig } = require('../src/config.js');
 const { HubSpot } = require('../src/hubspot.js');
 const { ALLE, BESCHRIFTUNG } = require('../src/status.js');
+const { Sequenzen, SEQ_STATUS_ALLE, SEQ_BESCHRIFTUNG } = require('../src/sequence.js');
 
 const GRUPPE = 'automation_email';
 const GRUPPE_TITEL = 'Automatisierter E-Mail-Versand';
@@ -86,6 +87,24 @@ function definitionen(cfg, objektTyp) {
     'Fuer spaetere Mailtypen. Geht derzeit nur in die Send-ID ein und dient der Auswertung.',
     { options: vorlagenOptionen() });
 
+  dazu(p.sequence, 'Kampagne', 'enumeration', 'select',
+    'Mehrstufige Ansprache mit Nachfassmails. Steht hier eine Kampagne, liefert sie Betreff und ' +
+    'Text — die Freitextfelder werden dann nicht gelesen. Die Kampagne startet, sobald der Haken ' +
+    'gesetzt und der Status auf "queued" steht; alles Weitere laeuft von selbst.',
+    { options: kampagnenOptionen() });
+
+  dazu(p.sequenceStep, 'Kampagne: letzter Schritt', 'number', 'number',
+    'Wie viele Schritte der Kampagne schon raus sind. Von der Automation gesetzt. ' +
+    'Zurueckstellen wiederholt den betreffenden Schritt — die Dublettensperre verhindert dabei, ' +
+    'dass dieselbe Mail ein zweites Mal ankommt.');
+
+  dazu(p.sequenceStatus, 'Kampagne: Stand', 'enumeration', 'select',
+    'Laeuft, abgeschlossen oder gestoppt. Auf "Gestoppt — von Hand" setzen, um keine weiteren ' +
+    'Nachfassmails mehr zu verschicken.',
+    { options: SEQ_STATUS_ALLE.map((wert, i) => ({
+      label: SEQ_BESCHRIFTUNG[wert] + ' (' + wert + ')', value: wert, displayOrder: i, hidden: false
+    })) });
+
   dazu(p.recipient, 'Empfaenger (Vorgabe)', 'string', 'text',
     'Ausdrueckliche Empfaengeradresse. Schlaegt jede Herleitung. Nur setzen, wenn die Adresse ' +
     'abweichen soll oder die Automation den Empfaenger nicht eindeutig bestimmen kann.');
@@ -124,6 +143,22 @@ function definitionen(cfg, objektTyp) {
     'Klartext des letzten Fehlers samt Hinweis, was zu tun ist. Von der Automation gesetzt.');
 
   return felder;
+}
+
+/* Die Auswahl im CRM entsteht aus den Dateien in sequences/ — so kann kein
+   Wert im Auswahlfeld stehen, zu dem es keine Kampagne gibt. */
+function kampagnenOptionen() {
+  const gefunden = new Sequenzen(konfig().sequenz.verzeichnis).lade();
+  const namen = gefunden.schluessel();
+  if (!namen.length) return [{ label: '(keine hinterlegt)', value: '', displayOrder: 0, hidden: true }];
+
+  return namen.map((schluessel, i) => {
+    const s = gefunden.fuer(schluessel);
+    return {
+      label: (s.name ? s.name + ' — ' : '') + schluessel + ' (' + s.schritte.length + ' Schritte)',
+      value: schluessel, displayOrder: i, hidden: false
+    };
+  });
 }
 
 function vorlagenOptionen() {

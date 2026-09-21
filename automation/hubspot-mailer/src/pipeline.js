@@ -30,6 +30,9 @@ const { ermittleEmpfaenger, KONTAKT_FELDER, UNTERNEHMEN_FELDER } = require('./re
 const { baueMail, formatiereDatum, formatiereUhrzeit } = require('./template.js');
 const { baueNachricht } = require('./mime.js');
 const { istWiederholbar, wartezeit, schlafe } = require('./retry.js');
+const {
+  pruefeAbbruch, naechsterSchritt, faelligkeitDanach, SEQ_STATUS
+} = require('./sequence.js');
 
 /* Platzhalter -> Herkunft. "record" ist der ausloesende Datensatz selbst. */
 const STANDARD_HERKUNFT = {
@@ -42,7 +45,11 @@ const STANDARD_HERKUNFT = {
   meeting_date: 'meeting:date',
   meeting_time: 'meeting:time',
   sender_name: 'sender:name',
-  sender_email: 'sender:email'
+  sender_email: 'sender:email',
+  /* Eine vollstaendige deutsche Briefanrede aus Anrede und Nachname —
+     "Sehr geehrter Herr Dr. Meier". Faellt auf "Guten Tag" zurueck, wenn
+     das Geschlecht nicht bekannt ist; erraten wird nichts. */
+  anrede: 'computed:anrede'
 };
 
 class Pipeline {
@@ -53,7 +60,11 @@ class Pipeline {
     this.ledger = bauteile.ledger;
     this.vorlagen = bauteile.vorlagen || { signatur: '', rahmen: '' };
     this.herkunft = Object.assign({}, STANDARD_HERKUNFT, bauteile.herkunft || {});
-    this.zaehler = { gesendet: 0, uebersprungen: 0, fehlgeschlagen: 0, doppelt: 0, pruefung: 0, geplant: 0 };
+    this.sequenzen = bauteile.sequenzen || { fuer: () => null, schluessel: () => [] };
+    this.zaehler = {
+      gesendet: 0, uebersprungen: 0, fehlgeschlagen: 0, doppelt: 0,
+      pruefung: 0, geplant: 0, sequenz_gestoppt: 0
+    };
   }
 
   /* ===================================================================== */
@@ -96,17 +107,64 @@ class Pipeline {
       return this._zaehle({ ergebnis: 'skipped', grund: 'status_' + status });
     }
 
-    /* ------------------------------------------------- Inhalt und Absender */
-    const absender = this.waehleAbsender(props);
-    if (!absender) {
+    /* ------------------------------------------------- Kampagne oder Einzelmail */
+    /* Steht eine Kampagne am Datensatz, liefert sie Betreff und Text; die
+       Freitextfelder werden dann nicht gelesen. Das ist bewusst
+       ausschliessend — sonst waere nie klar, welcher Text gilt. */
+    const sequenz = this.cfg.props.sequence
+      ? this.sequenzen.fuer(props[this.cfg.props.sequence])
+      : null;
+
+    if (this.cfg.props.sequence && String(props[this.cfg.props.sequence] || '').trim() && !sequenz) {
       return this._scheitern(objektTyp, objektId, null,
-        'Das in ' + this.cfg.props.sender + ' hinterlegte Absenderkonto "' +
-        String(props[this.cfg.props.sender] || '') + '" ist nicht konfiguriert. Bekannt sind: ' +
-        Object.keys(this.cfg.absender.konten).join(', ') + '.', 'ABSENDER_UNBEKANNT', kennung);
+        'Die Kampagne "' + String(props[this.cfg.props.sequence]).trim() + '" ist nicht hinterlegt. ' +
+        'Bekannt sind: ' + (this.sequenzen.schluessel().join(', ') || '(keine)') + '. ' +
+        'Kampagnen liegen als Datei in sequences/; nach dem Anlegen den Dienst neu starten.',
+        'KAMPAGNE_UNBEKANNT', kennung);
     }
 
-    const betreffRoh = String(props[this.cfg.props.subject] || '').trim();
-    const rumpfRoh = String(props[this.cfg.props.body] || '').trim();
+    /* ------------------------------------------------- Inhalt und Absender */
+    const absender = this.waehleAbsender(props, sequenz);
+    if (!absender) {
+      const gewuenscht = (sequenz && sequenz.absender) || String(props[this.cfg.props.sender] || '');
+      return this._scheitern(objektTyp, objektId, null,
+        'Das Absenderkonto "' + gewuenscht + '" ist nicht konfiguriert. Bekannt sind: ' +
+        Object.keys(this.cfg.absender.konten).join(', ') + '. Absenderkonten stehen in SENDER_ACCOUNTS.',
+        'ABSENDER_UNBEKANNT', kennung);
+    }
+
+    /* Kampagnen, die ohne Einwilligung gar nicht erst starten duerfen. */
+    if (sequenz && this.cfg.sequenz.einwilligungProperty) {
+      const feld = this.cfg.sequenz.einwilligungProperty;
+      if (!alsWahrheitswert(props[feld])) {
+        log.info('sequenz.ohne_einwilligung', Object.assign({ sequenz: sequenz.schluessel, feld: feld }, kennung));
+        return this._zaehle({ ergebnis: 'skipped', grund: 'keine_einwilligung' });
+      }
+    }
+
+    /* Welcher Schritt ist dran — und darf ueberhaupt noch einer raus? */
+    let schrittNr = 0;
+    let schritt = null;
+
+    if (sequenz) {
+      const abbruch = pruefeAbbruch(sequenz, props, this.cfg);
+      if (abbruch) {
+        return await this.beendeSequenz(objektTyp, objektId, abbruch, kennung, sequenz);
+      }
+
+      const naechster = naechsterSchritt(sequenz, props[this.cfg.props.sequenceStep]);
+      if (!naechster) {
+        return await this.beendeSequenz(objektTyp, objektId, { grund: SEQ_STATUS.COMPLETED }, kennung, sequenz);
+      }
+
+      schrittNr = naechster.nummer;
+      schritt = naechster.schritt;
+      kennung.sequenz = sequenz.schluessel;
+      kennung.schritt = schrittNr;
+    }
+
+    const betreffRoh = schritt ? String(schritt.betreff).trim() : String(props[this.cfg.props.subject] || '').trim();
+    const rumpfRoh = schritt ? String(schritt.rumpf).trim() : String(props[this.cfg.props.body] || '').trim();
 
     if (!betreffRoh || !rumpfRoh) {
       return this._scheitern(objektTyp, objektId, null,
@@ -137,6 +195,8 @@ class Pipeline {
         'NICHT_AUF_ALLOWLIST', kennung);
     }
 
+    let vorgaenger = null;
+
     /* ------------------------------------------------------------- Text */
     const werte = this.baueWerte(datensatz, ziel, absender);
     const mail = baueMail({
@@ -161,7 +221,9 @@ class Pipeline {
       objektTyp: objektTyp, objektId: objektId, empfaenger: ziel.email,
       absender: absender.email, betreff: betreffRoh, rumpf: rumpfRoh,
       vorlage: String(props[this.cfg.props.template] || ''),
-      freigabe: String(props[this.cfg.props.sendKey] || '')
+      freigabe: String(props[this.cfg.props.sendKey] || ''),
+      sequenz: sequenz ? sequenz.schluessel : '',
+      schritt: schrittNr
     });
     kennung.sendId = sendId;
 
@@ -175,6 +237,51 @@ class Pipeline {
       }
       log.info('versand.geplant', Object.assign({ faellig: new Date(wunsch).toISOString() }, kennung));
       return this._zaehle({ ergebnis: 'scheduled', sendId: sendId, faellig: wunsch });
+    }
+
+    /* Kaltakquise um drei Uhr nachts sieht nach Maschine aus und wird
+       entsprechend einsortiert. Das Fenster gilt nur fuer Kampagnen —
+       eine angeforderte Einzelmail soll sofort rausgehen. */
+    if (sequenz) {
+      const fenster = this.naechstesFenster(Date.now());
+      if (fenster !== null) {
+        await this.schreibeHubSpot(objektTyp, objektId, {
+          status: STATUS.SCHEDULED, id: sendId, error: '',
+          sendAtWunsch: alsHubSpotZeit(fenster)
+        });
+        log.info('versand.ausserhalb_sendefenster', Object.assign({
+          faellig: new Date(fenster).toISOString(), fenster: this.cfg.sequenz.sendefenster
+        }, kennung));
+        return this._zaehle({ ergebnis: 'scheduled', sendId: sendId, faellig: fenster, grund: 'sendefenster' });
+      }
+    }
+
+    /* ------------------------------------------- Hat er laengst geantwortet? */
+    /* Erst hier, und nicht frueher: Solange die Nachfassmail gar nicht
+       faellig ist, waere die Nachfrage bei Gmail ein Aufruf ohne Anlass —
+       und ein fehlender Lesezugriff duerfte einen Datensatz nicht schon
+       Tage vor dem Termin auf "failed" setzen.
+
+       Ab dem zweiten Schritt. Vor dem ersten gibt es nichts nachzusehen. */
+    if (sequenz && schrittNr > 1) {
+      vorgaenger = this.vorherigerSchritt(sequenz, schrittNr, objektTyp, objektId, ziel.email, absender.email, props);
+
+      const antwort = await this.pruefeAntwort(absender, vorgaenger, kennung);
+
+      if (antwort.gestoppt) {
+        return await this.beendeSequenz(objektTyp, objektId,
+          { grund: SEQ_STATUS.STOPPED_REPLY }, kennung, sequenz);
+      }
+
+      if (!antwort.pruefbar && this.cfg.sequenz.antwortpruefungPflicht) {
+        return await this._scheitern(objektTyp, objektId, null,
+          'Nachfassmail ' + schrittNr + ' der Kampagne "' + sequenz.schluessel + '" wurde nicht verschickt, ' +
+          'weil nicht nachzusehen ist, ob bereits geantwortet wurde. Wer auf eine Erstansprache antwortet und ' +
+          'trotzdem nachgefasst wird, ist als Kunde verloren. Abhilfe: in der domainweiten Delegierung den Scope ' +
+          'gmail.readonly ergaenzen und GMAIL_VERIFY_ENABLED=true setzen. Wer die Abbrueche stattdessen in HubSpot ' +
+          'von Hand pflegen will, setzt SEQUENCE_REQUIRE_REPLY_CHECK=false.',
+          'ANTWORTPRUEFUNG_NICHT_MOEGLICH', kennung);
+      }
     }
 
     /* --------------------------------------------------------- Tageslimit */
@@ -225,25 +332,44 @@ class Pipeline {
       attempts: (anspruch.eintrag.versuche || 0) + 1
     });
 
+    /* Nachfassmails gehoeren in denselben Verlauf wie die Erstansprache —
+       sonst stehen drei zusammenhanglose Mails im Postfach und die dritte
+       wirkt, als haette der Absender die ersten beiden vergessen. Das
+       braucht die echte Message-ID der Vorgaengermail, und die gibt es nur
+       mit Lesezugriff. Ohne ihn geht die Mail eigenstaendig raus, mit
+       "Re:" im Betreff — das funktioniert immer. */
+    const anschluss = (schritt && schritt.antwortAufVorherige && vorgaenger) ? vorgaenger.eintrag : null;
+    const imThread = !!(anschluss && anschluss.rfcId);
+
     const nachricht = baueNachricht({
       von: { email: absender.email, name: this.rendereEinzeln(absender.name, werte) },
       an: ziel.email,
       anName: [werte.firstname, werte.lastname].filter(Boolean).join(' '),
       antwortAn: absender.replyTo || '',
       bcc: absender.bcc || '',
-      betreff: mail.betreff,
+      betreff: (schritt && schritt.antwortAufVorherige && !imThread)
+        ? betreffMitRe(mail.betreff)
+        : mail.betreff,
       html: mail.html,
       text: mail.text,
       sendId: sendId,
       objectRef: objektTyp + '/' + objektId,
-      zeitzone: this.cfg.zeitzone
+      zeitzone: this.cfg.zeitzone,
+      antwortAuf: imThread ? anschluss.rfcId : '',
+      verweise: imThread ? (anschluss.verweise || anschluss.rfcId) : ''
     });
 
-    return this.sendeMitWiederholung(nachricht, absender, ziel, objektTyp, objektId, sendId, kennung, begonnen);
+    return this.sendeMitWiederholung(nachricht, absender, ziel, objektTyp, objektId, sendId, kennung, begonnen, {
+      sequenz: sequenz,
+      schrittNr: schrittNr,
+      threadId: imThread ? anschluss.threadId : '',
+      verweise: imThread ? [anschluss.verweise, anschluss.rfcId].filter(Boolean).join(' ') : ''
+    });
   }
 
   /* ===================================================================== */
-  async sendeMitWiederholung(nachricht, absender, ziel, objektTyp, objektId, sendId, kennung, begonnen) {
+  async sendeMitWiederholung(nachricht, absender, ziel, objektTyp, objektId, sendId, kennung, begonnen, kampagne) {
+    kampagne = kampagne || { sequenz: null, schrittNr: 0, threadId: '', verweise: '' };
     const max = this.cfg.versand.maxVersuche;
     let letzterFehler = null;
     /* Mitgezaehlt wird, was tatsaechlich stattfand — nicht, was erlaubt
@@ -257,17 +383,20 @@ class Pipeline {
 
       if (this.cfg.versand.trockenlauf) {
         log.warn('versand.trockenlauf', Object.assign({ recipient: ziel.email }, kennung));
-        this.ledger.markiereVersendet(sendId, { messageId: 'dry-run', versuche: versuch, trockenlauf: true });
-        await this.schreibeHubSpot(objektTyp, objektId, {
+        this.ledger.markiereVersendet(sendId, {
+          messageId: 'dry-run', versuche: versuch, trockenlauf: true,
+          threadId: 'dry-run-thread', rfcId: nachricht.messageId
+        });
+        await this.schreibeHubSpot(objektTyp, objektId, Object.assign({
           status: STATUS.SENT, sentAt: new Date().toISOString(), id: sendId,
           messageId: 'dry-run', error: '', attempts: versuch
-        });
+        }, this.sequenzFortschritt(kampagne)));
         return this._zaehle({ ergebnis: 'sent', sendId: sendId, trockenlauf: true });
       }
 
       try {
-        const quittung = await this.gmail.sende(absender.email, nachricht.raw);
-        return await this.buchVersandAb(quittung.id, versuch, objektTyp, objektId, sendId, kennung, begonnen);
+        const quittung = await this.gmail.sende(absender.email, nachricht.raw, kampagne.threadId);
+        return await this.buchVersandAb(quittung, versuch, objektTyp, objektId, sendId, kennung, begonnen, kampagne, absender, nachricht);
 
       } catch (e) {
         letzterFehler = e;
@@ -286,7 +415,9 @@ class Pipeline {
 
           if (pruefung.pruefbar && pruefung.gefunden) {
             log.info('versand.nachtraeglich_bestaetigt', Object.assign({ versuch: versuch }, kennung));
-            return await this.buchVersandAb(pruefung.messageId, versuch, objektTyp, objektId, sendId, kennung, begonnen);
+            return await this.buchVersandAb(
+              { id: pruefung.messageId, threadId: pruefung.threadId || '', rfcId: pruefung.rfcId || '' },
+              versuch, objektTyp, objektId, sendId, kennung, begonnen, kampagne, absender, nachricht);
           }
 
           if (pruefung.pruefbar) {
@@ -333,25 +464,168 @@ class Pipeline {
     return this._zaehle({ ergebnis: 'failed', sendId: sendId, fehler: letzterFehler && letzterFehler.message });
   }
 
-  async buchVersandAb(messageId, versuch, objektTyp, objektId, sendId, kennung, begonnen) {
+  async buchVersandAb(quittung, versuch, objektTyp, objektId, sendId, kennung, begonnen, kampagne, absender, nachricht) {
+    kampagne = kampagne || { sequenz: null, schrittNr: 0, verweise: '' };
     const zeitpunkt = new Date().toISOString();
+    const messageId = (quittung && quittung.id) || '';
 
     /* Erst das Ledger, dann HubSpot. Scheitert HubSpot, ist die Mail
        trotzdem als versendet vermerkt — und ein spaeterer Lauf korrigiert
        den CRM-Stand ueber den Zweig 'duplicate'. Andersherum waere die
        Mail bei einem Absturz verloren und ginge doppelt raus. */
-    this.ledger.markiereVersendet(sendId, { messageId: messageId, versuche: versuch });
+    this.ledger.markiereVersendet(sendId, {
+      messageId: messageId,
+      versuche: versuch,
+      threadId: (quittung && quittung.threadId) || '',
+      /* Die Message-ID, die Gmail wirklich vergeben hat. Sie ist der Faden,
+         an dem die Nachfassmail haengt. Steht sie nicht zur Verfuegung
+         (kein Lesezugriff), geht die naechste Mail eigenstaendig raus. */
+      rfcId: (quittung && quittung.rfcId) || '',
+      verweise: kampagne.verweise || '',
+      sequenz: kampagne.sequenz ? kampagne.sequenz.schluessel : '',
+      schritt: kampagne.schrittNr || 0
+    });
 
-    await this.schreibeHubSpot(objektTyp, objektId, {
+    /* Die echte Message-ID nachtraeglich holen, damit der naechste Schritt
+       im selben Verlauf landen kann. Nur wenn Lesezugriff besteht und noch
+       eine Nachfassmail kommt — sonst waere es ein Aufruf ohne Nutzen. */
+    if (kampagne.sequenz && messageId && absender &&
+        faelligkeitDanach(kampagne.sequenz, kampagne.schrittNr, Date.now()) !== null) {
+      const kopf = await this.gmail.messageKopf(absender.email, messageId);
+      if (kopf && kopf.rfcId) {
+        this.ledger.markiereVersendet(sendId, { rfcId: kopf.rfcId, threadId: kopf.threadId || '' });
+      } else if (this.cfg.sequenz.antwortpruefungPflicht === false) {
+        log.debug('sequenz.ohne_verlauf', Object.assign({
+          hinweis: 'Ohne gmail.readonly geht die Nachfassmail eigenstaendig raus, mit "Re:" im Betreff.'
+        }, kennung));
+      }
+    }
+
+    await this.schreibeHubSpot(objektTyp, objektId, Object.assign({
       status: STATUS.SENT, sentAt: zeitpunkt, id: sendId,
       messageId: messageId, error: '', attempts: versuch
-    });
+    }, this.sequenzFortschritt(kampagne)));
 
     log.info('versand.erfolgreich', Object.assign({
       versuch: versuch, message_id: messageId, dauer_ms: Date.now() - begonnen
     }, kennung));
 
-    return this._zaehle({ ergebnis: 'sent', sendId: sendId, messageId: messageId });
+    return this._zaehle({ ergebnis: 'sent', sendId: sendId, messageId: messageId, schritt: kampagne.schrittNr || 0 });
+  }
+
+  /* ------------------------------------------------------------ Kampagne */
+  /**
+   * Was nach einem verschickten Schritt in HubSpot stehen muss. Gibt es
+   * noch einen Schritt, wird der Datensatz gleich wieder auf "scheduled"
+   * gestellt — damit uebernimmt die vorhandene Zeitsteuerung die
+   * Nachfassmail, und es braucht keinen zweiten Mechanismus daneben.
+   */
+  sequenzFortschritt(kampagne) {
+    if (!kampagne || !kampagne.sequenz) return {};
+
+    const faellig = faelligkeitDanach(kampagne.sequenz, kampagne.schrittNr, Date.now());
+
+    if (faellig === null) {
+      return { sequenceStep: kampagne.schrittNr, sequenceStatus: SEQ_STATUS.COMPLETED };
+    }
+
+    return {
+      sequenceStep: kampagne.schrittNr,
+      sequenceStatus: SEQ_STATUS.ACTIVE,
+      status: STATUS.SCHEDULED,
+      sendAtWunsch: alsHubSpotZeit(faellig)
+    };
+  }
+
+  /** Beendet eine Sequenz — von Hand gestoppt, Bedingung erfuellt oder durch. */
+  async beendeSequenz(objektTyp, objektId, abbruch, kennung, sequenz) {
+    const endStatus = abbruch.grund === SEQ_STATUS.COMPLETED ? STATUS.SENT : STATUS.CANCELLED;
+
+    await this.schreibeHubSpot(objektTyp, objektId, {
+      status: endStatus,
+      sequenceStatus: abbruch.grund,
+      error: abbruch.feld
+        ? 'Kampagne gestoppt, weil ' + abbruch.feld + ' auf "' + abbruch.wert + '" steht.'
+        : ''
+    });
+
+    log.info('sequenz.beendet', Object.assign({
+      sequenz: sequenz ? sequenz.schluessel : '', grund: abbruch.grund,
+      feld: abbruch.feld || '', wert: abbruch.wert || ''
+    }, kennung));
+
+    this.zaehler.sequenz_gestoppt++;
+    return { ergebnis: 'sequence_stopped', grund: abbruch.grund };
+  }
+
+  /** Der Ledger-Eintrag des vorangegangenen Schritts — ueber dessen Send-ID. */
+  vorherigerSchritt(sequenz, schrittNr, objektTyp, objektId, empfaenger, absender, props) {
+    const vorher = sequenz.schritte[schrittNr - 2];
+    if (!vorher) return null;
+
+    const sendId = this.baueSendId({
+      objektTyp: objektTyp, objektId: objektId, empfaenger: empfaenger, absender: absender,
+      betreff: String(vorher.betreff).trim(), rumpf: String(vorher.rumpf).trim(),
+      vorlage: String(props[this.cfg.props.template] || ''),
+      freigabe: String(props[this.cfg.props.sendKey] || ''),
+      sequenz: sequenz.schluessel, schritt: schrittNr - 1
+    });
+
+    return { sendId: sendId, eintrag: this.ledger.eintrag(sendId) || {} };
+  }
+
+  /** Hat jemand anderes als wir in den Verlauf geschrieben? */
+  async pruefeAntwort(absender, vorgaenger, kennung) {
+    const threadId = vorgaenger && vorgaenger.eintrag && vorgaenger.eintrag.threadId;
+    if (!threadId) return { gestoppt: false, pruefbar: false };
+
+    const ergebnis = await this.gmail.threadHatFremdeAntwort(absender.email, threadId, absender.email);
+
+    if (ergebnis.pruefbar && ergebnis.gefunden) {
+      log.info('sequenz.antwort_erkannt', Object.assign({ von: ergebnis.von }, kennung));
+      return { gestoppt: true, pruefbar: true };
+    }
+    return { gestoppt: false, pruefbar: ergebnis.pruefbar };
+  }
+
+  /* ------------------------------------------------------- Sendefenster */
+  /**
+   * @returns {number|null} null, wenn jetzt gesendet werden darf; sonst der
+   *   naechste erlaubte Zeitpunkt in Millisekunden.
+   */
+  naechstesFenster(abMs) {
+    const spanne = String(this.cfg.sequenz.sendefenster || '').trim();
+    if (!spanne) return null;
+
+    const teile = spanne.split('-');
+    const von = parseInt(teile[0], 10);
+    const bis = parseInt(teile[1], 10);
+    if (!Number.isFinite(von) || !Number.isFinite(bis) || von >= bis) return null;
+
+    const tage = this.cfg.sequenz.sendetage.map((t) => parseInt(t, 10)).filter(Number.isFinite);
+    if (!tage.length) return null;
+
+    /* In Viertelstundenschritten bis zu acht Tage voraus — das deckt auch
+       ein langes Wochenende samt Zeitumstellung ab, ohne eigene Rechnerei. */
+    for (let i = 0; i <= 8 * 24 * 4; i++) {
+      const zeitpunkt = abMs + i * 15 * 60000;
+      const t = this.teileInZone(zeitpunkt);
+      if (tage.indexOf(t.wochentag) !== -1 && t.stunde >= von && t.stunde < bis) {
+        return i === 0 ? null : zeitpunkt;
+      }
+    }
+    return null;
+  }
+
+  teileInZone(ms) {
+    const fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: this.cfg.zeitzone, hour12: false, weekday: 'short', hour: '2-digit', minute: '2-digit'
+    });
+    const t = {};
+    for (const p of fmt.formatToParts(new Date(ms))) if (p.type !== 'literal') t[p.type] = p.value;
+
+    const wochentage = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    return { stunde: parseInt(t.hour, 10) % 24, minute: parseInt(t.minute, 10), wochentag: wochentage[t.weekday] };
   }
 
   async buchPruefungAb(fehler, versuch, objektTyp, objektId, sendId, kennung, absenderAdresse) {
@@ -388,6 +662,16 @@ class Pipeline {
       if (quelle === 'record' && name) felder.add(name);
     }
 
+    /* Die Felder, ueber die eine Kampagne abbrechen kann — global und je
+       Kampagne. Ohne sie im Abruf wuerde die Abbruchbedingung leerlaufen
+       und die Nachfassmail trotzdem rausgehen. */
+    for (const feld of Object.keys(this.cfg.sequenz.abbruchWenn || {})) felder.add(feld);
+    for (const schluessel of this.sequenzen.schluessel()) {
+      const s = this.sequenzen.fuer(schluessel);
+      for (const feld of Object.keys((s && s.abbruchWenn) || {})) felder.add(feld);
+    }
+    if (this.cfg.sequenz.einwilligungProperty) felder.add(this.cfg.sequenz.einwilligungProperty);
+
     const typ = String(objektTyp).toLowerCase();
     if (typ === 'contacts' || typ === 'contact') for (const f of KONTAKT_FELDER) felder.add(f);
     if (typ === 'companies' || typ === 'company') for (const f of UNTERNEHMEN_FELDER) felder.add(f);
@@ -397,9 +681,13 @@ class Pipeline {
   }
 
   /* ---------------------------------------------------------- Absender */
-  waehleAbsender(props) {
-    const gewuenscht = this.cfg.props.sender ? String(props[this.cfg.props.sender] || '').trim() : '';
-    const schluessel = gewuenscht || this.cfg.absender.standard;
+  /* Reihenfolge: was am Datensatz steht, dann was die Kampagne vorgibt,
+     dann der Standard. Der Datensatz gewinnt, damit sich eine einzelne
+     Mail im Zweifel umleiten laesst, ohne die Kampagne zu aendern. */
+  waehleAbsender(props, sequenz) {
+    const amDatensatz = this.cfg.props.sender ? String(props[this.cfg.props.sender] || '').trim() : '';
+    const ausKampagne = (sequenz && sequenz.absender) ? String(sequenz.absender).trim() : '';
+    const schluessel = amDatensatz || ausKampagne || this.cfg.absender.standard;
     return this.cfg.absender.konten[schluessel] || null;
   }
 
@@ -447,9 +735,22 @@ class Pipeline {
               : formatiereDatum(terminMs, this.cfg.zeitzone, this.cfg.gebietsschema);
           }
           break;
+        case 'computed':
+          if (name === 'anrede') {
+            wert = baueAnrede(kontaktProps.salutation || props.salutation,
+                              kontaktProps.lastname || props.lastname);
+          }
+          break;
         default: wert = '';
       }
       werte[platzhalter] = String(wert == null ? '' : wert).trim();
+    }
+
+    /* Feste Werte aus der Konfiguration — der Buchungslink vor allem.
+       Sie fuellen nur, was oben leer geblieben ist; ein echter Wert aus
+       HubSpot hat immer Vorrang. */
+    for (const [name, wert] of Object.entries(this.cfg.versand.extraPlatzhalter || {})) {
+      if (!werte[name]) werte[name] = String(wert == null ? '' : wert).trim();
     }
 
     return werte;
@@ -471,7 +772,12 @@ class Pipeline {
       normalisiere(teile.betreff),
       normalisiere(teile.rumpf),
       String(teile.vorlage || ''),
-      String(teile.freigabe || '')
+      String(teile.freigabe || ''),
+      /* Kampagne und Schritt gehoeren mit hinein: Zwei Schritte derselben
+         Kampagne sind zwei verschiedene Mails, auch wenn der Text einmal
+         zufaellig derselbe waere. */
+      String(teile.sequenz || ''),
+      String(teile.schritt || 0)
     ].join('\u0000');
 
     return crypto.createHash('sha256').update(quelle, 'utf8').digest('hex').slice(0, 32);
@@ -493,6 +799,13 @@ class Pipeline {
     setze('error', felder.error);
     if (felder.attempts !== undefined) setze('attempts', felder.attempts);
     if (felder.sentAt) setze('sentAt', alsHubSpotZeit(alsZeitpunkt(felder.sentAt) || Date.now()));
+
+    /* Kampagnenstand. sendAtWunsch traegt die Faelligkeit der naechsten
+       Nachfassmail in dasselbe Feld ein, das auch ein Mensch benutzt —
+       so ist im CRM sichtbar, wann die naechste Mail rausgeht. */
+    if (felder.sequenceStep !== undefined) setze('sequenceStep', felder.sequenceStep);
+    setze('sequenceStatus', felder.sequenceStatus);
+    if (felder.sendAtWunsch) setze('sendAt', felder.sendAtWunsch);
 
     if (!Object.keys(props).length) return;
 
@@ -530,6 +843,41 @@ class Pipeline {
   }
 }
 
+/* ------------------------------------------------------------- Anrede */
+/**
+ * Baut die deutsche Briefanrede. Ohne bekanntes Geschlecht wird nicht
+ * geraten — "Sehr geehrte Frau Meier" an einen Herrn Meier ist schlimmer
+ * als ein neutrales "Guten Tag".
+ *
+ *   ("Herr", "Meier")        -> Sehr geehrter Herr Meier
+ *   ("Frau Dr.", "Schmidt")  -> Sehr geehrte Frau Dr. Schmidt
+ *   ("", "Meier")            -> Guten Tag
+ *   ("Mr.", "Brown")         -> Sehr geehrter Herr Brown
+ */
+function baueAnrede(anredeFeld, nachname) {
+  const anrede = String(anredeFeld || '').trim();
+  const name = String(nachname || '').trim();
+  if (!anrede || !name) return 'Guten Tag';
+
+  /* HubSpot-Portale mit englischer Grundeinstellung liefern Mr./Ms. */
+  const weiblich = /^(frau|ms|mrs|miss)\b/i.test(anrede);
+  const maennlich = /^(herr|mr)\b/i.test(anrede);
+  if (!weiblich && !maennlich) return 'Guten Tag';
+
+  const titel = anrede
+    .replace(/^(frau|ms|mrs|miss|herr|mr)\.?\s*/i, '')
+    .trim();
+
+  return (weiblich ? 'Sehr geehrte Frau' : 'Sehr geehrter Herr') +
+         (titel ? ' ' + titel : '') + ' ' + name;
+}
+
+/* "Re:" genau einmal davor — auch wenn der Betreff es schon traegt. */
+function betreffMitRe(betreff) {
+  const b = String(betreff || '').trim();
+  return /^(re|aw|antw)\s*:/i.test(b) ? b : 'Re: ' + b;
+}
+
 /* Unsichtbare Unterschiede duerfen keine neue Send-ID ergeben: ein
    zusaetzliches Leerzeichen am Zeilenende ist keine neue Mail. */
 function normalisiere(text) {
@@ -540,4 +888,4 @@ function normalisiere(text) {
     .trim();
 }
 
-module.exports = { Pipeline, STANDARD_HERKUNFT, normalisiere };
+module.exports = { Pipeline, STANDARD_HERKUNFT, normalisiere, baueAnrede, betreffMitRe };

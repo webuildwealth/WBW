@@ -27,6 +27,7 @@ COPY --chown=mailer:mailer package.json server.js ./
 COPY --chown=mailer:mailer src/ ./src/
 COPY --chown=mailer:mailer scripts/ ./scripts/
 COPY --chown=mailer:mailer templates/ ./templates/
+COPY --chown=mailer:mailer sequences/ ./sequences/
 
 USER mailer
 

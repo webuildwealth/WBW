@@ -203,7 +203,40 @@ function baueKonfig() {
       sendKey:    text('PROP_SEND_KEY', 'automation_email_send_key'),
       meetingAt:  text('PROP_MEETING_AT', 'automation_meeting_at'),
       /* Nur auf Unternehmen: der eine, eindeutig gewollte Ansprechpartner. */
-      contactId:  text('PROP_CONTACT_ID', 'automation_email_contact_id')
+      contactId:  text('PROP_CONTACT_ID', 'automation_email_contact_id'),
+
+      /* Kampagnen mit Nachfassmails. */
+      sequence:       text('PROP_SEQUENCE', 'automation_sequence'),
+      sequenceStep:   text('PROP_SEQUENCE_STEP', 'automation_sequence_step'),
+      sequenceStatus: text('PROP_SEQUENCE_STATUS', 'automation_sequence_status')
+    },
+
+    /* ---------------------------------------------------------- Kampagnen */
+    sequenz: {
+      verzeichnis: text('SEQUENCE_DIR', path.join(WURZEL, 'sequences')),
+
+      /* Keine Nachfassmail, solange nicht nachgesehen werden kann, ob der
+         Empfaenger geantwortet hat. Das ist der teuerste Fehler in der
+         Kaltakquise: Wer antwortet und trotzdem zweimal nachgefasst wird,
+         ist als Kunde weg und markiert die Mail als Spam. Abschalten nur,
+         wenn die Abbrueche in HubSpot von Hand gepflegt werden. */
+      antwortpruefungPflicht: jaNein('SEQUENCE_REQUIRE_REPLY_CHECK', true),
+
+      /* Globale Abbruchbedingungen, zusaetzlich zu denen je Kampagne.
+         { "lifecyclestage": ["customer"], "hs_lead_status": ["CONNECTED"] } */
+      abbruchWenn: (() => {
+        try { return jsonWert('SEQUENCE_STOP_IF') || {}; } catch (e) { return {}; }
+      })(),
+
+      /* Optionale Einwilligungssperre: Solange diese Property nicht auf
+         wahr steht, startet keine Kampagne. Leer = aus. Siehe README,
+         Abschnitt "Bevor Sie kalt anschreiben". */
+      einwilligungProperty: text('SEQUENCE_CONSENT_PROPERTY', ''),
+
+      /* Kein Versand ausserhalb dieser Ortszeit-Stunden. Leer = jederzeit.
+         "8-18" heisst: ab 08:00 und bis 17:59. */
+      sendefenster: text('SEQUENCE_SEND_WINDOW', ''),
+      sendetage: liste('SEQUENCE_SEND_DAYS', ['1', '2', '3', '4', '5'])
     },
 
     /* ----------------------------------------------------- Objektarten */
@@ -233,6 +266,19 @@ function baueKonfig() {
          'blank' setzt Leerstring ein. */
       platzhalterRegel: text('PLACEHOLDER_POLICY', 'strict'),
       signaturAn: jaNein('SIGNATURE_ENABLED', true),
+
+      /* Feste Werte, die in jeder Mail zur Verfuegung stehen — der
+         Buchungslink vor allem. Sie stehen hier und nicht im Mailtext,
+         damit eine geaenderte Adresse nicht in zwanzig Texten nachgezogen
+         werden muss. */
+      extraPlatzhalter: (() => {
+        try {
+          const eigene = jsonWert('EXTRA_PLACEHOLDERS') || {};
+          return Object.assign({ booking_link: text('BOOKING_LINK', 'https://finanz-medizin.com/beratung') }, eigene);
+        } catch (e) {
+          return { booking_link: text('BOOKING_LINK', 'https://finanz-medizin.com/beratung') };
+        }
+      })(),
       /* Nebenlaeufigkeit 1 ist Absicht: sequentiell gibt es keine Rennen und
          das Tempo reicht fuer jedes realistische Volumen. */
       arbeiter: zahl('WORKER_CONCURRENCY', 1)

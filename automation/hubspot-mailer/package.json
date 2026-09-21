@@ -12,7 +12,8 @@
     "test": "node --test test/*.test.js",
     "setup:properties": "node scripts/setup-hubspot-properties.js",
     "check": "node scripts/check-config.js",
-    "send:test": "node scripts/send-test.js"
+    "send:test": "node scripts/send-test.js",
+    "import:signature": "node scripts/import-signature.js"
   },
   "dependencies": {},
   "devDependencies": {}

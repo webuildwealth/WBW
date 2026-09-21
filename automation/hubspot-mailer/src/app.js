@@ -23,6 +23,7 @@ const { Warteschlange } = require('./queue.js');
 const { Scheduler } = require('./scheduler.js');
 const { STATUS } = require('./status.js');
 const { entferneKommentare } = require('./template.js');
+const { Sequenzen } = require('./sequence.js');
 
 /* Statuswerte, bei denen ein Ereignis nichts ausloesen kann. Spart je
    uebersprungenem Ereignis einen HubSpot-Aufruf. */
@@ -47,13 +48,16 @@ class App {
     this.auth = new GoogleAuth(this.cfg);
     this.gmail = new Gmail(this.cfg, this.auth);
 
+    this.sequenzen = new Sequenzen(this.cfg.sequenz.verzeichnis).lade();
+
     this.pipeline = new Pipeline({
       cfg: this.cfg,
       hubspot: this.hubspot,
       gmail: this.gmail,
       ledger: this.ledger,
       vorlagen: ladeVorlagen(this.cfg),
-      herkunft: leseHerkunft()
+      herkunft: leseHerkunft(),
+      sequenzen: this.sequenzen
     });
 
     this.warteschlange = new Warteschlange(
@@ -122,12 +126,35 @@ class App {
       poller: this.cfg.poller.an,
       trockenlauf: this.cfg.versand.trockenlauf,
       allowlist_aktiv: this.cfg.versand.erlaubteEmpfaenger.length > 0,
-      ledger_eintraege: this.ledger.index.size
+      ledger_eintraege: this.ledger.index.size,
+      kampagnen: this.sequenzen.schluessel().join(',') || '(keine)'
     });
 
     if (this.cfg.versand.trockenlauf) {
       log.warn('dienst.trockenlauf', { hinweis: 'DRY_RUN ist an — es geht keine echte Mail raus.' });
     }
+
+    /* Der teuerste Fehler in der Kaltakquise waere, nach einer Antwort
+       trotzdem nachzufassen. Wenn Kampagnen hinterlegt sind, aber nicht
+       nachgesehen werden kann, ob geantwortet wurde, gehoert das beim
+       Start gesagt — nicht erst, wenn die erste Nachfassmail liegen bleibt. */
+    if (this.sequenzen.schluessel().length && !this.cfg.google.verifizieren) {
+      log[this.cfg.sequenz.antwortpruefungPflicht ? 'warn' : 'error']('kampagne.ohne_antwortpruefung', {
+        antwortpruefung_pflicht: this.cfg.sequenz.antwortpruefungPflicht,
+        hinweis: this.cfg.sequenz.antwortpruefungPflicht
+          ? 'GMAIL_VERIFY_ENABLED ist aus — Nachfassmails bleiben liegen, bis der Scope gmail.readonly vergeben ist.'
+          : 'SEQUENCE_REQUIRE_REPLY_CHECK ist aus UND es kann nicht nachgesehen werden, ob geantwortet wurde. '
+            + 'Nachfassmails gehen blind raus. Abbrueche muessen in HubSpot von Hand gepflegt werden.'
+      });
+    }
+
+    if (this.sequenzen.schluessel().length && !this.cfg.sequenz.einwilligungProperty) {
+      log.warn('kampagne.ohne_einwilligungssperre', {
+        hinweis: 'SEQUENCE_CONSENT_PROPERTY ist nicht gesetzt. Kampagnen starten dann fuer jeden Datensatz, '
+          + 'der den Haken traegt — unabhaengig davon, ob eine Einwilligung vorliegt.'
+      });
+    }
+
     return this;
   }
 

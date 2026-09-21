@@ -8,6 +8,11 @@ den Haken bei *E-Mail senden* setzt, hat die Mail damit verschickt. Alles
 Weitere — Empfänger bestimmen, Platzhalter füllen, Signatur anhängen, senden,
 Status zurückschreiben — erledigt dieser Dienst.
 
+Für mehrstufige Ansprachen gibt es **Kampagnen**: eine Erstmail und
+Nachfassmails in festen Abständen, die von selbst aufhören, sobald jemand
+antwortet. Die Kampagne `mfa-fluktuation` (Erstansprache plus zwei Nachfassmails
+nach je sieben Tagen) liegt fertig bei — siehe [Abschnitt 9](#9-kampagnen-mit-nachfassmails).
+
 **Keine Abhängigkeiten.** Node 20 oder neuer, sonst nichts. Kein `npm install`,
 keine Lieferkette, nichts, was in zwei Jahren ein Sicherheitsupdate braucht.
 
@@ -23,12 +28,13 @@ keine Lieferkette, nichts, was in zwei Jahren ein Sicherheitsupdate braucht.
 6. [Installation](#6-installation)
 7. [Deployment](#7-deployment)
 8. [Bedienung: eine Mail verschicken](#8-bedienung-eine-mail-verschicken)
-9. [Keine doppelten Mails — wie das funktioniert](#9-keine-doppelten-mails--wie-das-funktioniert)
-10. [Fehlerbehandlung](#10-fehlerbehandlung)
-11. [Testfälle und Test mit einem HubSpot-Testkontakt](#11-testfälle-und-test-mit-einem-hubspot-testkontakt)
-12. [Protokoll und Überwachung](#12-protokoll-und-überwachung)
-13. [Weitere Mailtypen hinzufügen](#13-weitere-mailtypen-hinzufügen)
-14. [Grenzen](#14-grenzen)
+9. [Kampagnen mit Nachfassmails](#9-kampagnen-mit-nachfassmails)
+10. [Keine doppelten Mails — wie das funktioniert](#10-keine-doppelten-mails--wie-das-funktioniert)
+11. [Fehlerbehandlung](#11-fehlerbehandlung)
+12. [Testfälle und Test mit einem HubSpot-Testkontakt](#12-testfälle-und-test-mit-einem-hubspot-testkontakt)
+13. [Protokoll und Überwachung](#13-protokoll-und-überwachung)
+14. [Weitere Mailtypen hinzufügen](#14-weitere-mailtypen-hinzufügen)
+15. [Grenzen](#15-grenzen)
 
 ---
 
@@ -127,6 +133,8 @@ kein Notbetrieb, sondern eine vollwertige Betriebsart.
 | `server.js` | HTTP-Adapter. Der einzige Teil, der Node-HTTP kennt. |
 | `src/app.js` | Baut alles zusammen. Hosterunabhängig — wie `lib/lead-core.js` im selben Repository. |
 | `src/pipeline.js` | Der Ablauf einer Mail von `queued` bis `sent`. |
+| `src/sequence.js` | Kampagnen mit Nachfassmails — vor allem: wann aufgehört wird. |
+| `sequences/*.js` | Die Kampagnen selbst. Reiner Text, ohne Code bearbeitbar. |
 | `src/store.js` | Das Ledger. Hier scheitern doppelte Mails. |
 | `src/recipient.js` | Wer bekommt die Mail. Kontakt / Unternehmen / Lead. |
 | `src/template.js` | Platzhalter, HTML, Nur-Text-Fassung, Signatur. |
@@ -177,10 +185,11 @@ npm run setup:properties
 | `automation_email_body` | Mehrzeiliger Text | Der Mailtext. Klartext oder HTML — beides wird erkannt. |
 | `automation_send_at` | Datum/Uhrzeit | Leer = sofort. Zeitpunkt in der Zukunft = dann. |
 | `automation_email_sender` | Auswahl | Aus welchem Postfach. Leer = Standard. |
-| `automation_email_template` | Auswahl | Für spätere Mailtypen, siehe Abschnitt 13. |
+| `automation_email_template` | Auswahl | Für spätere Mailtypen, siehe Abschnitt 14. |
 | `automation_email_recipient` | Text | Ausdrückliche Empfängeradresse. Schlägt jede Herleitung. |
 | `automation_email_contact_id` | Text | **Nur an Unternehmen.** Die Kontakt-ID des gewollten Ansprechpartners. |
 | `automation_meeting_at` | Datum/Uhrzeit | Quelle für `{{meeting_date}}` und `{{meeting_time}}`. |
+| `automation_sequence` | Auswahl | Mehrstufige Kampagne. Liefert dann Betreff und Text — siehe Abschnitt 9. |
 | `automation_email_send_key` | Text | Nur nötig, um denselben Text absichtlich erneut zu senden. |
 
 ### Was die Automation zurückschreibt
@@ -193,6 +202,8 @@ npm run setup:properties
 | `automation_email_message_id` | Text | Die Kennung, die Gmail vergeben hat |
 | `automation_email_attempts` | Zahl | Wie oft tatsächlich versucht wurde |
 | `automation_email_error` | Mehrzeiliger Text | Klartext des Fehlers samt Hinweis, was zu tun ist |
+| `automation_sequence_step` | Zahl | Wie viele Schritte der Kampagne raus sind |
+| `automation_sequence_status` | Auswahl | `active`, `completed`, `stopped_reply`, `stopped_condition`, `stopped_manual` |
 
 ### Die Zustände
 
@@ -345,7 +356,7 @@ Delegierung verwalten → Neu hinzufügen**
   ```
   https://www.googleapis.com/auth/gmail.send
   ```
-  Wenn Sie `GMAIL_VERIFY_ENABLED=true` setzen wollen (siehe Abschnitt 10),
+  Wenn Sie `GMAIL_VERIFY_ENABLED=true` setzen wollen (siehe Abschnitt 11),
   zusätzlich, **kommagetrennt in derselben Zeile**:
   ```
   https://www.googleapis.com/auth/gmail.send,https://www.googleapis.com/auth/gmail.readonly
@@ -422,7 +433,7 @@ openssl rand -base64 32
 
 npm run setup:properties   # Properties in HubSpot anlegen
 npm run check              # Selbsttest
-npm test                   # 102 Testfälle
+npm test                   # 133 Testfälle
 npm start                  # starten
 ```
 
@@ -444,7 +455,7 @@ sudo useradd --system --no-create-home --shell /usr/sbin/nologin hubspot-mailer
 sudo mkdir -p /opt/hubspot-mailer /etc/hubspot-mailer
 
 # Anwendung
-sudo cp -r src scripts templates server.js package.json /opt/hubspot-mailer/
+sudo cp -r src scripts templates sequences server.js package.json /opt/hubspot-mailer/
 sudo chown -R root:root /opt/hubspot-mailer
 
 # Zugangsdaten
@@ -495,7 +506,7 @@ Nach außen gehören nur `/hubspot/webhook`, `/hubspot/trigger` und `/healthz`.
 
 ```bash
 sudo systemctl stop hubspot-mailer     # wartet auf laufende Versände
-sudo cp -r src scripts templates server.js /opt/hubspot-mailer/
+sudo cp -r src scripts templates sequences server.js /opt/hubspot-mailer/
 sudo systemctl start hubspot-mailer
 ```
 
@@ -603,7 +614,269 @@ aussehen und nicht wie ein Newsletter — das hilft auch gegen den Spam-Ordner.
 
 ---
 
-## 9. Keine doppelten Mails — wie das funktioniert
+## 9. Kampagnen mit Nachfassmails
+
+Eine Kampagne ist eine Folge von Mails mit Abständen. Sie liegt als Textdatei
+in `sequences/` und lässt sich bearbeiten, ohne den Code anzufassen.
+
+Steht am Datensatz eine Kampagne, liefert **sie** Betreff und Text — die
+Freitextfelder `automation_email_subject` und `automation_email_body` werden
+dann nicht gelesen. Das ist bewusst ausschließend: Sonst wäre nie klar, welcher
+Text gilt.
+
+### 9.1 Die Kampagne `mfa-fluktuation`
+
+Drei Schritte, Abstand jeweils sieben Tage:
+
+| Schritt | Betreff | Inhalt |
+|---|---|---|
+| 1 | Warum gute MFAs selten bleiben | Die Erstansprache: mehr Brutto ≠ mehr Netto, über 50 Mandanten, Einladung zum Kennenlernen |
+| 2 (+7 Tage) | Nachgefragt: was 500 Euro mehr Brutto wirklich bringen | Kurz, eine konkrete Zahl, dieselbe Bitte |
+| 3 (+7 Tage) | Letzte Nachricht von mir | Kürzeste, mit ausdrücklichem Ausstieg |
+
+Die Datei ist `sequences/mfa-fluktuation.js`. Sie enthält reinen Text; nach
+einer Änderung reicht ein Neustart des Dienstes.
+
+**Was ich am Text geändert habe.** Ihre Fassung ist inhaltlich unverändert
+übernommen, sprachlich aber überarbeitet. Ihre Zielgruppe sind Praxisinhaber,
+und eine Erstansprache mit Flüchtigkeitsfehlern kostet bei Akademikern
+Glaubwürdigkeit, bevor das Argument überhaupt gelesen wird. Im Einzelnen:
+
+| Vorher | Nachher | Warum |
+|---|---|---|
+| `sie`, `ihre`, `ihnen` | `Sie`, `Ihre`, `Ihnen` | Die Höflichkeitsform wird großgeschrieben. Kleingeschrieben liest sie sich als *sie/ihre* — das fällt sofort auf. |
+| Portmonee | Portemonnaie | Rechtschreibung |
+| „unnötige Werbebudgets eingesparen“ | „sparen sich unnötige Stellenanzeigen“ | Der Satz war grammatisch nicht zu Ende geführt |
+| „vor allem die kostbare Zeit für sinnlose Bewerbungsgespräche draufgehen“ | „vor allem die Zeit für Bewerbungsgespräche, die am Ende zu nichts führen“ | dito |
+| „das Thema … an den Nagel zu hängen“ | entfällt | Die Redewendung heißt „etwas aufgeben“ — gemeint war das Gegenteil |
+| „Implementieren“ | „umsetzen“ | Großschreibung mitten im Satz |
+| „Mein Name ist Benedict“ | „Mein Name ist Benedict Hintz“ | Nur der Vorname wirkt in einer Kaltakquise an einen Fremden unfertig |
+| `LINK` | `{{booking_link}}` | Kommt aus `BOOKING_LINK`, damit eine geänderte Adresse nicht in drei Texten nachgezogen werden muss |
+| (keine Anrede) | `{{anrede}}` | „Sehr geehrter Herr Dr. Meier“, sonst „Guten Tag“ |
+
+Ihre Grußformel „Ihr Finanz-Medizin-Team“ habe ich gelassen, obwohl die Mail
+mit „Mein Name ist Benedict Hintz“ beginnt. Das ist ein Bruch, aber ein
+üblicher — und es ist Ihre Entscheidung, nicht meine. Wenn Sie es einheitlich
+wollen, ersetzen Sie die letzte Zeile jedes Schritts durch `{{sender_name}}`.
+
+**Die Texte der Nachfassmails stammen von mir.** Sie hatten „Follow up zwei
+mal, nach jeweils 7 Tagen“ geschrieben, aber keinen Text mitgeliefert. Ich habe
+zwei geschrieben, die zu Ihrem Ton passen. **Bitte lesen Sie beide, bevor die
+erste Kampagne läuft** — vor allem Schritt 2: Die Zahl „von 500 Euro brutto
+bleiben 250 bis 300 netto“ ist plausibel, aber sie ist Ihre Aussage, nicht
+meine. Prüfen Sie sie gegen Ihre eigenen Rechnungen oder ersetzen Sie sie.
+
+### 9.2 Bevor Sie kalt anschreiben
+
+Ein Punkt, den die Software nicht für Sie lösen kann.
+
+Werbliche E-Mail ohne vorherige ausdrückliche Einwilligung ist in Deutschland
+nach **§ 7 Abs. 2 UWG** unzulässig — **auch im B2B-Verhältnis** und auch
+gegenüber einer Praxis. Die praktischen Folgen sind Abmahnungen von
+Mitbewerbern und Verbänden; die Streitwerte sind nicht symbolisch. Es gibt in
+§ 7 Abs. 3 UWG eine enge Ausnahme für Bestandskunden, an eine Reihe von
+Bedingungen geknüpft.
+
+Das ist eine Information, keine Rechtsberatung, und die Einschätzung für Ihren
+Fall trifft Ihr Anwalt. Was die Software dazu beiträgt:
+
+* **Einwilligungssperre.** `SEQUENCE_CONSENT_PROPERTY=<Ihre Property>` — solange
+  das Feld nicht auf wahr steht, startet keine Kampagne. Ihre Funnels auf der
+  Website erfassen die Einwilligung bereits (`einwilligung` in `lib/lead-core.js`);
+  wenn diese Kontakte in HubSpot landen, tragen sie das Feld mit.
+* **Ausstieg in Schritt 3.** „Einfach kurz *kein Interesse* antworten, dann
+  melde ich mich nicht wieder.“ Das ist kein Beiwerk: Wer keinen Ausweg
+  anbietet, wird als Spam markiert — und das kostet die Domain mehr, als der
+  einzelne Kontakt wert ist.
+* **Stopp bei Antwort.** Siehe 9.5.
+
+`npm run check` weist darauf hin, wenn Kampagnen hinterlegt sind, aber keine
+Einwilligungssperre konfiguriert ist.
+
+### 9.3 Zweite Domain für die Akquise
+
+Sie wollten eine weitere Domain, die im Zweifel „gesperrt werden kann“. Das ist
+gängige und sinnvolle Praxis: Erstansprachen an Fremde werden häufiger als Spam
+markiert als Post an bestehende Mandanten. Läuft beides über dieselbe Domain,
+zieht die Akquise die Zustellbarkeit von `finanz-medizin.com` mit nach unten —
+und dann landet auch die Terminbestätigung an einen Mandanten im Spam-Ordner.
+Zwei Domains trennen die beiden Reputationen voneinander.
+
+**Was Sie einrichten:**
+
+1. **Domain registrieren.** Etwas, das erkennbar zu Ihnen gehört, zum Beispiel
+   `fm-praxisteam.de`. Keine Tippfehler-Variante von `finanz-medizin.com` —
+   der Empfänger soll sehen, mit wem er es zu tun hat.
+2. **In Google Workspace als Domain-Alias oder sekundäre Domain hinzufügen**
+   (Admin-Konsole → Konto → Domains). Postfach anlegen, z. B.
+   `benedict@fm-praxisteam.de`.
+3. **DNS setzen:** SPF (`include:_spf.google.com`), DKIM (Admin-Konsole → Apps →
+   Google Workspace → Gmail → E-Mail authentifizieren, je Domain einzeln
+   erzeugen) und DMARC. Ohne DKIM für die neue Domain landet die erste
+   Kampagne geschlossen im Spam.
+4. **Domainweite Delegierung** gilt für die ganze Workspace-Organisation — das
+   neue Postfach ist automatisch abgedeckt, es ist nichts nachzutragen.
+5. **In `.env` eintragen:**
+   ```
+   SENDER_ACCOUNTS={"info":{"email":"info@finanz-medizin.com","name":"Finanz & Medizin","replyTo":"info@finanz-medizin.com"},"akquise":{"email":"benedict@fm-praxisteam.de","name":"Benedict Hintz | Finanz Medizin","replyTo":"info@finanz-medizin.com"}}
+   SENDER_DEFAULT=info
+   ```
+   Die Kampagne nennt in `sequences/mfa-fluktuation.js` den Schlüssel
+   `akquise` — damit geht sie aus der zweiten Domain raus, alles Übrige
+   weiterhin aus `info@`.
+6. **Warmlaufen lassen.** Eine fabrikneue Domain, die am ersten Tag 200 Mails
+   verschickt, wird von jedem Anbieter aussortiert. Erste Woche ein Dutzend
+   Mails am Tag, dann langsam steigern. `SEND_MAX_PER_MINUTE` und
+   `SEND_DAILY_LIMIT` sind dafür da.
+
+Der `replyTo` zeigt bewusst auf `info@finanz-medizin.com`: Antworten landen
+dort, wo Sie ohnehin hinsehen.
+
+**Was ich nicht gebaut habe:** einen automatischen Wechsel auf eine neue Domain,
+sobald eine gesperrt wird. Zwei getrennte Reputationen zu führen ist Hygiene;
+Domains zu verbrennen und zu rotieren, um Filter zu umgehen, ist etwas anderes
+— und es funktioniert auch nicht lange. Wenn eine Domain gesperrt wird, ist die
+Ursache der Inhalt oder die Liste, nicht die Domain.
+
+### 9.4 Eine Kampagne starten
+
+Am Kontakt in HubSpot:
+
+| Feld | Eintrag |
+|---|---|
+| E-Mail senden | ☑ Ja |
+| Kampagne | Mitarbeiterfluktuation in Praxen (`mfa-fluktuation`) |
+| E-Mail Status | **Zum Versand freigegeben (queued)** |
+
+Betreff und Inhalt bleiben leer — die kommen aus der Kampagne. Speichern, und
+der Rest läuft:
+
+```
+sofort      Schritt 1 geht raus
+            → Kampagne: letzter Schritt = 1, Stand = Laeuft
+            → E-Mail Status = Geplant, Versandzeitpunkt = in 7 Tagen
++7 Tage     Schritt 2 — sofern nicht geantwortet wurde
++14 Tage    Schritt 3 — dito
+            → Stand = Abgeschlossen, E-Mail Status = Versendet
+```
+
+Für viele Kontakte auf einmal: In HubSpot eine Liste bilden, die Spalten
+*E-Mail senden*, *Kampagne* und *E-Mail Status* per Massenbearbeitung setzen.
+Der Scheduler nimmt sie im Minutentakt auf, das Tempolimit hält den Versand
+danach in Bahnen.
+
+### 9.5 Wann eine Kampagne aufhört
+
+Der wichtigere Teil. Wer auf die Erstansprache antwortet und danach trotzdem
+zwei Nachfassmails bekommt, ist als Kunde verloren.
+
+| Bedingung | Wie |
+|---|---|
+| **Antwort im Verlauf** | Vor jeder Nachfassmail wird im Gmail-Verlauf nachgesehen. Schreibt dort jemand anderes als wir — auch eine Weiterleitung aus dem Sekretariat —, ist Schluss. Braucht `gmail.readonly`. |
+| **HubSpot-Feld** | `SEQUENCE_STOP_IF` global, `abbruchWenn` je Kampagne. Voreingestellt: `lifecyclestage` = customer/opportunity, `hs_lead_status` = CONNECTED/UNQUALIFIED. |
+| **Von Hand** | *Kampagne: Stand* auf **Gestoppt — von Hand**. Wirkt sofort und dauerhaft. |
+| **Durch** | Nach dem letzten Schritt: Stand = Abgeschlossen. |
+
+Der erste Punkt ist der einzige, der zuverlässig greift, ohne dass jemand in
+HubSpot etwas pflegt — und er braucht Lesezugriff auf das Postfach.
+**Solange der fehlt, verschickt der Dienst gar keine Nachfassmail:** Der
+Datensatz geht auf `failed` mit einer Meldung, die sagt, was zu tun ist.
+
+Das ist die Voreinstellung (`SEQUENCE_REQUIRE_REPLY_CHECK=true`) und sie ist
+Absicht. Eine Nachfassmail, die drei Tage später rausgeht, kostet nichts. Eine,
+die nach einer Antwort rausgeht, kostet den Kunden.
+
+Wer die Abbrüche lieber selbst in HubSpot pflegt, setzt
+`SEQUENCE_REQUIRE_REPLY_CHECK=false`. Dann sagt es `npm run check` und der
+Dienst beim Start deutlich.
+
+### 9.6 Nachfassmails im selben Verlauf
+
+Mit `gmail.readonly` hängt Schritt 2 als Antwort an Schritt 1 — ein Verlauf im
+Postfach des Empfängers, so wie es aussieht, wenn ein Mensch nachfasst. Dafür
+wird nach dem Versand die Message-ID geholt, die Gmail wirklich vergeben hat
+(die selbst gesetzte wird beim Versand ersetzt), und in `In-Reply-To` und
+`References` der Folgemail eingetragen.
+
+Ohne Lesezugriff geht die Nachfassmail eigenständig raus, mit `Re:` im Betreff.
+Das funktioniert überall, sieht nur etwas weniger nach Gespräch aus.
+
+### 9.7 Sendefenster
+
+```
+SEQUENCE_SEND_WINDOW=8-17
+SEQUENCE_SEND_DAYS=1,2,3,4,5
+```
+
+Kampagnenmails gehen dann nur werktags zwischen 8 und 17 Uhr Berliner Zeit
+raus; was außerhalb anfällt, wird auf die nächste Öffnung vertagt. Gilt nur für
+Kampagnen — eine einzeln angeforderte Mail geht immer sofort raus.
+
+Geschäftspost um drei Uhr nachts sieht nach Maschine aus und wird von
+Spamfiltern entsprechend einsortiert.
+
+### 9.8 Eine eigene Kampagne anlegen
+
+`sequences/meine-kampagne.js`:
+
+```js
+'use strict';
+
+module.exports = {
+  schluessel: 'meine-kampagne',
+  name: 'Sprechender Name fuers CRM',
+  absender: 'akquise',                    // Schluessel aus SENDER_ACCOUNTS
+  abbruchWenn: { lifecyclestage: ['customer'] },
+
+  schritte: [
+    { nachTagen: 0, betreff: 'Erste Mail', rumpf: '{{anrede}},\n\nText.' },
+    { nachTagen: 7, betreff: 'Nachfass', antwortAufVorherige: true, rumpf: '{{anrede}},\n\nText.' }
+  ]
+};
+```
+
+Danach:
+
+```bash
+npm run setup:properties   # ergaenzt die Auswahl in HubSpot
+npm run check              # prueft die Datei
+# Dienst neu starten
+```
+
+`nachTagen` des ersten Schritts muss 0 sein. Der Rumpf darf Klartext oder HTML
+sein; Platzhalter funktionieren wie überall.
+
+**Eine laufende Kampagne nicht umschreiben.** Der Text geht in die Send-ID ein
+— wer ihn ändert, während Kontakte mittendrin stecken, verschiebt für diese die
+Identität der Mail. Legen Sie stattdessen eine neue Kampagne an.
+
+### 9.9 Die echte Gmail-Signatur übernehmen
+
+`templates/signature.html` enthält eine vollständige Signatur, gebaut aus den
+Angaben in `impressum.html`. Wenn Sie stattdessen genau die Signatur wollen,
+die in Gmail hinterlegt ist:
+
+```bash
+npm run import:signature -- --dry    # erst ansehen
+npm run import:signature             # dann übernehmen
+```
+
+Das Skript holt die zuletzt verschickte Nachricht aus dem Postfach, schneidet
+den Signaturblock heraus und schreibt ihn nach `templates/signature.html`. Die
+bisherige Fassung wird vorher gesichert.
+
+Es braucht `gmail.readonly` — denselben Scope wie die Antwortprüfung. Der
+naheliegende Weg über die Gmail-Einstellungen wäre `gmail.settings.basic`
+gewesen, also Zugriff auf sämtliche Kontoeinstellungen; eine verschickte Mail
+enthält dieselbe Signatur und kommt mit weniger Rechten aus.
+
+Damit etwas zu holen ist, muss im Ordner *Gesendet* mindestens eine von Hand
+geschriebene Mail mit Signatur liegen. Findet das Skript keinen Signaturblock,
+sagt es das und ändert nichts.
+
+---
+
+## 10. Keine doppelten Mails — wie das funktioniert
 
 Das ist der Kern. Vier Schichten, die unabhängig voneinander greifen.
 
@@ -665,7 +938,7 @@ rausgeht.
 Jede Nachricht trägt `X-Automation-Send-Id: <Send-ID>`. Damit lässt sich im
 Postausgang von Gmail zweifelsfrei nachsehen, ob eine bestimmte Mail raus ist —
 unabhängig davon, ob Gmail die Message-ID durch eine eigene ersetzt hat. Genau
-das nutzt die Nachschau aus Abschnitt 10.
+das nutzt die Nachschau aus Abschnitt 11.
 
 ### Absichtlich dieselbe Mail noch einmal senden
 
@@ -684,7 +957,7 @@ mit Abstand.
 
 ---
 
-## 10. Fehlerbehandlung
+## 11. Fehlerbehandlung
 
 ### Der Kern: wann darf wiederholt werden
 
@@ -755,7 +1028,7 @@ der Ledger-Eintrag steht auf `failed` und lässt einen neuen Anspruch zu.
 
 ---
 
-## 11. Testfälle und Test mit einem HubSpot-Testkontakt
+## 12. Testfälle und Test mit einem HubSpot-Testkontakt
 
 ### 11.1 Die automatisierten Tests
 
@@ -763,7 +1036,7 @@ der Ledger-Eintrag steht auf `failed` und lässt einen neuen Anspruch zu.
 npm test
 ```
 
-102 Testfälle, keine Netzwerkverbindung nötig, unter zwei Sekunden.
+133 Testfälle, keine Netzwerkverbindung nötig, unter zwei Sekunden.
 
 | Datei | Fälle | prüft |
 |---|---|---|
@@ -773,6 +1046,8 @@ npm test
 | `test/mime.test.js` | 12 | **Die Nachricht:** Umlaute nach RFC 2047, Schnitt an Zeichengrenzen, Header-Injection über Betreff und Absendername, Zeilenlängen, Sommer-/Winterzeit |
 | `test/template.test.js` | 16 | **Text:** Platzhalter, Ersatzwerte, HTML-Maskierung, Klartext↔HTML, Skript-Entfernung, deutsche Entitäten |
 | `test/webhook.test.js` | 18 | **Eingang:** Signatur v3 echt/verfälscht/fremd/abgelaufen, Ereignisformate, Wiederholbarkeit, Warteschlange |
+| `test/sequence.test.js` | 25 | **Kampagnen:** Ablauf über drei Schritte, Stopp bei Antwort, Stopp per Bedingung, Einwilligungssperre, Sendefenster, Verlauf, Anrede |
+| `test/signatur.test.js` | 6 | **Signaturimport:** Signaturblock vollständig herausschneiden, nichts erraten |
 
 Die wichtigsten davon im Klartext:
 
@@ -786,6 +1061,10 @@ Die wichtigsten davon im Klartext:
 ✓ schlägt das Schreiben nach HubSpot fehl, gilt die Mail trotzdem als versendet
 ✓ Unternehmen mit mehreren Kontakten: lieber nichts als an alle
 ✓ ein Platzhalter ohne Wert bricht ab statt eine Lücke zu verschicken
+✓ wer geantwortet hat, bekommt keine Nachfassmail mehr
+✓ ohne Nachsehmöglichkeit wird die Nachfassmail nicht blind verschickt
+✓ von Hand gestoppt bleibt gestoppt
+✓ ohne Einwilligung startet die Kampagne gar nicht
 ✓ eine mitgeschnittene Anfrage lässt sich nicht später erneut einspielen
 ✓ Header-Injection über den Betreff geht nicht
 ```
@@ -916,7 +1195,7 @@ curl -s -X POST localhost:8080/hubspot/trigger \
 
 ---
 
-## 12. Protokoll und Überwachung
+## 13. Protokoll und Überwachung
 
 Eine Zeile JSON je Ereignis auf stdout — von `journalctl`, Docker, Loki oder
 CloudWatch gleichermaßen lesbar.
@@ -982,10 +1261,21 @@ alles, was Aufmerksamkeit braucht.
 
 ---
 
-## 13. Weitere Mailtypen hinzufügen
+## 14. Weitere Mailtypen hinzufügen
 
 Die Automation kennt keine Mailtypen — sie verschickt, was in den Properties
-steht. Für unterschiedliche Anlässe gibt es drei Wege, von einfach nach mächtig.
+steht. Für unterschiedliche Anlässe gibt es vier Wege, von einfach nach mächtig.
+
+### Weg 0 — eine Kampagne, wenn der Text fest steht
+
+Soll derselbe Text an viele gehen, womöglich mit Nachfassmails, ist eine
+Kampagne in `sequences/` das Richtige: Der Text steht an einer Stelle statt in
+jedem Datensatz, und das Aufhören ist mit eingebaut. Siehe
+[Abschnitt 9.8](#98-eine-eigene-kampagne-anlegen).
+
+Die drei folgenden Wege sind für Mails gedacht, deren Text je Datensatz
+verschieden ist — Terminbestätigungen, Zusammenfassungen, alles, was ein
+Workflow individuell zusammensetzt.
 
 ### Weg 1 — Vorlage in HubSpot, kein Code
 
@@ -1083,7 +1373,7 @@ gilt für die ganze Domain, also in der Regel automatisch).
 
 ---
 
-## 14. Grenzen
+## 15. Grenzen
 
 Was dieser Dienst **nicht** tut, und warum:
 
@@ -1094,7 +1384,7 @@ Was dieser Dienst **nicht** tut, und warum:
   Sie auf der Website schon nicht — es wäre auch ein eigener
   datenschutzrechtlicher Vorgang.
 * **Keine zweite Instanz.** Der Dublettenschutz ist auf einen Prozess auf einer
-  Maschine ausgelegt. Siehe Abschnitt 9, letzter Absatz.
+  Maschine ausgelegt. Siehe Abschnitt 10, letzter Absatz.
 * **Keine Abmeldeverwaltung.** Wer in HubSpot auf der Sperrliste steht, wird
   hier nicht geprüft. Für Werbe-Mails müsste das ergänzt werden; für die
   1:1-Korrespondenz aus einer laufenden Beratung ist es nicht einschlägig.
