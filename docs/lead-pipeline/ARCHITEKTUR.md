@@ -1400,3 +1400,41 @@ und E-Mail werden, entscheidet erst der Lauf. Dasselbe für §21.2 bis §21.4.
 
 Der nächste `enrich_leads.py`-Lauf misst es. Vorher wird hier keine Zahl
 behauptet.
+
+### §21.7 „Alle Kontakte kontaktierbar" — was erreichbar ist und was nicht
+
+Die Vorgabe lautet, alle Kontakte kontaktierbar zu machen. Vollständig ist das
+nicht erreichbar, und es ist ehrlicher, das vorher zu sagen als es nachher zu
+erklären: Ein erheblicher Teil der Zielgruppe — kleine Einzelpraxen, Podologie,
+Logopädie — hat **keine Website und keine veröffentlichte Mailadresse**. Es gibt
+dort nichts zu finden, weil nichts publiziert wurde. Keine Technik ändert das.
+
+Was der Lauf vom 2026-09-14 tatsächlich hergibt:
+
+| Kanal | Leads |
+|---|---:|
+| Telefon | 90 |
+| E-Mail | 86 |
+| beides | 53 |
+| **Telefon ODER E-Mail** | **123 / 209 (58,9 %)** |
+| weder noch | 86 |
+
+Die 123 sind die realistische Obergrenze für morgen, nicht 209. Bisher
+verdeckte die Auswertung diese Zahl: Sie wies „anschreibbar" (21) und „Telefon
++ Website" (63) aus, aber nie die Vereinigungsmenge — also genau das, was
+„kontaktierbar" heißt.
+
+Deshalb neu: `sync_hubspot.py --nur-kontaktierbar` überträgt jeden Lead mit
+Telefon **oder** E-Mail und hält nur die zurück, die über keinen Kanal
+erreichbar sind. Das ist der breiteste Filter, der noch sinnvoll ist — ein
+Datensatz ohne beides ist im CRM eine Karteileiche. Die Zusammenfassung weist
+die Zahl ab sofort getrennt aus.
+
+Die Stufen von breit nach eng:
+
+| Schalter | Kriterium | Zweck |
+|---|---|---|
+| `--nur-kontaktierbar` | Telefon ODER E-Mail | überhaupt erreichbar |
+| `--nur-mit-telefon` | geprüftes Telefon | Telefonvertrieb |
+| `--nur-anschreibbar` | E-Mail UND Nachname | Mailkampagne |
+| `--nur-mit-anrede` | zusätzlich belegte Anrede | persönliche Ansprache |
