@@ -47,16 +47,10 @@ GESELLSCHAFTEN = [
     ("Württembergische", "Die Württembergische", "Die Württembergische", "die Württembergische", "Komposit",    "info@wuerttembergische.de"),
 ]
 
-BAUSTEIN_B = (
-    "Die Produkte Ihres Hauses vermittle ich bereits seit einiger Zeit und "
-    "schätze dabei sowohl die Qualität und Verlässlichkeit Ihres Angebots als "
-    "auch die Zusammenarbeit mit Ihrem Haus sehr. {AKK} möchte ich meinen "
-    "Kundinnen und Kunden daher auch künftig aktiv empfehlen und vermitteln.")
-BAUSTEIN_C = (
-    "{NOM} hat in meiner Marktbeobachtung einen ausgezeichneten Ruf, und Ihre "
-    "Tarife überzeugen mich in den Bereichen, in denen ich berate. Ihr Haus "
-    "möchte ich daher künftig als starken Partner empfehlen und aktiv "
-    "Kundinnen und Kunden vermitteln.")
+BAUSTEIN_K = (
+    "Die Qualität und Verlässlichkeit Ihres Angebots schätze ich sehr. Die "
+    "Produkte Ihres Hauses vermittle ich bereits bzw. möchte sie künftig aktiv "
+    "vermitteln und meinen Kundinnen und Kunden empfehlen.")
 
 SIGNATUR = """Benedict Hintz
 Versicherungsmakler
@@ -87,9 +81,7 @@ unbefugte Weitergabe dieser Mail ist nicht gestattet."""
 
 
 def absaetze(nom, akk_gross, akk, baustein):
-    beziehung = (BAUSTEIN_B.format(AKK=akk_gross) if baustein == "B"
-                 else BAUSTEIN_C.format(NOM=nom))
-    weiter = "weiterhin aktiv" if baustein == "B" else "aktiv"
+    beziehung = BAUSTEIN_K
     return [
         "Sehr geehrte Damen und Herren,",
         "mein Name ist Benedict Hintz. Ich bin unabhängiger Versicherungsmakler "
@@ -99,7 +91,7 @@ def absaetze(nom, akk_gross, akk, baustein):
         "Über meine Webseite We Build Wealth (www.webuildwealth.de) begleite ich "
         "junge, ambitionierte Kundinnen und Kunden beim Vermögensaufbau und "
         "vermittle in diesem Zusammenhang auch passende Versicherungslösungen. "
-        f"{akk_gross} möchte ich dabei {weiter} empfehlen und vermitteln.",
+        f"{akk_gross} möchte ich dabei als starken Partner empfehlen.",
         f"Aus diesem Grund bitte ich Sie höflich um die Erlaubnis, Ihr Logo auf "
         f"meiner Webseite in der Rubrik {AUF}Starke Partner{ZU} zeigen zu dürfen. "
         f"Konkret geht es um folgende Nutzung:",
@@ -178,9 +170,9 @@ if __name__ == "__main__":
     for i, (marke, nom, akk_gross, akk, kat, adr) in enumerate(GESELLSCHAFTEN, start=1):
         name = f"{i:02d}-{dateiname(marke)}"
         with open(os.path.join(ZIEL, name), "w", encoding="utf-8") as f:
-            f.write(bauen(nom, akk_gross, akk, adr, "B"))
+            f.write(bauen(nom, akk_gross, akk, adr, "K"))
         uebersicht.append({"nr": i, "marke": marke, "kategorie": kat,
-                           "datei": name, "adresse": adr, "baustein": "B"})
+                           "datei": name, "adresse": adr, "baustein": "K"})
     with open(os.path.join(ZIEL, "_uebersicht.json"), "w", encoding="utf-8") as f:
         json.dump(uebersicht, f, ensure_ascii=False, indent=1)
     print(f"{len(uebersicht)} Texte vorbereitet")

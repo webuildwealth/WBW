@@ -71,17 +71,28 @@ Helvetia das richtige Ziel ist.
 
 ---
 
-## 3. Alle 26 stehen auf Baustein B
+## 3. Der Beziehungsabsatz deckt jetzt beide Fälle ab
 
-„Die Produkte Ihres Hauses vermittle ich bereits seit einiger Zeit." Bei 26
-Häusern trifft das erfahrungsgemäß nicht überall zu. Wo nicht, vor dem Senden
-auf Baustein C wechseln — im Generator die Zeile `bauen(..., "B")` auf `"C"`
-setzen oder den zweiten Absatz im Text direkt austauschen:
+Die Bausteine A (eigener Kunde), B (vermittelt bereits) und C (möchte künftig
+vermitteln) sind für diese 26 Mails durch eine gemeinsame Formulierung ersetzt:
 
-> [Gesellschaft] hat in meiner Marktbeobachtung einen ausgezeichneten Ruf, und
-> Ihre Tarife überzeugen mich in den Bereichen, in denen ich berate. Ihr Haus
-> möchte ich daher künftig als starken Partner empfehlen und aktiv Kundinnen
-> und Kunden vermitteln.
+> Die Qualität und Verlässlichkeit Ihres Angebots schätze ich sehr. Die
+> Produkte Ihres Hauses vermittle ich bereits bzw. möchte sie künftig aktiv
+> vermitteln und meinen Kundinnen und Kunden empfehlen.
+
+Das löst das Problem, das die Vorfassung hatte: Baustein B behauptete
+bestehende Vermittlung, was jede Gesellschaft in Sekunden im eigenen
+Bestandssystem prüfen kann und bei 26 Häusern kaum durchgehend zutrifft. Die
+neue Fassung ist in beiden Fällen wahr. Eine Aussage, selbst Kunde zu sein,
+kommt nicht mehr vor.
+
+Im Folgeabsatz heißt es jetzt „möchte ich dabei als starken Partner empfehlen"
+statt „weiterhin aktiv empfehlen" — „weiterhin" hätte bestehende Vermittlung
+wieder unterstellt.
+
+Bezugswort im Beziehungsabsatz ist „Produkte" (Plural). Das ist kein Zufall:
+Ein Rückbezug auf den Gesellschaftsnamen bräuchte je nach Genus „ihn" oder
+„sie" und damit wieder eine Fallunterscheidung pro Haus.
 
 ---
 

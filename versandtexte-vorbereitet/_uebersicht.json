@@ -5,7 +5,7 @@
   "kategorie": "Vorsorge",
   "datei": "01-alte-leipziger.txt",
   "adresse": "vmp.service@alte-leipziger.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 2,
@@ -13,7 +13,7 @@
   "kategorie": "Vorsorge",
   "datei": "02-lv-1871.txt",
   "adresse": "info@lv1871.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 3,
@@ -21,7 +21,7 @@
   "kategorie": "Vorsorge",
   "datei": "03-volkswohl-bund.txt",
   "adresse": "info@volkswohl-bund.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 4,
@@ -29,7 +29,7 @@
   "kategorie": "Vorsorge",
   "datei": "04-condor.txt",
   "adresse": "Makler-Service@condor-versicherungen.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 5,
@@ -37,7 +37,7 @@
   "kategorie": "Vorsorge",
   "datei": "05-standard-life.txt",
   "adresse": "kundenservice@standardlife.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 6,
@@ -45,7 +45,7 @@
   "kategorie": "Vorsorge",
   "datei": "06-canada-life.txt",
   "adresse": "maklerservice@canadalife.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 7,
@@ -53,7 +53,7 @@
   "kategorie": "Vorsorge/BU",
   "datei": "07-die-bayerische.txt",
   "adresse": "mdc@diebayerische.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 8,
@@ -61,7 +61,7 @@
   "kategorie": "Vorsorge/BU",
   "datei": "08-stuttgarter.txt",
   "adresse": "info@stuttgarter.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 9,
@@ -69,7 +69,7 @@
   "kategorie": "BU",
   "datei": "09-nuernberger.txt",
   "adresse": "info@nuernberger.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 10,
@@ -77,7 +77,7 @@
   "kategorie": "BU/Komposit",
   "datei": "10-hdi.txt",
   "adresse": "vertriebshotline@hdi.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 11,
@@ -85,7 +85,7 @@
   "kategorie": "BU/Komposit",
   "datei": "11-gothaer.txt",
   "adresse": "info@gothaer.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 12,
@@ -93,7 +93,7 @@
   "kategorie": "BU/Komposit",
   "datei": "12-baloise.txt",
   "adresse": "info@baloise.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 13,
@@ -101,7 +101,7 @@
   "kategorie": "PKV",
   "datei": "13-dkv.txt",
   "adresse": "service@dkv.com",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 14,
@@ -109,7 +109,7 @@
   "kategorie": "PKV",
   "datei": "14-hansemerkur.txt",
   "adresse": "info@hansemerkur.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 15,
@@ -117,7 +117,7 @@
   "kategorie": "PKV",
   "datei": "15-muenchener-verein.txt",
   "adresse": "info@muenchener-verein.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 16,
@@ -125,7 +125,7 @@
   "kategorie": "PKV",
   "datei": "16-sdk.txt",
   "adresse": "sdk@sdk.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 17,
@@ -133,7 +133,7 @@
   "kategorie": "PKV",
   "datei": "17-inter.txt",
   "adresse": "info@inter.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 18,
@@ -141,7 +141,7 @@
   "kategorie": "Sach/Kfz",
   "datei": "18-vhv.txt",
   "adresse": "Makleranbindung@vhv.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 19,
@@ -149,7 +149,7 @@
   "kategorie": "Sach",
   "datei": "19-haftpflichtkasse.txt",
   "adresse": "info@haftpflichtkasse.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 20,
@@ -157,7 +157,7 @@
   "kategorie": "Sach",
   "datei": "20-interrisk.txt",
   "adresse": "info@interrisk.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 21,
@@ -165,7 +165,7 @@
   "kategorie": "Komposit",
   "datei": "21-axa.txt",
   "adresse": "service@axa.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 22,
@@ -173,7 +173,7 @@
   "kategorie": "Komposit",
   "datei": "22-zurich.txt",
   "adresse": "service@zurich.com",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 23,
@@ -181,7 +181,7 @@
   "kategorie": "Komposit",
   "datei": "23-ergo.txt",
   "adresse": "service@ergo.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 24,
@@ -189,7 +189,7 @@
   "kategorie": "Komposit",
   "datei": "24-r-plus-v.txt",
   "adresse": "ruv@ruv.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 25,
@@ -197,7 +197,7 @@
   "kategorie": "Komposit",
   "datei": "25-devk.txt",
   "adresse": "info@devk.de",
-  "baustein": "B"
+  "baustein": "K"
  },
  {
   "nr": 26,
@@ -205,6 +205,6 @@
   "kategorie": "Komposit",
   "datei": "26-wuerttembergische.txt",
   "adresse": "info@wuerttembergische.de",
-  "baustein": "B"
+  "baustein": "K"
  }
 ]
