@@ -1157,3 +1157,76 @@ Die Wirkung von Budget-Fix und Größenfilter zusammen auf einem vollständigen
 Lauf ist **noch nicht gemessen** — der nächste Lauf beim Nutzer ist ausstehend.
 207 Tests grün (pytest und `tests/run_all.py`), 20 davon neu seit § 18
 (13 Standorte/OSM, 7 Größenfilter).
+
+---
+
+## 20. NACHTRAG: ALLE ANGABEN FÜR DIE KALTANSPRACHE (2026-09-22)
+
+Die Mail-Automation verlangt pro Empfänger Anrede, Nachname und eine Adresse.
+Die Pipeline lieferte davon keins zuverlässig: `contact_name` entstand nur aus
+dem BA-Anzeigentext (2,8 % Abdeckung im Lauf vom 14.09.), eine Anrede gab es
+gar nicht, und die E-Mail wurde bewusst **nicht** an den Kontakt gehängt, wenn
+sie generisch war. Vorgabe: Website, E-Mail und Inhaber sind Pflicht.
+
+### 20.1 Der Crawl lief bei den besten Leads gar nicht
+
+`enrich_web` brach ab, sobald die BA-Anzeige eine Telefonnummer enthielt
+(`NOT_NEEDED_JOB_PHONE`). Solange nur die Telefonnummer zählte, war das eine
+sinnvolle Ersparnis. Für die Mailkampagne kehrt es sich um: Genau die Praxen
+mit der aussagekräftigsten Anzeige wären nie im Impressum nachgeschlagen worden.
+
+Jetzt entscheidet, was **fehlt** (`coldmail_luecken`). Liegen alle vier Angaben
+vor, wird nichts abgerufen; fehlt eine, wird die Website besucht. Eine belegte
+Anzeigen-Telefonnummer wird dabei nie durch eine Website-Nummer ersetzt — dafür
+gibt es einen eigenen Regressionstest.
+
+### 20.2 Rangfolge — Fundstelle vor Rolle
+
+```
+Impressum  >  Kontakt  >  Karriere  >  Über uns / Team  >  Startseite
+Inhaberin/Inhaber  >  Geschäftsführung  >  Praxisleitung  >  Ärztin/Arzt
+```
+
+Das Impressum steht oben, weil § 5 DDG die vertretungsberechtigte Person dort
+verlangt — eine Pflichtangabe wiegt schwerer als eine Team-Seite. Steht kein
+Inhaber da, wird eine Ärztin oder ein Arzt genommen. Ausgeschlossen bleiben
+dauerhaft: die Agentur aus dem Impressum, Datenschutzbeauftragte, Steuerberatung
+und Aufsichtsbehörde — alles Rollen, die im Impressum stehen und nicht die
+Zielgruppe sind. Karriereseiten (`/karriere`, `/jobs`, `/stellenangebote`) sind
+neu im Crawl, Limit 18 Seiten je Praxis.
+
+### 20.3 Die Anrede wird nicht geraten
+
+| Beleg | Konfidenz |
+|---|---:|
+| „Frau"/„Herr" steht im Text | 0,99 |
+| weibliche Rollenform („Inhaberin", „Zahnärztin") | 0,97 |
+| männliche Rollenform („Inhaber: Dr. Thomas Meier") | 0,90 |
+
+Aus dem **Vornamen** wird nichts abgeleitet. Eine Namensliste liegt bei rund
+jedem zehnten Namen daneben, und eine falsche Anrede ist in einer Erstansprache
+teurer als eine fehlende. Fehlt der Beleg, bleibt das Feld leer und der Lead
+gilt als nicht anschreibbar.
+
+Offen bleibt die männliche Rollenform: Manche Praxen schreiben „Inhaber"
+generisch auch für eine Frau. Deshalb 0,90 statt 0,97, die Konfidenz steht im
+Datensatz, und wer nur sichere Anreden will, filtert auf ≥ 0,97.
+
+### 20.4 Regel bewusst geändert: generische Adresse geht an den Kontakt
+
+Bisher kam `info@praxis.de` nicht an den Contact — info@ ist die Praxis, nicht
+die Person. Für die Kaltansprache ist das die falsche Bremse: In einer
+Einzelpraxis liest genau die gemeinte Person dieses Postfach, und ohne Adresse
+gibt es keine Mail. Der Schutzgedanke wandert in die Kennzeichnung:
+`mfa_email_typ` hält fest, ob es eine persönliche oder eine allgemeine Adresse
+ist. Bewerbungspostfächer (`bewerbung@`) stehen im Rang hinter `info@`, weil sie
+bei der Personalstelle landen — sie bleiben aber zulässig, weil sie die Praxis
+erreichen.
+
+### 20.5 Messstand
+
+Struktur und Regeln sind durch 233 Tests abgedeckt (25 neu), darunter die
+Fälle, die schiefgehen: Agenturadresse aus dem Impressum, Nachname in der
+E-Mail-Domain, Satzgrenze zwischen „Frau Wagner." und „Dr. Meier", Straße als
+vermeintlicher Name. Die **Abdeckung** der vier Pflichtfelder auf echten Daten
+ist noch nicht gemessen — dafür fehlt ein Lauf mit `--kein-cache`.
