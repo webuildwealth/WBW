@@ -1258,3 +1258,34 @@ wird von keinem Lauf zurückgesetzt; dasselbe gilt für eine geänderte
 Zuständigkeit. Ein Regressionstest hält genau das fest.
 
 `lifecyclestage` bleibt unverändert gesperrt.
+
+### 20.7 Nachtrag: der Engpass ist die Website (2026-09-22)
+
+Erster vollständiger Lauf mit der Impressum-Auswertung, 209 Leads:
+
+| Stufe | Wert |
+|---|---:|
+| Ansprechpartner **vorher** | 6/209 (2,9 %) |
+| Ansprechpartner **nachher** | 38/209 (18,2 %) |
+| Inhaber/Arzt zugeordnet | 33/209 (15,8 %) |
+| davon mit Anrede | 25/209 (12,0 %) |
+| **anschreibbar** | **23/209 (11,0 %)** |
+
+Die Extraktion funktioniert — sie versechsfacht die Ansprechpartner. Der
+Engpass liegt davor: **127 von 209 Praxen haben keine Website**, und ohne
+Website gibt es kein Impressum, also weder Inhaberin noch Adresse. Von den 82
+mit Website wurden 33 zu einem Namen.
+
+Gegenmaßnahme: Die Domain einer bekannten E-Mail wird als Website-**Kandidat**
+geprüft (86 Leads haben eine E-Mail). Die Regel „keine Website aus einer
+E-Mail-Domain ableiten" bleibt dabei in Kraft und wird nicht gebrochen — die
+Domain ist kein Ergebnis, sondern eine Adresse zum Nachsehen. Ob daraus eine
+Website wird, entscheidet dieselbe Schranke wie bei jeder anderen Quelle:
+Praxisname UND exakte Anzeigenadresse müssen dort stehen. Verifiziert sie sich
+nicht, wird nichts übernommen. Freemail-Domains sind ausgeschlossen, weil
+t-online.de nicht der Praxis gehört.
+
+Für den zweiten Engpass — 33 Personen aus 82 Websites — liegt noch keine
+Ursachenanalyse vor. `scripts/diagnose_coldmail.py` zählt dafür den Trichter
+und die Fehlerursachen; ohne diese Zahlen wäre jede weitere Änderung ein
+Schuss ins Blaue.
