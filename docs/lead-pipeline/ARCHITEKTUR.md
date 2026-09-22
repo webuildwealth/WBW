@@ -1289,3 +1289,114 @@ Für den zweiten Engpass — 33 Personen aus 82 Websites — liegt noch keine
 Ursachenanalyse vor. `scripts/diagnose_coldmail.py` zählt dafür den Trichter
 und die Fehlerursachen; ohne diese Zahlen wäre jede weitere Änderung ein
 Schuss ins Blaue.
+
+---
+
+## §21 Der zweite Engpass, gemessen (2026-09-22)
+
+Die Ursachenanalyse aus §20.7 liegt jetzt vor. `diagnose_coldmail.py` auf dem
+Lauf `calibration-berlin-50km-mfa-20260914T150510Z-f0312f`:
+
+| Befund | Fälle |
+|---|---:|
+| `site:NotVerified` | **33** |
+| `anrede:KeinBeleg` | 8 |
+| `person:NichtGefunden` | 6 |
+| `page:UnicodeEncodeError` | 4 |
+| `page:gaierror` | 4 |
+| `email:NichtGefunden` | 3 |
+| `page:RobotsDisallowed` / `ValueError` / `RemoteDisconnected` / `URLError` | je 1 |
+
+Die Rechnung geht auf: 82 Websites − 33 verworfen = 49, davon −6 ohne Person,
+−8 ohne Anrede, −3 ohne E-Mail = 33 Personen (§20.6). Der Engpass ist damit
+benannt, und er war hausgemacht.
+
+### §21.1 `site:NotVerified` — ein Beleg, den wir hatten und wegwarfen
+
+Die Schranke verlangte, dass Praxisname **und** exakte Anzeigenadresse auf der
+Domain stehen, bevor von dort irgendetwas übernommen wird. Sie wurde für
+*geratene* Kandidaten gebaut — E-Mail-Domain, Suche — und dort ist sie richtig.
+
+Sie wurde aber auch auf Adressen angewandt, die der Arbeitgeber **in seiner
+eigenen BA-Stellenanzeige veröffentlicht** hat (Herkunft `BA_JOB_DESCRIPTION`,
+§9). Das ist keine Fremdzuschreibung, sondern die Aussage des Arbeitgebers über
+sich selbst. Der Nachweis war da; er wurde verworfen und ein zweiter verlangt.
+
+Warum der zweite so oft scheiterte, zeigen die Beispiele: Die Praxis tritt unter
+einem Markennamen auf. Die Anzeige nennt „Augen- und Laserzentrum Berlin MVZ
+GmbH", die Seite heißt `smileeyes.de` und schreibt nirgends den Firmennamen aus.
+Dazu kommt die Adresse: Die Anzeige trägt die PLZ des *Arbeitsorts*, das
+Impressum die des *Firmensitzes* — bei einem MVZ regelmäßig verschieden (§17).
+
+Geändert: Die Herkunft des Kandidaten wird mitgeführt. Stammt die URL aus der
+Anzeige, ist die Domain damit zugeordnet. Die Herkunft sagt ehrlich, worauf der
+Beleg beruht, und die Konfidenz unterscheidet beide Wege:
+
+| Beleg | `method` | Konfidenz |
+|---|---|---:|
+| Name + exakte Anzeigenadresse auf der Seite | `verified_company_name_and_exact_job_address` | 0,97 |
+| URL aus der BA-Anzeige des Arbeitgebers | `published_by_employer_in_ba_job_ad` | 0,93 |
+
+Findet sich unterwegs doch der Seitenbeleg, löst er den Anzeigenbeleg ab und
+hebt die Konfidenz. **Für geratene Kandidaten ändert sich nichts** — ohne
+Herkunft aus der Anzeige bleibt es bei der alten Schranke. Zwei Tests halten
+das fest (`test_geratene_domain_braucht_weiterhin_den_nachweis_auf_der_seite`,
+`test_fremde_website_aus_frueherem_lauf_belegt_nichts`).
+
+### §21.2 Eine gesperrte Startseite riss die ganze Domain mit
+
+Die Standardpfade (`/impressum`, `/kontakt`, …) wurden erst **nach** einem
+geglückten Abruf der Startseite in die Warteschlange gelegt. Schlug der fehl —
+403 hinter einer Bot-Sperre ist bei Praxisseiten der Normalfall —, lief die
+Warteschlange leer und das Impressum wurde **nie versucht**, obwohl es
+ausgeliefert worden wäre. Genau das steht in den Beispielen: dreimal
+`page:HTTPError` und Schluss.
+
+Geändert: Die Saat liegt von Anfang an in der Warteschlange, mit einem Aufschlag
+(`SAAT_ABSCHLAG = 5`), der größer ist als jeder echte Rang. Damit kommt die
+Startseite weiterhin zuerst und jeder echte Link vor jedem geratenen Pfad — nur
+reißt ein Fehlschlag die Domain nicht mehr mit. Der Aufschlag ist nötig: Ohne
+ihn drängte sich `/impressum` (Rang 0+1) vor die Startseite (Rang 4), was ein
+bestehender Test sofort aufdeckte.
+
+Außerdem trägt der Befund jetzt den Statuscode (`page:HTTP403` statt
+`page:HTTPError`). 403 und 404 sind verschiedene Probleme.
+
+### §21.3 `UnicodeEncodeError` — an unserer eigenen Anforderung gescheitert
+
+`clean_url` kodierte den Host nach IDNA, ließ den **Pfad** aber roh. Die
+Anfragezeile von `http.client` wird als ASCII kodiert, also brach jeder Link mit
+Umlaut ab. Betroffen war ausgerechnet `/über-uns` — die Seite, die nach §17
+eigens aufgenommen wurde, weil dort die Inhaberin steht. Pfad und Query werden
+jetzt prozentkodiert; `%` bleibt sicher, damit bereits kodierte URLs nicht
+doppelt kodiert werden.
+
+### §21.4 `gaierror` — dieselbe Seite, ein Label daneben
+
+Wer `praxis-beispiel.de` in der Anzeige nennt, aber nur
+`www.praxis-beispiel.de` im DNS führt, meint dieselbe Seite. Löst der Host nicht
+auf, wird einmal die Variante mit bzw. ohne `www.` geprüft. Löst auch die nicht
+auf, bleibt der ursprüngliche Fehler stehen — es wird nichts beschönigt.
+
+### §21.5 Die Anrede hält keinen Lead mehr auf
+
+Pflicht waren laut Vorgabe **Inhaber und E-Mail**. Die Anrede als dritte Pflicht
+war eine Zutat von mir, und sie hielt 8 Leads auf, zu denen Name und Adresse
+belegt vorlagen und nur das grammatische Geschlecht nirgends stand.
+
+Sie wird weiter erfasst, weiter gesucht (`braucht_website_besuch` fragt danach,
+obwohl sie nichts mehr blockiert) und getrennt ausgewiesen. **Aus einem Vornamen
+wird sie nach wie vor nicht geraten** — „Andrea" ist im Deutschen meist
+weiblich, im Italienischen männlich; ein Test hält das fest. Wer nur persönlich
+adressierte Leads will, filtert mit `--nur-mit-anrede`.
+
+### §21.6 Was das bringt — und was davon noch nicht gemessen ist
+
+Gemessen ist bisher nur die Ursache, nicht die Wirkung. Deterministisch ist
+allein §21.5: Die 8 an der Anrede gescheiterten Leads haben Name und E-Mail und
+sind damit anschreibbar. Für §21.1 gilt: Von den 33 verworfenen Domains passiert
+jetzt die Schranke, wessen URL aus der Anzeige stammt — ob daraus auch Person
+und E-Mail werden, entscheidet erst der Lauf. Dasselbe für §21.2 bis §21.4.
+
+Der nächste `enrich_leads.py`-Lauf misst es. Vorher wird hier keine Zahl
+behauptet.
