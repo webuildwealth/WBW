@@ -12,41 +12,39 @@ ZIEL = "/home/user/WBW/versandtexte-vorbereitet"
 AUF, ZU, GS = "„", "“", "—"
 BREITE = 78
 
-# marke, nominativ, akkusativ (Satzanfang), akkusativ (inline), kategorie
+# marke, nominativ, akkusativ (Satzanfang), akkusativ (inline), kategorie, adresse
+#
+# Adressen aus Websuche, NICHT gegen das Live-Impressum geprueft (Domains sind
+# aus dieser Sitzung gesperrt). Bevorzugt wurden Makler-/Vertriebspostfaecher.
+# Bewusst NICHT genommen: reine Technik-Postfaecher (BiPRO, Extranet-Zugang,
+# IT-Support) und persoenliche Adressen einzelner Mitarbeiter.
 GESELLSCHAFTEN = [
-    ("Alte Leipziger",   "Die Alte Leipziger",   "Die Alte Leipziger",   "die Alte Leipziger",   "Vorsorge"),
-    ("LV 1871",          "Die LV 1871",          "Die LV 1871",          "die LV 1871",          "Vorsorge"),
-    ("Volkswohl Bund",   "Der Volkswohl Bund",   "Den Volkswohl Bund",   "den Volkswohl Bund",   "Vorsorge"),
-    ("Condor",           "Die Condor",           "Die Condor",           "die Condor",           "Vorsorge"),
-    ("Standard Life",    "Standard Life",        "Standard Life",        "Standard Life",        "Vorsorge"),
-    ("Canada Life",      "Canada Life",          "Canada Life",          "Canada Life",          "Vorsorge"),
-    ("Swiss Life",       "Swiss Life",           "Swiss Life",           "Swiss Life",           "Vorsorge"),
-    ("myLife",           "Die myLife",           "Die myLife",           "die myLife",           "Vorsorge"),
-    ("die Bayerische",   "Die Bayerische",       "Die Bayerische",       "die Bayerische",       "Vorsorge/BU"),
-    ("Stuttgarter",      "Die Stuttgarter",      "Die Stuttgarter",      "die Stuttgarter",      "Vorsorge/BU"),
-    ("Nürnberger",       "Die Nürnberger",       "Die Nürnberger",       "die Nürnberger",       "BU"),
-    ("HDI",              "Die HDI",              "Die HDI",              "die HDI",              "BU/Komposit"),
-    ("Gothaer",          "Die Gothaer",          "Die Gothaer",          "die Gothaer",          "BU/Komposit"),
-    ("Baloise",          "Die Baloise",          "Die Baloise",          "die Baloise",          "BU/Komposit"),
-    ("Debeka",           "Die Debeka",           "Die Debeka",           "die Debeka",           "PKV"),
-    ("DKV",              "Die DKV",              "Die DKV",              "die DKV",              "PKV"),
-    ("Hallesche",        "Die Hallesche",        "Die Hallesche",        "die Hallesche",        "PKV"),
-    ("HanseMerkur",      "Die HanseMerkur",      "Die HanseMerkur",      "die HanseMerkur",      "PKV"),
-    ("Münchener Verein", "Der Münchener Verein", "Den Münchener Verein", "den Münchener Verein", "PKV"),
-    ("SDK",              "Die SDK",              "Die SDK",              "die SDK",              "PKV"),
-    ("INTER",            "Die INTER",            "Die INTER",            "die INTER",            "PKV"),
-    ("HUK-COBURG",       "Die HUK-COBURG",       "Die HUK-COBURG",       "die HUK-COBURG",       "Sach/Kfz"),
-    ("VHV",              "Die VHV",              "Die VHV",              "die VHV",              "Sach/Kfz"),
-    ("Haftpflichtkasse", "Die Haftpflichtkasse", "Die Haftpflichtkasse", "die Haftpflichtkasse", "Sach"),
-    ("InterRisk",        "Die InterRisk",        "Die InterRisk",        "die InterRisk",        "Sach"),
-    ("Janitos",          "Die Janitos",          "Die Janitos",          "die Janitos",          "Sach"),
-    ("AXA",              "Die AXA",              "Die AXA",              "die AXA",              "Komposit"),
-    ("Generali",         "Die Generali",         "Die Generali",         "die Generali",         "Komposit"),
-    ("Zurich",           "Die Zurich",           "Die Zurich",           "die Zurich",           "Komposit"),
-    ("ERGO",             "Die ERGO",             "Die ERGO",             "die ERGO",             "Komposit"),
-    ("R+V",              "Die R+V",              "Die R+V",              "die R+V",              "Komposit"),
-    ("DEVK",             "Die DEVK",             "Die DEVK",             "die DEVK",             "Komposit"),
-    ("Württembergische", "Die Württembergische", "Die Württembergische", "die Württembergische", "Komposit"),
+    ("Alte Leipziger",   "Die Alte Leipziger",   "Die Alte Leipziger",   "die Alte Leipziger",   "Vorsorge",    "vmp.service@alte-leipziger.de"),
+    ("LV 1871",          "Die LV 1871",          "Die LV 1871",          "die LV 1871",          "Vorsorge",    "info@lv1871.de"),
+    ("Volkswohl Bund",   "Der Volkswohl Bund",   "Den Volkswohl Bund",   "den Volkswohl Bund",   "Vorsorge",    "info@volkswohl-bund.de"),
+    ("Condor",           "Die Condor",           "Die Condor",           "die Condor",           "Vorsorge",    "Makler-Service@condor-versicherungen.de"),
+    ("Standard Life",    "Standard Life",        "Standard Life",        "Standard Life",        "Vorsorge",    "kundenservice@standardlife.de"),
+    ("Canada Life",      "Canada Life",          "Canada Life",          "Canada Life",          "Vorsorge",    "maklerservice@canadalife.de"),
+    ("die Bayerische",   "Die Bayerische",       "Die Bayerische",       "die Bayerische",       "Vorsorge/BU", "mdc@diebayerische.de"),
+    ("Stuttgarter",      "Die Stuttgarter",      "Die Stuttgarter",      "die Stuttgarter",      "Vorsorge/BU", "info@stuttgarter.de"),
+    ("Nürnberger",       "Die Nürnberger",       "Die Nürnberger",       "die Nürnberger",       "BU",          "info@nuernberger.de"),
+    ("HDI",              "Die HDI",              "Die HDI",              "die HDI",              "BU/Komposit", "vertriebshotline@hdi.de"),
+    ("Gothaer",          "Die Gothaer",          "Die Gothaer",          "die Gothaer",          "BU/Komposit", "info@gothaer.de"),
+    ("Baloise",          "Die Baloise",          "Die Baloise",          "die Baloise",          "BU/Komposit", "info@baloise.de"),
+    ("DKV",              "Die DKV",              "Die DKV",              "die DKV",              "PKV",         "service@dkv.com"),
+    ("HanseMerkur",      "Die HanseMerkur",      "Die HanseMerkur",      "die HanseMerkur",      "PKV",         "info@hansemerkur.de"),
+    ("Münchener Verein", "Der Münchener Verein", "Den Münchener Verein", "den Münchener Verein", "PKV",         "info@muenchener-verein.de"),
+    ("SDK",              "Die SDK",              "Die SDK",              "die SDK",              "PKV",         "sdk@sdk.de"),
+    ("INTER",            "Die INTER",            "Die INTER",            "die INTER",            "PKV",         "info@inter.de"),
+    ("VHV",              "Die VHV",              "Die VHV",              "die VHV",              "Sach/Kfz",    "Makleranbindung@vhv.de"),
+    ("Haftpflichtkasse", "Die Haftpflichtkasse", "Die Haftpflichtkasse", "die Haftpflichtkasse", "Sach",        "info@haftpflichtkasse.de"),
+    ("InterRisk",        "Die InterRisk",        "Die InterRisk",        "die InterRisk",        "Sach",        "info@interrisk.de"),
+    ("AXA",              "Die AXA",              "Die AXA",              "die AXA",              "Komposit",    "service@axa.de"),
+    ("Zurich",           "Die Zurich",           "Die Zurich",           "die Zurich",           "Komposit",    "service@zurich.com"),
+    ("ERGO",             "Die ERGO",             "Die ERGO",             "die ERGO",             "Komposit",    "service@ergo.de"),
+    ("R+V",              "Die R+V",              "Die R+V",              "die R+V",              "Komposit",    "ruv@ruv.de"),
+    ("DEVK",             "Die DEVK",             "Die DEVK",             "die DEVK",             "Komposit",    "info@devk.de"),
+    ("Württembergische", "Die Württembergische", "Die Württembergische", "die Württembergische", "Komposit",    "info@wuerttembergische.de"),
 ]
 
 BAUSTEIN_B = (
@@ -177,12 +175,12 @@ if __name__ == "__main__":
     shutil.rmtree(ZIEL, ignore_errors=True)
     os.makedirs(ZIEL)
     uebersicht = []
-    for i, (marke, nom, akk_gross, akk, kat) in enumerate(GESELLSCHAFTEN, start=1):
+    for i, (marke, nom, akk_gross, akk, kat, adr) in enumerate(GESELLSCHAFTEN, start=1):
         name = f"{i:02d}-{dateiname(marke)}"
         with open(os.path.join(ZIEL, name), "w", encoding="utf-8") as f:
-            f.write(bauen(nom, akk_gross, akk, "", "B"))
+            f.write(bauen(nom, akk_gross, akk, adr, "B"))
         uebersicht.append({"nr": i, "marke": marke, "kategorie": kat,
-                           "datei": name, "adresse": "", "baustein": "B"})
+                           "datei": name, "adresse": adr, "baustein": "B"})
     with open(os.path.join(ZIEL, "_uebersicht.json"), "w", encoding="utf-8") as f:
         json.dump(uebersicht, f, ensure_ascii=False, indent=1)
     print(f"{len(uebersicht)} Texte vorbereitet")

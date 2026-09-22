@@ -4,7 +4,7 @@
   "marke": "Alte Leipziger",
   "kategorie": "Vorsorge",
   "datei": "01-alte-leipziger.txt",
-  "adresse": "",
+  "adresse": "vmp.service@alte-leipziger.de",
   "baustein": "B"
  },
  {
@@ -12,7 +12,7 @@
   "marke": "LV 1871",
   "kategorie": "Vorsorge",
   "datei": "02-lv-1871.txt",
-  "adresse": "",
+  "adresse": "info@lv1871.de",
   "baustein": "B"
  },
  {
@@ -20,7 +20,7 @@
   "marke": "Volkswohl Bund",
   "kategorie": "Vorsorge",
   "datei": "03-volkswohl-bund.txt",
-  "adresse": "",
+  "adresse": "info@volkswohl-bund.de",
   "baustein": "B"
  },
  {
@@ -28,7 +28,7 @@
   "marke": "Condor",
   "kategorie": "Vorsorge",
   "datei": "04-condor.txt",
-  "adresse": "",
+  "adresse": "Makler-Service@condor-versicherungen.de",
   "baustein": "B"
  },
  {
@@ -36,7 +36,7 @@
   "marke": "Standard Life",
   "kategorie": "Vorsorge",
   "datei": "05-standard-life.txt",
-  "adresse": "",
+  "adresse": "kundenservice@standardlife.de",
   "baustein": "B"
  },
  {
@@ -44,223 +44,167 @@
   "marke": "Canada Life",
   "kategorie": "Vorsorge",
   "datei": "06-canada-life.txt",
-  "adresse": "",
+  "adresse": "maklerservice@canadalife.de",
   "baustein": "B"
  },
  {
   "nr": 7,
-  "marke": "Swiss Life",
-  "kategorie": "Vorsorge",
-  "datei": "07-swiss-life.txt",
-  "adresse": "",
+  "marke": "die Bayerische",
+  "kategorie": "Vorsorge/BU",
+  "datei": "07-die-bayerische.txt",
+  "adresse": "mdc@diebayerische.de",
   "baustein": "B"
  },
  {
   "nr": 8,
-  "marke": "myLife",
-  "kategorie": "Vorsorge",
-  "datei": "08-mylife.txt",
-  "adresse": "",
+  "marke": "Stuttgarter",
+  "kategorie": "Vorsorge/BU",
+  "datei": "08-stuttgarter.txt",
+  "adresse": "info@stuttgarter.de",
   "baustein": "B"
  },
  {
   "nr": 9,
-  "marke": "die Bayerische",
-  "kategorie": "Vorsorge/BU",
-  "datei": "09-die-bayerische.txt",
-  "adresse": "",
+  "marke": "Nürnberger",
+  "kategorie": "BU",
+  "datei": "09-nuernberger.txt",
+  "adresse": "info@nuernberger.de",
   "baustein": "B"
  },
  {
   "nr": 10,
-  "marke": "Stuttgarter",
-  "kategorie": "Vorsorge/BU",
-  "datei": "10-stuttgarter.txt",
-  "adresse": "",
+  "marke": "HDI",
+  "kategorie": "BU/Komposit",
+  "datei": "10-hdi.txt",
+  "adresse": "vertriebshotline@hdi.de",
   "baustein": "B"
  },
  {
   "nr": 11,
-  "marke": "Nürnberger",
-  "kategorie": "BU",
-  "datei": "11-nuernberger.txt",
-  "adresse": "",
+  "marke": "Gothaer",
+  "kategorie": "BU/Komposit",
+  "datei": "11-gothaer.txt",
+  "adresse": "info@gothaer.de",
   "baustein": "B"
  },
  {
   "nr": 12,
-  "marke": "HDI",
+  "marke": "Baloise",
   "kategorie": "BU/Komposit",
-  "datei": "12-hdi.txt",
-  "adresse": "",
+  "datei": "12-baloise.txt",
+  "adresse": "info@baloise.de",
   "baustein": "B"
  },
  {
   "nr": 13,
-  "marke": "Gothaer",
-  "kategorie": "BU/Komposit",
-  "datei": "13-gothaer.txt",
-  "adresse": "",
+  "marke": "DKV",
+  "kategorie": "PKV",
+  "datei": "13-dkv.txt",
+  "adresse": "service@dkv.com",
   "baustein": "B"
  },
  {
   "nr": 14,
-  "marke": "Baloise",
-  "kategorie": "BU/Komposit",
-  "datei": "14-baloise.txt",
-  "adresse": "",
+  "marke": "HanseMerkur",
+  "kategorie": "PKV",
+  "datei": "14-hansemerkur.txt",
+  "adresse": "info@hansemerkur.de",
   "baustein": "B"
  },
  {
   "nr": 15,
-  "marke": "Debeka",
+  "marke": "Münchener Verein",
   "kategorie": "PKV",
-  "datei": "15-debeka.txt",
-  "adresse": "",
+  "datei": "15-muenchener-verein.txt",
+  "adresse": "info@muenchener-verein.de",
   "baustein": "B"
  },
  {
   "nr": 16,
-  "marke": "DKV",
+  "marke": "SDK",
   "kategorie": "PKV",
-  "datei": "16-dkv.txt",
-  "adresse": "",
+  "datei": "16-sdk.txt",
+  "adresse": "sdk@sdk.de",
   "baustein": "B"
  },
  {
   "nr": 17,
-  "marke": "Hallesche",
+  "marke": "INTER",
   "kategorie": "PKV",
-  "datei": "17-hallesche.txt",
-  "adresse": "",
+  "datei": "17-inter.txt",
+  "adresse": "info@inter.de",
   "baustein": "B"
  },
  {
   "nr": 18,
-  "marke": "HanseMerkur",
-  "kategorie": "PKV",
-  "datei": "18-hansemerkur.txt",
-  "adresse": "",
+  "marke": "VHV",
+  "kategorie": "Sach/Kfz",
+  "datei": "18-vhv.txt",
+  "adresse": "Makleranbindung@vhv.de",
   "baustein": "B"
  },
  {
   "nr": 19,
-  "marke": "Münchener Verein",
-  "kategorie": "PKV",
-  "datei": "19-muenchener-verein.txt",
-  "adresse": "",
+  "marke": "Haftpflichtkasse",
+  "kategorie": "Sach",
+  "datei": "19-haftpflichtkasse.txt",
+  "adresse": "info@haftpflichtkasse.de",
   "baustein": "B"
  },
  {
   "nr": 20,
-  "marke": "SDK",
-  "kategorie": "PKV",
-  "datei": "20-sdk.txt",
-  "adresse": "",
+  "marke": "InterRisk",
+  "kategorie": "Sach",
+  "datei": "20-interrisk.txt",
+  "adresse": "info@interrisk.de",
   "baustein": "B"
  },
  {
   "nr": 21,
-  "marke": "INTER",
-  "kategorie": "PKV",
-  "datei": "21-inter.txt",
-  "adresse": "",
+  "marke": "AXA",
+  "kategorie": "Komposit",
+  "datei": "21-axa.txt",
+  "adresse": "service@axa.de",
   "baustein": "B"
  },
  {
   "nr": 22,
-  "marke": "HUK-COBURG",
-  "kategorie": "Sach/Kfz",
-  "datei": "22-huk-coburg.txt",
-  "adresse": "",
+  "marke": "Zurich",
+  "kategorie": "Komposit",
+  "datei": "22-zurich.txt",
+  "adresse": "service@zurich.com",
   "baustein": "B"
  },
  {
   "nr": 23,
-  "marke": "VHV",
-  "kategorie": "Sach/Kfz",
-  "datei": "23-vhv.txt",
-  "adresse": "",
+  "marke": "ERGO",
+  "kategorie": "Komposit",
+  "datei": "23-ergo.txt",
+  "adresse": "service@ergo.de",
   "baustein": "B"
  },
  {
   "nr": 24,
-  "marke": "Haftpflichtkasse",
-  "kategorie": "Sach",
-  "datei": "24-haftpflichtkasse.txt",
-  "adresse": "",
+  "marke": "R+V",
+  "kategorie": "Komposit",
+  "datei": "24-r-plus-v.txt",
+  "adresse": "ruv@ruv.de",
   "baustein": "B"
  },
  {
   "nr": 25,
-  "marke": "InterRisk",
-  "kategorie": "Sach",
-  "datei": "25-interrisk.txt",
-  "adresse": "",
+  "marke": "DEVK",
+  "kategorie": "Komposit",
+  "datei": "25-devk.txt",
+  "adresse": "info@devk.de",
   "baustein": "B"
  },
  {
   "nr": 26,
-  "marke": "Janitos",
-  "kategorie": "Sach",
-  "datei": "26-janitos.txt",
-  "adresse": "",
-  "baustein": "B"
- },
- {
-  "nr": 27,
-  "marke": "AXA",
-  "kategorie": "Komposit",
-  "datei": "27-axa.txt",
-  "adresse": "",
-  "baustein": "B"
- },
- {
-  "nr": 28,
-  "marke": "Generali",
-  "kategorie": "Komposit",
-  "datei": "28-generali.txt",
-  "adresse": "",
-  "baustein": "B"
- },
- {
-  "nr": 29,
-  "marke": "Zurich",
-  "kategorie": "Komposit",
-  "datei": "29-zurich.txt",
-  "adresse": "",
-  "baustein": "B"
- },
- {
-  "nr": 30,
-  "marke": "ERGO",
-  "kategorie": "Komposit",
-  "datei": "30-ergo.txt",
-  "adresse": "",
-  "baustein": "B"
- },
- {
-  "nr": 31,
-  "marke": "R+V",
-  "kategorie": "Komposit",
-  "datei": "31-r-plus-v.txt",
-  "adresse": "",
-  "baustein": "B"
- },
- {
-  "nr": 32,
-  "marke": "DEVK",
-  "kategorie": "Komposit",
-  "datei": "32-devk.txt",
-  "adresse": "",
-  "baustein": "B"
- },
- {
-  "nr": 33,
   "marke": "Württembergische",
   "kategorie": "Komposit",
-  "datei": "33-wuerttembergische.txt",
-  "adresse": "",
+  "datei": "26-wuerttembergische.txt",
+  "adresse": "info@wuerttembergische.de",
   "baustein": "B"
  }
 ]
