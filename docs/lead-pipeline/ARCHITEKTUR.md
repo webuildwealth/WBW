@@ -1230,3 +1230,31 @@ Fälle, die schiefgehen: Agenturadresse aus dem Impressum, Nachname in der
 E-Mail-Domain, Satzgrenze zwischen „Frau Wagner." und „Dr. Meier", Straße als
 vermeintlicher Name. Die **Abdeckung** der vier Pflichtfelder auf echten Daten
 ist noch nicht gemessen — dafür fehlt ein Lauf mit `--kein-cache`.
+
+### 20.6 Nachtrag: Zuständigkeit und Leadstatus (2026-09-22)
+
+Vorgabe: Neue Unternehmen sollen der Firma zugeordnet sein und den Leadstatus
+„neu" bekommen. Im Portal (146821371) nachgesehen statt geraten:
+
+- Es existiert **genau ein** Owner (Benedict Hintz). „Zugeordnet" heißt damit
+  `hubspot_owner_id`.
+- Ein Firmendatensatz „Finanz-Medizin" existiert nicht (nur ein Testsatz), eine
+  Marken- oder Business-Unit-Property ebenfalls nicht. Eine Parent-Company-
+  Verknüpfung schied damit aus.
+- `hs_lead_status` kennt den Wert `NEW` („New").
+
+Die Owner-ID steht **nicht** im Code — sie gehört dem Portal. Ermittelt wird
+sie zur Laufzeit über `/crm/v3/owners/`: `HUBSPOT_OWNER_EMAIL` aus der Umgebung,
+sonst der einzige aktive Owner. Gibt es mehrere und keine Vorgabe, bleibt das
+Feld leer, statt einen zu raten.
+
+**Die Schutzregel wurde dabei nicht aufgegeben, sondern verschoben.** Bis heute
+standen `lifecyclestage` und `hs_lead_status` gemeinsam in `NEVER_WRITE`, weil
+das Portal eigene Vertriebsstufen führt (S1, S2, Investment, KAI, Immo). Für
+`hs_lead_status` ist das Verbot aufgehoben, der Schutz sitzt jetzt eine Ebene
+tiefer: Die Property steht in `FILL_IF_EMPTY_COMPANY`, wird also nur gesetzt,
+solange das Feld im CRM leer ist. Ein Lead auf „Connected" oder „Bad Timing"
+wird von keinem Lauf zurückgesetzt; dasselbe gilt für eine geänderte
+Zuständigkeit. Ein Regressionstest hält genau das fest.
+
+`lifecyclestage` bleibt unverändert gesperrt.
