@@ -1614,3 +1614,44 @@ dauerhaft rote Tests sind dort schlimmer als gar keiner: Man gewöhnt sich
 daran, dass am Ende „2 gescheitert" steht, und der nächste echte Fehlschlag
 fällt nicht mehr auf. Nachgebaut ist jetzt genau das, was die beiden Tests
 benutzen: `setattr` mit Rückbau. Beide Läufe stehen auf 263/263.
+
+## §24 Der Namensfilter greift zu spät (2026-09-23, Probelauf)
+
+Der Probelauf nach §22 zeigte: Von 42 Kontakten, die der Sync angelegt hätte,
+waren **13 keine Menschen**, sondern Satzteile aus Praxisseiten — "Ihren
+Hausarzt", "Zurück zur Startseite", "Zuständige Aufsichtsbehörden",
+"Personenbezogene Nutzerprofile", "Google Analytics", "Berlin Steglitz",
+"Mit Sina", "Eingeschränkte Verfügbarkeit", "Herr Dr". Die Sorte hat sich
+gegenüber §22 geändert, die Menge kaum.
+
+### §24.1 Warum der Filter aus §22 sie durchließ
+
+`_SATZANFANG_RE` prüft den **Anfang** des Textstücks. `_NAME_RE.search` greift
+aber irgendwo **darin** zu. Aus "Fragen Sie bitte Ihren Hausarzt" wird so die
+Person "Ihren Hausarzt": Das Fragment beginnt mit "Fragen", der Filter
+schweigt, und das Wortpaar in der Mitte sieht aus wie Vor- und Nachname.
+
+Geprüft wird jetzt **jeder Namensteil einzeln** (`_ist_namensteil`), nicht mehr
+nur der Satzanfang: Funktionswörter und Pronomen, Anreden und Titel allein,
+Berufs- und Rollenbezeichnungen, Einrichtungen und Seitenbestandteile, die
+Ortsnamen der Zielregion, sowie abstrakte Substantive auf -ung/-heit/-keit ab
+acht Zeichen Länge (die Längengrenze schützt "Jung" und "Hartung").
+
+### §24.2 Was der Filter kostet
+
+Seltene echte Nachnamen wie "Arzt", "Leiter" oder "Berlin" gehen verloren. Das
+ist der günstigere Fehler: Ein fehlender Kontakt fällt beim nächsten Lauf
+wieder an, ein erfundener steht für immer im CRM und wird eines Tages
+angeschrieben.
+
+Gemessen an den Namen aus dem Probelauf: 16 von 16 Textbrocken abgewiesen,
+14 von 14 echten Ansprechpartnern erhalten — "Ursula von der Leyen" und
+"Sabine Hartung" eingeschlossen. Beide Listen stehen als Testdaten in
+`tests/test_personen.py`.
+
+### §24.3 Nebenbefund: die Anrede stand im Namen
+
+"Inhaber: Frau Dr. med. Andrea Meier" ergab die Person "Frau Dr" — der
+Suchlauf griff beim ersten Wortpaar zu und war fertig. Eine vorangestellte
+Anrede wird jetzt abgeschnitten, bevor der Name gelesen wird. Sie geht nicht
+verloren: Belegt wird sie ohnehin aus der Zeile, nie aus dem Namen.
