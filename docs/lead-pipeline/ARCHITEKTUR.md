@@ -1509,3 +1509,108 @@ bleibt, weil sie 33 belegte Fälle rettet, aber sie ist keine Gewissheit — die
 Konfidenz 0,93 gegenüber 0,97 sagt genau das, und `mfa_email_quelle` nennt bei
 jedem Datensatz die Seite, auf der es stand. Vor der ersten Mailwelle gehören
 die Adressen mit auffälliger Domain durchgesehen.
+
+## §23 E-Mails für den Bestand in HubSpot (2026-09-23)
+
+Aufgabe: Zu allen Unternehmen, die schon im Portal stehen, die E-Mail-Adresse
+heraussuchen und eintragen. Künftig bringt die Pipeline sie selbst mit; der
+Bestand hat sie nie bekommen.
+
+### §23.1 Was im Portal steht — gemessen, nicht geschätzt
+
+| | |
+|---|---:|
+| Unternehmen gesamt | 482 |
+| davon mit `mfa_email` (vorher) | 0 |
+| aus dieser Pipeline (`ba_source` gesetzt) | 113 |
+| aus dem älteren Praxis-Import | 369 |
+| mit Domain, ohne E-Mail | 377 |
+| davon zusätzlich mit PLZ **und** Straße | 358 |
+| ohne jede Domain | 105 |
+
+Der Import ist besser, als er aussah: Er bringt Name, Straße, PLZ, Ort, Domain
+und Telefon mit. Genau diese vier Angaben — Name, Straße, PLZ, Domain —
+braucht `matches_practice`, um eine Seite einer Praxis zuzuordnen. Für 358
+Datensätze ist der volle Beweis also möglich, ohne irgendetwas zu raten.
+
+### §23.2 Kontakte sind keine Quelle
+
+Naheliegender Gedanke: Die E-Mails stehen vielleicht schon an den zugehörigen
+Kontakten. Gemessen: Im **gesamten** Portal gibt es 55 Kontakte mit E-Mail,
+und das ist das private und berufliche Netzwerk des Inhabers, keine Praxis.
+Genau zwei Adressen stammen überhaupt aus dem Praxisumfeld. Diese Spur ist
+damit erledigt — nicht „vermutlich dünn", sondern nachgezählt tot.
+
+### §23.3 Was ohne Netz ging: 12 Adressen aus den Anzeigen selbst
+
+Der Kalibrierungslauf hatte 12 Adressen, die der Arbeitgeber **selbst in seine
+BA-Stellenanzeige geschrieben** hat. Stärker kann ein Beleg nicht sein: Der
+Arbeitgeber hat sie veröffentlicht, die Fundstelle ist die Anzeige, ihre URL
+steht mit im Datensatz. Alle 12 Unternehmen waren im Portal, keines hatte eine
+E-Mail. Eingetragen mit `mfa_email`, `mfa_email_typ` und `mfa_email_quelle`
+(der Anzeigen-URL). Zwölf von zwölf, keine Fehlschläge.
+
+Bei drei von ihnen steht im CRM aus dem unabhängigen Import dieselbe Domain
+wie in der Adresse (`my-kinderarzt.de`, `kinderwunschteam.berlin`,
+`policum.berlin`) — zwei getrennte Quellen, die sich bestätigen. Eine weicht
+ab: `Immanuel MVZ Barnim` hat die Konzerndomain `bernau.immanuel.de`, die
+Adresse lautet auf `immanuelalbertinen.de`. Das ist kein Widerspruch, sondern
+die Personalabteilung des Trägers — aber es ist der Fall, bei dem man beim
+Anschreiben zweimal hinsieht.
+
+### §23.4 `scripts/mails_aus_hubspot.py`
+
+Liest Unternehmen mit Domain und ohne `mfa_email` aus HubSpot, baut daraus
+einen Lead und schickt ihn durch dieselbe Anreicherung wie jeden anderen. Die
+Beweislast bleibt unverändert: Übernommen wird nur, was auf einer Seite steht,
+die sich selbst dieser Praxis zuordnet. Ohne Beleg bleibt das Feld leer.
+
+Drei Entscheidungen, die den Unterschied machen:
+
+**Die Domain-Suche ist abgeschaltet.** Beim Lauf über die BA-Anzeigen ist sie
+nötig, weil dort meist gar keine Website bekannt ist. Hier steht die Domain
+schon im Datensatz. Würde zusätzlich gesucht, käme die Nachbar-Domain-Gefahr
+aus §22.3 zurück — nur diesmal in einen Datensatz hinein, der bereits im CRM
+gepflegt wird, wo also niemand mehr nachvollziehen kann, woher die Adresse
+stammt. `--auch-suchen` schaltet sie zu; der Beleg bleibt auch dann Pflicht.
+
+**Geschrieben wird nur in leere Felder.** Diese Datensätze sind nicht von der
+Pipeline angelegt worden; was dort steht, hat ein Mensch eingetragen. Eine von
+Hand gepflegte Adresse gewinnt immer (`--ueberschreiben` hebt das auf, die
+`website` bleibt auch dann geschützt).
+
+**Ohne PLZ wird übersprungen, nicht geraten.** `matches_practice` verlangt eine
+fünfstellige PLZ; fehlt sie, kann gar nicht geprüft werden. Solche Datensätze
+werden gemeldet statt ohne Beweis befüllt.
+
+### §23.5 Die Falle, die fast alles lautlos verschluckt hätte
+
+HubSpot speichert in `domain` den blossen Hostnamen: `praxisname.de`, ohne
+Schema. `clean_url` verlangt aber `http` oder `https` und ergänzt von sich aus
+nur vor `www.` etwas. Ohne die Umsetzung in `als_url()` wäre **jeder**
+Datensatz als „ohne Domain" übersprungen worden: Das Skript wäre durchgelaufen,
+hätte keinen Fehler geworfen und hätte nichts getan. Ein Testlauf hätte es
+nicht gezeigt — nur ein leerer Bericht am Ende, den man für ein schlechtes
+Ergebnis hält statt für einen Defekt. Der Test
+`test_blosse_domain_aus_hubspot_wird_zur_adresse` hält das fest.
+
+`clean_url` selbst bleibt unangetastet. Sie schützt an vielen anderen Stellen
+davor, dass ein beliebiges Textstück als Adresse durchgeht.
+
+### §23.6 Warum der Lauf auf dem Mac stattfindet
+
+Der Container, in dem dieser Teil entwickelt wurde, kommt nicht ins offene
+Netz: Die Egress-Richtlinie beantwortet jedes CONNECT mit 403 — geprüft mit
+der `Fetcher`-Klasse der Pipeline selbst, mit dem Abrufwerkzeug der Umgebung
+und gegen zwei Praxisdomains sowie Wikipedia. Das ist eine Richtlinie, keine
+Störung; sie wird gemeldet, nicht umgangen. Gecrawlt wird deshalb lokal.
+
+### §23.7 Nebenbefund: der Testlauf ohne pytest war rot
+
+`tests/run_all.py` — der einzige Testlauf, der ohne pytest auskommt und damit
+auf einem frisch eingerichteten Rechner der einzige überhaupt mögliche — kannte
+die Vorrichtung `monkeypatch` nicht und meldete zwei Tests als Fehler. Zwei
+dauerhaft rote Tests sind dort schlimmer als gar keiner: Man gewöhnt sich
+daran, dass am Ende „2 gescheitert" steht, und der nächste echte Fehlschlag
+fällt nicht mehr auf. Nachgebaut ist jetzt genau das, was die beiden Tests
+benutzen: `setattr` mit Rückbau. Beide Läufe stehen auf 263/263.
