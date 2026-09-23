@@ -1655,3 +1655,43 @@ Gemessen an den Namen aus dem Probelauf: 16 von 16 Textbrocken abgewiesen,
 Suchlauf griff beim ersten Wortpaar zu und war fertig. Eine vorangestellte
 Anrede wird jetzt abgeschnitten, bevor der Name gelesen wird. Sie geht nicht
 verloren: Belegt wird sie ohnehin aus der Zeile, nie aus dem Namen.
+
+## §25 Das Werkzeug muss erst auf den Rechner (2026-09-23)
+
+`scripts/mails_aus_hubspot.py` aus §23 kann den Bestand nur dort abarbeiten,
+wo es auch ins Netz kommt — also auf dem Mac, nicht in diesem Container
+(§23.4). Damit wurde die Zustellung selbst zur Aufgabe: Drei Versuche, die
+Datei als Anhang zu übergeben, kamen nicht an.
+
+### §25.1 Ein Einfügeblock statt einer Datei
+
+Was ankommt, ist Text im Terminal. 590 Zeilen Quelltext einzufügen ist aber
+fehleranfällig — ein abgeschnittener Block schreibt eine halbe Datei, und die
+fällt erst beim nächsten Lauf auf. Der Lieferblock enthält die Dateien
+deshalb gepackt und in Base64, zusammen mit einer Prüfsumme über den Inhalt:
+aus 590 Zeilen werden 130, und eine unvollständige Einfügung bricht ab, ohne
+etwas zu schreiben.
+
+Der Block ist mehrfach ausführbar. Er legt die beiden Dateien an, setzt
+`search_all` in `hubspot/client.py` ein und trägt das Testmodul in
+`tests/run_all.py` ein — jeder Schritt prüft vorher, ob er schon getan ist.
+Findet er eine der beiden Ankerstellen nicht, bricht er ab und ändert nichts,
+statt an einer fremden Stelle einzusetzen.
+
+### §25.2 Gegenprobe vor dem Versand
+
+Eingespielt in eine Kopie des Arbeitsstands, aus der die drei Änderungen
+vorher entfernt wurden: beide Dateien byte-identisch zum Original,
+`tests/run_all.py` grün mit 267 Tests (11 neue), zweiter Durchlauf meldet
+"stand schon da" und ändert nichts, künstlich abgeschnittener Block bricht mit
+Hinweis ab und lässt den Arbeitsstand unberührt.
+
+### §25.3 Stand im Portal
+
+Nach dem Eintrag der zwölf belegten Adressen aus §23.3: 12 Unternehmen mit
+`mfa_email`, **373 mit Domain und ohne E-Mail**. Der Bestand ist gegenüber
+§23.1 nicht kleiner geworden, obwohl zwölf Felder gefüllt wurden — seit der
+Messung sind Datensätze hinzugekommen, darunter auch solche, die keine Praxis
+sind ("EGYM Wellpass"). Der Lauf überspringt sie von selbst: ohne PLZ und
+Straße kann `matches_practice` nichts belegen, und ohne Beleg wird nichts
+eingetragen.
