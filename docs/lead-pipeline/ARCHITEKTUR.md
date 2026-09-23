@@ -1438,3 +1438,74 @@ Die Stufen von breit nach eng:
 | `--nur-mit-telefon` | geprüftes Telefon | Telefonvertrieb |
 | `--nur-anschreibbar` | E-Mail UND Nachname | Mailkampagne |
 | `--nur-mit-anrede` | zusätzlich belegte Anrede | persönliche Ansprache |
+
+---
+
+## §22 Was der Probelauf zutage brachte (2026-09-22)
+
+Der erste vollständige `sync_hubspot.py --dry-run` über alle 209 Leads hat
+etwas gezeigt, das keine der bisherigen Auswertungen sichtbar gemacht hatte.
+Er hätte **34 Kontakte angelegt — mindestens 10 davon waren keine Menschen**:
+
+```
+Zeitpunkt der Verlinkung     Rechte Dritter          Diese Feststellung
+Einhaltung der Bestimmungen  Bei von Rechtsverletzungen    Herzlich Willkommen
+Die Ergotherapie             Ärztekammer Berlin      Herr Dr
+```
+
+Alle mit `jobtitle=Inhaberin/Inhaber`. Es sind Bruchstücke aus dem
+Haftungsausschluss, der wortgleich in fast jedem deutschen Impressum steht:
+„Zum **Zeitpunkt der Verlinkung** waren keine Rechtsverstöße erkennbar", „Bei
+Bekanntwerden von **Rechtsverletzungen**".
+
+### §22.1 Die Ursache: ein Namenszusatz zu viel
+
+`_VORSATZ` in `personen.py` listete `der` und `den` als eigenständige
+Namenszusätze. Damit passte **jedes** Muster „⟨Großwort⟩ der ⟨Großwort⟩" auf
+`_NAME_RE` — Vorname „Zeitpunkt", Zusatz „der", Nachname „Verlinkung".
+
+Derselbe Fehler kostete umgekehrt echte Namen: Die Kette „von der" war nicht
+abgedeckt, `name_aus_fragment("Ursula von der Leyen")` gab `None` zurück. Ein
+Zusatz, der zu viel erfand und das Richtige nicht erkannte.
+
+Korrigiert: `der`/`den` nur noch als Kette hinter `von`/`van`. Beides ist jetzt
+richtig herum, und ein Test hält beide Richtungen fest.
+
+### §22.2 Zwei weitere Sperren
+
+Der Wortschatz des Haftungstextes (`zeitpunkt`, `verlinkung`, `bekanntwerden`,
+`einhaltung`, `bestimmungen`, `rechtsverletzung`, `urheberrecht`, …) steht
+jetzt in `_KEIN_NAME_RE`. Dazu eine Regel gegen Satzanfänge: Ein Fragment, das
+mit Artikel, Pronomen, Präposition oder Adverb beginnt, ist ein Satz und kein
+Name — „Die Ergotherapie", „Diese Feststellung", „Bei Bekanntwerden".
+
+Institutionswörter greifen jetzt auch im Kompositum (`\w*kammer`,
+`\w*vereinigung`, `\w*verband`). Vorher stand `kammer` mit Wortgrenze davor in
+der Liste und ließ „Ärztekammer Berlin" als Person durch. Ein echter Nachname,
+der so ein Wort *enthält*, bleibt gültig — „Kathrin Kammermeier" wird erkannt,
+weil die Sperre nur greift, wenn das Wort dort endet.
+
+### §22.3 Was noch offen ist — Domains von Nachbarbetrieben
+
+Im selben Probelauf fällt eine zweite Klasse von Fehlern auf, die **nicht**
+behoben ist:
+
+| Lead | übernommene Domain |
+|---|---|
+| Dr. Sabine Hirschmann & Dr. Jan Schnell (Arztpraxis) | `apotheke-in-drewitz.de` |
+| MVZ Hämatologie Onkologie Tempelhof | `tempeldent.de` (Zahnarzt) |
+| Arona Zahnzentrum Berlin | `therapie-warth.de` |
+| Dr. med. Carsten Zarling | `brunnen-apotheke-ludwigsfelde.de` |
+| MVZ Nierenzentrum am Treptower Park | E-Mail `info@dsa-marketing.ag` |
+
+Das sind Nachbarbetriebe und Dienstleister, keine Praxen. Solange diese Leads
+`UNRESOLVED` bleiben, wird von der Domain nichts Inhaltliches übernommen — das
+Feld `domain` wandert aber trotzdem ins CRM.
+
+Das ist zugleich eine Warnung an §21.1: Die dortige Lockerung erkennt die URL
+aus der BA-Anzeige als Beleg an. Die Zeile Hirschmann zeigt, dass eine
+Anzeigen-URL **nicht immer** dem Arbeitgeber selbst gehört. Die Lockerung
+bleibt, weil sie 33 belegte Fälle rettet, aber sie ist keine Gewissheit — die
+Konfidenz 0,93 gegenüber 0,97 sagt genau das, und `mfa_email_quelle` nennt bei
+jedem Datensatz die Seite, auf der es stand. Vor der ersten Mailwelle gehören
+die Adressen mit auffälliger Domain durchgesehen.
