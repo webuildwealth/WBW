@@ -1695,3 +1695,81 @@ Messung sind Datensätze hinzugekommen, darunter auch solche, die keine Praxis
 sind ("EGYM Wellpass"). Der Lauf überspringt sie von selbst: ohne PLZ und
 Straße kann `matches_practice` nichts belegen, und ohne Beleg wird nichts
 eingetragen.
+
+## §26 Der erste echte Lauf über den Bestand (2026-09-23/24)
+
+Der Live-Lauf über die 380 Unternehmen mit Domain ist nach **84 Datensätzen
+abgestürzt**. 43 Adressen waren da eingetragen, der Bericht wurde nie
+geschrieben, und die restlichen knapp 300 Unternehmen blieben unberührt.
+
+### §26.1 Warum ein Verbindungsabbruch die Pipeline umwirft
+
+`ConnectionResetError` kam **nackt** aus `http.py` heraus. Der Adapter fängt
+`HTTPError`, `URLError` und `TimeoutError` und verpackt sie in `FetchError` —
+den Fehler, auf den jeder Aufrufer wartet. Ein Abbruch beim *Empfangen* der
+Antwort ist aber keiner davon: urllib legt seinen `OSError`→`URLError`-Mantel
+nur um das Senden, `getresponse()` liegt außerhalb. Der rohe `OSError` ging
+also an allen Fängern vorbei bis in die oberste Ebene.
+
+Das Tückische daran: Ein Fehler derselben Familie wurde vier Zeilen vorher
+sauber gemeldet (`Schreibfehler: network: nodename nor servname provided`).
+Die Lücke war nicht sichtbar, solange die Gegenstelle beim Verbindungsaufbau
+scheiterte statt mittendrin.
+
+Jetzt verpackt ein abschließendes `except OSError` alles Übrige als
+`FetchError("network", …)` — und damit greift der Retry, den der Adapter für
+Netzfehler ohnehin vorsieht. Zusätzlich überlebt der Lauf selbst einen
+unerwarteten Fehler: Bericht schreiben, sagen was war, sauber beenden. Ein
+erneuter Start holt den Rest; was schon eingetragen ist, wird übersprungen.
+
+Der Regressionstest baut genau den Absturz nach: `urlopen` wirft
+`ConnectionResetError`, erwartet wird ein `FetchError` der Sorte `network`
+und ein zweiter Versuch.
+
+### §26.2 Drei falsche Adressen im CRM
+
+Von den 43 eingetragenen Adressen sind drei nachweislich falsch:
+
+| Unternehmen | Eingetragen | Was es wirklich ist |
+|---|---|---|
+| Klinik f. Radiologie, Martin-Luther-KH | `jsd.dejana.brandt@jsd.de030` | syntaktisch kaputt — eine Telefonnummer ist in die Adresse gelaufen |
+| Dr. med. Natalie Klein | `kammer@aekb.de` | die Ärztekammer Berlin, aus der Zeile „Zuständige Aufsichtsbehörde" |
+| MVZ Nierenzentrum am Treptower Park | `info@dsa-marketing.ag` | die Agentur, die die Seite betreut (§22.3) |
+
+Gemeinsamer Nenner: Das Impressum nennt **mehrere** Adressen, und die
+Auswahl nimmt die erste, die syntaktisch passt. Der Praxisbeleg (Name +
+Straße + PLZ) prüft, ob die *Seite* zur Praxis gehört — nicht, ob die
+*Adresse* auf der Seite der Praxis gehört. Das ist die nächste Lücke; sie
+ist hier benannt, nicht geschlossen.
+
+### §26.3 Der Namensfilter hatte noch zwei Löcher
+
+Der Probelauf nach §24 zeigte drei verbliebene Textbrocken. Sie kamen aus
+zwei verschiedenen Ursachen:
+
+**Die Längengrenze zählte falsch.** `^\w{8,}(?:ung|…)$` verlangt acht Zeichen
+*vor* der Endung — der kürzeste erfasste Fall war also elf Zeichen lang.
+„Auswertung" (zehn) rutschte durch. Die Grenze steht jetzt bei fünf, greift
+also ab acht Zeichen; „Hartung" (sieben) und „Jung" bleiben unangetastet.
+
+**Mehrteilige Nachnamen wurden am Stück geprüft.** „von Diagnostik" kam als
+ein Wort herein, und auf ein Wort mit Leerzeichen passt keine Regel. Geprüft
+wird jetzt jedes Wort einzeln, Namensfügungen („von", „de", „ten") werden
+übersprungen — „Ursula von der Leyen" bleibt damit erhalten.
+
+**Die BA-Anzeige war ein zweiter Weg ins CRM.** „Podologische Praxis" weist
+`name_aus_fragment` sauber ab — der Name kam aber gar nicht von dort, sondern
+aus dem Feld „Ansprechpartner" der Anzeige. Dieser Pfad hatte mit
+`_valid_name` seine eigene, viel schwächere Prüfung: Großschreibung und eine
+Liste von acht Wörtern. Beide Wege prüfen jetzt dieselbe Regel.
+
+Zusätzlich stehen Firmen- und Agenturwörter auf der Sperrliste (media,
+marketing, agentur, werbung, design, verlag, consulting, …). Im Impressum
+steht oft, wer die Seite gebaut hat; „Rosefid Media" ist eine Firma, keine
+Praxisleitung.
+
+Gemessen an allen 64 Namen aus dem zweiten Probelauf: **24 von 24
+Textbrocken abgewiesen** auf beiden Wegen, **40 von 40 echte
+Ansprechpartner erhalten** — „Ute Winter", „Roland Herwig" und „Sabine
+Hartung" eingeschlossen. Alle drei Listen stehen als Testdaten in
+`tests/test_personen.py`.
