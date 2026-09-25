@@ -1773,3 +1773,59 @@ Textbrocken abgewiesen** auf beiden Wegen, **40 von 40 echte
 Ansprechpartner erhalten** — „Ute Winter", „Roland Herwig" und „Sabine
 Hartung" eingeschlossen. Alle drei Listen stehen als Testdaten in
 `tests/test_personen.py`.
+
+## §27 Der Probelauf des Sync über den Bestand (2026-09-25)
+
+Nach dem Einspielen des Fixes aus §26 lief `sync_hubspot.py` zum ersten
+Mal vollständig über die aktuelle Leadliste — als Dry-Run, es wurde
+nichts geschrieben. Der Lauf ist bis zur Zusammenfassung durchgelaufen;
+das ist die eigentliche Nachricht, denn genau hier ist der Vorlauf bei
+84/380 abgestürzt.
+
+### §27.1 Was der Lauf gemessen hat
+
+| Kennzahl | Wert |
+|---|---|
+| Leads in der Liste | 209 |
+| kontaktierbar (Telefon ODER E-Mail) | 119/209 |
+| anschreibbar (E-Mail + Nachname) | 39/209 |
+| davon persönlich adressierbar (mit Anrede) | 13 |
+| ohne Website übertragen | 112 |
+| ohne verifizierte Telefonnummer | 146 |
+
+Geplante Schreibvorgänge nach `--nur-kontaktierbar`: 46 Companies neu,
+61 aktualisiert, 12 übersprungen; 37 Kontakte neu, 2 aktualisiert, 68
+übersprungen; 37 Verknüpfungen neu, 2 unverändert.
+
+Die Zahl, an der alles hängt, ist **39 von 209 anschreibbar**. Kontakt
+per Telefon deckt zwar 119 ab, aber der Anschreibweg — der einzige, der
+sich automatisieren lässt — trägt nur knapp ein Fünftel der Liste. Der
+Hebel dafür ist nicht der Sync, sondern die Mail-Nachbeschaffung über
+den HubSpot-Bestand (§25): sie hebt die E-Mail-Deckung, und erst
+dadurch steigt die Zahl der anschreibbaren Leads.
+
+### §27.2 Die eine 403 ist nicht die Pipeline
+
+Die HTTP-Statistik meldete `{"requests": 174, "retries": 0,
+"failures": 1, "by_error_kind": {"http_403": 1}}`. Der Fehler stammt
+**nicht** aus der Lead-Verarbeitung, sondern aus `purge_test_data()`:
+dem Aufräumen der Selbsttest-Datensätze zu Beginn. Der Direktzugriff
+über `batch_read_by_property` und `list_associations` ist dort in
+`except FetchError` gekapselt und fällt auf den Suchweg zurück — der
+Lauf meldet das als `Hinweis: Direktzugriff fehlgeschlagen`.
+
+Der Nachweis, dass kein Lead betroffen war, steckt in der
+Zusammenfassung selbst: sie enthält **keine `:ERROR`-Zeile**. Jeder
+`FetchError` an einem Lead wird in `HubSpotSync` zu einer
+`Action(..., ERROR, ...)` und erschiene dort als `company:ERROR`,
+`contact:ERROR` oder `association:ERROR`.
+
+### §27.3 Was dabei auffiel und offen bleibt
+
+`RequestStats.record_failure()` nimmt nur die Fehlersorte entgegen, nicht
+die URL. Eine einzelne 403 unter 174 Anfragen lässt sich daher aus dem
+Bericht allein nicht zuordnen — die Zuordnung oben stammt aus dem Lesen
+des Codes, nicht aus den Daten. Solange Fehler gehäuft und gleichartig
+auftreten, genügt die Zählung; für Einzelfälle wie diesen fehlt die
+Herkunft. Notiert als Kandidat, nicht als Fix: der Lauf war
+nicht blockiert, und §26 sollte klein bleiben.
