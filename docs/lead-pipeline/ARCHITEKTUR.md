@@ -1830,122 +1830,111 @@ auftreten, genügt die Zählung; für Einzelfälle wie diesen fehlt die
 Herkunft. Notiert als Kandidat, nicht als Fix: der Lauf war
 nicht blockiert, und §26 sollte klein bleiben.
 
-## §28 Zwei Automationen, eine Schnittstelle (2026-09-25)
+## §28 Wo die Pipeline endet (2026-09-26)
 
-Neben der Lead-Pipeline entsteht eine zweite Automation: der Versand über
-ein Google-Dienstkonto mit domainweiter Delegierung (`gmail.send`,
-`gmail.readonly`). Damit beide zusammenarbeiten statt sich gegenseitig
-Datenmüll zu erzeugen, braucht es eine klare Arbeitsteilung.
+Die erste Fassung dieses Abschnitts hat die Pipeline zur Hälfte zum
+Versender gemacht: ein Feld `mfa_versand_frei`, ein Rückkanal, ein
+Kapitel über § 7 UWG. Das war eine Grenzüberschreitung. Die Pipeline
+**sourct Leads — sie verschickt nichts.** Was mit den Daten danach
+passiert, ist eine andere Automation und eine andere Entscheidung.
 
-### §28.1 Wer was tut
+Dieser Abschnitt hält nur noch die Grenze fest und das, was innerhalb
+der Grenze aus den ersten Läufen gelernt wurde.
 
-**HubSpot ist die einzige Schnittstelle.** Keine Datei, kein direkter
-Aufruf, kein gemeinsamer Zustand daneben. Die Pipeline schreibt, der
-Versand liest — und schreibt seinerseits nur in die Felder, die ihm
-gehören.
+### §28.1 Die Grenze
 
-| | Lead-Pipeline | Versand |
-|---|---|---|
-| Aufgabe | finden, prüfen, belegen | zustellen, zuhören, zurückmelden |
-| schreibt | `ba_*`, `mfa_email*`, `mfa_inhaber*`, `mfa_coldmail_*` | `mfa_versand_*`, `mfa_bounce` |
-| liest | `do_not_contact`, `mfa_bounce` | alles davon, schreibt nichts davon |
+Die Pipeline hat drei Aufgaben und endet danach:
 
-Die Pipeline darf `mfa_versand_*` nie überschreiben, der Versand nie
-`mfa_email`. Sonst löscht ein Lauf die Erkenntnisse des anderen.
+1. **finden** — Arbeitgeber aus der BA-Jobsuche, dedupliziert über
+   `arbeitgeberKundennummerHash`
+2. **belegen** — Website, E-Mail, Telefon, Inhaber, jeweils mit
+   Fundstelle; nichts geraten, nichts konstruiert
+3. **ablegen** — in HubSpot, ein Company-Objekt je Arbeitgeber
 
-### §28.2 Das Versand-Gate
+Was sie **nicht** tut: sie versendet nicht, sie hält keinen
+Versandzustand, sie führt keine Kampagnenlogik, und sie beurteilt nicht,
+ob ein Lead angeschrieben werden *darf*. Es gibt deshalb keine
+`mfa_versand_*`-Felder und kein `mfa_bounce` aus der Pipeline.
 
-Der Versand darf **nur** an Datensätze schreiben, die alle Bedingungen
-erfüllen. Die Pipeline fasst das in ein Feld `mfa_versand_frei`
-zusammen, damit der Versand nicht selbst urteilen muss:
+HubSpot ist die Ablage, nicht die Kopplung. Wer die Leads später
+benutzt — von Hand, per Telefon, über eine eigene Automation — liest
+dort und bleibt dabei bei seinen eigenen Feldern. Die Pipeline schreibt
+`ba_*`, `mfa_email*`, `mfa_inhaber*`, `mfa_phone*`, `mfa_coldmail_*`
+und respektiert `do_not_contact`. Fremde Felder fasst sie nicht an.
 
-1. `do_not_contact` ist nicht gesetzt
-2. `mfa_email` ist vorhanden **und** syntaktisch zustellbar (§28.3)
-3. `mfa_email_quelle` ist belegt — eine Adresse ohne Fundstelle geht nicht raus
-4. die Domain der Adresse gehört zur nachgewiesenen Praxis-Website **oder**
-   die Adresse stammt aus der BA-Anzeige selbst
-5. die Domain ist keine Kammer, KV oder Aufsichtsbehörde
-6. `mfa_bounce` ist nicht gesetzt
+Damit ist **Punkt 4 aus §16.4 („Kanalentscheidung") kein Punkt der
+Pipeline mehr.** Er blockiert nicht ihren Livegang, weil sie nichts
+versendet. Die älteren Abschnitte (§12.1, R-3, F-1) bleiben als
+Protokoll der damaligen Analyse stehen; als offene Aufgabe gelten sie
+nicht mehr.
 
-Fehlt eine Bedingung, bleibt der Lead im CRM — er wird nur nicht
-angeschrieben. Das ist der Unterschied zwischen „kein Lead" und „kein
-Mail-Lead".
-
-### §28.3 Warum eine kaputte Adresse teurer ist als keine
+### §28.2 Lieber keine Adresse als eine falsche
 
 Der erste Backfill trug `jsd.dejana.brandt@jsd.de030` ein. Im Impressum
 klebte die Telefonnummer direkt hinter der Adresse, und `\w` in
-`_EMAIL_RE` schluckte die Ziffern mit. Solange niemand schreibt, ist das
-ein Schönheitsfehler. Sobald automatisch versendet wird, ist es ein
-Hard Bounce — und eine Bounce-Rate über etwa 2 % kostet die
-Zustellbarkeit der gesamten Absenderdomain. Ein einziger schlechter
-Lauf beschädigt damit alle späteren.
+`_EMAIL_RE` schluckte die Ziffern mit. Im selben Lauf landete
+`kammer@aekb.de` als Praxisadresse im CRM — die Ärztekammer steht in
+jedem deutschen Praxisimpressum, gehört aber nicht der Praxis. Dazu
+`info@dsa-marketing.ag` auf `nephrologie-berlin.de`: die Agentur, die
+die Seite gebaut hat.
 
-Deshalb gilt ab jetzt: **lieber keine Adresse als eine unsichere.** Die
-Endung muss aus Buchstaben bestehen und darf nicht in ein weiteres
-Wortzeichen laufen; Kammer- und KV-Domains fallen hart heraus; eine
-Adresse auf fremder Domain bleibt als Rückfallebene erhalten, aber mit
-Konfidenz 0,50 hinter jeder Adresse der eigenen Domain.
+Alle drei sind keine Schönheitsfehler, auch ohne Versand. Eine falsche
+Adresse im CRM ist schlimmer als ein leeres Feld, weil sie wie ein
+Ergebnis aussieht: Sie wird beim nächsten Lauf nicht mehr gesucht, sie
+zählt in jede Quote mit, und wer sie benutzt, erreicht eine
+Aufsichtsbehörde statt einer Inhaberin. Ein leeres Feld ist ehrlich und
+wird nachgeholt.
 
-### §28.4 Die Anrede entscheidet der Beleg, nicht der Wunsch
+Deshalb filtert `waehle_email()` seit fix3 drei Klassen:
 
-Gemessen an der aktuellen Liste: 39 von 209 Leads sind anschreibbar,
-davon **13 persönlich adressierbar**. Die anderen 26 bekommen „Guten
-Tag" an die Praxis — nicht „Sehr geehrte Frau …" auf Verdacht.
-
-Der gefährliche Fall steht in der aktuellen Leadliste mehrfach: Der
-Kontakt trägt den Namen der Inhaberin, aber die **allgemeine** Adresse
-der Praxis. Bei „Dr. med. Lars Meyer" ist die hinterlegte Adresse
-`m.siermann@ozp.berlin`; bei „Benedikt Joachim" ist es
-`c.seliger@zap-jaegertor.de`. Eine Mail mit „Sehr geehrter Herr Meyer"
-landet dort im Postfach einer dritten Person — für den Empfänger ist
-das erkennbar maschinell und verbrennt den Kontakt.
-
-Regel: **persönliche Anrede nur, wenn `mfa_email_typ = direct_public`
-ist und die Adresse auf der eigenen Domain liegt.** In allen anderen
-Fällen wird die Praxis angesprochen, nicht die Person.
-
-### §28.5 Der Rückkanal ist kein Extra
-
-`gmail.readonly` ist der Grund, warum die zweite Automation mehr ist als
-ein Versender. Ohne Rückkanal schreibt die Pipeline beim nächsten Lauf
-denselben Lead wieder an.
-
-| Ereignis | Feld | Wirkung auf die Pipeline |
+| Klasse | Regel | Beispiel |
 |---|---|---|
-| zugestellt | `mfa_versand_am`, `mfa_versand_status=GESENDET` | Lead ist bedient, keine Wiedervorlage |
-| Hard Bounce | `mfa_bounce=true` | Adresse gilt als ungültig, wird neu ermittelt |
-| Antwort | `mfa_versand_status=GEANTWORTET` | raus aus der Automation, ab zur Hand |
-| Abmeldung | `do_not_contact=true` | dauerhaft gesperrt, auch für Telefon |
+| kaputte Endung | Endung aus Buchstaben, darf nicht in ein Wortzeichen laufen | `…@jsd.de030` → verworfen |
+| fremde Institution | Kammer, KV, Zahnärztekammer hart heraus | `kammer@aekb.de` → verworfen |
+| fremde Domain | bleibt Rückfallebene, aber Rang +4, Konfidenz ≤ 0,50 | `info@dsa-marketing.ag` → nur wenn nichts Eigenes da ist |
 
-Ohne diese vier Rückmeldungen ist jeder zweite Lauf ein Wiederholungstäter.
+Sieben Regressionstests halten das fest (`tests/test_personen.py`),
+darunter drei, die belegen, dass echte Adressen dabei nicht verloren
+gehen.
 
-### §28.6 Was ich nicht entscheiden kann: §7 UWG
+### §28.3 Der Name auf dem Kontakt ist nicht die Adresse daneben
 
-Werbliche E-Mail ohne vorherige ausdrückliche Einwilligung ist in
-Deutschland nach § 7 Abs. 2 Nr. 2 UWG unzulässig — **auch B2B.** Eine
-Ausnahme über „berechtigtes Interesse" gibt es für E-Mail-Werbung
-nicht; das ist DSGVO-Sprache und trägt hier nicht. Der praktische
-Unterschied zur Telefonakquise: Bei Anrufen gegenüber Unternehmen
-genügt nach § 7 Abs. 2 Nr. 1 UWG eine mutmaßliche Einwilligung, die
-Hürde liegt also niedriger.
+Ein Befund aus dem Bestand, der nichts mit Versand zu tun hat, sondern
+mit Datenqualität: In mehreren Datensätzen trägt der Kontakt den Namen
+der Inhaberin, die hinterlegte Adresse gehört aber einer **anderen**
+Person oder der Praxis allgemein.
 
-Das ist eine unternehmerische und rechtliche Entscheidung, keine
-technische — sie gehört dir, nicht der Pipeline. Aber die Zahlen sind
-eindeutig genug, um sie zu nennen:
-
-| Kanal | erreichbare Leads | rechtliche Hürde |
+| Firma | Kontakt | `mfa_email` |
 |---|---|---|
-| Telefon | **119/209** | mutmaßliche Einwilligung genügt (B2B) |
-| E-Mail | 39/209, davon 13 persönlich | ausdrückliche Einwilligung nötig |
+| Dr. med. Lars Meyer / Dr. med. Alicja Mrózek | Lars Meyer | `m.siermann@ozp.berlin` |
+| Zahnarztpraxis am Jägertor | Benedikt Joachim | `c.seliger@zap-jaegertor.de` |
+| Medicus MVZ GmbH | Lydia Yamin | `Fuchs@medicusberlin.de` |
 
-Der Telefonkanal ist dreimal so groß und rechtlich einfacher. Die
-Mail-Automation ist dadurch nicht wertlos — für Einwilligungs-Einholung,
-für Antworten auf eingehende Anfragen und für die Nachfassung nach einem
-Telefonat ist sie genau richtig. Nur als Kaltkanal trägt sie das Risiko
-einer Abmahnung.
+Beides ist einzeln richtig ermittelt und belegt — der Name aus dem
+Impressum, die Adresse aus der Anzeige. Zusammen in einer Zeile sehen
+sie aber wie ein Paar aus, das sie nicht sind. Das Feld
+`mfa_email_typ` trennt die Fälle (`direct_public` = persönliche
+Adresse, `generic_public` = Sammeladresse), und `mfa_email_quelle`
+nennt die Fundstelle. Wer die Leads benutzt, muss beides lesen, nicht
+nur den Namen.
 
-Solange das nicht entschieden ist, bleibt `mfa_versand_frei` bewusst ein
-reines Qualitätsurteil: Es sagt „diese Adresse ist zustellbar und
-gehört der Praxis", nicht „an diese Adresse darf geworben werden".
-Die zweite Frage beantwortet kein Feld, sondern eine Entscheidung.
+Gemessen an der aktuellen Liste: 39 von 209 Leads haben E-Mail **und**
+Nachnamen, davon 13 mit belegter Anrede. Die Zahl 13 ist die belastbare,
+nicht die 39.
+
+### §28.4 Was die Zahlen über die Kanäle sagen (ohne Empfehlung)
+
+Rein deskriptiv, aus dem Lauf vom 2026-09-25:
+
+| Belegt | Leads |
+|---|---|
+| Telefon (verifiziert) | 63/209 |
+| Telefon (inkl. unverifiziert) | 101/209 |
+| E-Mail | 89/209 |
+| Telefon **oder** E-Mail | 119/209 |
+| E-Mail + Nachname | 39/209 |
+| davon mit belegter Anrede | 13/209 |
+
+Die Telefonspalte ist die dichtere. Mehr sagt die Pipeline dazu nicht —
+welcher Kanal benutzt wird und unter welchen Voraussetzungen, ist keine
+Frage, die ein Feld beantwortet.
