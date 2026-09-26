@@ -1885,17 +1885,29 @@ zählt in jede Quote mit, und wer sie benutzt, erreicht eine
 Aufsichtsbehörde statt einer Inhaberin. Ein leeres Feld ist ehrlich und
 wird nachgeholt.
 
-Deshalb filtert `waehle_email()` seit fix3 drei Klassen:
+Deshalb filtert `waehle_email()` inzwischen sechs Klassen:
 
 | Klasse | Regel | Beispiel |
 |---|---|---|
 | kaputte Endung | Endung aus Buchstaben, darf nicht in ein Wortzeichen laufen | `…@jsd.de030` → verworfen |
 | fremde Institution | Kammer, KV, Zahnärztekammer hart heraus | `kammer@aekb.de` → verworfen |
+| Spamschutz-Präfix | `nospam.` davor heißt Platzhalter, nicht Postfach | `berufsverband@nospam.hno-aerzte.de` → verworfen |
+| Verbandsportal | `hno-aerzte`, `augeninfo`, `*-im-netz`, `devsc` | `info@frauenaerzte-im-netz.de` → verworfen |
+| Impressum-Rolle | `impressum`, `berufsverband`, `verband`, `redaktion`, auch mit Plus-Tag | `impressum+frauenaerzte@devsc.de` → verworfen |
+| Ein-Zeichen-Postfach | lokaler Teil unter zwei Zeichen | `i@io.me` → verworfen |
 | fremde Domain | bleibt Rückfallebene, aber Rang +4, Konfidenz ≤ 0,50 | `info@dsa-marketing.ag` → nur wenn nichts Eigenes da ist |
 
-Sieben Regressionstests halten das fest (`tests/test_personen.py`),
-darunter drei, die belegen, dass echte Adressen dabei nicht verloren
-gehen.
+Die letzten vier Klassen kamen aus dem Backfill vom 2026-09-26: fix3
+fing vier der acht beobachteten Fehlgriffe ab, vier gingen noch durch.
+Gemessen wurde das nicht geschätzt — die acht Muster stehen einzeln im
+Lauf-Protokoll, und der Filter wurde gegen alle acht geprüft, bevor er
+ausgeliefert wurde.
+
+Dreizehn Regressionstests halten das fest (`tests/test_personen.py`).
+Die Hälfte davon prüft die Gegenrichtung: dass `ozp.berlin`, `ku64.de`
+und `zahnaerzte-edelweiss.de` nicht mit wegfallen. Eine Längengrenze für
+Domains gibt es deshalb ausdrücklich nicht — `ozp.berlin` hat drei
+Zeichen und ist echt.
 
 ### §28.3 Der Name auf dem Kontakt ist nicht die Adresse daneben
 
