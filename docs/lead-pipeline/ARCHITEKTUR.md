@@ -1950,3 +1950,314 @@ Rein deskriptiv, aus dem Lauf vom 2026-09-25:
 Die Telefonspalte ist die dichtere. Mehr sagt die Pipeline dazu nicht —
 welcher Kanal benutzt wird und unter welchen Voraussetzungen, ist keine
 Frage, die ein Feld beantwortet.
+
+---
+
+## §29 Zielgruppe scharf stellen: Inhaberpraxis statt MVZ (2026-10-03)
+
+Neue Vorgabe für das Scraping: Zielgruppe sind **Arztpraxen mit 3 bis 50
+Mitarbeitern**, **keine MVZ und keine Krankenhäuser**. In HubSpot soll das
+Feld Unternehmensname **„Praxisinhaber – Praxisname"** tragen, dazu Telefon
+und E-Mail. Notizfeld und Lead-Status bleiben unberührt; neu hereinkommende
+Leads bekommen den Lead-Status „Neu".
+
+Dieser Abschnitt hält fest, was davon messbar ist, was nicht, und in welcher
+Reihenfolge es umgesetzt werden muss. Gemessen am Bestand vom 2026-10-03:
+**349 Firmen** im Portal 146821371.
+
+### §29.1 Was im Bestand steckt
+
+Klassifiziert über den Firmennamen, der aus der BA-Anzeige stammt:
+
+| Gruppe | Firmen | Vorgabe |
+|---|---:|---|
+| Praxis | 283 | **Zielgruppe** |
+| MVZ / ÜBAG / Versorgungszentrum | 41 | ausschließen |
+| Krankenhaus / Klinik / Klinikum | 12 | ausschließen |
+| Labor / Apotheke / Pflege | 2 | ausschließen (war nie Zielgruppe) |
+| noch nicht zuzuordnen | 11 | von Hand entscheiden |
+
+Die 11 unklaren Fälle tragen keinen Begriff, der die Rechtsform verrät —
+„KIEZdental", „lio ästhetik", „Venenzentrum Steglitz", „Ullsteinhausklinik",
+„MEDICO LEOPOLDPLATZ Service GmbH" und sechs Personennamen ohne Zusatz. Sie
+werden **nicht** geraten, sondern in `data/reports/<lauf>_zielgruppe.json`
+ausgewiesen.
+
+Von den 283 Praxen haben:
+
+| belegt | Praxen |
+|---|---:|
+| E-Mail | 230 |
+| Telefon | 73 |
+| Inhaber/in | **27** |
+| Inhaber **und** Mail **und** Telefon | **24** |
+
+Die 27 ist die Zahl, an der die Umbenennung hängt. Für die übrigen 256
+Praxen gibt es keinen belegten Inhaber, also auch kein „Inhaber – Praxisname".
+
+### §29.2 Ausschluss von MVZ und Krankenhaus
+
+Das kehrt die Prämisse von § 18 um. Dort wurde ein MVZ aufwendig in seine
+Standorte zerlegt, damit jede Praxis ein eigenes Unternehmen wird — auf der
+Annahme, dass die Standorte einzeln ansprechbar sind. Die neue Vorgabe sagt:
+Ein MVZ ist unabhängig von der Datenqualität der falsche Adressat, weil dort
+strukturell nicht der Inhaber entscheidet. Das deckt sich mit § 19.2
+(Großanbieter) und zieht die Grenze eine Stufe früher.
+
+Die Standortzerlegung bleibt im Code. Sie wird nur nicht mehr gebraucht, und
+`ba_employer_hash_id` bleibt unverändert der Upsert-Schlüssel, damit die
+bereits angelegten Firmen zuordenbar bleiben. Ausgeschlossene Firmen werden
+**nicht gelöscht** — sie bekommen `mfa_lead_status = EXCLUDED`
+(„Ausgeschlossen") nur dann, wenn das Feld noch leer ist (siehe § 29.5).
+
+Erkannt wird über den Firmennamen, nicht über die Rechtsform aus der
+BA-Antwort — die liefert sie nicht. Muster für den Ausschluss: `MVZ`,
+`Medizinisches Versorgungszentrum`, `ÜBAG`, `Versorgungszentrum`,
+`Poliklinik`, `Gesundheitszentrum`, `Krankenhaus`, `Klinik`, `Klinikum`,
+`Universitätsmedizin`, `Charité`, `Vivantes`, `Helios`, `Asklepios`,
+`BG Klinikum`, `Johannesstift`, `Immanuel`, `Privatklinik`, dazu die im
+Bestand belegten Verbundnamen `Medicover`, `Doceins`, `Policum`, `Evidia`,
+`Diaverum`, `Nephrologicum`.
+
+### §29.3 „3 bis 50 Mitarbeiter": nicht messbar, Ersatz benannt
+
+**Befund: Es gibt keine Mitarbeiterzahl.** `numberofemployees` ist bei
+**0 von 349** Firmen gesetzt. Die BA-Suchantwort v6 liefert keine
+Firmografie — sie liefert nicht einmal eine Straße (§ 18.3). Ein Filter
+„3 bis 50" lässt sich also nicht erfüllen, sondern nur annähern. Wer ihn
+trotzdem als Zahl in ein Feld schreibt, schreibt eine Erfindung hin.
+
+Was stattdessen gilt:
+
+1. **Obergrenze über die Struktur.** Der Ausschluss aus § 29.2 nimmt genau
+   die Betriebe heraus, die über 50 Mitarbeiter haben — MVZ, Kliniken,
+   Verbünde. Dazu bleibt der Großanbieter-Filter aus § 19.2 (ab 6
+   gleichzeitigen Anzeigen über alle Standorte) in Kraft.
+2. **Obergrenze über die gezählten Personen.** Die Pipeline liest Impressum,
+   Team- und Über-uns-Seite ohnehin und findet dort Personen (`finde_personen`).
+   Neues Feld `mfa_team_personen`: wie viele verschiedene Personen auf diesen
+   Seiten stehen. Mehr als 12 gelistete Personen heißt in einer Praxis
+   verlässlich mehr als 50 Mitarbeiter — das wird ausgeschlossen. Das Feld ist
+   eine **Zählung der Fundstellen**, keine Mitarbeiterzahl, und heißt deshalb
+   auch nicht so.
+3. **Die Untergrenze 3 bleibt offen.** Ob eine Praxis 2 oder 4 Angestellte
+   hat, steht auf keiner öffentlichen Seite und in keiner kostenlosen Quelle.
+   Empfehlung: **nicht filtern.** Eine Einzelpraxis mit zwei Helferinnen ist
+   für eine Finanzberatung des Inhabers kein schlechterer Adressat als eine
+   mit vier — die Untergrenze trennt nichts, was sich belegen lässt. Wird sie
+   doch verlangt, wäre der einzige saubere Weg eine kostenpflichtige Quelle
+   (Apollo liefert `employee_count`), was der 0-€-Vorgabe aus § 19.3
+   widerspricht und daher eine ausdrückliche Entscheidung braucht.
+
+### §29.4 Unternehmensname „Inhaber – Praxisname"
+
+Regel: `name = "<mfa_inhaber> - <Praxisname>"`, **nur wenn ein Inhaber
+belegt ist**. Ohne Beleg bleibt der Praxisname unverändert stehen; erfunden
+wird nichts. Der Upsert-Schlüssel ist `ba_employer_hash_id`, nicht der Name —
+umbenennen erzeugt also keine Dubletten.
+
+Zwei Dinge fallen am Probeabzug der 27 Fälle sofort auf:
+
+**Der Name steht oft schon drin.** „Dr. Ute Winter – Dr. med. Winter",
+„Andrea Mietz – Zahnarztpraxis Andrea Mietz Zahnärztin", „Svetlana Mut –
+Svetlana Mut Arztpraxis für Allgemeinmedizin". Deshalb: Steckt der Nachname
+der Inhaberin bereits im Praxisnamen, wird **nicht** verdoppelt — dann
+gewinnt der Praxisname allein. Betrifft 9 der 27.
+
+**Der Name macht bestehende Fehler sichtbar.** Vier der 27 Inhaber sind
+falsch ermittelt (§ 29.6). Als Zusatzfeld fiel das nicht auf, im
+Unternehmensnamen steht es künftig in jeder Liste:
+
+| ID | Name, wie er würde | Fehler |
+|---|---|---|
+| 446636623067 | `Oliver Heidepriem – Dr. Oliver Seligmann` | Vorname und Nachname von zwei Personen |
+| 448986720473 | `Frau Dr. Blanka Koth – Kira GynCenter Dr. med. Blanka Kothé` | Nachname am Akzent abgeschnitten |
+| 448905095405 | `Victoria Rutkowski – … Victoria Rutkowski-Ihrke` | zweiter Namensteil fehlt |
+| 448973394125 | `Dr. Mustafa Sharaf – Gemeinschaftspraxis Zahnärzte in Friedrichshain` | Person von `zahnpraxis-friedenau.de`, falscher Stadtteil |
+
+### §29.5 Notiz und Lead-Status
+
+`praxisnotizen__besonderheiten` (Label „Notiz") und `mfa_lead_status` werden
+vom Sync **nie überschrieben**. Das ist keine Vorsichtsmaßnahme, sondern
+notwendig: Der Lead-Status ist im Bestand von Hand gepflegt und trägt
+Gesprächsergebnisse.
+
+| `mfa_lead_status` | Firmen |
+|---|---:|
+| Nicht erreicht | 37 |
+| **Neu** (`QUALIFIED`) | 34 |
+| Warte auf Rückruf | 32 |
+| Kein Interesse | 25 |
+| KI/Warteschlange | 8 |
+| Prüfung erforderlich | 4 |
+| Termin gelegt | 3 |
+| Später mit Arzt sprechen | 3 |
+| übrige Werte | 9 |
+| leer | 45 |
+
+Ein Sync, der dieses Feld mitschreibt, löscht 37 „Nicht erreicht" und 3
+„Termin gelegt". Deshalb gilt:
+
+- **Neu angelegte Firma** → `mfa_lead_status = QUALIFIED` („Neu").
+- **Bestehende Firma** → Feld wird nicht angefasst, auch nicht, wenn es leer
+  ist. Wer leere Felder nachträglich auf „Neu" setzen will, tut das in einem
+  eigenen, ausdrücklich aufgerufenen Lauf.
+- Technisch heißt das: `mfa_lead_status` gehört zu den Properties, die nur im
+  `create`-Zweig des Upserts stehen, nicht im `update`-Zweig —
+  `neue_properties(..., immer_nur_wenn_leer=True)` reicht dafür nicht, weil
+  „leer" bei 45 Firmen zutrifft, die schon bearbeitet wurden.
+
+### §29.6 Reihenfolge
+
+Die Umbenennung muss **nach** der Korrektur der Namenserkennung laufen, nicht
+davor. Sonst wandern die vier Fehler aus § 29.4 in das sichtbarste Feld des
+CRM. Reihenfolge:
+
+1. Namenserkennung korrigieren (Akzentbuchstaben, siehe § 30), Zustellprobe
+   für Adressen auf fremder Domain.
+2. Die vier falschen Inhaber und die sieben unzustellbaren Adressen im CRM
+   leeren.
+3. `mails_aus_hubspot.py --live` erneut laufen lassen, damit die geleerten
+   Felder neu belegt werden.
+4. Erst dann den Zielgruppenfilter und die Umbenennung scharf schalten.
+
+### §29.7 Offen
+
+- Untergrenze „3 Mitarbeiter": nicht belegbar, Empfehlung „nicht filtern"
+  (§ 29.3). Entscheidung steht aus.
+- Die 11 nicht zuzuordnenden Firmen aus § 29.1 brauchen eine Sichtprüfung.
+
+---
+
+## §30 Prüfung aller Mails, Nummern und Inhaber im Bestand (2026-10-03)
+
+Geprüft wurden alle 349 Firmen im Portal. Neu gegenüber allen früheren
+Prüfungen: Jede Mail-Domain wurde per **DNS** gefragt, ob sie überhaupt Post
+annimmt. Das trennt zum ersten Mal „plausibel aussehend" von „zustellbar" —
+und genau an dieser Grenze lagen die Fehler, die kein Textmuster findet.
+
+### §30.1 E-Mail
+
+**7 Adressen sind nachweislich falsch.** Vier davon haben eine Domain, die es
+nicht gibt (DNS: NXDOMAIN):
+
+| ID | Adresse | richtig wäre |
+|---|---|---|
+| 448905095401 | `info@hurraohysio.de` | die Praxis heißt `hurraphysio.de` — ein Buchstabe verrutscht |
+| 447982216419 | `willkommen@perfekte-zaehne.net` | Domain existiert nicht |
+| 447982448852 | `info@ulz-berlin.de` | Domain existiert nicht |
+| 446459607278 | `info@za-praxis-reisch.de` | die Praxis heißt `za-praxis-dr-reisch.de` |
+
+Drei weitere kommen an, aber beim Falschen:
+
+| ID | Adresse | Befund |
+|---|---|---|
+| 447860113647 | `jsd.demathias.cesur@jsd.de` | Domain klebt im Postfach (Leseartefakt) |
+| 447976088787 | `jsd.demelanie.thuering@jsd.de` | dito |
+| 446459607257 | `info@dsa-marketing.ag` | Postfach der **Werbeagentur**, die die Seite gebaut hat |
+
+Zwei Domains haben keinen MX-Eintrag, Zustellung also nur über den
+A-Eintrag und damit unsicher: `physiotherapie-tsanidis.de` (449009265855) und
+`praxiszentrum-kleinmachnow.de` (447948799184, 447976731869).
+
+Rund 25 weitere Adressen gehören der Gruppe statt dem Standort — vier
+Evidia-Standorte teilen `info@diagnostikum-berlin.de`, drei Hautzentrum-
+Einträge `nachrichten@hautzentrum-berlin.de`. Sie kommen an, nur nicht bei
+der Ansprechpartnerin. Das ist die bewusst zugelassene Rückfallebene mit
+Konfidenz 0.50 — mit der Einschränkung, dass diese Konfidenz im CRM-Feld
+nicht sichtbar ist.
+
+### §30.2 Telefon
+
+**Kein einziger Formatfehler** in 93 Nummern: alle gültiges E.164 mit +49,
+keine Service- oder Mehrwertnummern. Das ist das sauberste der drei Felder.
+
+Was trotzdem gilt:
+
+- **23 Nummern stammen aus OpenStreetMap**, der schwächsten Quelle. Zwei
+  Hausarztpraxen (446530723044, 446536149189) tragen beide `+49331624867`,
+  und bei beiden steht `apotheke-in-drewitz.de` als Website — das ist mit
+  hoher Wahrscheinlichkeit die Nummer der Apotheke.
+- **13 Mobilnummern.** Bei Podologie, Logopädie, Ergotherapie normal; bei
+  `Diaverum MVZ` und `HIZ BERLIN - MVZ` (beide aus der Anzeige) eher das
+  Handy der ausschreibenden Person als die Praxisnummer.
+- **4 auffällig kurze Nummern**: `+4930200568` (6 Stellen Teilnehmernummer,
+  abgeschnitten), `+493082093` (Kopfnummer ohne Durchwahl), `+4930509905`,
+  `+4933223593`.
+
+### §30.3 Inhaber
+
+Nur 39 von 349 Firmen haben überhaupt eine Person. **Vier sind falsch:**
+
+| ID | Eintrag | Befund |
+|---|---|---|
+| 448986720473 | `Frau Dr. Blanka Koth` | Akzent am Namensende hat den Nachnamen abgeschnitten (`Kothé`) |
+| 448905095405 | `Victoria Rutkowski` | zweiter Namensteil fehlt (`Rutkowski-Ihrke`) |
+| 446636623067 | `Oliver Heidepriem` | Vorname und Nachname von zwei verschiedenen Personen |
+| 448973394125 | `Dr. Mustafa Sharaf` | von `zahnpraxis-friedenau.de` gelesen, die Firma sitzt in Friedrichshain |
+
+Die Ursache der ersten beiden ist dieselbe und liegt im Code:
+`_NW` in `personen.py` kannte als Namensbuchstaben nur `A-ZÄÖÜ` und
+`a-zäöüß`. An jedem anderen Buchstaben bricht das Muster ab. Nachgemessen:
+
+| Fragment | alt | neu |
+|---|---|---|
+| `Dr. med. Blanka Kothé` | `Blanka Koth` | `Blanka Kothé` |
+| `Dr. med. Alicja Mrózek` | `Alicja Mr` | `Alicja Mrózek` |
+| `José García` | *nicht erkannt* | `José García` |
+
+### §30.4 Die falsche Website an der Firma
+
+Der schwerere Fehler steckt eine Stufe früher: Steht an einer Firma die
+Website einer **anderen** Praxis, ist alles daraus vergiftet — Mail, Person
+und Nummer.
+
+| ID | eingetragene Website | was das wirklich ist |
+|---|---|---|
+| 446487542009 | `brunnen-apotheke-ludwigsfelde.de` | eine **Apotheke** |
+| 446636623063 | `tempeldent.de` | eine **Zahnarztpraxis**, die Firma ist eine Onkologie |
+| 448973394125 | `zahnpraxis-friedenau.de` | Praxis in **Friedenau**, die Firma sitzt in Friedrichshain |
+| 446461470941 | `dr-mietschke.de` | andere Praxis |
+| 446446614777 | `zahnarzt-miethe.de` | andere Praxis |
+| 446636623067 | `lb1-eberswalde.de` | andere Praxis |
+| 446530723044 | `apotheke-in-drewitz.de` | eine **Apotheke** |
+
+### §30.5 Doppelte Firmen
+
+15 Websites hängen an 2 bis 4 Firmen, rund 20 doppelte Datensätze.
+`MVZ Radiologie Wilmersdorf` steht **dreimal** mit identischem Namen und
+identischer Mail — im Live-Betrieb bekommt dieselbe Praxis die Kaltansprache
+drei Mal. Weitere Mehrfache: `evidia.de` (4×), `hautzentrum-berlin.de` (3×),
+`radiologie-wilmersdorf.de` (3×), dazu je 2× `aturo.berlin`, `migyn.de`,
+`radiologie3.de`, `prouro.de`, `beranuk.de`, `ku64.de`, `urologen-berlin.de`,
+`artimedes-hausarzt-wedding.de`, `dermatologieamschlachtensee.de`,
+`johannesstift-diakonie.de`, `apotheke-in-drewitz.de`.
+
+### §30.6 Zwei Maßnahmen im Code
+
+**Namensbuchstaben.** `_NW` bekommt die in Europa gebräuchlichen
+Akzentbuchstaben. Ein halber Nachname ist in der Anrede schlimmer als keiner.
+
+**Zustellprobe für fremde Domains.** Vor dem Eintragen wird die Domain per
+DNS gefragt, ob sie Post annimmt — aber **nur** bei einer Adresse auf einer
+anderen Domain als der Seite, auf der sie steht. Das hat zwei Gründe: Eine
+Adresse auf der eigenen Domain ist durch die Seite selbst belegt, und alle
+vier unzustellbaren Adressen aus § 30.1 lagen auf fremder Domain. Ein
+Tippfehler in der Domain ergibt immer eine fremde Domain, damit sind auch die
+erfasst.
+
+Abgewiesen wird nur bei einer klaren Auskunft: Die Domain existiert nicht,
+oder sie hat weder MX noch A. Bei Zeitüberschreitung oder Netzfehler bleibt
+die Adresse stehen — eine Störung im Netz darf keine richtige Adresse
+verwerfen, sonst fällt bei jedem Lauf etwas anderes weg. Die Abfrage läuft
+mit Bordmitteln (`socket`, `struct`), ohne `dnspython`, damit sie auf einem
+frisch eingerichteten Rechner ohne Zusatzpaket klappt.
+
+**Agenturdomain.** `info@dsa-marketing.ag` war als Rückfallebene mit
+Konfidenz 0.50 ausdrücklich zugelassen (§ 22). Diese Entscheidung wird
+zurückgenommen: Die Konfidenz steht nur im Lauf, nicht im CRM-Feld, und wer
+die Kaltansprache verschickt, sieht sie nicht. Domains, die `marketing`,
+`agentur`, `werbeagentur`, `webagentur` oder `webdesign` enthalten, werden
+abgewiesen. Keine Praxis heißt so. Die allgemeine Rückfallebene für andere
+fremde Domains bleibt davon unberührt — `info@diagnostikum-berlin.de` bei
+einem Evidia-Standort erreicht die Gruppe und bleibt zulässig.
