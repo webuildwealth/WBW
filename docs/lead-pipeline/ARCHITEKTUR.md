@@ -2261,3 +2261,114 @@ die Kaltansprache verschickt, sieht sie nicht. Domains, die `marketing`,
 abgewiesen. Keine Praxis heißt so. Die allgemeine Rückfallebene für andere
 fremde Domains bleibt davon unberührt — `info@diagnostikum-berlin.de` bei
 einem Evidia-Standort erreicht die Gruppe und bleibt zulässig.
+
+## §31 Keine Kontakte mehr in HubSpot (2026-10-07)
+
+Die Pipeline legt keine Kontaktdatensätze mehr an — weder eigenständig noch
+an einer Company. Vorgabe des Auftraggebers, und sie hat zwei harte Gründe:
+
+1. Das Portal stand am Kontaktlimit (1000). Jeder weitere Kontakt endete in
+   `HTTP 402`. Die Firmen gingen durch, die Kontakte nicht — ein halb
+   gefüllter Datenbestand ist schlechter als ein bewusst leerer.
+2. Alles, was die Kaltansprache braucht, steht ohnehin an der Company:
+   `mfa_email`, `mfa_phone`, `mfa_inhaber`, `mfa_inhaber_rolle`. Der zweite
+   Datensatz je Praxis trug nichts bei, was nicht schon da war.
+
+### Wo der Schalter sitzt
+
+`src/mfa_pipeline/hubspot/sync.py`, Modulebene:
+
+```python
+KONTAKTE_ANLEGEN = False
+```
+
+Darauf prüft eine Wache als erste Anweisung in `_sync_contact`. Sie meldet
+den Verzicht an den Lauf und steigt mit `None` aus — genau wie der bereits
+vorhandene Zweig „kein belastbarer Ansprechpartner". Dass `None` ein
+gültiger Rückgabewert ist, war damit schon vor der Änderung bewiesen; der
+Aufrufer verknüpft dann nichts.
+
+Bewusst **kein** Eingriff im `mapping`: `contact_properties`, die beiden
+Mengen `OWNED_CONTACT_PROPERTIES` und `FILL_IF_EMPTY_CONTACT` und der ganze
+Abgleich bleiben stehen und getestet. Wer Kontakte wieder will, setzt eine
+Konstante um, statt gelöschten Code zu rekonstruieren.
+
+### Was das an den Tests geändert hat
+
+Sieben Tests in `tests/test_hubspot.py` behaupteten, dass ein Kontakt
+entsteht. Der Code war richtig, die Erwartung war alt. Umgeschrieben wurde
+die Erwartung, deaktiviert oder übersprungen wurde kein Test:
+
+| Test | vorher | nachher |
+|---|---|---|
+| `test_fuenf_laeufe_erzeugen_genau_einen_contact_und_eine_association` | 1 Kontakt, 1 Verknüpfung | 0 und 0 |
+| `test_selftest_erzeugt_im_zweiten_lauf_keine_zweite_company` | 1 Kontakt, 1 Verknüpfung | 0 und 0 |
+| `test_zweiter_lauf_findet_company_trotz_verzoegertem_suchindex` | 1 Kontakt, 1 Verknüpfung | 0 und 0 |
+| `test_idempotenz_fixture_ist_ladbar_und_hat_festen_hash` | 1 Kontakt | 0 |
+| `test_purge_findet_frischen_datensatz_trotz_verzoegertem_index` | 2 gelöschte Datensätze | 1 |
+| `test_opt_out_kontakt_wird_nicht_aktualisiert` | `NOOP` wegen `hs_email_optout` | Verzicht, bestehender Datensatz unverändert |
+| `test_contact_wird_ueber_die_firmenverknuepfung_gefunden` | 2 Kontakte (eigener + fremder) | 1 (nur der fremde) |
+
+Der letzte Fall ist der lehrreiche: ein erster, mechanischer Durchgang hatte
+alle Zählwerte auf 0 gesetzt. Hier legt der Test den fremden Kontakt aber
+selbst an — richtig ist 1. Ein Zähler, der sich durch eine Verhaltensänderung
+verschiebt, darf nicht pauschal umgeschrieben werden; jeder Wert gehört
+einzeln hergeleitet.
+
+Stand danach: **317/317**.
+
+### Nachweis aus dem Produktionslauf
+
+Nicht nur grün im Test. Der Lauf vom 2026-10-07 über 205 Leads:
+
+```
+company:CREATE   11
+company:SKIP      2
+company:UPDATE   29
+contact:SKIP     40
+```
+
+Vierzig Mal Verzicht mit Begründung, null angelegte Kontakte.
+
+## §32 Betriebsgröße 3–50: Kriterium fallengelassen (2026-10-07)
+
+Die Vorgabe lautete: Arztpraxen mit 3 bis 50 Mitarbeitern. Sie ist aus
+diesen Daten **nicht prüfbar**, und das ist keine Nachlässigkeit der
+Pipeline, sondern eine Lücke der Quelle.
+
+Gemessen am Bestand: `numberofemployees` bei 0 von 349 Firmen gefüllt,
+`ba_betriebsgroesse` ebenfalls 0 von 349. Das Feld ist verdrahtet, die
+Zuordnung steht, die Bundesagentur liefert schlicht nichts.
+
+Was tatsächlich wirkt, ist ein Hilfsmaß und heißt auch so:
+`MAX_GELISTETE_PERSONEN = 12` in `zielgruppe.py`. Zählt die Praxisseite in
+Impressum, Team- oder Über-uns-Seite mehr als zwölf Personen auf, fliegt sie
+raus. Nach unten gibt es keine Prüfung — eine Einzelpraxis mit zwei MFA ist
+in diesen Daten nicht von einer mit acht zu unterscheiden.
+`UNTERGRENZE_NICHT_PRUEFBAR = 3` steht als Konstante nur da, um genau das
+sichtbar zu machen; sie filtert nichts.
+
+Entscheidung: die Untergrenze wird nicht weiter verfolgt. Was die Zielgruppe
+wirklich schärft, sind die Ausschlüsse aus §29 — MVZ, Verbünde, Kliniken —
+plus die Kontaktpflicht (Telefon **und** Mail). Eine Praxis, die bei der BA
+selbst eine Stelle ausschreibt und eine eigene Website mit höchstens zwölf
+gelisteten Personen hat, liegt fast immer im gewünschten Korridor. Garantiert
+ist es nicht, und niemand sollte später glauben, hier sei eine Mitarbeiterzahl
+geprüft worden.
+
+### Offen geblieben
+
+- `mfa_inhaber` kann aus einer kombinierten Impressum-/Datenschutzseite eine
+  Zwischenüberschrift ziehen. Belegt am 2026-10-07: „Herr Statistische Daten"
+  aus `eska-logo.de/datenschutz-impressum/`. Ein harter Ausschluss von
+  `datenschutz` im Pfad kostet bei kombinierten Seiten auch echte Treffer;
+  vorgesehen ist, von solchen Seiten nur den **Namen** zu verwerfen und Mail
+  und Telefon weiter zu nehmen, ergänzt um eine Sperrliste typischer
+  Überschriften.
+- Die Zeile „Ohne verifizierte Telefonnummer uebertragen: 150" im Syncbericht
+  stammt aus der Zeit, als Telefon **oder** Mail genügte. Sie widerspricht der
+  Zusammenfassung desselben Laufs (42 angefasste Firmen) und gehört
+  nachgezogen.
+- Je Lauf eine abgelehnte Anfrage (`http_403`), in Trocken- und Schreiblauf
+  gleichermaßen. Nichts fiel dadurch aus; welche Anfrage es trifft, ist noch
+  nicht ermittelt.
