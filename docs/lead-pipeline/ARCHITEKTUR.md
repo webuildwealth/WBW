@@ -2372,3 +2372,93 @@ geprüft worden.
 - Je Lauf eine abgelehnte Anfrage (`http_403`), in Trocken- und Schreiblauf
   gleichermaßen. Nichts fiel dadurch aus; welche Anfrage es trifft, ist noch
   nicht ermittelt.
+
+## §33 Suchbudget, Pflege-Reserve und die Reihenfolge der Ausweitung (2026-10-09)
+
+### Was gemessen wurde
+
+Der 100-km-Lauf vom 2026-10-09 lief in ein hartes Limit. `max_search_requests`
+steht in `calibration.berlin-100km.yaml` auf 180. Das Protokoll:
+
+```
+search_budget_exhausted term=Notfallsanitäter
+search_budget_exhausted term=Rettungsassistent
+search_budget_exhausted term=Rettungsdienst
+search_budget_exhausted term=Medizinischer Technologe
+search_budget_exhausted term=Medizinische Technologin
+search_budget_exhausted term=Medizinisches Labor
+search_budget_exhausted term=Laborant Medizin
+search_budget_exhausted term=MTA
+search_budget_exhausted term=MTRA
+search_budget_exhausted term=Apotheker
+search_budget_exhausted term=Apothekerin
+search_budget_exhausted term=PTA
+search_budget_exhausted term=Pharmazeutisch-technische
+search_budget_exhausted term=Physician Assistant
+search_budget_exhausted term=Arztassistent
+```
+
+Fünfzehn Begriffe liefen überhaupt nicht. Aufgebraucht wurde das Budget von
+elf Pflegebegriffen: `Pflegefachkraft` 15 Seiten, `Pflegefachfrau` 13,
+`Pflegefachmann` 13, `Krankenpfleger` 11, `Krankenschwester` 11,
+`Altenpfleger` 10, `Altenpflegerin` 10, dazu Gesundheits- und
+Krankenpfleger, Pflegehelfer, Pflegeassistent, Pflegedienstleitung.
+Zusammen über 80 der 180 Anfragen.
+
+Was sie beitragen, zeigt derselbe Trichter: **86,2 % REVIEW_REQUIRED**.
+Pflegeheime, ambulante Dienste, Sozialträger, Konzerne — alles, was der
+Zielgruppenfilter aus §29 danach wieder verwirft. Von 1.859 eindeutigen
+Arbeitgebern blieben 255 als Praxis eingestuft, am Ende 65 angefasste
+Firmen.
+
+### Entscheidung
+
+Die elf Pflegebegriffe sind in `config/berufe.yaml` **auskommentiert, nicht
+gelöscht**. Sie stehen als Block mit Begründung in der Datei; ein entferntes
+`# ` reaktiviert sie. `validated: true` bleibt unangetastet, sonst bräche
+`calibrate.py` ab.
+
+Nicht angefasst: Physiotherapeut, Ergotherapeut, Logopäde, Podologe,
+Masseur. Die finden inhabergeführte Praxen, auch wenn die Marge dort
+dünner ist.
+
+### Die Reihenfolge, wenn Berlin ausgeht
+
+Wenn die Leads sich nur noch doppeln — erkennbar an einem Lauf, der
+überwiegend `company:NOOP` meldet, wie der zweite Lauf vom 2026-10-09 mit
+62 NOOP zu 1 CREATE — dann in dieser Reihenfolge ausweiten, nicht anders:
+
+1. **Zeittiefe vor Fläche.** `veroeffentlichtseit: 30` sieht nur 30 Tage
+   zurück. Auf 90 gestellt verdreifacht sich der Pool bei gleicher Region
+   und gleichen Begriffen. Nebeneffekt, der mehr wert ist als die Menge:
+   Praxen, die über Monate wiederholt dieselbe Stelle ausschreiben, werden
+   überhaupt erst sichtbar. Das ist das stärkste Kaufsignal für
+   Mitarbeiterbindung, und `ba_first_seen` / `ba_last_seen` / `ba_job_count`
+   zeichnen es bereits auf.
+2. **Die stillgelegten Begriffe zurückholen.** Erst Apotheker, PTA, MTA,
+   MTRA, Physician Assistant — die liefen nie und treffen Zielgruppe. Die
+   Pflegebegriffe zuletzt, denn ihr Ertrag je Anfrage ist der schlechteste.
+3. **Andere Städte.** Erst wenn 1 und 2 ausgereizt sind. Dann Hamburg,
+   München, Köln/Düsseldorf, Frankfurt — hohe Praxisdichte, hoher
+   Privatanteil. Jede Stadt bekommt eine eigene `calibration.<stadt>.yaml`
+   nach dem Muster der Berliner Datei; `wo`, `umkreis_km`, `center_lat`,
+   `center_lon` und `max_distance_km` sind die einzigen Felder, die sich
+   ändern müssen.
+
+Der Grund für genau diese Reihenfolge ist nicht technisch. Die Positionierung
+lautet „die, die Berliner Praxen betreuen". Eine Referenzliste aus einer Stadt
+trägt ein Verkaufsgespräch; dieselbe Zahl über fünf Städte verteilt trägt
+keines. Fläche erst, wenn die Tiefe erschöpft ist.
+
+### Nebenbefund: der wiederkehrende HTTP 403
+
+Der eine Fehlschlag je Sync-Lauf ist identifiziert:
+
+```
+owner_abruf_fehlgeschlagen kind=http_403
+```
+
+Dem HubSpot-Token fehlt `crm.objects.owners.read`. Folge: `hubspot_owner_id`
+bleibt leer, kein Lead bekommt eine Zuständigkeit. Ohne Belang, solange eine
+Person allein arbeitet. Sobald ein zweiter dazukommt, fehlt die Zuordnung und
+der Scope gehört nachgetragen.
