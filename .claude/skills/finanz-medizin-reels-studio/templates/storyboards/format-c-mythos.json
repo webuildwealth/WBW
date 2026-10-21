@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Mythos: Geld auf dem Konto ist sicher",
+    "slug": "mythos-konto-inflation",
+    "format": "C",
+    "fps": 30,
+    "instagramCaption": "Mythos-Check: Ist Geld auf dem Konto wirklich „sicher“? Nominal ja – bis 100.000 € je Kunde und Bank gesetzlich geschützt. Die Kaufkraft schützt das allerdings nicht: Bei konstant 2 % Inflation bleiben von 100 € nach 20 Jahren rechnerisch ca. 67 € Kaufkraft. 💾 Speichern & 📤 teilen.\n\nAllgemeine Information, keine Anlage- oder Steuerberatung. Beispielrechnung mit konstant 2 % Inflation p. a.\n\n#finanzmedizin #aerzte #mfa #altersvorsorge #inflation #geldanlage",
+    "sources": [
+      "Einlagensicherungsgesetz (EinSiG): gesetzliche Entschädigung bis 100.000 € je Einleger und Institut",
+      "EZB-Strategie (2021): symmetrisches mittelfristiges Inflationsziel von 2 %",
+      "Rechnung: Kaufkraft = 100 € / 1,02^n  ->  n=10: 82,03 €; n=20: 67,30 €; n=30: 55,21 €"
+    ]
+  },
+  "voice": { "provider": "pico", "speed": 1.12 },
+  "music": "bed",
+  "scenes": [
+    {
+      "id": "hook", "type": "hook", "captions": false, "lead": 0.25, "tail": 0.5,
+      "vo": "Mythos: Geld auf dem Konto ist sicher.",
+      "data": { "kicker": "Mythos-Check", "lines": [ { "t": "Geld auf dem Konto", "size": 104 }, { "t": "ist *sicher*?", "size": 176, "serif": true } ] }
+    },
+    {
+      "id": "pruefen", "type": "myth", "hi": ["Teilweise", "Nominal"], "minDur": 8.5,
+      "vo": "Stimmt das? Teilweise. Bis 100.000 Euro pro Bank sind gesetzlich abgesichert. Nominal ist dein Geld also sicher.",
+      "data": {
+        "claim": "Geld auf dem Konto ist *sicher*.",
+        "check": { "cue": "Stimmt" },
+        "verdict": { "t": "Teilweise wahr", "cue": "Teilweise" },
+        "fact": { "cue": "Bis 100.000" },
+        "factText": "Der Nennwert ist *geschützt*.",
+        "points": [ { "t": "Gesetzliche Einlagensicherung bis *100.000 €* je Kunde und Bank", "cue": "gesetzlich" }, { "t": "Der Nennwert bleibt erhalten", "cue": "Nominal" } ]
+      }
+    },
+    {
+      "id": "kaufkraft", "type": "stat", "hi": ["Aber"], "minDur": 7.5,
+      "vo": "Aber sicher heißt nicht wertstabil. Bei 2 % Inflation, dem Ziel der Europäischen Zentralbank, sind 100 Euro nach 20 Jahren nur noch etwa 67 Euro wert.",
+      "data": { "cue": "Bei 2", "untilCue": "67", "chip": "Rechenbeispiel", "from": 100, "to": 67.297, "decimals": 0, "unit": " €", "max": 100,
+                "caption": "Kaufkraft von 100 €", "sub": { "t": "nach 20 Jahren bei *2 %* Inflation", "cue": "nur noch" } }
+    },
+    {
+      "id": "verlauf", "type": "bars", "hi": ["55"], "minDur": 7,
+      "vo": "Nach 10 Jahren sind es noch 82 Euro, nach 20 Jahren 67 und nach 30 Jahren nur noch 55 Euro.",
+      "data": { "title": "Kaufkraft von *100 €* bei 2 % Inflation p. a.", "max": 100, "unit": " €", "decimals": 0,
+                "bars": [ { "label": "Heute", "value": 100, "at": 0.4 }, { "label": "10 J.", "value": 82.03, "cue": "10" }, { "label": "20 J.", "value": 67.3, "cue": "20" }, { "label": "30 J.", "value": 55.21, "cue": "30" } ],
+                "delta": { "t": "−45 %", "cue": "nur noch" }, "note": { "t": "Beispielrechnung: konstant 2 % Inflation pro Jahr", "cue": "55" } }
+    },
+    {
+      "id": "fazit-fakt", "type": "fact", "minDur": 5,
+      "vo": "Sicher ist der Nennwert. Die Kaufkraft ist es nicht.",
+      "data": { "chip": "Fakt", "title": "Sicher ist der _Nennwert_. Nicht die *Kaufkraft*.", "size": 96, "icon": "shield",
+                "source": { "t": "EinSiG · EZB-Strategie (2 % Inflationsziel)", "cue": "Die Kaufkraft" } }
+    },
+    {
+      "id": "handlung", "type": "tip", "minDur": 9,
+      "vo": "Rücklagen gehören aufs Konto. Geld, das du langfristig nicht brauchst, solltest du bewusst planen. Was zu dir passt, hängt von deiner Situation ab.",
+      "data": { "chip": "Fazit", "icon": "coins", "title": "Rücklage und *langfristiges Geld* trennen", "titleSize": 76,
+                "body": [ { "t": "Rücklage: aufs Konto, jederzeit verfügbar", "cue": "Rücklagen" }, { "t": "Langfristiges Geld: *bewusst* planen", "cue": "Geld, das" }, { "t": "Was passt, hängt von deiner Situation ab", "cue": "Was zu dir" } ] }
+    },
+    {
+      "id": "outro", "type": "outro", "tail": 0.9, "captions": false,
+      "vo": "Speicher dir das Reel und schick es einer Kollegin oder einem Kollegen.",
+      "data": { "headline": "Sicher ist nicht gleich *wertstabil*.", "size": 84, "sub": "Finanzwissen für Ärzte, MFA und Praxisteams", "cta": { "t": "Speichern & teilen", "cue": "Speicher" },
+                "disclaimer": "Allgemeine Information, keine Anlage- oder Steuerberatung. Beispielrechnung mit konstant 2 % Inflation p. a.; tatsächliche Inflationsraten schwanken." }
+    }
+  ]
+}

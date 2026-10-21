@@ -1,0 +1,132 @@
+{
+  "meta": {
+    "title": "Was 200 Euro im Monat nach 30 Jahren bewirken können",
+    "slug": "zinseszins-aha",
+    "format": "D",
+    "fps": 30,
+    "_hinweis": "BEISPIEL-VORLAGE: Inhalte/Zahlen vor Veröffentlichung fachlich, steuerlich und rechtlich prüfen (references/quality-checklist.md)",
+    "instagramCaption": "",
+    "sources": []
+  },
+  "voice": {
+    "provider": "pico",
+    "speed": 1.12
+  },
+  "music": "bed",
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "hook",
+      "captions": false,
+      "lead": 0.25,
+      "tail": 0.5,
+      "vo": "Was 200 Euro im Monat nach 30 Jahren bewirken können.",
+      "data": {
+        "kicker": {
+          "t": "Aha-Moment",
+          "style": "r"
+        },
+        "lines": [
+          {
+            "t": "200 € im Monat.",
+            "size": 120
+          },
+          {
+            "t": "Und nach *30 Jahren*?",
+            "size": 150,
+            "serif": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "zahl",
+      "type": "stat",
+      "minDur": 8,
+      "vo": "Du zahlst 72.000 Euro ein. Bei angenommenen 5 Prozent pro Jahr können daraus rund 166.000 Euro werden.",
+      "data": {
+        "cue": "Du zahlst",
+        "untilCue": "166.000",
+        "chip": "Beispielrechnung",
+        "from": 72000,
+        "to": 166452,
+        "decimals": 0,
+        "unit": " €",
+        "max": 166452,
+        "caption": "Endwert nach 30 Jahren",
+        "sub": {
+          "t": "eingezahlt: *72.000 €*",
+          "cue": "Bei angenommenen"
+        }
+      }
+    },
+    {
+      "id": "verlauf",
+      "type": "bars",
+      "minDur": 8,
+      "vo": "Nach 10 Jahren sind es etwa 31.000 Euro, nach 20 Jahren etwa 82.000 Euro und nach 30 Jahren rund 166.000 Euro. Der größte Teil kommt am Ende.",
+      "data": {
+        "title": "Endwert bei *200 €* monatlich, 5 % p. a.",
+        "max": 166,
+        "unit": " Tsd. €",
+        "decimals": 0,
+        "valSize": 38,
+        "refLine": false,
+        "bars": [
+          {
+            "label": "10 J.",
+            "value": 31,
+            "cue": "10"
+          },
+          {
+            "label": "20 J.",
+            "value": 82,
+            "cue": "20"
+          },
+          {
+            "label": "30 J.",
+            "value": 166,
+            "cue": "30"
+          }
+        ],
+        "note": {
+          "t": "Annahme: konstant 5 % p. a., Monatsverzinsung, vor Kosten und Steuern",
+          "cue": "größte"
+        }
+      }
+    },
+    {
+      "id": "fakt",
+      "type": "fact",
+      "minDur": 5,
+      "vo": "Zeit im Markt ist bei langfristigem Sparen ein starker Hebel. Renditen sind aber nie garantiert.",
+      "data": {
+        "chip": "Fakt",
+        "title": "Zeit ist ein *Hebel*. Garantiert ist nichts.",
+        "size": 88,
+        "icon": "clock",
+        "source": {
+          "t": "Rechenbeispiel, keine Prognose",
+          "cue": "Renditen"
+        }
+      }
+    },
+    {
+      "id": "outro",
+      "type": "outro",
+      "tail": 0.9,
+      "captions": false,
+      "vo": "Teile das Reel mit jemandem, der noch nicht angefangen hat.",
+      "data": {
+        "headline": "Früher starten, *mehr* Zeit.",
+        "size": 84,
+        "sub": "Finanzwissen für Ärzte, MFA und Praxisteams",
+        "cta": {
+          "t": "Teilen",
+          "cue": "Teile"
+        },
+        "disclaimer": "Allgemeine Information, keine Anlage-, Steuer- oder Rechtsberatung. Beispielrechnungen mit angenommenen Werten."
+      }
+    }
+  ]
+}

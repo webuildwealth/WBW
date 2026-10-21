@@ -1,0 +1,6 @@
+output/
+out/
+work/
+__pycache__/
+*.pyc
+node_modules/

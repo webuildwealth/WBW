@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "title": "Diese 4 Punkte solltest du in deiner BU prüfen",
+    "slug": "bu-checkliste",
+    "format": "E",
+    "fps": 30,
+    "_hinweis": "BEISPIEL-VORLAGE: Inhalte/Zahlen vor Veröffentlichung fachlich, steuerlich und rechtlich prüfen (references/quality-checklist.md)",
+    "instagramCaption": "",
+    "sources": []
+  },
+  "voice": {
+    "provider": "pico",
+    "speed": 1.12
+  },
+  "music": "bed",
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "hook",
+      "captions": false,
+      "lead": 0.25,
+      "tail": 0.5,
+      "vo": "Diese 4 Punkte solltest du in deiner BU prüfen.",
+      "data": {
+        "kicker": {
+          "t": "Checkliste",
+          "style": "r"
+        },
+        "lines": [
+          {
+            "t": "Diese 4 Punkte",
+            "size": 120
+          },
+          {
+            "t": "in deiner *BU* prüfen",
+            "size": 150,
+            "serif": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "check",
+      "type": "checklist",
+      "minDur": 12,
+      "vo": "Erstens: Verzicht auf abstrakte Verweisung. Zweitens: Nachversicherungsgarantie. Drittens: Leistungsdauer bis zum Rentenbeginn. Viertens: Dynamik für steigende Beiträge und Leistungen.",
+      "data": {
+        "label": {
+          "t": "BU-Check"
+        },
+        "title": "Prüfe in deiner *BU*:",
+        "items": [
+          {
+            "t": "Abstrakte Verweisung",
+            "sub": "Verzicht vereinbart?",
+            "cue": "Erstens"
+          },
+          {
+            "t": "Nachversicherung",
+            "sub": "ohne neue Gesundheitsprüfung",
+            "cue": "Zweitens"
+          },
+          {
+            "t": "Leistungsdauer",
+            "sub": "bis zum Rentenbeginn",
+            "cue": "Drittens"
+          },
+          {
+            "t": "Dynamik",
+            "sub": "Leistung wächst mit",
+            "cue": "Viertens"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outro",
+      "type": "outro",
+      "tail": 0.9,
+      "captions": false,
+      "vo": "Prüfe deinen Vertrag Punkt für Punkt und speichere dir die Liste.",
+      "data": {
+        "headline": "Vertrag *prüfen*.",
+        "size": 84,
+        "sub": "Finanzwissen für Ärzte, MFA und Praxisteams",
+        "cta": {
+          "t": "Liste speichern",
+          "cue": "speichere"
+        },
+        "disclaimer": "Allgemeine Information, keine Anlage-, Steuer- oder Rechtsberatung. Beispielrechnungen mit angenommenen Werten."
+      }
+    }
+  ]
+}

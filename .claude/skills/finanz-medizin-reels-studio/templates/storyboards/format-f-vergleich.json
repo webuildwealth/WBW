@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "title": "Brutto vs. Netto einfach erklärt",
+    "slug": "brutto-vs-netto",
+    "format": "F",
+    "fps": 30,
+    "_hinweis": "BEISPIEL-VORLAGE: Inhalte/Zahlen vor Veröffentlichung fachlich, steuerlich und rechtlich prüfen (references/quality-checklist.md)",
+    "instagramCaption": "",
+    "sources": []
+  },
+  "voice": {
+    "provider": "pico",
+    "speed": 1.12
+  },
+  "music": "bed",
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "hook",
+      "captions": false,
+      "lead": 0.25,
+      "tail": 0.5,
+      "vo": "Brutto oder Netto? Das ist der Unterschied.",
+      "data": {
+        "kicker": {
+          "t": "Einfach erklärt",
+          "style": "r"
+        },
+        "lines": [
+          {
+            "t": "*Brutto* vs. Netto",
+            "size": 130
+          },
+          {
+            "t": "der Unterschied",
+            "size": 120,
+            "serif": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "vergleich",
+      "type": "compare",
+      "minDur": 10,
+      "vo": "Brutto ist dein Gehalt vor Abzügen. Netto ist, was nach Steuern und Sozialabgaben auf deinem Konto landet. Verhandelt wird meist über Brutto, ausgegeben wird Netto.",
+      "data": {
+        "a": "Brutto",
+        "b": "Netto",
+        "rows": [
+          {
+            "label": "Was ist das?",
+            "a": "Gehalt vor Abzügen",
+            "b": "Auszahlung aufs Konto",
+            "size": 40,
+            "cue": "Brutto ist"
+          },
+          {
+            "label": "Abzüge",
+            "a": "noch nicht abgezogen",
+            "b": "nach Steuern & Sozialabgaben",
+            "size": 36,
+            "cue": "nach Steuern"
+          },
+          {
+            "label": "Wichtig für",
+            "a": "Gehaltsverhandlung",
+            "b": "Dein Budget",
+            "size": 40,
+            "cue": "Verhandelt"
+          }
+        ]
+      }
+    },
+    {
+      "id": "fakt",
+      "type": "fact",
+      "minDur": 5,
+      "vo": "Der Unterschied hängt von deiner persönlichen Situation ab.",
+      "data": {
+        "chip": "Hinweis",
+        "title": "Dein Netto hängt von *deiner Situation* ab.",
+        "size": 84,
+        "icon": "doc"
+      }
+    },
+    {
+      "id": "outro",
+      "type": "outro",
+      "tail": 0.9,
+      "captions": false,
+      "vo": "Teile das Reel mit jemandem, der Brutto und Netto verwechselt.",
+      "data": {
+        "headline": "Brutto ≠ *Netto*.",
+        "size": 84,
+        "sub": "Finanzwissen für Ärzte, MFA und Praxisteams",
+        "cta": {
+          "t": "Teilen",
+          "cue": "Teile"
+        },
+        "disclaimer": "Allgemeine Information, keine Anlage-, Steuer- oder Rechtsberatung. Beispielrechnungen mit angenommenen Werten."
+      }
+    }
+  ]
+}

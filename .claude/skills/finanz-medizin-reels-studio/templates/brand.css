@@ -1,0 +1,57 @@
+/* Finanz-Medizin Reels — Design-System (aus finanz-medizin.com/assets/css/site.css abgeleitet)
+   Marke: Navy #0C2C4F · Bordeaux #751524 · Off-White #F4F0EF
+   "video-*" Tokens sind Erweiterungen fuer Kontrast auf dunklem Grund und im Brand-Guide gekennzeichnet. */
+@font-face{font-family:'Manrope';font-weight:200 800;src:url('../assets/fonts/manrope-normal-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
+@font-face{font-family:'Inter';font-weight:100 900;src:url('../assets/fonts/inter-normal-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
+@font-face{font-family:'Newsreader';font-style:italic;font-weight:200 800;src:url('../assets/fonts/newsreader-italic-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215}
+
+:root{
+  --navy-950:#050F1C; --navy-900:#071B32; --navy-800:#0C2C4F; --navy-700:#11395F; --navy-600:#17486F; --navy-500:#1E5A88; --navy-300:#6F93B4; --navy-100:#D6E1EC;
+  --red-800:#601020; --red-700:#751524; --red-600:#8C1E2F; --red-500:#A5293B;
+  --rose:#E8919E;            /* Marken-Rose, Akzent-Text auf Navy (site.css) */
+  --signal:#D63A50;          /* video-*: hellere Rot-Stufe fuer Flaechen/Icons auf Navy */
+  --ivory:#F4F0EF; --white:#FFFFFF;
+  --f-display:'Manrope','Inter',sans-serif; --f-body:'Inter',sans-serif; --f-serif:'Newsreader',Georgia,serif;
+  --cw:840px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--navy-900);font-family:var(--f-body);-webkit-font-smoothing:antialiased}
+#root{position:absolute;inset:0;width:1080px;height:1920px;overflow:hidden}
+#bg{position:absolute;inset:0}
+.glow{position:absolute;border-radius:50%}
+#grid{position:absolute;inset:0;opacity:.07;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:90px 90px;-webkit-mask-image:radial-gradient(ellipse at 50% 40%,#000 10%,transparent 70%)}
+.scene{position:absolute;inset:0}
+.stage{position:absolute;left:120px;top:300px;width:var(--cw);height:900px;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:28px}
+.abs{position:absolute}
+
+/* Typografie */
+.d{font-family:var(--f-display);font-weight:800;letter-spacing:-.035em;line-height:1.0;color:#fff}
+.s{font-family:var(--f-serif);font-style:italic;font-weight:500;letter-spacing:-.02em}
+.ac{color:var(--rose)} .on-light .ac{color:var(--red-600)}
+.strike{position:relative;display:inline-block}
+.w{display:inline-block;will-change:transform,opacity}
+.body{font-family:var(--f-body);font-weight:500;font-size:46px;line-height:1.26;color:rgba(255,255,255,.9);letter-spacing:-.01em}
+
+/* Karten */
+.card{border-radius:48px;padding:52px 52px 56px;position:relative;box-shadow:0 40px 90px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.14)}
+.card.blue{background:linear-gradient(160deg,var(--navy-600) 0%,var(--navy-800) 100%)}
+.card.red{background:linear-gradient(160deg,var(--red-500) 0%,var(--red-700) 100%)}
+.card.white{background:var(--ivory);color:var(--navy-900)}
+.card.white .d{color:var(--navy-900)} .card.white .body{color:var(--navy-700)}
+.chip{display:inline-flex;align-items:center;gap:12px;font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.12em;text-transform:uppercase;padding:14px 26px;border-radius:16px}
+.chip.w1{background:#fff;color:var(--navy-900)} .chip.r{background:var(--signal);color:#fff} .chip.b{background:var(--navy-500);color:#fff}
+.badge{display:inline-block;background:#fff;color:var(--navy-900);font-family:var(--f-display);font-weight:800;font-size:34px;letter-spacing:-.01em;padding:8px 18px;border-radius:10px;line-height:1}
+.ico{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.14)}
+.ico svg{width:54px;height:54px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rule{height:6px;border-radius:3px;background:rgba(255,255,255,.35)}
+.kpi{font-family:var(--f-display);font-weight:800;letter-spacing:-.05em;line-height:.9;color:#fff;font-variant-numeric:tabular-nums}
+
+/* Captions (Referenz: Wort-fuer-Wort, 1-2 Woerter, weiss, unten-mittig) */
+#cap{position:absolute;left:120px;width:840px;top:1236px;height:220px;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+#cap span{font-family:var(--f-display);font-weight:800;font-size:88px;line-height:1.02;letter-spacing:-.04em;color:#fff;text-shadow:0 4px 26px rgba(0,0,0,.55),0 1px 3px rgba(0,0,0,.5);display:inline-block}
+#cap span.hi{color:var(--rose)}
+#brand{position:absolute;left:0;width:1080px;top:1472px;display:flex;justify-content:center;align-items:center;gap:16px;opacity:.9}
+#brand img{width:54px;height:54px;border-radius:50%}
+#brand b{font-family:var(--f-display);font-weight:800;font-size:36px;letter-spacing:-.01em;color:#fff} #brand b i{font-style:normal;color:var(--rose)}
+#series{position:absolute;left:0;width:1080px;top:226px;display:flex;justify-content:center}
+.safe-debug{position:absolute;inset:0;pointer-events:none;outline:2px dashed rgba(255,0,0,.6)}

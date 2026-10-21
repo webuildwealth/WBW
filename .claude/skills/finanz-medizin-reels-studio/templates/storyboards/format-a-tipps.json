@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "title": "3 Finanztipps, die jeder Arzt kennen sollte",
+    "slug": "3-finanztipps-aerzte",
+    "format": "A",
+    "fps": 30,
+    "_hinweis": "BEISPIEL-VORLAGE: Inhalte/Zahlen vor Veröffentlichung fachlich, steuerlich und rechtlich prüfen (references/quality-checklist.md)",
+    "instagramCaption": "",
+    "sources": []
+  },
+  "voice": {
+    "provider": "pico",
+    "speed": 1.12
+  },
+  "music": "bed",
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "hook",
+      "captions": false,
+      "lead": 0.25,
+      "tail": 0.5,
+      "vo": "3 Finanztipps, die jeder Arzt kennen sollte.",
+      "data": {
+        "kicker": {
+          "t": "3 Tipps",
+          "style": "r"
+        },
+        "lines": [
+          {
+            "t": "3 Finanztipps,",
+            "size": 120
+          },
+          {
+            "t": "die jeder *Arzt*",
+            "size": 150,
+            "serif": true
+          },
+          {
+            "t": "kennen sollte",
+            "size": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "tipp1",
+      "type": "tip",
+      "minDur": 6,
+      "vo": "Tipp 1: Rücklage zuerst. Eine Faustregel sind drei bis sechs Monatsausgaben, jederzeit verfügbar.",
+      "data": {
+        "nr": 1,
+        "chip": "Tipp",
+        "icon": "coins",
+        "label": {
+          "t": "Finanztipps",
+          "nr": "1/3"
+        },
+        "title": "*Rücklage* zuerst",
+        "body": [
+          {
+            "t": "Faustregel: 3–6 Monatsausgaben",
+            "cue": "Faustregel"
+          },
+          {
+            "t": "Jederzeit verfügbar halten",
+            "cue": "jederzeit"
+          }
+        ],
+        "kpi": {
+          "value": "3–6",
+          "label": "Monatsausgaben",
+          "cue": "drei bis sechs"
+        }
+      }
+    },
+    {
+      "id": "tipp2",
+      "type": "tip",
+      "minDur": 6,
+      "vo": "Tipp 2: Arbeitskraft absichern. Prüfe früh, ob dein Berufsunfähigkeitsschutz zu deinem Beruf passt. Später werden Gesundheitsfragen oft schwieriger.",
+      "data": {
+        "nr": 2,
+        "chip": "Tipp",
+        "icon": "shield",
+        "label": {
+          "t": "Finanztipps",
+          "nr": "2/3"
+        },
+        "title": "*Arbeitskraft* absichern",
+        "body": [
+          {
+            "t": "BU-Schutz früh prüfen",
+            "cue": "Prüfe"
+          },
+          {
+            "t": "Gesundheitsfragen werden später oft schwieriger",
+            "cue": "Später"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tipp3",
+      "type": "tip",
+      "minDur": 6,
+      "vo": "Tipp 3: Kosten vergleichen. Schon ein Prozentpunkt weniger Rendite wirkt über Jahrzehnte enorm.",
+      "data": {
+        "nr": 3,
+        "chip": "Tipp",
+        "icon": "trenddown",
+        "label": {
+          "t": "Finanztipps",
+          "nr": "3/3"
+        },
+        "title": "*Kosten* vergleichen",
+        "body": [
+          {
+            "t": "Gesamtkosten pro Jahr prüfen",
+            "cue": "Kosten"
+          },
+          {
+            "t": "1 Prozentpunkt wirkt über Jahrzehnte",
+            "cue": "Prozentpunkt"
+          }
+        ]
+      }
+    },
+    {
+      "id": "outro",
+      "type": "outro",
+      "tail": 0.9,
+      "captions": false,
+      "vo": "Welcher Tipp war neu für dich? Schreib es in die Kommentare.",
+      "data": {
+        "headline": "Welcher Tipp war *neu*?",
+        "size": 84,
+        "sub": "Finanzwissen für Ärzte, MFA und Praxisteams",
+        "cta": {
+          "t": "Kommentieren",
+          "cue": "Schreib"
+        },
+        "disclaimer": "Allgemeine Information, keine Anlage-, Steuer- oder Rechtsberatung. Beispielrechnungen mit angenommenen Werten."
+      }
+    }
+  ]
+}
