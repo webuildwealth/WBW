@@ -1,0 +1,20 @@
+{
+ "meta": {"title": "Altersvorsorge – Versorgungslücke", "mode": "C", "fps": 30, "ratio": 0.5, "subtitles": {"max_words": 3}, "keywords": ["Ruhestand", "weniger"]},
+ "script": "Stell dir vor, ein Arzt verdient 6.000 € netto und gewöhnt sich an diesen Lebensstandard. Im Ruhestand steht ihm möglicherweise deutlich weniger Geld zur Verfügung.",
+ "figures": {"doc": {"gender": "m", "hair": "2B2320"}},
+ "assumptions": [{"value": 3200, "unit": "€/Monat", "text": "Beispielhaftes Ruhestandseinkommen – Annahme für die Grafik, nicht aus dem Skript", "approved": false}],
+ "derived": [{"value": 2800, "formula": "6000-3200", "decimals": 0}],
+ "scenes": [
+  {"id": "s1", "type": "character", "props": {"figure": "doc", "env": "apartment", "age": 38, "pose": "wave", "x": 450}},
+  {"id": "s2", "at": "verdient 6.000", "type": "character", "transition": "fade", "tr_duration": 0.2,
+   "props": {"figure": "doc", "env": "apartment", "age": 38, "x": 400, "badge": {"text": "6.000 €", "label": "netto pro Monat", "tone": "blue", "t": 0.3, "x": 600, "y": 300}}},
+  {"id": "s3", "at": "gewöhnt sich", "type": "character", "transition": "fade", "tr_duration": 0.2,
+   "props": {"figure": "doc", "env": "apartment", "envTo": "retirement", "age": 38, "ageTo": 67, "year": 2026, "yearTo": 2055, "lapse": 2.2, "lapseStart": 0.6, "x": 450}},
+  {"id": "s4", "at": "Im Ruhestand", "type": "character", "transition": "cut",
+   "props": {"figure": "doc", "env": "retirement", "age": 67, "mood": "worried", "x": 450, "year": 2055}},
+  {"id": "s5", "at": "deutlich weniger", "type": "gap_bars",
+   "props": {"title": "Nettoeinkommen pro Monat", "bars": [{"label": "Heute", "value": 6000, "tone": "blue"}, {"label": "Ruhestand", "value": 3200, "tone": "gray"}], "gap": {"label": "Versorgungslücke"}, "gap_t": 1.7}},
+  {"id": "s6", "at": "zur Verfügung", "type": "counter", "transition": "zoom",
+   "props": {"label": "Versorgungslücke pro Monat", "from": 0, "to": 2800, "unit": "€", "tone": "red", "caption": "Jeden Monat. Jahr für Jahr."}}
+ ]
+}

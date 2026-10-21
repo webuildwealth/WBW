@@ -1,0 +1,11 @@
+{
+ "meta": {"title": "Szenenkatalog (Regressionstest)", "fps": 30, "subtitles": {"max_words": 2}},
+ "script": "Drei Fehler kosten Ärzte jedes Jahr Geld. Erstens: kein Plan. Zweitens: zu spät starten. Drittens: falsche Produkte. So geht es besser. Hier siehst du ein Bild.",
+ "assumptions": [],
+ "scenes": [
+  {"id": "k1", "type": "title", "props": {"kicker": "Finanz-Medizin", "line1": "Drei Fehler", "accent": "kosten Geld", "sub": "die du vermeiden kannst"}},
+  {"id": "k2", "at": "Erstens", "type": "bullets", "transition": "slide", "props": {"title": "Die drei Fehler", "items": ["Kein Plan", "Zu spät starten", "Falsche Produkte"]}},
+  {"id": "k3", "at": "So geht", "type": "timeline", "transition": "wipe", "props": {"from": 0, "to": 30, "step": 10, "prefix": "Jahr ", "markers": [{"year": 10, "label": "Start", "tone": "blue"}, {"year": 30, "label": "Ziel", "tone": "red"}]}},
+  {"id": "k4", "at": "Hier siehst", "type": "image", "transition": "fade", "props": {"src": "../assets/img/demo-image.jpg", "caption": "Bildszene mit Zoom", "zoom_from": 1.0, "zoom_to": 1.2}, "callouts": [{"t": 0.8, "text": "Beispiel", "x": 180, "y": 260, "arrow": {"dx": 120, "dy": 90}}]}
+ ]
+}

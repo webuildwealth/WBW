@@ -1,0 +1,12 @@
+{
+ "meta": {"title": "Arbeitstitel", "fps": 30, "ratio": 0.5, "subtitles": {"max_words": 3}, "keywords": []},
+ "script": "",
+ "figures": {"doc": {"gender": "m", "hair": "2B2320"}},
+ "assumptions": [],
+ "derived": [],
+ "scenes": [
+  {"id": "s1", "type": "title", "props": {"kicker": "Finanz-Medizin", "line1": "Hook in", "accent": "wenigen Worten"}},
+  {"id": "s2", "at": "<erste Wörter dieses Beats>", "type": "character", "transition": "push",
+   "props": {"figure": "doc", "env": "apartment", "age": 38}}
+ ]
+}

@@ -1,0 +1,125 @@
+{
+ "meta": {
+  "title": "BU – Mythos",
+  "mode": "C",
+  "fps": 30,
+  "ratio": 0.5,
+  "subtitles": {
+   "max_words": 3
+  },
+  "keywords": [
+   "falsch",
+   "zuletzt"
+  ]
+ },
+ "script": "Viele glauben, dass eine Berufsunfähigkeitsversicherung erst dann zahlt, wenn man überhaupt nicht mehr arbeiten kann. Das ist so pauschal falsch. Entscheidend ist oft, ob du deinen zuletzt ausgeübten Beruf noch ausüben kannst.",
+ "figures": {
+  "doc": {
+   "gender": "m",
+   "hair": "2B2320"
+  }
+ },
+ "notes": "Letzter Satz ist eine Beispielergänzung (tarifabhängig!) – vor Veröffentlichung fachlich/rechtlich prüfen.",
+ "scenes": [
+  {
+   "id": "s1",
+   "type": "character",
+   "props": {
+    "figure": "doc",
+    "env": "hospital",
+    "age": 45,
+    "x": 450
+   }
+  },
+  {
+   "id": "s2",
+   "at": "dass eine",
+   "type": "character",
+   "transition": "fade",
+   "tr_duration": 0.2,
+   "props": {
+    "figure": "doc",
+    "env": "hospital",
+    "age": 45,
+    "mood": "worried",
+    "x": 400,
+    "warn": {
+     "t": 0.5,
+     "x": 620,
+     "y": 250
+    }
+   }
+  },
+  {
+   "id": "s3",
+   "at": "erst dann",
+   "type": "myth",
+   "props": {
+    "text": "Erst wenn du gar nicht mehr arbeiten kannst?",
+    "stamp": "MYTHOS",
+    "strike_t": 1.6,
+    "stamp_t": 2.2
+   }
+  },
+  {
+   "id": "s4",
+   "at": "Das ist",
+   "type": "myth",
+   "transition": "zoom",
+   "props": {
+    "kicker": "DIE REALITÄT",
+    "text": "Pauschal falsch.",
+    "size": 96,
+    "stamp": "FALSCH",
+    "strike_t": 9,
+    "stamp_t": 0.9,
+    "warn": false
+   }
+  },
+  {
+   "id": "s5",
+   "at": "Entscheidend ist",
+   "type": "compare",
+   "props": {
+    "left": {
+     "title": "Was viele glauben",
+     "tone": "gray",
+     "items": [
+      {
+       "text": "Gar keine Arbeit mehr möglich",
+       "mark": "cross"
+      },
+      {
+       "text": "Jede andere Tätigkeit zählt",
+       "mark": "cross"
+      }
+     ]
+    },
+    "right": {
+     "title": "Was oft zählt",
+     "tone": "blue",
+     "items": [
+      {
+       "text": "Dein zuletzt ausgeübter Beruf",
+       "mark": "check"
+      },
+      {
+       "text": "Kannst du ihn noch ausüben?",
+       "mark": "check"
+      }
+     ]
+    }
+   },
+   "callouts": [
+    {
+     "t": 3.0,
+     "text": "tarifabhängig!",
+     "x": 640,
+     "y": 640,
+     "size": 44,
+     "rot": -3
+    }
+   ]
+  }
+ ]
+}

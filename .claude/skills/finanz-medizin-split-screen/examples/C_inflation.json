@@ -1,0 +1,79 @@
+{
+ "meta": {
+  "title": "Inflation – Kaufkraft",
+  "mode": "C",
+  "fps": 30,
+  "ratio": 0.5,
+  "subtitles": {
+   "max_words": 3
+  },
+  "keywords": [
+   "Kaufkraft"
+  ]
+ },
+ "script": "Wenn die Preise jedes Jahr um 3 % steigen, verlieren 100 € über 20 Jahre erheblich an Kaufkraft.",
+ "derived": [
+  {
+   "value": 44.6,
+   "formula": "100-100/(1+3/100)**20",
+   "decimals": 1
+  },
+  {
+   "value": 55,
+   "formula": "100/(1+3/100)**20",
+   "decimals": 0
+  }
+ ],
+ "scenes": [
+  {
+   "id": "s1",
+   "type": "counter",
+   "props": {
+    "label": "Dein Geld heute",
+    "from": 0,
+    "to": 100,
+    "unit": "€",
+    "tone": "blue",
+    "count_time": 0.8
+   }
+  },
+  {
+   "id": "s2",
+   "at": "jedes Jahr",
+   "type": "timeline",
+   "props": {
+    "from": 0,
+    "to": 20,
+    "step": 5,
+    "prefix": "Jahr ",
+    "label": "Preise steigen: 3 % pro Jahr"
+   }
+  },
+  {
+   "id": "s3",
+   "at": "verlieren 100",
+   "type": "inflation",
+   "transition": "slide",
+   "props": {
+    "amount": 100,
+    "rate": 3,
+    "years": 20
+   }
+  },
+  {
+   "id": "s4",
+   "at": "erheblich an",
+   "type": "counter",
+   "transition": "zoom",
+   "props": {
+    "label": "Kaufkraftverlust nach 20 Jahren",
+    "from": 0,
+    "to": 44.6,
+    "decimals": 1,
+    "unit": "%",
+    "tone": "red",
+    "caption": "von 100 € bleiben ca. 55 € Kaufkraft"
+   }
+  }
+ ]
+}
