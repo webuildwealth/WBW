@@ -1,0 +1,40 @@
+{
+  "title": "Inflation (Beispiel)",
+  "duration_s": 40,
+  "default_layout": "L1",
+  "concept": "Leitmotiv Dollarnote: erst roh und winzig, dann überflutend, am Ende als Wert aus Land und Haus. Erdige Braun-/Grüntöne, Schwarz als Kontrast, Gemälde und Kinderzeichnung als Medienbruch.",
+  "scenes": [
+    {
+      "start": 0, "end": 4,
+      "line": "Früher konnte man sich für einen Dollar deutlich mehr kaufen.",
+      "emotion": "Nostalgie, Neugier",
+      "motif": "eine einzelne Dollarnote vs. 1950er Supermarkt",
+      "aesthetic": "dark minimal + vintage photography",
+      "animation": "Zellen im Uhrzeigersinn poppen auf, Ken-Burns 100→108 %",
+      "layout": "L1",
+      "queries": ["dollar bill crumpled black paper aesthetic", "1950s american grocery store photography", "vintage supermarket price tags", "inflation surreal collage"],
+      "images": [
+        {"role": "Favorit (Beispiel-Platzhalter)", "url": "https://www.pinterest.com/search/pins/?q=1950s+grocery+store+photography", "status": "SUCHANFRAGE", "source": "unbekannt", "rights": "ungeklaert", "why": "Platzhalter, bis ein echter Pin geprüft ist"}
+      ]
+    },
+    {
+      "start": 4, "end": 9,
+      "line": "Heute zahlst du dafür nicht mal ein Brötchen.",
+      "emotion": "Ironie, Unbehagen",
+      "motif": "ein einzelnes Brötchen als Stillleben",
+      "aesthetic": "Altmeister-Stillleben",
+      "animation": "Hard-Cut, langsamer Zoom",
+      "layout": "L3",
+      "queries": ["bread still life oil painting dark", "single bread roll vanitas"],
+      "images": []
+    }
+  ],
+  "collages": [
+    {"start": 0, "end": 4, "layout": "L1", "cells": "TL Dollarnote auf schwarzem Papier · TR Retro-Supermarkt · BL Kinderzeichnung Einkaufskorb · BR Barock-Stillleben; Person auf Kreuzpunkt"}
+  ],
+  "edit_notes": [
+    "Bildwechsel 0,2 s vor Schlüsselwort 'Dollar'",
+    "Film Grain 10 %, Vignette 10 %",
+    "Untertitel weiß fett, Zone y 1250-1500 frei halten"
+  ]
+}
