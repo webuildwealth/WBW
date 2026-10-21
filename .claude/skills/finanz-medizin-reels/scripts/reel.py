@@ -599,6 +599,58 @@ def clip(cid, s, e, anim, inner, track, dur):
             f'data-track-index="{track}" data-anim="{anim}">{inner}</div>\n')
 
 
+
+def scene_html(sc, proj, rootdir):
+    """Vollbild-Grafik (Szene). Diagramme zeigen nur Werte aus spec.json, nichts wird erfunden."""
+    kind = sc["kind"]
+    wipe = '<div class="sc-wipe"></div>'
+    if kind == "stat":
+        cnt = sc.get("count")
+        val = (f'<span class="count" data-to="{cnt["to"]}" data-from="{cnt.get("from", 0)}" data-dec="{cnt.get("dec", 0)}">'
+               f'{html.escape(sc["value"])}</span>{html.escape(cnt.get("suffix", ""))}' if cnt else html.escape(sc["value"]))
+        lead = f'<span class="sc-lead">{rich(sc["lead"])}</span>' if sc.get("lead") else ""
+        lab = f'<span class="sc-label">{rich(sc["label"])}</span>' if sc.get("label") else ""
+        inner = f'{lead}<span class="sc-box fit" data-fit-max="840">{val}</span>{lab}'
+    elif kind == "chart":
+        bars = sc["bars"]                                   # [{"label": "...", "value": 1.7, "text": "1,7 %"}]
+        vmax = max(b["value"] for b in bars)
+        n, aw, ah = len(bars), 840, 700
+        bw = min(150, int(aw / (n * 1.6)))
+        gap = (aw - n * bw) / (n + 1)
+        b_html, v_html, pts = "", "", []
+        for i, b in enumerate(bars):
+            h = max(24, int(ah * 0.78 * b["value"] / vmax))
+            x = int(gap + i * (bw + gap))
+            b_html += f'<div class="ch-bar" style="left:{x}px;width:{bw}px;height:{h}px"></div>'
+            v_html += (f'<div class="ch-val" style="left:{x - 20}px;bottom:{h + 14}px">{html.escape(b["text"])}</div>'
+                       f'<div class="ch-cap" style="left:{x + bw // 2 - 130}px">{html.escape(b.get("label", ""))}</div>')
+            pts.append((x + bw // 2, ah - h - 10))
+        d = "M " + " L ".join(f"{x} {y}" for x, y in pts)
+        svg = "" if n < 3 else (f'<svg class="ch-line" viewBox="0 0 {aw} {ah}"><path class="ch-path" d="{d}" fill="none" stroke="#FFFFFF" '
+               f'stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+        title = f'<span class="ch-title">{rich(sc["title"])}</span>' if sc.get("title") else ""
+        inner = f'{title}<div class="ch-area">{b_html}{svg}{v_html}</div>'
+    elif kind == "list":
+        title = f'<span class="ch-title">{rich(sc["title"])}</span>' if sc.get("title") else ""
+        items = "".join(f'<div class="li-item"><span class="li-dot"></span>{rich(t)}</div>' for t in sc["items"])
+        inner = f'{title}{items}'
+    elif kind == "card":
+        img = ""
+        if sc.get("image"):
+            src = Path(sc["image"]).expanduser()
+            src = src if src.is_absolute() else rootdir / "assets" / src
+            if not src.exists():
+                sys.exit(f"Bild für Karte nicht gefunden: {src}")
+            shutil.copy2(src, proj / "assets" / src.name)
+            img = f'<img class="card-img" src="assets/{src.name}" alt="">'
+        elif sc.get("logo", True):
+            img = '<img class="card-img" style="width:360px" src="assets/logo.png" alt="">'
+        inner = f'<span class="card-title">{rich(sc["title"])}</span>{img}'
+    else:
+        sys.exit(f"Szene unbekannt: {kind} (möglich: stat, chart, list, card)")
+    return (f'<div class="sc-bg"></div><div class="sc-inner">{inner}</div>{wipe}')
+
+
 def cmd_build(a):
     wd = work(a.nr)
     S = load(wd / "spec.json")
@@ -629,10 +681,20 @@ def cmd_build(a):
                  f'{html.escape(q.get("label", "Frage aus der Praxis"))}</div><div class="q-text">{rich(q["text"])}</div>'
                  f'</div></div>')
         body += clip("frage", q["start"], q["end"], "question", inner, 2, dur)
+    scenes = S.get("scenes", [])
+    inside = lambda t: any(sc["start"] - 0.02 <= t < sc["end"] for sc in scenes)
     for k, c in enumerate(S.get("captions", [])):
+        if inside(c["start"]):
+            continue                                  # in Vollbild-Grafiken steht der Text schon in der Grafik
         body += clip(f"ut{k + 1}", c["start"], c["end"], "cap",
                      f'<div class="cap-inner"><span class="cap-text">{rich(c["text"])}</span></div>', tr + k % 2, dur)
+    for k, sc in enumerate(scenes):
+        body += (f'      <div id="szene{k + 1}" class="clip ov sc-{sc["kind"]}" data-start="{sc["start"]:.3f}" '
+                 f'data-duration="{max(0.04, min(sc["end"], dur) - sc["start"]):.3f}" data-track-index="6" '
+                 f'data-anim="scene" data-kind="{sc["kind"]}">{scene_html(sc, proj, ROOT)}</div>\n')
     for k, n in enumerate(S.get("numbers", [])):
+        if inside(n["start"]):
+            continue
         cnt = n.get("count")
         val = (f'<span class="count" data-to="{cnt["to"]}" data-from="{cnt.get("from", 0)}" data-dec="{cnt.get("dec", 0)}">'
                f'{html.escape(n["value"])}</span>{html.escape(cnt.get("suffix", ""))}' if cnt else rich(n["value"]))

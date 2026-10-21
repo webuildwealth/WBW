@@ -45,7 +45,52 @@
     },
     cap: function (c, t0) {
       var el = c.querySelector(".cap-text");
-      tl.fromTo(el, { opacity: 0, scale: 0.9, y: 14 }, { opacity: 1, scale: 1, y: 0, duration: 0.12, ease: "power2.out" }, t0);
+      // Einlauf wie im Referenzvideo (dort zieht sich der Buchstabenabstand zusammen): Streckung + Unschärfe -> scharf
+      tl.fromTo(el, { opacity: 0, scaleX: 1.14, scaleY: 0.96, y: 12, filter: "blur(5px)" },
+        { opacity: 1, scaleX: 1, scaleY: 1, y: 0, filter: "blur(0px)", duration: 0.2, ease: "power3.out" }, t0);
+    },
+    scene: function (c, t0, t1) {
+      var kind = c.getAttribute("data-kind"), bg = c.querySelector(".sc-bg"), wipe = c.querySelector(".sc-wipe");
+      var inner = c.querySelector(".sc-inner");
+      tl.fromTo(bg, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "none" }, t0);
+      tl.fromTo(wipe, { x: -300, opacity: 0.9 }, { x: 1700, opacity: 0.9, duration: 0.42, ease: "power2.inOut" }, t0);
+      tl.set(wipe, { opacity: 0 }, t0 + 0.45);
+      var tIn = t0 + 0.18;
+      if (kind === "stat") {
+        var lead = c.querySelector(".sc-lead"), box = c.querySelector(".sc-box"), lab = c.querySelector(".sc-label");
+        if (lead) tl.fromTo(lead, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, tIn);
+        tl.fromTo(box, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.34, ease: "back.out(2)" }, tIn + 0.08);
+        var span = box.querySelector(".count");
+        if (span) {
+          var to = attr(span, "data-to", 0), from = attr(span, "data-from", 0), dec = attr(span, "data-dec", 0), o = { v: from };
+          tl.set(span, { textContent: fmt(from, dec) }, t0);
+          tl.to(o, { v: to, duration: Math.min(1.1, (t1 - t0) * 0.6), ease: "power2.out",
+            onUpdate: function () { span.textContent = fmt(o.v, dec); } }, tIn + 0.1);
+        }
+        if (lab) tl.fromTo(lab, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, tIn + 0.4);
+      } else if (kind === "chart") {
+        var bars = c.querySelectorAll(".ch-bar"), vals = c.querySelectorAll(".ch-val"), caps = c.querySelectorAll(".ch-cap");
+        var path = c.querySelector(".ch-path"), ttl = c.querySelector(".ch-title");
+        if (ttl) tl.fromTo(ttl, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, tIn);
+        tl.fromTo(bars, { scaleY: 0 }, { scaleY: 1, duration: 0.55, ease: "power3.out", stagger: 0.12 }, tIn + 0.1);
+        tl.fromTo(vals, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", stagger: 0.18 }, tIn + 0.3);
+        tl.fromTo(caps, { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.18 }, tIn + 0.3);
+        if (path) {
+          var len = path.getTotalLength();
+          tl.fromTo(path, { strokeDasharray: len, strokeDashoffset: len }, { strokeDashoffset: 0, duration: 0.7, ease: "power2.inOut" }, tIn + 0.35);
+        }
+      } else if (kind === "list") {
+        var items = c.querySelectorAll(".li-item"), t = c.querySelector(".ch-title");
+        if (t) tl.fromTo(t, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, tIn);
+        var step = Math.max(0.3, Math.min(0.8, (t1 - t0 - 0.9) / Math.max(1, items.length)));
+        tl.fromTo(items, { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.3, ease: "power3.out", stagger: step }, tIn + 0.1);
+      } else if (kind === "card") {
+        var img = c.querySelector(".card-img"), ct = c.querySelector(".card-title");
+        if (ct) tl.fromTo(ct, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, tIn);
+        if (img) tl.fromTo(img, { opacity: 0, scale: 0.85, y: 50 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, ease: "back.out(1.5)" }, tIn + 0.1);
+      }
+      tl.to(inner, { opacity: 0, duration: 0.12 }, Math.max(t0 + 0.6, t1 - 0.12));
+      tl.to(bg, { opacity: 0, duration: 0.12 }, Math.max(t0 + 0.6, t1 - 0.12));
     },
     num: function (c, t0, t1) {
       var box = c.querySelector(".num-value"), lab = c.querySelector(".num-label");

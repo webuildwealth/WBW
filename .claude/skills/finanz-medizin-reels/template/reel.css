@@ -84,3 +84,34 @@ body { margin: 0; background: #000000; }
   color: var(--bordeaux); white-space: nowrap; }
 .cta-sub { display: block; max-width: 780px; font-family: "Inter", sans-serif; font-weight: 600; font-size: 36px; line-height: 1.2;
   color: var(--navy); text-align: center; }
+
+/* Vollbild-Grafiken (Szenen): Kennzahl, Diagramm, Liste, Karte. Inhalt innerhalb x 60-930, y 260-1500 */
+.sc-bg { position: absolute; inset: 0; }
+.sc-stat .sc-bg, .sc-card .sc-bg { background-color: #FFFFFF;
+  background-image: linear-gradient(rgba(12,44,79,0.07) 2px, transparent 2px), linear-gradient(90deg, rgba(12,44,79,0.07) 2px, transparent 2px);
+  background-size: 72px 72px; }
+.sc-chart .sc-bg, .sc-list .sc-bg { background: linear-gradient(180deg, #8A1A2C 0%, #751524 45%, #4E0C17 100%); }
+.sc-wipe { position: absolute; left: -400px; top: -300px; width: 560px; height: 2800px; background: var(--bordeaux);
+  transform: rotate(18deg); opacity: 0.9; }
+.sc-inner { position: absolute; left: 80px; width: 840px; top: 560px; display: flex; flex-direction: column; gap: 22px; }
+.sc-lead { display: block; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 64px; line-height: 1.1; color: var(--navy); }
+.sc-box { display: inline-block; align-self: flex-start; background: var(--bordeaux); color: var(--white); font-family: "Manrope", sans-serif;
+  font-weight: 800; font-size: 150px; line-height: 1; letter-spacing: -0.03em; padding: 16px 38px 26px; white-space: nowrap; }
+.sc-label { display: block; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 64px; line-height: 1.1; color: var(--navy); }
+.sc-label .hl, .sc-lead .hl { color: var(--bordeaux); }
+.sc-chart .sc-inner, .sc-list .sc-inner { top: 380px; }
+.ch-area { position: relative; width: 840px; height: 700px; }
+.ch-bar { position: absolute; bottom: 0; background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.35)); border-radius: 10px 10px 0 0;
+  transform-origin: 50% 100%; }
+.ch-val { position: absolute; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 78px; color: var(--white); white-space: nowrap;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.35); }
+.ch-cap { position: absolute; bottom: -90px; font-family: "Inter", sans-serif; font-weight: 700; font-size: 40px; color: var(--ivory); text-align: center; width: 260px; }
+.ch-line { position: absolute; inset: 0; width: 840px; height: 700px; overflow: visible; }
+.ch-title { display: block; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 60px; color: var(--white); line-height: 1.1; margin-bottom: 30px; }
+.li-item { display: flex; align-items: center; gap: 24px; background: rgba(12, 44, 79, 0.55); border: 2px solid rgba(255, 255, 255, 0.55);
+  padding: 18px 28px; font-family: "Manrope", sans-serif; font-weight: 700; font-size: 62px; color: var(--white); white-space: nowrap; }
+.li-dot { flex: none; width: 36px; height: 36px; border-radius: 18px; border: 5px solid var(--white); box-sizing: border-box; position: relative; }
+.li-dot::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: var(--white); }
+.card-img { align-self: center; width: 560px; max-height: 640px; object-fit: contain; filter: drop-shadow(0 30px 40px rgba(12, 44, 79, 0.35)); }
+.card-title { display: block; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 76px; line-height: 1.05; color: var(--navy); }
+.card-title .hl { color: var(--bordeaux); }
