@@ -1,4 +1,4 @@
-# Skripte 1–30 · Stand 22.10.2026
+# Skripte 1 bis 30 · Stand 22.10.2026
 
 Reihenfolge = Posting-Reihenfolge (5 pro Woche, 6 Wochen). Zahlen aus `../daten.md`.
 B = Benedict, Z = Zoe. Stichwort-CTA führt per DM zu
@@ -6,8 +6,17 @@ B = Benedict, Z = Zoe. Stichwort-CTA führt per DM zu
 
 ---
 
-### 1. 91 € für 50 €
+### Skript 1 von 30 · 91 € für 50 €
 Praxisinhaber · Rechnung auf Papier · Zahl-Schock · 30 s · B
+
+COVER-TITEL
+50 € kosten dich 110 €
+
+VISUELLE HOOK
+Du knallst einen Hunderter und einen Zehner auf den Tresen, nimmst dann einen Fünfziger zurück und schiebst nur den rüber. Das Geld sagt alles, bevor du redest.
+
+EMOTION
+Ungläubigkeit („Moment, was?“), dann Aha. Ruhig, fast amüsiert sprechen, wie jemand, der ein Geheimnis verrät.
 
 HOOK
 Gesprochen: „50 € netto für deine MFA kosten dich 110 €.“
@@ -35,8 +44,17 @@ Hinweis: Musterwerte 2026, Steuerklasse I, gerundet.
 
 ---
 
-### 2. Der dritte Anruf
+### Skript 2 von 30 · Der dritte Anruf
 alle · Sketch/POV · POV-Sketch · 15 s · B (spielt beide)
+
+COVER-TITEL
+Augen auf bei der Beraterwahl
+
+VISUELLE HOOK
+Handy-Display groß im Bild: „Berater ruft an (3)“. Du schaust drauf, seufzt, beißt ins Brötchen.
+
+EMOTION
+Genervtes Wiedererkennen und Lachen. Übertrieben spielen, der Berater laut und schleimig, der Arzt trocken.
 
 HOOK
 Einblendung: POV: Mittagspause, 3. Anruf vom „Berater“
@@ -60,8 +78,17 @@ Passiert den Besten 🥲 Wer deinen Job nicht kennt, kann deine Finanzen nicht p
 
 ---
 
-### 3. Was bleibt? Folge 1: Pflegefachkraft
+### Skript 3 von 30 · Was bleibt? Folge 1: Pflegefachkraft
 Pflege · Netto-Serie · Schätzfrage · 30 s · Z
+
+COVER-TITEL
+Was bleibt? #1 Pflege
+
+VISUELLE HOOK
+Abrechnung wird langsam von einem schwarzen Balken freigelegt, Zeile für Zeile, wie ein Rubbellos.
+
+EMOTION
+Neugier, dann Empörung („Das ist alles?“). Ernst und warm, nicht mitleidig.
 
 HOOK
 Gesprochen: „Was glaubst du, was einer Pflegefachkraft im Schichtdienst netto bleibt?“
@@ -89,8 +116,17 @@ Hinweis: Nur mit echter, anonymisierter Abrechnung und schriftlicher Einwilligun
 
 ---
 
-### 4. Du hast bis 31. März
+### Skript 4 von 30 · Du hast bis 31. März
 angestellte Ärzte in der PKV · Reaktion auf Schlagzeile · Frist · 25 s · B
+
+COVER-TITEL
+PKV? Frist 31.03.
+
+VISUELLE HOOK
+Du kreist im Wandkalender mit rotem Edding den 31. März ein und tippst zweimal drauf.
+
+EMOTION
+Dringlichkeit, leichte Sorge, dann Erleichterung, weil es eine Lösung gibt. Zügig und klar sprechen.
 
 HOOK
 Gesprochen: „Angestellter Arzt in der PKV? Du hast bis 31. März 2027.“
@@ -116,8 +152,17 @@ Werte für 2027 voraussichtlich. Einzelfall? Schreib uns.
 
 ---
 
-### 5. Steuerfrei vom Chef (Karussell)
+### Skript 5 von 30 · Steuerfrei vom Chef (Karussell)
 MFA · Spickzettel-Karussell · Ergebnis zuerst · 7 Folien · Z
+
+COVER-TITEL
+1.100 € mehr ohne Gehaltserhöhung
+
+VISUELLE HOOK
+Cover-Folie: Geschenkpaket mit Aufschrift „vom Chef“, darunter die Zahl 1.100 €.
+
+EMOTION
+Freude und Motivation. Hell, optimistisch, Lust machen, es dem Chef zu zeigen.
 
 F1: Rund 1.100 € im Jahr mehr. Ohne Gehaltserhöhung.
 F2: 50 € Sachbezug im Monat – steuerfrei.
@@ -134,8 +179,17 @@ Wir reden NIE mit deinem Chef über dich, versprochen.
 
 ---
 
-### 6. Zwei Fachärzte
+### Skript 6 von 30 · Zwei Fachärzte
 angestellte Ärzte · Zwei-Personen-Vergleich · Zwei Menschen · 30 s · B
+
+COVER-TITEL
+Gleiches Gehalt, 430.000 € Unterschied
+
+VISUELLE HOOK
+Split-Screen: zwei identische Ärzte, gleiche Pose. Nach dem Zeitsprung hält der linke einen dicken Ordner, der rechte eine leere Brieftasche.
+
+EMOTION
+Erschrecken und Selbstprüfung („Welcher bin ich?“). Gelassen, kein erhobener Zeigefinger.
 
 HOOK
 Gesprochen: „Zwei Fachärzte. Gleiches Gehalt. 25 Jahre später trennen sie rund 430.000 €.“
@@ -161,8 +215,17 @@ Modellrechnung: 750€/Monat, 25 Jahre, 5% p.a., ohne Kosten, ohne Garantie.
 
 ---
 
-### 7. Was bleibt? Folge 2: MFA in Teilzeit
+### Skript 7 von 30 · Was bleibt? Folge 2: MFA in Teilzeit
 MFA · Netto-Serie · Identität zuerst · 30 s · Z
+
+COVER-TITEL
+Was bleibt? #2 MFA Teilzeit
+
+VISUELLE HOOK
+Uhr auf 30 Std. gestellt, daneben ein halbvolles Glas, das sich beim Payoff auffüllt.
+
+EMOTION
+Ernüchterung, dann Hoffnung. Vertraut, wie mit einer Kollegin in der Pause.
 
 HOOK
 Gesprochen: „MFA, 30 Stunden, 2.400 brutto. Das hier ist für dich.“
@@ -187,8 +250,17 @@ Teilzeit heißt nicht Teil-Rente. Oder doch, wenn man nix macht :/
 
 ---
 
-### 8. Der erste Leasingvertrag
+### Skript 8 von 30 · Der erste Leasingvertrag
 angestellte Ärzte · Sketch · Teuerster Fehler · 20 s · B
+
+COVER-TITEL
+Der teuerste Fehler als Facharzt
+
+VISUELLE HOOK
+Konfetti beim Brief „bestanden“, dann sofort Schnitt auf Autoschlüssel und Kontoauszug mit roter Null.
+
+EMOTION
+Euphorie kippt in Schreck, dann Lachen über sich selbst. Tempo: schnell schneiden.
 
 HOOK
 Gesprochen: „Der teuerste Fehler im ersten Facharztjahr.“
@@ -211,8 +283,17 @@ Wohin mit dem ganzen Geld? Hälfte weg, Hälfte genießen. War vorher eh nicht d
 
 ---
 
-### 9. Jeder Abgang kostet 15.000 €
+### Skript 9 von 30 · Jeder Abgang kostet 15.000 €
 Praxisinhaber · Rechnung auf Papier · Zahl-Schock · 30 s · B
+
+COVER-TITEL
+1 Kündigung = 15.000 €
+
+VISUELLE HOOK
+Du stapelst Spielgeld-Scheine zu einem Turm, dann ziehst du einen weg und er fällt um.
+
+EMOTION
+Schock beim Inhaber, dann Kontrolle zurückgewinnen. Sachlich, souverän, wie ein Berater auf Augenhöhe.
 
 HOOK
 Gesprochen: „Wenn deine MFA kündigt, kostet dich das rund 15.000 €.“
@@ -238,8 +319,17 @@ Musterpraxis, Werte gerundet, Einzelfall mit dem Steuerberater klären.
 
 ---
 
-### 10. Q4-Spickzettel (Karussell)
+### Skript 10 von 30 · Q4-Spickzettel (Karussell)
 Praxisinhaber, Ärzte · Spickzettel-Karussell · Frist · 6 Folien · B
+
+COVER-TITEL
+Am 31.12. verfällt Geld
+
+VISUELLE HOOK
+Cover-Folie: Sanduhr mit Euro-Zeichen, Datum 31.12. groß.
+
+EMOTION
+Leichte Verlustangst, dann Tatendrang. Klar, strukturiert.
 
 F1: Am 31.12. verfällt Geld. Jedes Jahr.
 F2: Basisrente: bis zu 44,3 % zahlt das Finanzamt mit.
@@ -255,8 +345,17 @@ Rente wird später versteuert. Kein Ersatz für deinen Steuerberater.
 
 ---
 
-### 11. Ärzte sind reich?
+### Skript 11 von 30 · Ärzte sind reich?
 Ärzte, Pflege · Mythos oder Wahrheit · Mythos-Bruch · 25 s · B
+
+COVER-TITEL
+Ärzte sind reich?
+
+VISUELLE HOOK
+Du hältst zwei Schilder hoch, MYTHOS und WAHRHEIT, und hebst nach jeder Pause eins.
+
+EMOTION
+Spiel und Mitraten, kleines Aha. Locker, quizmaster-mäßig.
 
 HOOK
 Gesprochen: „Drei Sätze über Ärzte. Mythos oder Wahrheit?“
@@ -279,8 +378,17 @@ Hohe Gehälter, hohe Steuern, null Finanzunterricht im Studium. Same same but di
 
 ---
 
-### 12. Was bleibt? Folge 3: Assistenzarzt
+### Skript 12 von 30 · Was bleibt? Folge 3: Assistenzarzt
 angestellte Ärzte · Netto-Serie · Schätzfrage · 30 s · B
+
+COVER-TITEL
+Was bleibt? #3 Assistenzarzt
+
+VISUELLE HOOK
+Dienstplan voller Kreuze, darüber fällt die Netto-Zahl ins Bild.
+
+EMOTION
+Müdigkeit und Verständnis, dann Klarheit. Ehrlich, ein bisschen erschöpft-solidarisch.
 
 HOOK
 Gesprochen: „Assistenzarzt, zweites Jahr. Was glaubst du, was netto bleibt?“
@@ -305,8 +413,17 @@ Viel Arbeit, viel Steuer, wenig Zeit. Kennen wir 🩺
 
 ---
 
-### 13. Antwort auf Kommentar
+### Skript 13 von 30 · Antwort auf Kommentar
 je nach Frage · Antwort auf Kommentar · Identität zuerst · 20 s · B oder Z
+
+COVER-TITEL
+Eure Frage, unsere Antwort
+
+VISUELLE HOOK
+Kommentar als Sprechblase neben deinem Kopf, du liest ihn halblaut mit.
+
+EMOTION
+Nähe und Wertschätzung. Direkt, als würdest du antworten, nicht präsentieren.
 
 HOOK
 Einblendung: [ECHTEN KOMMENTAR AUS WOCHE 1–2 EINSETZEN]
@@ -326,8 +443,17 @@ Ihr fragt, wir antworten. Ehrlich, auch wenn's weh tut 🫂
 
 ---
 
-### 14. Aus 55 € werden 115 €
+### Skript 14 von 30 · Aus 55 € werden 115 €
 MFA, Pflege · Rechnung auf Papier · Ergebnis zuerst · 25 s · Z
+
+COVER-TITEL
+Aus 55 € werden 115 €
+
+VISUELLE HOOK
+Zwei Gläser: du kippst 55 € Münzen rein, es läuft auf 115 über.
+
+EMOTION
+Überraschung und „Warum hat mir das keiner gesagt?“. Begeistert, aber nicht marktschreierisch.
 
 HOOK
 Gesprochen: „Du gibst 55 €. Im Vertrag landen 115.“
@@ -352,8 +478,17 @@ Die Rente aus der bAV wird später versteuert, klar. Aber 55 rein, 115 im Vertra
 
 ---
 
-### 15. BU: 6 Fragen vor dem Antrag (Karussell)
+### Skript 15 von 30 · BU: 6 Fragen vor dem Antrag (Karussell)
 alle · Spickzettel-Karussell · Insider-Blick · 8 Folien · B
+
+COVER-TITEL
+BU: Das liest dir keiner vor
+
+VISUELLE HOOK
+Cover-Folie: Lupe über Kleingedrucktem.
+
+EMOTION
+Neugier und Schutzinstinkt. Ruhig, vertrauenswürdig.
 
 F1: Was in einem BU-Antrag steht, das dir keiner vorliest.
 F2: Ist dein Beruf richtig eingetragen? Ärztin ≠ Chirurgin.
@@ -370,8 +505,17 @@ Deine Arbeitskraft ist Millionen wert. PFLICHT FÜR JEDEN, sie richtig abzusiche
 
 ---
 
-### 16. Flurinterview Kongress
+### Skript 16 von 30 · Flurinterview Kongress
 alle · Flurinterview · Schätzfrage · 45 s · Z mit Mikro
+
+COVER-TITEL
+Was legst du zurück?
+
+VISUELLE HOOK
+Mikro mit Finanz-Medizin-Windschutz ins Bild gestreckt, Kongresslogo im Hintergrund unscharf.
+
+EMOTION
+Neugier und Lachen über ehrliche Antworten. Offen, freundlich, frech nachfragen.
 
 HOOK
 Gesprochen (Z zu Passantin): „Was machst du beruflich, und was legst du jeden Monat zurück?“
@@ -394,8 +538,17 @@ Hinweis: Dreherlaubnis des Veranstalters und Einwilligung jeder Person einholen.
 
 ---
 
-### 17. Drei Verträge
+### Skript 17 von 30 · Drei Verträge
 angestellte Ärzte · Anonymer Fall · Teuerster Fehler · 50 s · B
+
+COVER-TITEL
+3 Verträge, 1 Problem
+
+VISUELLE HOOK
+Drei Ordner fallen nacheinander auf den Tisch, alle mit derselben Aufschrift.
+
+EMOTION
+Kopfschütteln, dann Erleichterung. Erzählend, ruhig, wie eine Geschichte.
 
 HOOK
 Gesprochen: „Sie ist 34, Assistenzärztin, und kam mit drei Verträgen, die alle dasselbe tun.“
@@ -416,8 +569,17 @@ Hinweis: Nur mit echter Einwilligung der Kundin; keine erkennbaren Details.
 
 ---
 
-### 18. Das schlechteste Geschenk
+### Skript 18 von 30 · Das schlechteste Geschenk
 Praxisinhaber, MFA · Unpopuläre Meinung · Unpopuläre Meinung · 20 s · B
+
+COVER-TITEL
+Das schlechteste Geschenk
+
+VISUELLE HOOK
+Geschenkbox mit 110 € drin, beim Öffnen sind nur 50 € übrig.
+
+EMOTION
+Widerspruch und Diskussionslust. Selbstbewusst, leicht provokant.
 
 HOOK
 Gesprochen: „Unpopuläre Meinung: Eine Gehaltserhöhung ist das schlechteste Geschenk für deine MFA.“
@@ -439,8 +601,17 @@ Ja, das wird diskutiert 😂 Rechnung oben in Video 1.
 
 ---
 
-### 19. Was bleibt? Folge 4: Praxisinhaberin
+### Skript 19 von 30 · Was bleibt? Folge 4: Praxisinhaberin
 Praxisinhaber · Netto-Serie · Mythos-Bruch · 35 s · B
+
+COVER-TITEL
+Was bleibt? #4 Praxis
+
+VISUELLE HOOK
+Umsatz-Zahl groß, dann fliegen Kostenblöcke als Klebezettel ab, bis wenig übrig ist.
+
+EMOTION
+Aha und Respekt („Selbst und ständig“). Sachlich, anerkennend.
 
 HOOK
 Gesprochen: „Umsatz ist nicht Gewinn. Was bleibt einer Praxisinhaberin wirklich?“
@@ -463,8 +634,17 @@ Selbst und ständig. Und trotzdem denken alle, Praxis = Porsche 🥲
 
 ---
 
-### 20. 10 Zahlen für MFA (Karussell)
+### Skript 20 von 30 · 10 Zahlen für MFA (Karussell)
 MFA · Spickzettel-Karussell · Zahl-Schock · 11 Folien · Z
+
+COVER-TITEL
+10 Zahlen für jede MFA
+
+VISUELLE HOOK
+Cover-Folie: Ausgedruckter Zettel am Pausenraum-Kühlschrank.
+
+EMOTION
+Stolz und Nutzwert. Hell, praktisch.
 
 F1: 10 Zahlen 2026, die jede MFA kennen sollte.
 F2: 48 % – Rentenniveau.
@@ -484,8 +664,17 @@ Druck's aus, häng's in den Pausenraum ;)
 
 ---
 
-### 21. KI fragt man nicht
+### Skript 21 von 30 · KI fragt man nicht
 alle · Sketch · POV-Sketch · 15 s · Z
+
+COVER-TITEL
+KI fragt man nicht
+
+VISUELLE HOOK
+Handy spricht mit Roboterstimme, du schaust immer skeptischer, am Ende direkt in die Kamera.
+
+EMOTION
+Humor und leichte Skepsis. Trocken, Augenbraue hoch.
 
 HOOK
 Einblendung: POV: Du fragst die KI, ob deine BU gut ist
@@ -508,8 +697,17 @@ Beim Thema Geld nicht nur auf KI stützen, sondern auf Erfahrung 🫂
 
 ---
 
-### 22. Ihr rennt für andere
+### Skript 22 von 30 · Ihr rennt für andere
 Pflege · Identität · Identität zuerst · 15 s · Z
+
+COVER-TITEL
+Wer versorgt dich mit 67?
+
+VISUELLE HOOK
+Lange Flurfahrt im Kasack, du bleibst abrupt stehen und schaust in die Kamera.
+
+EMOTION
+Rührung und Wachrütteln. Langsam, eindringlich, leise.
 
 HOOK
 Gesprochen: „Du hast heute 14 Leute versorgt. Wer versorgt dich mit 67?“
@@ -531,8 +729,17 @@ Ihr rennt für andere, wer rennt für euch? 🩺
 
 ---
 
-### 23. Notgroschen in echt
+### Skript 23 von 30 · Notgroschen in echt
 MFA, Pflege · Zwei-Personen-Vergleich · Zwei Menschen · 25 s · Z
+
+COVER-TITEL
+Waschmaschine kaputt
+
+VISUELLE HOOK
+Split-Screen: links Panik am Handy, rechts entspannter Klick auf „Bestellen“.
+
+EMOTION
+Wiedererkennen, dann Erleichterung. Alltagsnah, ein bisschen dramatisch gespielt.
 
 HOOK
 Gesprochen: „Waschmaschine kaputt. Zwei MFA. Zwei völlig verschiedene Wochen.“
@@ -553,8 +760,17 @@ Unerwartete Kosten? Kein Problem, wenn du vorbereitet bist 🛟
 
 ---
 
-### 24. Der 50-€-Satz
+### Skript 24 von 30 · Der 50-€-Satz
 alle · Sketch · POV-Sketch · 15 s · B
+
+COVER-TITEL
+Spart überall, außer hier
+
+VISUELLE HOOK
+Taschenrechner, du streichst Zeilen auf einer Liste, bei „BU“ machst du einen Haken bei „günstigste“.
+
+EMOTION
+Augenrollen und Lachen. Ironisch überspielt.
 
 HOOK
 Einblendung: Berater, der bei allem spart. Außer bei sich.
@@ -576,8 +792,17 @@ Wer schreibt der bleibt 🥲 Bei der Arbeitskraft solltet ihr wirklich nicht spa
 
 ---
 
-### 25. MFA gegen Arzt
+### Skript 25 von 30 · MFA gegen Arzt
 MFA, Ärzte · Zwei-Personen-Vergleich · Mythos-Bruch · 25 s · B und Z
+
+COVER-TITEL
+Gleiche Praxis, anderes Konto
+
+VISUELLE HOOK
+Zwei Hände legen Gehaltsabrechnungen nebeneinander, Zahlen geschwärzt, Höhe unterschiedlich.
+
+EMOTION
+Fairness-Gefühl, Verbundenheit. Ehrlich, auf Augenhöhe, kein Gegeneinander.
 
 HOOK
 Gesprochen (Z): „Gleiche Praxis. Gleiche Patienten. Anderes Konto.“
@@ -598,8 +823,17 @@ Same same but different. Die Arbeit ist ähnlich, die Zahlen nicht, die Lösung 
 
 ---
 
-### 26. Altersvorsorgedepot – was wir wissen
+### Skript 26 von 30 · Altersvorsorgedepot – was wir wissen
 alle · Reaktion auf Schlagzeile · Mythos-Bruch · 25 s · B
+
+COVER-TITEL
+Riester ist tot, was jetzt?
+
+VISUELLE HOOK
+Du legst eine Riester-Mappe in einen Karton mit Aufschrift „Archiv“.
+
+EMOTION
+Neugier mit gesunder Skepsis. Nüchtern, „Klingt geil, aber …“-Haltung.
 
 HOOK
 Gesprochen: „Riester ist tot. Was jetzt kommt, klingt gut, aber eine Sache weiß noch keiner.“
@@ -622,8 +856,17 @@ Hinweis: Vor Veröffentlichung aktuelle Gesetzeslage prüfen.
 
 ---
 
-### 27. Was Studis verkauft wird
+### Skript 27 von 30 · Was Studis verkauft wird
 angestellte Ärzte, Studis · Insider-Blick · Teuerster Fehler · 25 s · B
+
+COVER-TITEL
+3 Fragen an jeden Berater
+
+VISUELLE HOOK
+Drei Finger hoch, bei jeder Frage einer mehr, beim dritten ernster Blick.
+
+EMOTION
+Selbstschutz und Bestärkung. Bestimmt, wie ein guter Ratschlag unter Freunden.
 
 HOOK
 Gesprochen: „Im PJ hat mir einer was verkauft. Heute weiß ich, was ich hätte fragen sollen.“
@@ -646,8 +889,17 @@ Hinweis: Nur nutzen, wenn die PJ-Geschichte stimmt; sonst als Zoe-Freundinnen-Ge
 
 ---
 
-### 28. Was bleibt? Folge 5: MFA Vollzeit
+### Skript 28 von 30 · Was bleibt? Folge 5: MFA Vollzeit
 MFA · Netto-Serie · Schätzfrage · 30 s · Z
+
+COVER-TITEL
+Was bleibt? #5 MFA Vollzeit
+
+VISUELLE HOOK
+Mietvertrag und Rentenbescheid nebeneinander, die Zahlen fast gleich.
+
+EMOTION
+Ernüchterung, dann Hoffnung. Warm, ermutigend.
 
 HOOK
 Gesprochen: „MFA, Vollzeit, 3.100 brutto. Rate mal, was im Alter von der Rente bleibt.“
@@ -668,8 +920,17 @@ Jede MFA kann sich ein Vermögen aufbauen, man muss nur wissen WIE 🫶🏼
 
 ---
 
-### 29. Faustregel BU
+### Skript 29 von 30 · Faustregel BU
 alle · Rechnung auf Papier · Ergebnis zuerst · 20 s · B
+
+COVER-TITEL
+Wie hoch muss deine BU sein?
+
+VISUELLE HOOK
+Du schreibst die Formel auf ein Whiteboard und unterstreichst sie zweimal.
+
+EMOTION
+Klarheit und Sicherheit. Ruhig, kompetent.
 
 HOOK
 Gesprochen: „Wie hoch muss deine BU sein? Eine Zeile.“
@@ -691,8 +952,17 @@ Minimum deine Fixkosten und max. 80% deines Netto ;) safety first.
 
 ---
 
-### 30. Warum wir das machen (ohne „Willkommen“)
+### Skript 30 von 30 · Warum wir das machen (ohne „Willkommen“)
 alle · Identität · Mythos-Bruch · 25 s · B
+
+COVER-TITEL
+Warum es uns gibt
+
+VISUELLE HOOK
+Ruhiges Porträt, keine Musik, nur deine Stimme. Optional ein altes Foto mit Kittel (Vater) eingeblendet.
+
+EMOTION
+Ehrlichkeit und Vertrauen. Leise, persönlich, langsam sprechen.
 
 HOOK
 Gesprochen: „Mein Vater ist Arzt. Bis heute hat ihm keiner seine Finanzen erklärt.“

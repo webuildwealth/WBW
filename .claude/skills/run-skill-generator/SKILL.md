@@ -10,7 +10,7 @@ Heilberufe spezialisierte Marke von We Build Wealth, Berlin. Ziel jedes Stücks:
 **Reichweite, die zu Terminen führt.** Kein Content ohne Weg zum Kurzcheck.
 
 Lies vor dem Schreiben `stimme.md` (wie wir klingen) und `daten.md` (was belegt ist
-und was funktioniert). Bestehende Skripte liegen in `skripte/` — wiederhole keine Idee.
+und was funktioniert). Bestehende Skripte liegen in `skripte/` (Dateinamen „Skripte X bis Y.md“, dazu immer eine gleichnamige .docx) — wiederhole keine Idee.
 
 ## Ablauf
 
@@ -22,13 +22,22 @@ und was funktioniert). Bestehende Skripte liegen in `skripte/` — wiederhole ke
 4. Den **Anti-AI-Check** und den **Compliance-Check** unten Punkt für Punkt durchgehen.
    Was durchfällt, umschreiben — nicht abschwächen, umschreiben.
 5. Ausgabe als Markdown; bei mehr als 3 Skripten zusätzlich als Datei in `skripte/`
-   ablegen (fortlaufende Nummer).
+   ablegen als „Skripte X bis Y.md“ und zusätzlich als Word-Datei (pandoc, hard_line_breaks, Abschnittsnamen fett).
 
 ## Vorlage pro Skript
 
 ```
-### <Nr>. <Arbeitstitel>
+### Skript <Nr> von <Gesamtzahl> · <Arbeitstitel>
 Zielgruppe · Format · Hook-Muster · Länge · Wer spricht (Benedict / Zoe)
+
+COVER-TITEL
+<max. 6 Wörter fürs Instagram-Cover, meist die Zahl oder die Frage>
+
+VISUELLE HOOK
+<eine konkrete Bildidee für Sekunde 0–2, die ohne Ton funktioniert: Gegenstand, Bewegung, Requisite>
+
+EMOTION
+<welches Gefühl beim Zuschauer entstehen soll, und wie es gespielt/gesprochen wird: Tempo, Ton, Haltung>
 
 HOOK (0–3 s)
 Gesprochen: <ein Satz, ab dem ersten Bild>
