@@ -14,6 +14,7 @@ und was bei uns funktioniert) und `markt.md` (was im Markt viral geht). Bestehen
 
 ## Ablauf
 
+0. Gibt es in `../social-media-strategie/berichte/` einen Review, den neuesten lesen und seine Empfehlungen und Skript-Ideen vorrangig umsetzen.
 1. Argument lesen: Thema, Zielgruppe, Anzahl, Format. Fehlt etwas, wähle selbst nach
    `daten.md` (Zielgruppe mit der höchsten Reichweite, Format mit niedrigster Skip-Rate).
 2. **Zuerst Viralität aus dem Markt:** Für jedes Skript ein Markt-Format aus `markt.md` wählen und
