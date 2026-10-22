@@ -1,13 +1,13 @@
 """Schritt 5-7: Bilder für jede Collage-Zelle beschaffen und Rechte protokollieren.
 
 Reihenfolge pro Bildplatz (erste erfolgreiche Quelle gewinnt):
+  0. Pinterest (--pinterest): ästhetische Pins suchen, bewerten, herunterladen (reelkit/pinterest.py)
   1. Eigene Assets   --assets ORDNER  (optional assets.json mit Lizenzangaben, sonst Dateiname = Schlagwörter)
   2. Lizenzierte Online-Quellen (--online): Openverse (nur kommerziell nutzbare CC-Lizenzen) und
      Wikimedia Commons (nur CC0/Public Domain/CC BY/CC BY-SA). Attribution wird protokolliert.
   3. Externer Bildgenerator (--image-gen-cmd "befehl {prompt} {out}"), z. B. eigenes Skript für eine Bild-KI.
   4. Offline-Generator reelkit/art.py (immer verfügbar, selbst erzeugt, rechtefrei).
-Pinterest wird NICHT heruntergeladen: Pinterest ist keine Lizenzquelle. Pins dienen als Moodboard-Links
-im Report; wer ein Pinterest-Bild nutzen will, klärt die Rechte beim Urheber und legt es in den Asset-Ordner.
+Pinterest-Bilder gehören ihren Urhebern; Pin-Link und Pinner werden im Rechte-Protokoll festgehalten.
 """
 import json
 import os
@@ -20,6 +20,7 @@ import urllib.request
 from PIL import Image
 
 from . import art
+from .pinterest import PinterestSource
 from .concepts import STYLE_QUERY_SUFFIX
 from .util import log, warn
 
@@ -211,21 +212,25 @@ def external_generate(cmd_tpl, slot, dest):
         return None
 
 
-def resolve_assets(edl, work, assets_dir=None, online=False, gen_cmd=None, force=False, allow_unlicensed=False):
+def resolve_assets(edl, work, assets_dir=None, online=False, gen_cmd=None, force=False, allow_unlicensed=False,
+                   pinterest=False):
     os.makedirs(os.path.join(work, "assets"), exist_ok=True)
-    user = UserAssets(assets_dir, allow_unlicensed)
+    user = UserAssets(assets_dir, allow_unlicensed or pinterest)
+    pins = PinterestSource(pinterest, work)
     net = OnlineSources(online)
     ledger = []
     counts = {}
     for cell, track in enumerate(edl["tracks"]):
         for i, slot in enumerate(track):
-            if slot.get("asset") and os.path.exists(slot["asset"]) and not force:
+            upgrade = pinterest and slot.get("rights", {}).get("method") == "procedural" and not pins.dead
+            if slot.get("asset") and os.path.exists(slot["asset"]) and not force and not upgrade:
                 ledger.append(dict(slot.get("rights", {}), cell=cell, file=slot["asset"], start=slot["start"],
                                    query=slot["q"]))
                 counts["cache"] = counts.get("cache", 0) + 1
                 continue
             dest = os.path.join(work, "assets", f"c{cell}_{i:02d}_{slot['art']}_{slot['style']}.jpg")
-            res = user.match(slot) or net.fetch(slot, dest) or external_generate(gen_cmd, slot, dest)
+            res = (user.match(slot) or pins.fetch(slot, dest) or net.fetch(slot, dest)
+                   or external_generate(gen_cmd, slot, dest))
             if res is None:
                 art.generate(slot["art"], slot["style"], dest, seed=cell * 100 + i, anchor=CELL_ANCHOR[cell])
                 res = dest, {"status": "green", "license": "selbst generiert (reelkit/art.py)", "source": "offline",

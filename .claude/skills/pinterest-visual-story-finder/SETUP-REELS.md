@@ -25,7 +25,10 @@ Wichtige Optionen:
 - `--script skript.txt`: korrigiert das Transkript (Schreibweise) oder ersetzt einen fehlenden Spracherkenner
 - `--assets ordner/`: eigene oder lizenzierte Bilder (empfohlen für den Referenz-Look), Lizenzen in `assets.json`:
   `[{"file": "dollar.jpg", "tags": ["dollar","money"], "license": "CC0", "source": "https://…", "author": "…"}]`
-  Lizenz `pinterest`/`unknown` wird ausgeschlossen (außer `--allow-unlicensed` für private Entwürfe).
+  Lizenz `pinterest`/`unknown` wird ohne `--pinterest`/`--allow-unlicensed` ausgeschlossen.
+- `--pinterest`: Bilder direkt auf Pinterest suchen, nach Ästhetik bewerten und herunterladen (Standard-Empfehlung).
+  Braucht Zugriff auf `www.pinterest.com` und `i.pinimg.com`. Optional für den Browser-Fallback:
+  `.venv/bin/pip install playwright && .venv/bin/playwright install chromium`
 - `--online`: Openverse + Wikimedia Commons (nur kommerziell nutzbare Lizenzen, Attribution im Report)
 - `--image-gen-cmd 'python gen.py --prompt {prompt} --out {out}'`: eigener KI-Bildgenerator für fehlende Motive
 - `--music track.mp3`, `--sfx-dir sfx/`, `--no-sfx`, `--highlight F5C542`
@@ -35,7 +38,8 @@ Wichtige Optionen:
 ## Ergebnis
 ```
 mein_reel/final.mp4          1080x1920, 30 fps, H.264 High, yuv420p, AAC 48 kHz, ~-14 LUFS, max. 16 Mbit/s
-mein_reel/report.md          Szenen, Bildwechsel, Quellen, Rechte, Pinterest-Moodboard-Links, Hinweise
+mein_reel/report.md          Szenen, Bildwechsel, verwendete Pins (Links), Quellen, Hinweise
+mein_reel/work/assets/*_kandidaten.jpg   Pinterest-Kandidaten je Bildplatz (#0 = gewählt)
 mein_reel/bildrechte.csv     Rechte-Protokoll pro Bild
 mein_reel/untertitel.srt     Untertitel-Datei
 mein_reel/project/           edl.json, transcript.json, mix.wav, voice_proc.wav, sfx.wav, images/,
@@ -51,6 +55,10 @@ Freistellung ≈ 8 fps, Rendering ≈ 6–8 fps, Gesamtlauf ≈ 4–5 Minuten.
   (z. B. CapCut „Hintergrund entfernen“ als Alpha-Export, Runway, RobustVideoMatting) und `--matte-video` nutzen.
 - Ohne Bildquellen erzeugt der Offline-Generator stilisierte Motive (dunkel/vintage/naiv/barock). Den
   fotografischen Look des Referenz-Reels erreichen nur echte Fotos/Gemälde (`--assets`, `--online`).
-- Pinterest wird bewusst nicht automatisch heruntergeladen (keine Lizenz). Pins dienen als Moodboard.
+- Pinterest hat keine offizielle öffentliche Such-API. `reelkit/pinterest.py` nutzt den internen Such-Endpunkt der
+  Website, ersatzweise die HTML-Suchseite oder einen Headless-Browser. Ändert Pinterest sein Format, greift der
+  nächste Weg; die Auswahl-Logik ist mit `scripts/selftest_pinterest.py` offline getestet. Gegen das echte Pinterest
+  konnte in der Build-Umgebung nicht getestet werden (Netzwerk gesperrt).
+- Pinterest-Bilder gehören ihren Urhebern; die Nutzung verantwortet der Nutzer. Pin-Links stehen im Report.
 - Themen-Erkennung nutzt ein Stichwort-Lexikon (`reelkit/concepts.py`, DE/EN). Für bessere Motivwahl prüft
   Claude die EDL nach `--stop-after plan` und passt Motive/Bilder an.

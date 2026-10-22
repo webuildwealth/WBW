@@ -91,7 +91,7 @@ def write_project(edl, work, out_dir, ledger, spec, settings):
                 if sc["start"] - 0.01 <= it["start"] < sc["end"]:
                     trig = f" (Auslöser: „{it['trigger']}“)" if it.get("anim") == "swap" else ""
                     md.append(f"- {it['start']:.2f}s {cells[c]}: {it['art']} / {it['style']}{trig}")
-        md.append("  - Pinterest-Moodboard (Suchanfrage, keine Lizenz): " + ", ".join(
+        md.append("  - Pinterest-Suche: " + ", ".join(
             f"[{q}]({PIN_SEARCH}{quote_plus(q)})" for q in
             {it['q_style'] for tr in edl['tracks'] for it in tr if sc['start'] - 0.01 <= it['start'] < sc['end']}))
     reds = sum(1 for l in ledger if l.get("status") == "red")
@@ -101,6 +101,11 @@ def write_project(edl, work, out_dir, ledger, spec, settings):
     if attrib:
         md += ["", "**Pflicht-Namensnennung (in die Caption übernehmen):**"] + [
             f"- {l.get('attribution') or (l.get('author', '') + ' – ' + l.get('license', ''))}" for l in attrib]
+    pins = [l for l in ledger if l.get("method") == "pinterest"]
+    if pins:
+        md += ["", f"**Verwendete Pinterest-Pins ({len(pins)}):**"] + [
+            f"- Zelle {l.get('cell')} ab {l.get('start', 0):.1f}s: [{(l.get('title') or 'Pin')[:60]}]({l.get('source')})"
+            + (f" · Pinner: {l['author']}" if l.get("author") else "") for l in pins]
     md += ["", "## Hinweise"] + ([f"- {w}" for w in WARNINGS] or ["- keine"])
     md += ["", "## Nachbearbeiten",
            "- `project/edl.json` bearbeiten (Zeiten, Motive, `asset`-Pfade, Layout-Werte) und denselben Befehl erneut ausführen –"

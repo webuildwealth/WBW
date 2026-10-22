@@ -30,6 +30,8 @@ def main():
     p.add_argument("--whisper-model", default=os.environ.get("REELKIT_WHISPER_MODEL", "small"),
                    help="faster-whisper Modellname (tiny/base/small/medium/large-v3) oder lokaler Pfad")
     p.add_argument("--assets", help="Ordner mit eigenen/lizenzierten Bildern (+ optional assets.json)")
+    p.add_argument("--pinterest", action="store_true",
+                   help="Bilder auf Pinterest suchen, ästhetisch bewerten und verwenden (braucht Zugriff auf pinterest.com)")
     p.add_argument("--online", action="store_true", help="Openverse/Wikimedia (nur kommerziell nutzbare Lizenzen) durchsuchen")
     p.add_argument("--allow-unlicensed", action="store_true",
                    help="Assets mit ungeklärten Rechten (z. B. Pinterest) zulassen – nur für private Entwürfe")
@@ -97,7 +99,7 @@ def main():
 
     # 5-7 Bilder + Rechte
     ledger = A.resolve_assets(edl, work, a.assets, a.online, a.image_gen_cmd, force=f("assets"),
-                              allow_unlicensed=a.allow_unlicensed)
+                              allow_unlicensed=a.allow_unlicensed, pinterest=a.pinterest)
     save_json(edl_p, edl)
     if a.stop_after == "assets":
         return 0

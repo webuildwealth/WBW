@@ -10,13 +10,16 @@ description: Automatisierter Instagram-Reels-Editor plus Pinterest-Bildrecherche
 Wenn der Nutzer ein Video hochlädt/angibt, IMMER diese Pipeline ausführen, nicht nur planen.
 
 1. Einmalig: `bash scripts/setup_reels.sh` (Details/Abhängigkeiten: `SETUP-REELS.md`).
-2. Plan erzeugen: `.venv/bin/python scripts/make_reel.py VIDEO -o OUT --lang de [--script skript.txt] [--assets ordner] [--online] --stop-after plan`
-3. `OUT/work/edl.json` prüfen: Passen Szenen-Themen und Motive zur Aussage? Bei Bedarf `concept`/`art`/`style`/`q`
-   anpassen. Wenn Webzugriff besteht: lizenzierte Bilder (Wikimedia, Museen mit Open Access, Unsplash/Pexels,
-   eigene Fotos) suchen, in einen Asset-Ordner legen, Lizenz in `assets.json` eintragen. Pinterest-Links aus
-   Modus B nur als Moodboard verwenden, nie als Bildquelle ohne geklärte Rechte.
-4. Rendern: denselben Befehl ohne `--stop-after` ausführen (Transkript/Freistellung kommen aus dem Cache).
-5. Ergebnis prüfen: Vorschau-Frames mit `--previews 60` ansehen, `OUT/report.md` lesen (Spezifikations-Checks,
+2. Plan erzeugen: `.venv/bin/python scripts/make_reel.py VIDEO -o OUT --lang de --pinterest [--script skript.txt] [--assets ordner] --stop-after plan`
+   Standard ist `--pinterest`: Bilder werden direkt auf Pinterest gesucht, ästhetisch bewertet und heruntergeladen.
+3. `OUT/work/edl.json` prüfen: Passen Szenen-Themen und Motive zur Aussage? Die Suchbegriffe `q` sind der Hebel für
+   catchy Bilder: konkret, englisch, mit Stilwort (z. B. "single dollar bill crumpled black paper aesthetic",
+   "baroque painting white horse gold"). Bei Bedarf `concept`/`art`/`style`/`q` anpassen.
+4. Bilder holen: `… --stop-after assets` ausführen, dann die Kontaktbögen `OUT/work/assets/*_kandidaten.jpg`
+   ansehen (Kandidat #0 ist gewählt). Passt ein anderer Kandidat besser, dessen Datei (`*_pinN.img`) als `asset` des
+   Slots in `edl.json` eintragen. Generische Stockfotos, Text-Pins und Wasserzeichen ersetzen.
+5. Rendern: denselben Befehl ohne `--stop-after` ausführen (Transkript/Freistellung/Bilder kommen aus dem Cache).
+6. Ergebnis prüfen: Vorschau-Frames mit `--previews 60` ansehen, `OUT/report.md` lesen (Spezifikations-Checks,
    Fallbacks, Rechte 🔴/🟡). Dem Nutzer `OUT/final.mp4` liefern und alle Hinweise aus dem Report ehrlich nennen.
 
 | Schritt | Umsetzung (`reelkit/`) |
@@ -24,7 +27,7 @@ Wenn der Nutzer ein Video hochlädt/angibt, IMMER diese Pipeline ausführen, nic
 | Import, 30 fps, Rotation | `ingest.py` (FFmpeg) |
 | Transkription + Wort-Timing | `transcribe.py`: faster-whisper → pocketsphinx (EN) → Skript + Sprachaktivität |
 | Inhalt → Motive → EDL | `plan.py` + `concepts.py`: neue Collage bei Themenwechsel, Zellwechsel auf Schlüsselwörter |
-| Bilder + Rechte | `assets.py`: eigene Assets → Openverse/Wikimedia → externer Generator → `art.py` (offline, rechtefrei) |
+| Bilder | `pinterest.py` (Suche, Ästhetik-Score, Download, Duplikat-Schutz) + `assets.py`: eigene Assets → Pinterest → Openverse/Wikimedia → externer Generator → `art.py` (offline, rechtefrei) |
 | Freistellung | `matte.py`: MediaPipe-Mehrklassen-Segmentierung, Guided Filter, zeitliche Glättung; `--matte-video` extern |
 | Collage, Sprecher, Kontur, Zooms, Untertitel | `compose.py` |
 | Stimme, SFX, Musik-Ducking, -14 LUFS | `audio.py` |
@@ -40,7 +43,7 @@ Aus einem Reel-Skript entsteht eine **visuelle Geschichte**: Szenenplan, konkret
 ## Harte Regeln
 
 1. **Niemals Pinterest-Links erfinden.** Ein Link gilt nur als `VERIFIZIERT`, wenn er in dieser Sitzung wirklich abgerufen wurde (WebFetch/Browser/`scripts/verify_pin.py`). Alles andere ist `SUCHANFRAGE` und wird so beschriftet.
-2. **Keine Rechte-Behauptungen ohne Prüfung.** Pinterest ist keine Lizenzquelle. Jedes Bild bekommt einen Rechte-Status nach `references/copyright-check.md`.
+2. **Quellen dokumentieren.** Jedes verwendete Bild wird mit Pin-Link/Quelle protokolliert (`bildrechte.csv`). Keine erfundenen Lizenzangaben.
 3. **Keine generischen Stockbilder:** keine lächelnden Businessleute, keine Glühbirnen/Münztürme/Pfeil-nach-oben-Icons, keine KI-Finanz-Klischees.
 4. **Story vor Galerie:** Jedes Bild muss eine Rolle in der Dramaturgie haben.
 

@@ -8,3 +8,4 @@ faster-whisper>=1.0
 pocketsphinx>=5.0
 # nur für scripts/make_test_video.py
 scikit-image>=0.22
+# optional (Pinterest-Browser-Fallback): playwright
