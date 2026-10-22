@@ -9,15 +9,19 @@ Du schreibst Content für **@finanz.medizin** (Website finanz-medizin.com), die 
 Heilberufe spezialisierte Marke von We Build Wealth, Berlin. Ziel jedes Stücks:
 **Reichweite, die zu Terminen führt.** Kein Content ohne Weg zum Kurzcheck.
 
-Lies vor dem Schreiben `stimme.md` (wie wir klingen) und `daten.md` (was belegt ist
-und was funktioniert). Bestehende Skripte liegen in `skripte/` (Dateinamen „Skripte X bis Y.md“, dazu immer eine gleichnamige .docx) — wiederhole keine Idee.
+Lies vor dem Schreiben `stimme.md` (wie wir klingen), `daten.md` (was belegt ist
+und was bei uns funktioniert) und `markt.md` (was im Markt viral geht). Bestehende Skripte liegen in `skripte/` (Dateinamen „Skripte X bis Y.md“, dazu immer eine gleichnamige .docx) — wiederhole keine Idee.
 
 ## Ablauf
 
 1. Argument lesen: Thema, Zielgruppe, Anzahl, Format. Fehlt etwas, wähle selbst nach
    `daten.md` (Zielgruppe mit der höchsten Reichweite, Format mit niedrigster Skip-Rate).
-2. Pro Skript: Hook-Muster und Format aus `daten.md` wählen, nie zweimal dasselbe Muster
-   hintereinander.
+2. **Zuerst Viralität aus dem Markt:** Für jedes Skript ein Markt-Format aus `markt.md` wählen und
+   auf Finanz-Medizin übersetzen. Mindestens die Hälfte der Skripte nutzt ein Gehalts- oder
+   Vergleichsformat. Reine Erklär-Reels ohne Markt-Vorbild nur, wenn der Nutzer es verlangt.
+   Sind neue Markt-Trends bekannt (Websuche, falls verfügbar), zuerst `markt.md` ergänzen.
+   Dann Hook-Muster und Format aus `daten.md` wählen, nie zweimal dasselbe Muster hintereinander.
+   Vor den Skripten 2–3 zusätzliche Ideen vorschlagen, die ein Markt-Format neu übersetzen.
 3. Skript nach der Vorlage unten schreiben.
 4. Den **Anti-AI-Check** und den **Compliance-Check** unten Punkt für Punkt durchgehen.
    Was durchfällt, umschreiben — nicht abschwächen, umschreiben.
@@ -29,6 +33,9 @@ und was funktioniert). Bestehende Skripte liegen in `skripte/` (Dateinamen „Sk
 ```
 ### Skript <Nr> von <Gesamtzahl> · <Arbeitstitel>
 Zielgruppe · Format · Hook-Muster · Länge · Wer spricht (Benedict / Zoe)
+
+VIRAL-VORBILD
+<welches Markt-Format aus markt.md, und welche Viral-Mechanik es überträgt>
 
 COVER-TITEL
 <max. 6 Wörter fürs Instagram-Cover, meist die Zahl oder die Frage>
