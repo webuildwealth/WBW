@@ -14,7 +14,7 @@ VIRAL-VORBILD
 Feindbild Vertrieb (White Coat Investor: „doctors suck at money“). Bei uns läuft die Parodie am besten (Ø 1.865 Aufrufe, 22 Shares). Neue Folge der gleichen Mechanik: der Berater, der sich als „vom Fach“ verkauft.
 
 COVER-TITEL
-„Meine Tante ist Krankenschwester“
+„Mein Hausarzt ist mein Kumpel“
 
 VISUELLE HOOK
 B sitzt im weißen Kittel schief über dem Hemd hinter einem Schreibtisch, Stethoskop falsch herum um den Hals. Z gegenüber, Arme verschränkt, Augenbraue oben.
@@ -23,7 +23,7 @@ EMOTION
 Fremdscham und Wiedererkennen, dann Schadenfreude. Schnell, überdreht, B ganz selbstsicher, Z trocken.
 
 HOOK
-Gesprochen: B: „Ich kenn mich bei Ärzten total aus. Meine Tante ist Krankenschwester.“
+Gesprochen: B: „Ich kenn mich bei Ärzten total aus. Mein Hausarzt ist mein Kumpel.“
 Einblendung: Berater, Folge 1
 Bild: Totale, B im Kittel, Z schaut in die Kamera.
 
@@ -88,25 +88,25 @@ Hinweis: Grenzsteuersatz 42 % plus Soli = 44,3 %, Musterbetrachtung 2026. Gespr�
 
 ---
 
-### Skript 33 von 35 · Zwei Pflegekräfte, 55 € Unterschied
-Pflege · Zwei-Personen-Vergleich · Identität zuerst · 25 s · Z
+### Skript 33 von 35 · Zwei Kolleginnen, 55 € Unterschied
+Alle Angestellten im Gesundheitswesen (angestellte Ärzte, MFA, Pflege) · Zwei-Personen-Vergleich · Situation zuerst · 25 s · Z
 
 VIRAL-VORBILD
-Zwei Menschen, gleiche Lage (US-Studienkredit-Videos): Entscheidung wird sichtbar. Dazu unsere stärkste Spur, Pflege-Identität (Ø 2.085 Aufrufe, Skip 39,8 %).
+Zwei Menschen, gleiche Lage (US-Studienkredit-Videos): Entscheidung wird sichtbar. Dazu die Situations-Hook-Mechanik, die bei uns am besten läuft (Skip 32,5–39,8 %).
 
 COVER-TITEL
-Zwei in der Pflege, 55 € Unterschied
+Zwei Kolleginnen, 55 € Unterschied
 
 VISUELLE HOOK
-Z in Kasack, zwei Kaffeebecher nebeneinander: links ein 55-€-Schein, rechts ein 115-€-Schein. Z schiebt die zwei Becher zusammen, als wären es zwei Kolleginnen am Dienstzimmertisch.
+Z im weißen Kittel am Teamtisch, zwei Kaffeebecher vor sich: links ein 55-€-Schein, rechts ein 115-€-Schein. Sie schiebt die Becher zusammen, als wären es zwei Kolleginnen in der Pause.
 
 EMOTION
-Wiedererkennen („ich kenn das von meinen Mädels“), dann Aha. Warm, ruhig, kurze Sätze, kein Zeigefinger.
+Wiedererkennen („kenn ich aus meinem Team“), dann Aha. Warm, ruhig, kurze Sätze, kein Zeigefinger.
 
 HOOK
-Gesprochen: „Zwei Pflegekräfte, gleicher Dienstplan.“
+Gesprochen: „Zwei Kolleginnen, gleicher Dienstplan.“
 Einblendung: 55 € weniger Netto = 115 € im Vertrag
-Bild: Z hinter den zwei Bechern, Stationsflur im Hintergrund unscharf.
+Bild: Z am Teamtisch, Praxis- oder Klinikflur unscharf im Hintergrund.
 
 BODY
 „Die eine macht nichts. Sie hat Ende des Monats 55 € mehr auf dem Konto.“
@@ -117,11 +117,11 @@ PAYOFF
 „Gleicher Dienst, gleicher Stress. Nur eine denkt an später.“
 
 CTA
-„Schick das deiner Stationskollegin.“
+„Schick das der Kollegin, die immer sagt, dafür bleibt kein Geld.“
 
 CAPTION
-Ihr rennt für andere, wer rennt für euch? 🩺 55 € weniger Netto, 115 € im Vertrag. Bei kirchlichen Trägern und im öffentlichen Dienst gelten oft andere Regeln, schau bei dir nach ;)
-#pflege #betriebsrente #finanzmedizin
+Wer kennt‘s nicht, im Team macht jede was anderes mit dem Gehalt 🩺 55 € weniger Netto, 115 € im Vertrag. Bei kirchlichen Trägern und im öffentlichen Dienst gelten oft andere Regeln, schau bei dir nach ;)
+#heilberufe #betriebsrente #finanzmedizin
 
 Hinweis: Musterwert aus `daten.md` (100 € Umwandlung, ca. 55 € weniger Netto, 15 % AG-Zuschuss, § 3 Nr. 63 EStG, § 1a Abs. 1a BetrAVG). Gilt nicht für jeden Arbeitgeber.
 

@@ -16,7 +16,7 @@ und was bei uns funktioniert) und `markt.md` (was im Markt viral geht). Bestehen
 
 0. Gibt es in `../social-media-strategie/berichte/` einen Review, den neuesten lesen und seine Empfehlungen und Skript-Ideen vorrangig umsetzen.
 1. Argument lesen: Thema, Zielgruppe, Anzahl, Format. Fehlt etwas, wähle selbst nach
-   `daten.md` (Zielgruppe mit der höchsten Reichweite, Format mit niedrigster Skip-Rate).
+   `daten.md` (Format mit niedrigster Skip-Rate). **Zielgruppe: alle Heilberufe** (Ärzte, Praxisinhaber, MFA, Pflege) ausgewogen ansprechen, kein Schwerpunkt auf einer Gruppe, solange die Zielgruppenansprache noch erarbeitet wird (Vorgabe 22.10.2026). Pflege nur, wenn der Nutzer es verlangt oder ein Skript bewusst mehrere Gruppen abholt.
 2. **Zuerst Viralität aus dem Markt:** Für jedes Skript ein Markt-Format aus `markt.md` wählen und
    auf Finanz-Medizin übersetzen. Mindestens die Hälfte der Skripte nutzt ein Gehalts- oder
    Vergleichsformat. Reine Erklär-Reels ohne Markt-Vorbild nur, wenn der Nutzer es verlangt.

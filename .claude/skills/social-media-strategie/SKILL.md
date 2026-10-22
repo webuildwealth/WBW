@@ -71,6 +71,9 @@ Was wir nicht messen konnten oder nur vermuten.
 
 ## Regeln
 
+- **Zielgruppe: alle Heilberufe.** Keine Gruppe (z. B. Pflege) zum Schwerpunkt machen, auch wenn deren Reels
+  gerade besser laufen. Zahlen nach Zielgruppe auswerten, Empfehlungen aber über Format, Hook und Situation
+  ableiten, nicht über „mehr für Gruppe X“. Vorgabe vom 22.10.2026, gilt bis der Nutzer sie ändert.
 - **Nur echte Zahlen.** Messwerte aus Insights, Markttrends mit Quelle. Alles andere als Hypothese markieren.
 - **Trends mit Haltung wählen.** Nicht jedem Trend folgen: Er muss zu Stimme (`stimme.md`)
   und Zielgruppe passen und sich ohne Compliance-Verstoß umsetzen lassen.
