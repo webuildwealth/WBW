@@ -231,3 +231,13 @@ object-src 'none'\
   to = "/datenschutz.html"
   status = 301
   force = true
+
+# -----------------------------------------------------------------------------
+#  Interne Arbeitsdateien nicht ausliefern. Der Ordner .claude enthaelt den
+#  Content-Generator (Skill und Skripte) und gehoert nicht auf die Website.
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/.claude/*"
+  to = "/404.html"
+  status = 404
+  force = true
