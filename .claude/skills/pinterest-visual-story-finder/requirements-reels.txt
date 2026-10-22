@@ -1,0 +1,10 @@
+# Pflicht
+numpy>=1.26
+pillow>=10
+opencv-python-headless>=4.9
+mediapipe>=0.10.14
+# Transkription (mindestens eines; faster-whisper empfohlen)
+faster-whisper>=1.0
+pocketsphinx>=5.0
+# nur für scripts/make_test_video.py
+scikit-image>=0.22

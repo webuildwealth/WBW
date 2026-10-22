@@ -7,5 +7,5 @@ out="${1:-$here/../../../dist/$name.zip}"
 mkdir -p "$(dirname "$out")"
 rm -f "$out"
 cd "$(dirname "$here")"
-zip -r -q "$out" "$name" -x '*/__pycache__/*' '*.pyc' '*/.DS_Store'
+zip -r -q "$out" "$name" -x '*/__pycache__/*' '*.pyc' '*/.DS_Store' "$name/.venv/*" "$name/models/*"
 echo "ZIP: $(cd "$(dirname "$out")" && pwd)/$(basename "$out")"

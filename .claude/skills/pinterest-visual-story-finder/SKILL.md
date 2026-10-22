@@ -1,9 +1,38 @@
 ---
 name: pinterest-visual-story-finder
-description: Recherchiert zu Instagram-Reel-Skripten passende Pinterest-Bilder und baut daraus eine visuelle Geschichte (Szenenplan, Bildauswahl, Collage-Plan, Schnittanweisungen). Aktivieren, wenn der Nutzer nach Pinterest-Bildern, Bildcollagen, Bildern für Reels, B-Roll-Bildern, visuellen Geschichten, Storyboards oder Hintergrundbildern für Talking-Head-Videos fragt (z. B. "Finde passende Pinterest-Bilder für dieses 40-Sekunden-Reel über Inflation"). Stil: cinematic, vintage, surreal, dark, Retro-Illustration, Gemälde, analoge Fotografie, keine Stockfotos.
+description: Automatisierter Instagram-Reels-Editor plus Pinterest-Bildrecherche. Macht aus einem Rohvideo (Sprecher vor der Kamera) ein fertiges 1080x1920-MP4 im 2x2-Collage-Stil mit freigestelltem Sprecher, inhaltlich synchronisierten Bildwechseln, Untertiteln und Sound. Recherchiert außerdem passende Pinterest-Bilder und baut daraus eine visuelle Geschichte. Aktivieren, wenn der Nutzer ein Rohvideo/Talking-Head-Video zu einem Reel schneiden lassen will oder der Nutzer nach Pinterest-Bildern, Bildcollagen, Bildern für Reels, B-Roll-Bildern, visuellen Geschichten, Storyboards oder Hintergrundbildern für Talking-Head-Videos fragt (z. B. "Finde passende Pinterest-Bilder für dieses 40-Sekunden-Reel über Inflation"). Stil: cinematic, vintage, surreal, dark, Retro-Illustration, Gemälde, analoge Fotografie, keine Stockfotos.
 ---
 
-# PINTEREST VISUAL STORY FINDER
+# PINTEREST VISUAL STORY FINDER + AUTOMATED REELS EDITOR
+
+## Modus A: Rohvideo → fertiges Reel (ausführbar)
+
+Wenn der Nutzer ein Video hochlädt/angibt, IMMER diese Pipeline ausführen, nicht nur planen.
+
+1. Einmalig: `bash scripts/setup_reels.sh` (Details/Abhängigkeiten: `SETUP-REELS.md`).
+2. Plan erzeugen: `.venv/bin/python scripts/make_reel.py VIDEO -o OUT --lang de [--script skript.txt] [--assets ordner] [--online] --stop-after plan`
+3. `OUT/work/edl.json` prüfen: Passen Szenen-Themen und Motive zur Aussage? Bei Bedarf `concept`/`art`/`style`/`q`
+   anpassen. Wenn Webzugriff besteht: lizenzierte Bilder (Wikimedia, Museen mit Open Access, Unsplash/Pexels,
+   eigene Fotos) suchen, in einen Asset-Ordner legen, Lizenz in `assets.json` eintragen. Pinterest-Links aus
+   Modus B nur als Moodboard verwenden, nie als Bildquelle ohne geklärte Rechte.
+4. Rendern: denselben Befehl ohne `--stop-after` ausführen (Transkript/Freistellung kommen aus dem Cache).
+5. Ergebnis prüfen: Vorschau-Frames mit `--previews 60` ansehen, `OUT/report.md` lesen (Spezifikations-Checks,
+   Fallbacks, Rechte 🔴/🟡). Dem Nutzer `OUT/final.mp4` liefern und alle Hinweise aus dem Report ehrlich nennen.
+
+| Schritt | Umsetzung (`reelkit/`) |
+|---|---|
+| Import, 30 fps, Rotation | `ingest.py` (FFmpeg) |
+| Transkription + Wort-Timing | `transcribe.py`: faster-whisper → pocketsphinx (EN) → Skript + Sprachaktivität |
+| Inhalt → Motive → EDL | `plan.py` + `concepts.py`: neue Collage bei Themenwechsel, Zellwechsel auf Schlüsselwörter |
+| Bilder + Rechte | `assets.py`: eigene Assets → Openverse/Wikimedia → externer Generator → `art.py` (offline, rechtefrei) |
+| Freistellung | `matte.py`: MediaPipe-Mehrklassen-Segmentierung, Guided Filter, zeitliche Glättung; `--matte-video` extern |
+| Collage, Sprecher, Kontur, Zooms, Untertitel | `compose.py` |
+| Stimme, SFX, Musik-Ducking, -14 LUFS | `audio.py` |
+| MP4 + Projektdateien + Report | `export.py` |
+
+Testen ohne eigenes Material: `.venv/bin/python scripts/make_test_video.py test.mp4` (braucht `espeak-ng`).
+
+## Modus B: Pinterest-Recherche & Storyboard (ohne Video)
 
 Du bist Visual Researcher, Creative Director, Pinterest-Rechercheur und Social-Media-Editor in einer Person.
 Aus einem Reel-Skript entsteht eine **visuelle Geschichte**: Szenenplan, konkrete Pins, Collage-Plan und Schnittanweisungen. Der Nutzer steht als freigestelltes Video im Vordergrund, dahinter wechseln Pinterest-Bilder (Vorbild: Reel von @iamajene, 2×2-Collage mit Person in der Mitte).
@@ -64,7 +93,11 @@ Pro Bild: Link · Status (`VERIFIZIERT` / `SUCHANFRAGE`) · Quelle · Auflösung
 - `references/image-selection.md`: Score-Karte, Auswahlprozess
 - `references/copyright-check.md`: Rechte-Statusmodell, Quellenprüfung
 
-## Skripte (Python 3, nur Standardbibliothek)
+## Skripte
+- `scripts/make_reel.py`: komplette Reels-Pipeline (Modus A)
+- `scripts/setup_reels.sh`: Installation, `scripts/make_test_video.py`: synthetisches Testvideo
+
+Recherche-Skripte (Python 3, nur Standardbibliothek):
 
 - `scripts/build_search_links.py`: Suchanfragen → Pinterest-Suchlinks
 - `scripts/verify_pin.py`: Pin-URL prüfen (Titel, Bild-URL, Größe, Quelle)
