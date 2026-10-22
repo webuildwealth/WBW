@@ -156,4 +156,28 @@
     c.innerHTML = `<img src="${d.src}" style="width:100%;height:100%;object-fit:cover">${d.credit ? `<div style="position:absolute;left:0;right:0;bottom:0;padding:10px 16px;font:500 18px Inter;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.6))">${d.credit}</div>` : ''}`;
     host.appendChild(c); return (lt) => { const p = P(lt, 0, 0.3); c.style.opacity = p; c.style.transform = `scale(${1.03 - 0.03 * p})`; };
   };
+  /* WISCH-UEBERGANG: zwei diagonale Markenbalken fegen durchs Bild, kurzer Logo-Blitz (Abschnittswechsel, ~0,42 s) */
+  O.wipe = (host, d) => {
+    const c = mk('div'); c.style.cssText = 'width:1080px;height:1920px;position:relative;overflow:hidden';
+    const col = d.tone === 'navy' ? [N5, N] : [S, R];
+    const b1 = mk('div'), b2 = mk('div'), logo = mk('img');
+    b1.style.cssText = `position:absolute;left:-400px;top:-300px;width:1900px;height:2600px;background:${col[0]};transform-origin:center`;
+    b2.style.cssText = `position:absolute;left:-400px;top:-300px;width:1900px;height:2600px;background:${col[1]};transform-origin:center`;
+    logo.src = '../assets/img/mark-finanz-medizin.png'; logo.style.cssText = 'position:absolute;left:440px;top:860px;width:200px;height:200px;border-radius:50%;background:#F4F0EF;padding:12px';
+    [b1, b2, logo].forEach((n) => c.appendChild(n)); host.appendChild(c);
+    return (lt) => {
+      const D = 0.42; const x = (k) => { const p = cl((lt - k) / D); return -2200 + 4400 * E.inOutCubic(p); };
+      b1.style.transform = `rotate(-16deg) translateX(${x(0)}px)`; b2.style.transform = `rotate(-16deg) translateX(${x(0.06)}px)`;
+      const pl = cl(1 - Math.abs(lt - 0.24) / 0.1); logo.style.opacity = pl; logo.style.transform = `scale(${0.7 + 0.3 * pl})`;
+    };
+  };
+
+  /* LABEL: kleine Pille mit Icon neben dem Kopf (Meso-Rhythmus, Kontrast zu grossen Elementen) */
+  O.lowerthird = (host, d) => {
+    const c = mk('div'); c.style.cssText = 'width:520px;height:120px;display:flex;align-items:center';
+    const pill = mk('div'); pill.style.cssText = `display:flex;align-items:center;gap:16px;background:${N};color:#fff;border-radius:999px;padding:14px 30px 14px 14px;box-shadow:0 16px 40px rgba(0,0,0,.4);max-width:520px;overflow:hidden;clip-path:inset(0 100% 0 0 round 999px)`;
+    pill.innerHTML = `<div class="ico" style="width:72px;height:72px;background:${S};flex:none">${svg(d.icon || 'check', 0)}</div><div class="d" style="font-size:46px;white-space:nowrap;color:#fff">${richHTML(d.text)}</div>`;
+    c.appendChild(pill); host.appendChild(c); fit(pill.children[1], 390, 70, 22);
+    return (lt) => { const p = P(lt, 0, 0.4, E.outCubic); pill.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0 round 999px)`; setSvg(pill.querySelector('svg'), '', P(lt, 0.25, 0.35)); };
+  };
 })();

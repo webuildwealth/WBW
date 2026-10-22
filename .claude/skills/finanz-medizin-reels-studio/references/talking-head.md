@@ -4,13 +4,17 @@ Ein Befehl, kein JSON:
 ```bash
 python3 scripts/talking_head.py mein_rohvideo.mov --out out/reel-01
 ```
-Optionen: `--zoom subtle|strong|off` · `--music none|bed|<lizenzierte Datei>` · `--no-cut` · `--plan-only` (stoppt nach der Planung, `plan.md` lesen) · `--plan plan.json` (geprüften Plan verwenden).
+Mit deinem Skript (empfohlen):
+```bash
+python3 scripts/talking_head.py mein_rohvideo.mov --script mein_skript.txt --out out/reel-01
+```
+Optionen: `--script <txt/md>` · `--images <ordner>` · `--zoom subtle|strong|off` · `--music none|bed|<lizenzierte Datei>` · `--no-cut` · `--plan-only` (stoppt nach der Planung, `plan.md` lesen) · `--plan plan.json` (geprüften Plan verwenden).
 
 ## Pipeline
 | # | Schritt | Technik | Ergebnis |
 |---|---|---|---|
 | 1 | Transkription | sherpa-onnx + NVIDIA **Parakeet TDT 0.6B v3** (offline, Deutsch, Satzzeichen, Token-Zeitstempel) | `work/words_raw.json` |
-| 2 | Jump-Cuts | Pausen > 0,45 s zwischen Wörtern entfernen (0,12 s Vorlauf, 0,18 s Nachlauf, 12-ms-Audio-Fades) | `work/cuts.json`, neu getaktete Wörter |
+| 2 | Jump-Cuts + Takes | verworfene Takes (Satzanfang direkt danach wiederholt) entfernen; Pausen > 0,45 s zwischen Wörtern entfernen (0,12 s Vorlauf, 0,18 s Nachlauf, 12-ms-Audio-Fades) | `work/cuts.json`, neu getaktete Wörter |
 | 3 | 9:16-Smart-Crop | BlazeFace auf 12 Stichproben → Ausschnitt um das mediane Gesicht; Hochkant 9:16 bleibt unverändert | `work/proxy.mp4` 1080×1920@30 |
 | 4 | Analyse | 5 fps: Gesicht (geglättet) + Personen-Belegung (Selfie-Multiclass, Raster 40 px) | `work/analysis.npz` |
 | 5 | Planung | `planner.py`: Sätze → Struktur (Hook, Listen, Kategorien) → Visual-Auswahl mit Begründung → Zooms → Layout | `plan.json`, `plan.md` |
@@ -19,6 +23,19 @@ Optionen: `--zoom subtle|strong|off` · `--music none|bed|<lizenzierte Datei>` �
 | 8 | Ton | Stimme: Hochpass, leichte Rauschminderung, Kompressor; SFX je Einblendung; optional Musik mit Ducking; −14 LUFS | `work/mix.wav` |
 | 9 | Composite | Video → back → **freigestellte Person** → front | `<name>_reel.mp4`, `captions.srt`, `poster.jpg` |
 | 10 | QA | Technik, Lautheit, **Gesicht frei (gegen gemessenes Tracking)**, Sichtbarkeit hinterer Elemente, Vielfalt, Abdeckung, Caption-Sync | `qa-report.md` |
+
+## Skript-Abgleich (`--script`)
+Das Transkript liefert die Zeit, dein Skript die Schreibweise:
+- Wörter, die zur Aussprache passen (Zeichenähnlichkeit ≥ 0,72), werden durch die Skriptschreibweise ersetzt. Beispiel: „Ravi kann“ → „Ravikant“, Fachbegriffe, Zahlformate.
+- Frei Gesprochenes bleibt erhalten, denn die Untertitel zeigen immer, was wirklich gesagt wurde.
+- Skriptstellen, die nicht gesprochen wurden, werden ignoriert. `[Regieanweisungen]` und `#`-Zeilen werden übersprungen.
+- Der Plan meldet, wie viel übereinstimmt, korrigiert, frei gesprochen und weggelassen wurde.
+
+## Rhythmus-Regie (Machart der Referenz, gemessen; siehe `reference-style.md` §9)
+- **Mikro (0,4 s):** Wort-Untertitel, Schlüsselwörter größer, farbig und mit Pop.
+- **Meso (≤ 3,2 s):** Lücken ohne Bildwechsel werden gefüllt, im Wechsel mit großer Typo hinter der Person (`kinetic`) und einem kleinen Label vor der Person (`lowerthird`); sonst ein Zoom-Impuls. Nichts wird doppelt gezeigt, maximal ein Füllreiz pro Satz.
+- **Makro (5–8 s):** Wisch-Übergang (`wipe`) + Titel „NR. n/N“ + neues Visual im selben Moment.
+- **Kontrast:** Flexible Typen (Zahl, Ring, Illustration, Typo) wechseln die Ebene, wenn das vorige Element auf derselben lag. Große Elemente wechseln die Seite.
 
 ## Inhaltserkennung (deutsch, regelbasiert)
 | Erkannt an | Kategorie | Visual (Kandidaten, Score) |
@@ -54,3 +71,17 @@ Optionen: `--zoom subtle|strong|off` · `--music none|bed|<lizenzierte Datei>` �
 - Die Matte stammt aus einem 256×256-Modell plus Guided Filter. Feine Haare und schnelle Handbewegungen können ausfransen. Hintergrund-Elemente deshalb nicht hinter wehenden Haaren platzieren.
 - Ein Gesicht wird vorausgesetzt (Einzelsprecher). Mehrere Personen werden nicht unterschieden.
 - Rechenzeit (4 CPU-Kerne): ≈ 6–8 Minuten pro Minute Video, Hauptanteil Freistellung und Ebenen-Rendering.
+
+## So nimmst du auf (damit die Automatik am besten greift)
+| Tipp | Warum |
+|---|---|
+| Hochkant 9:16 (1080×1920 oder 4K), Kamera auf Augenhöhe, **Kopf im mittleren Drittel, Luft über dem Kopf** | Die Elemente hinter dir brauchen Platz links/rechts oberhalb der Schultern. Zu enger Bildausschnitt = kleinere Einblendungen |
+| Ruhiger, gleichmäßiger Hintergrund (Wand, Regal), gutes Licht von vorn | Saubere Freistellung an Haaren und Schultern |
+| Ansteck- oder Richtmikrofon | Transkription und Ton |
+| Struktur laut sagen: „**Fehler Nummer 1** …", „**Mythos:** …", „**Tipp 2:** …", „zu guter Letzt …" | Daraus entstehen Titel, NR-Zähler, Karten und Wisch-Übergänge |
+| Zahlen mit Einheit sagen („**34.000 Euro**", „**2 Prozent**", „**30 Jahre**") | Werden automatisch zu Zahl-, Ring- oder Balken-Animationen |
+| Vergleiche als „**A oder B**" / „**A statt B**" formulieren | Ergibt die VS-Einblendung |
+| Versprecher? Kurz Pause, dann den Satz **von vorn** neu beginnen | Pausen > 0,45 s werden herausgeschnitten; ein abgebrochener oder wiederholter Satzanfang wird als verworfener Take erkannt und entfernt (im Plan aufgelistet) |
+| Ersten Satz als Hook formulieren (≤ 9 Wörter, Zahl oder Gegensatz) | Wird zur Wort-für-Wort-Typo der ersten Sekunden |
+
+**Skript:** einfache Textdatei, so wie du sprichst. Regieanweisungen in `[eckigen Klammern]` sind erlaubt und werden nicht eingeblendet.

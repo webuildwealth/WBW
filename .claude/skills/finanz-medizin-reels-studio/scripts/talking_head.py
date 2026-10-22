@@ -19,6 +19,26 @@ from scipy.io import wavfile  # noqa: E402
 
 def log(msg): print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
 
+def retakes(words):
+    """Verworfene Takes: Satz/Satzanfang wird direkt danach aehnlich neu begonnen -> ersten Versuch entfernen.
+    Rueckgabe: Indizes der zu entfernenden Woerter + Beschreibung."""
+    import difflib
+    sents, cur = [], []
+    for i, w in enumerate(words):
+        cur.append(i)
+        nxt = words[i + 1] if i + 1 < len(words) else None
+        if w["w"][-1:] in ".!?" or (nxt and nxt["t0"] - w["t1"] > 0.7): sents.append(cur); cur = []
+    if cur: sents.append(cur)
+    txt = lambda idx: [planner.norm(words[i]["w"]) for i in idx]
+    drop, notes = set(), []
+    for a, b in zip(sents, sents[1:]):
+        ta, tb = txt(a), txt(b)
+        if len(ta) < 3: continue
+        head = difflib.SequenceMatcher(None, ta, tb[:len(ta)], autojunk=False).ratio()      # Anfang wiederholt?
+        if head >= 0.7 and len(tb) >= len(ta) * 0.8:
+            drop.update(a); notes.append(" ".join(words[i]["w"] for i in a))
+    return drop, notes
+
 def cut_segments(words, dur, max_gap=0.45, pre=0.12, post=0.18):
     """Sprechpausen > max_gap entfernen (Jump-Cuts). Rueckgabe: Segmente im Original + Wort-Timings im neuen Zeitstrahl."""
     if not words: return [(0, dur)], []
@@ -46,7 +66,7 @@ def plan_md(p):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("video"); ap.add_argument("--out", required=True)
     ap.add_argument("--zoom", default="subtle", choices=["subtle", "strong", "off"]); ap.add_argument("--music", default="none")
-    ap.add_argument("--no-cut", action="store_true"); ap.add_argument("--plan-only", action="store_true"); ap.add_argument("--plan"); ap.add_argument("--workers", default="4"); ap.add_argument("--images", help="Ordner mit eigenen/lizenzierten Bildern (Dateiname = Motiv oder Stichwort)")
+    ap.add_argument("--script", help="Skript (Text/Markdown): korrigiert Schreibweise von Fachbegriffen, Namen, Zahlen"); ap.add_argument("--no-cut", action="store_true"); ap.add_argument("--plan-only", action="store_true"); ap.add_argument("--plan"); ap.add_argument("--workers", default="4"); ap.add_argument("--images", help="Ordner mit eigenen/lizenzierten Bildern (Dateiname = Motiv oder Stichwort)")
     a = ap.parse_args()
     out = Path(a.out); work = out / "work"; work.mkdir(parents=True, exist_ok=True); src = Path(a.video).resolve(); T0 = time.time()
     info = vision.probe(src); log(f"Rohvideo: {info['w']}x{info['h']}, {info['dur']:.1f} s")
@@ -56,7 +76,17 @@ def main():
     if not wraw.exists():
         log("Transkribiere (Parakeet TDT v3, offline) ..."); wraw.write_text(json.dumps(asr.transcribe(src), ensure_ascii=False))
     words_raw = json.loads(wraw.read_text()); log(f"{len(words_raw)} Woerter erkannt")
+    align_note = None
+    if a.script:
+        import script_align
+        words_raw, st = script_align.align(words_raw, Path(a.script).read_text(encoding="utf-8"))
+        align_note = f"Skript-Abgleich: {st['gleich']} gleich, {st['korrigiert']} korrigiert, {st['nur_gesprochen']} frei gesprochen, {st['nicht_gesprochen']} Skriptwoerter nicht gesprochen"
+        log(align_note); (work / "words_script.json").write_text(json.dumps(words_raw, ensure_ascii=False))
     # 2) Jump-Cuts
+    take_notes = []
+    if not a.no_cut:
+        drop, take_notes = retakes(words_raw)
+        if drop: words_raw = [w for i, w in enumerate(words_raw) if i not in drop]; log(f"Verworfene Takes entfernt: {len(take_notes)} ({'; '.join(n[:40] for n in take_notes)})")
     segs, words = ([(0, info["dur"])], words_raw) if a.no_cut else cut_segments(words_raw, info["dur"])
     dur = round(sum(b - a_ for a_, b in segs), 3)
     log(f"Schnitt: {len(segs)} Segmente, {info['dur']:.1f} s -> {dur:.1f} s")
@@ -77,9 +107,11 @@ def main():
         P = json.loads(Path(a.plan).read_text()); log(f"Verwende vorgegebenen Plan {a.plan}")
     else:
         P = planner.plan(words, ana, dur, {"zoom": a.zoom, "images": a.images})
+    if align_note and not a.plan: P["notes"].insert(0, align_note)
+    if take_notes and not a.plan: P["notes"].insert(0, f"Verworfene Takes herausgeschnitten: {' | '.join(take_notes)}")
     zf = planner.zoom_fn(P["zooms"], ana)
     if not a.plan: P = planner.place(P, ana, zf)
-    P["captions"] = planner.captions(words, P.get("hook_t1", 0)); P["duration"] = dur
+    P["captions"] = planner.captions(words, P.get("hook_t1", 0), P.get("keys", [])); P["duration"] = dur
     (out / "plan.json").write_text(json.dumps(P, ensure_ascii=False, indent=1)); (out / "plan.md").write_text(plan_md(P), encoding="utf-8")
     log(f"Plan: {len(P['overlays'])} Overlays ({', '.join(o['type'] for o in P['overlays'])})")
     if a.plan_only: log(f"Plan gespeichert: {out / 'plan.md'}"); return

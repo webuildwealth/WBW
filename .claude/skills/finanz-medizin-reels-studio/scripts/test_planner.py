@@ -29,9 +29,14 @@ if __name__ == "__main__":
         d = o["data"]; s = d.get("title") or d.get("text") or d.get("claim") or (f'{d.get("v"):g} {d.get("unit")} | {d.get("label")}' if "v" in d else None) or (" / ".join(b["label"] for b in d["bars"]) if "bars" in d else "") or (f'{d.get("a")} vs {d.get("b")}' if "a" in d else d.get("motif", ""))
         print(f'{o["t0"]:5.1f}-{o["t1"]:5.1f} {o["type"]:8s} {o["layer"]:5s} box={o["box"]["x"]},{o["box"]["y"]} s={o["box"]["s"]} | {s}')
     types = [o["type"] for o in p["overlays"]]; fails = []
-    for need in ("hook", "title", "error", "myth", "bars", "number", "vs", "tip", "cta"):
+    for need in ("hook", "title", "error", "myth", "bars", "number", "vs", "tip", "cta", "wipe"):
         if need not in types: fails.append(f"fehlt: {need}")
     for o in p["overlays"]:
         f = o["face"]; b = o["box"]
-        if o["layer"] == "front" and not (b["x"] + b["w"] < f[0] or b["x"] > f[2] or b["y"] + b["h"] < f[1] or b["y"] > f[3]): fails.append(f"{o['id']} verdeckt Gesicht")
+        if o["layer"] == "front" and o["type"] != "wipe" and not (b["x"] + b["w"] < f[0] or b["x"] > f[2] or b["y"] + b["h"] < f[1] or b["y"] > f[3]): fails.append(f"{o['id']} verdeckt Gesicht")
+    ev = sorted(o["t0"] for o in p["overlays"]) + [z["t"] for z in p["zooms"]]; ev = sorted(e for e in ev if e >= p["hook_t1"] - 0.01)
+    gaps = [round(b - a, 1) for a, b in zip(ev, ev[1:]) if b - a > 3.6]
+    if gaps: fails.append(f"Luecken ohne Bildwechsel: {gaps}")
+    layers = [o["layer"] for o in sorted(p["overlays"], key=lambda o: o["t0"]) if o["type"] not in ("hook", "title", "wipe")]
+    print("Ebenenfolge:", " ".join("H" if l == "back" else "V" for l in layers))
     print("OK" if not fails else "FEHLER: " + "; ".join(fails)); sys.exit(1 if fails else 0)

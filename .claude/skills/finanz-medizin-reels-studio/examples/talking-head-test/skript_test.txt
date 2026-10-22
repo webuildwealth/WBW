@@ -1,0 +1,9 @@
+# Testskript (simuliert ein Nutzer-Skript; enthaelt korrekte Schreibweisen und einen nicht gesprochenen Satz)
+Fünf Bücher, um glücklich und erfüllt im Leben zu werden.
+Buchempfehlung Nummer 1 ist auf jeden Fall The Happiness Advantage. Muss man gelesen haben, um erst mal zu verstehen, woher Glück überhaupt kommt.
+[Einblendung: Cover]
+Extreme Ownership, wie man Verantwortung für sein Leben übernimmt, statt sie externen Umständen zu geben.
+Marcus Aurelius, Selbstbetrachtungen, ist ein philosophisches Werk über das Leben.
+Unfair Advantage: wie man aus seinen größten Hindernissen seinen größten Vorteil im Leben baut.
+Zu guter Letzt der Almanach von Naval Ravikant. Unglaublich gutes Buch, wahrscheinlich sogar mein Lieblingsbuch.
+Dieser Satz steht nur im Skript und wurde nie gesprochen.

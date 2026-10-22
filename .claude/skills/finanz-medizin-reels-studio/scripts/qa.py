@@ -35,7 +35,7 @@ def main():
         tr = [r for r in json.loads(Path(a.track).read_text()) if r[1] is not None] if a.track else []
         hits = []
         for o in ov:
-            if o["layer"] != "front": continue
+            if o["layer"] != "front" or o["type"] == "wipe": continue   # Wisch-Uebergang: 0,4 s vollflaechig, gewollt
             b = o["box"]
             for t, x, y, w, h in tr:
                 if o["t0"] <= t <= o["t1"] and not (b["x"] + b["w"] < x or b["x"] > x + w or b["y"] + b["h"] < y or b["y"] > y + h):

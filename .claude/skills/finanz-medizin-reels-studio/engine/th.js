@@ -32,7 +32,8 @@
     for (let i = 0; i < c.length; i++) { const nx = c[i + 1]; const end = Math.min(c[i].t1 + 0.12, nx ? nx.t0 : 1e9); if (t >= c[i].t0 && t < end) { cur = c[i]; break; } }
     if (!cur) { capSpan.style.opacity = 0; return true; }
     if (capSpan.dataset.k !== cur.t0 + cur.text) { capSpan.dataset.k = cur.t0 + cur.text; capSpan.textContent = cur.text; capSpan.className = cur.hi ? 'hi' : ''; }
-    const p = P(t, cur.t0, 0.11, E.outBack); capSpan.style.opacity = 1; capSpan.style.transform = `scale(${0.88 + 0.12 * p}) translateY(${(1 - p) * 10}px)`;
+    const p = P(t, cur.t0, cur.hi ? 0.16 : 0.11, E.outBack), big = cur.hi ? 1.14 : 1;   // Schluesselwort: groesser, farbig, staerkerer Pop
+    capSpan.style.opacity = 1; capSpan.style.transform = `scale(${(0.88 + 0.12 * p) * big}) translateY(${(1 - p) * 10}px) rotate(${cur.hi ? (1 - p) * -4 : 0}deg)`;
     return true;
   };
 })();

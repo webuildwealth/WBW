@@ -69,3 +69,24 @@ Pegel gleichmäßig (LRA 2,4), −17 LUFS inkl. Aufnahme. Kein belegbarer Musik-
 - Referenz = Talking-Head, Studio-Standard = **animiertes Erklärvideo** (Modus 1/2); Talking-Head via Modus 3 (Overlay).
 - **Nicht umgesetzt:** Freisteller des Sprechers vor dem Beleg (braucht Segmentierungsmodell). In Modus 3 werden Belege daher mit `place` oben platziert statt hinter dem Sprecher.
 - Farbwelt ist Finanz-Medizin (Navy/Rot/Weiß) statt Orange/Grau.
+
+## 9. Machart-Messung (Rhythmus-Grammatik) 🟢
+Gemessen mit Bildbereichs-Differenzen bei 30 Bildern/s (Untertitel-, Titel-, Belegbereich). Es geht nur um die **Art der Inszenierung**, nicht um den Inhalt.
+
+| Ebene | Messwert | Wirkung |
+|---|---|---|
+| **Mikro**: Untertitelwechsel | 78 Wechsel in 36 s, **Median 0,40 s** (min. 0,17 s), 2,1/s | Das Auge hat ständig neue Information, kein Abschweifen |
+| **Hook-Aufbau** | 13 Wortauftritte in 3 s, **ein Wort alle 0,20 s** | Tempo-Signal in Sekunde 1, Neugier baut sich sichtbar auf |
+| **Makro**: Blockwechsel | 5 Wechsel, **Median 6,7 s** (5,0–8,6 s) | Erwartbarer Takt, Zählstruktur, Abschluss-Sog („nur noch 2“) |
+| **Synchronität** | Titel + Beleg wechseln **im selben Bild** (harter Schnitt, kein Übergang) | Klarer Kapitelschnitt, kein Matsch |
+| **Erster Beleg** | 2,4 s nach dem ersten Titel, als Fade (~0,1–0,2 s); alle weiteren sofort | Erst Spannung, dann Belohnung; danach Tempo |
+| **Tiefe** | Beleg hinter der Person, Titel und Untertitel davor | Drei Ebenen ergeben hochwertige „Magazin“-Optik statt flacher Folie |
+| **Größenkontrast** | großer Beleg (≈ 45 % Bildbreite) + mittlerer Titel + kleiner Untertitel gleichzeitig | Klare Hierarchie: Thema, Beleg, Wort |
+
+### Übersetzung für Finanz-Medizin (Regeln der Rhythmus-Regie)
+1. **Mikro:** 1–2-Wort-Untertitel; Zahlen und Finanzbegriffe werden größer, farbig und poppen.
+2. **Meso (neu, für mehr Bindung als die Referenz):** spätestens alle **3,2 s** ein neuer Reiz, im Wechsel *große Typo hinter der Person* ↔ *kleines Label vor der Person*, sonst ein Zoom-Impuls (+5 % für 1,4 s). Nie mehr als zwei Inhalts-Elemente gleichzeitig.
+3. **Makro:** Abschnittswechsel als harter Schnitt: Wisch-Übergang in Markenfarben (0,42 s), neuer Titel mit „NR. n/N“ und neues Visual im selben Moment, dazu ein Zoomstufen-Wechsel.
+4. **Kontrast:** Aufeinanderfolgende Elemente wechseln Ebene (vorn/hinten), Größe (groß/klein) und Seite (links/rechts); Plakate wechseln den Farbton.
+5. **Belohnung:** Zahlen zählen hoch, Haken zeichnen sich, Stempel schlagen ein, jeweils mit eigenem Sound.
+6. **Loop:** Die Schlussaussage spiegelt den Hook.

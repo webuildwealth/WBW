@@ -15,9 +15,9 @@ Automatisiertes Reels-Studio: **Thema/Skript → recherchiertes, faktengeprüfte
 | **3 Rohvideo → Reel (Talking Head)** | unbearbeitetes Sprechvideo | **`python3 scripts/talking_head.py <video> --out <dir>`** – vollautomatisch, kein JSON (siehe `references/talking-head.md`). Danach Schritte 6–7 unten. |
 
 ## Workflow Modus 3 (Talking Head)
-1. `python3 scripts/talking_head.py <rohvideo> --out <dir> --plan-only` → `<dir>/plan.md` lesen: Transkript, erkannte Struktur, jede Einblendung mit Begründung.
+1. `python3 scripts/talking_head.py <rohvideo> --script <skript> --out <dir> --plan-only` (Skript optional, verbessert Schreibweisen) → `<dir>/plan.md` lesen: Transkript, erkannte Struktur, jede Einblendung mit Begründung.
 2. Plan fachlich prüfen (Zahlen aus dem Transkript stimmen? Begriffe korrekt erkannt?). Nur wenn nötig `<dir>/plan.json` anpassen (Texte, Typen, `image`-Overlays mit generierten/lizenzierten Bildern) – das erledigt Claude, nicht der Nutzer.
-3. `python3 scripts/talking_head.py <rohvideo> --out <dir>` (bzw. `--plan <dir>/plan.json` bei Anpassungen; Transkript/Analyse werden aus `<dir>/work` wiederverwendet).
+3. `python3 scripts/talking_head.py <rohvideo> --script <skript> --out <dir>` (bzw. `--plan <dir>/plan.json` bei Anpassungen; Transkript/Analyse werden aus `<dir>/work` wiederverwendet).
 4. `qa-report.md` + 4–6 Frames ansehen (Gesicht frei? Plakate sichtbar? Captions synchron?), dann übergeben.
 
 ## Workflow (Modus 1)
@@ -48,7 +48,7 @@ Text-Auszeichnung: `*Akzent*`, `_Serif-Kursiv_`, `~durchgestrichen~`. `cue` = Wo
 - `references/` – Style DNA, Formate, Storytelling, Brand, Schnitt/Ton, QA
 - `templates/` – `brand.css` (Tokens), `components.js` (Grafik-/Animations-Bibliothek), `storyboards/` (Formate A–F, lauffähig)
 - `engine/` – `scene.html`/`engine.js` (zeitgesteuerter Renderer), `render_frames.js` (Playwright → FFmpeg, parallel)
-- `scripts/` – `build_reel.py` (Modus 1/2), **`talking_head.py`** (Modus 3: `asr.py` Transkription, `vision.py` Crop/Freistellung/Tracking, `planner.py` Szenenplanung + Layout), `tts.py`, `align.py`, `sfx.py`, `qa.py`, `rough_cut.py`, `setup.sh`, `package.sh`
+- `scripts/` – `build_reel.py` (Modus 1/2), **`talking_head.py`** (Modus 3: `asr.py` Transkription, `script_align.py` Skript-Abgleich, `vision.py` Crop/Freistellung/Tracking, `planner.py` Szenenplanung + Layout), `tts.py`, `align.py`, `sfx.py`, `qa.py`, `rough_cut.py`, `setup.sh`, `package.sh`
 - `templates/overlays.js` – Talking-Head-Overlays (Hook, Titel+NR, Plakat, 21 Illustrationen, Zahl, Ring, Balken, Mythos/Fehler/Tipp, Sticker, VS, CTA, Typo, Bild)
 - `engine/th.html`, `engine/th.js` – Ebenen-Renderer (hinter/vor der Person)
 - `assets/` – Marken-Schriften (Manrope, Inter, Newsreader) und Markenzeichen

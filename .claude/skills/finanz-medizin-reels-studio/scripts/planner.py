@@ -255,7 +255,7 @@ def plan(words, ana, dur, opts=None):
         it = item_of.get(s["i"]); sc = kind_scores(s["text"]); nm = numbers(s["words"]); d = s["t1"] - s["t0"]; cands = []
         mot = motif(s["text"]) or (motif(rubric) if it else None)
         if it:
-            add(type="title", t0=s["t0"] - 0.05, t1=it["t1"] - 0.05, layer="front", pref="topleft", data={"label": it["label"] or rubric or "Tipp", "nr": it["nr"], "title": it["title"] if it["named"] else ""},
+            add(type="title", t0=s["t0"] - 0.05, t1=it["t1"] - 0.05, layer="front", pref="topleft", data={"label": it["label"] or rubric or "Tipp", "nr": f'{it["nr"]}/{max(N or 0, len(items))}' if (N or len(items)) > 1 else it["nr"], "title": it["title"] if it["named"] else ""},
                 why=f"Neues Listenelement Nr. {it['nr']}: Titel + NR-Badge oben (Style DNA R3/R7)")
             lab = norm(it["label"] or rubric)
             if not it["named"]:
@@ -266,7 +266,7 @@ def plan(words, ana, dur, opts=None):
                 if mot: cands.append((0.7, dict(type="illus", t0=s["t0"] + 0.4, t1=it["t1"] - 0.1, layer="back", pref="beside_head", data={"motif": mot}, why=f"Thema des Listenpunkts -> Illustration '{mot}' hinter der Person")))
             elif it["title"] and len(it["title"].split()) <= 6:
                 cands.append((0.95, dict(type="poster", t0=it["t_title"] + 0.15, t1=it["t1"] - 0.1, layer="back", pref="beside_head",
-                                          data={"kicker": it["label"] or rubric, "title": it["title"], "motif": mot or "book", "tone": ["red", "navy", "ivory", "rose", "navy"][(it["nr"] - 1) % 5 if isinstance(it["nr"], int) else 0]},
+                                          data={"kicker": it["label"] or rubric, "title": it["title"], "motif": mot or "book", "tone": (["red", "navy"] if ana.get("bright", 0.5) > 0.55 else ["red", "navy", "ivory", "rose", "navy"])[(it["nr"] - 1) % (2 if ana.get("bright", 0.5) > 0.55 else 5) if isinstance(it["nr"], int) else 0]},
                                           why="Benannter Gegenstand -> eigenes Titel-Plakat hinter der Person (Referenz: Beleg erscheint ~2 s nach Blockstart hinter dem Sprecher)")))
         if sc["myth"]:
             verdict = "Falsch" if re.search(r"stimmt nicht|falsch|irrtum", s["text"], re.I) else "Mythos?"
@@ -324,6 +324,9 @@ def plan(words, ana, dur, opts=None):
     for a, b in zip(backs, backs[1:]):
         if a["t1"] > b["t0"] - 0.05: a["t1"] = b["t0"] - 0.05
     ov = [o for o in ov if o["t1"] - o["t0"] >= 0.9]
+    hook_end = ov[0]["t1"] if ov and ov[0]["type"] == "hook" else 0
+    punches = rhythm(ov, S, items, dur, hook_end, why)
+    ov.sort(key=lambda o: o["t0"])
     for k, o in enumerate(ov): o["id"] = f"o{k:02d}_{o['type']}"
     # 3) Zoom: weiche Sprung-Zooms an Abschnittsgrenzen (Talking-Head-Standard; Referenz nutzt keine -> dezent, abschaltbar)
     zoom_mode = opts.get("zoom", "subtle"); zooms = [{"t": 0.0, "z": 1.0}]
@@ -333,8 +336,65 @@ def plan(words, ana, dur, opts=None):
         for t in bounds:
             if t - last < 2.5: continue
             cur = zl if cur == 1.0 else 1.0; zooms.append({"t": round(t - 0.03, 3), "z": cur}); last = t
-        why.append(f"{len(zooms) - 1} Sprung-Zooms an Abschnittsgrenzen ({zoom_mode})")
-    return {"sentences": [{k: s[k] for k in ("i", "t0", "t1", "text")} for s in S], "items": items, "overlays": ov, "zooms": zooms, "notes": why, "hook_t1": ov[0]["t1"] if ov else 0}
+        for t in punches:   # kurze Zoom-Impulse der Rhythmus-Regie (+5 % fuer 1,4 s, danach zurueck)
+            base = max((z for z in zooms if z["t"] <= t), key=lambda z: z["t"])["z"]
+            if all(abs(z["t"] - t) > 1.6 for z in zooms): zooms += [{"t": round(t, 3), "z": round(base + 0.05, 3)}, {"t": round(t + 1.4, 3), "z": base}]
+        zooms.sort(key=lambda z: z["t"])
+        why.append(f"{len(zooms) - 1} Zoom-Wechsel (Abschnitte + Rhythmus-Impulse, {zoom_mode})")
+    keys = sorted({w.strip(".,!?:;") for o in ov for w in str(o["data"].get("title") or o["data"].get("text") or "").split() if len(w) > 4 and w[:1].isupper()})
+    return {"sentences": [{k: s[k] for k in ("i", "t0", "t1", "text")} for s in S], "items": items, "overlays": ov, "zooms": zooms, "notes": why, "hook_t1": hook_end, "keys": keys}
+
+ICON_OF = {"shield": "shield", "banknote": "banknote", "chart": "trend", "coins": "coins", "piggy": "coins", "wallet": "banknote", "tax": "doc", "receipt": "doc",
+           "warning": "alert", "clock": "clock", "hourglass": "clock", "calendar": "clock", "bulb": "search", "stethoscope": "plus", "house": "lock"}
+FIN_MOTIF = {"hourglass", "shield", "tax", "chart", "banknote", "piggy", "coins", "wallet", "stethoscope", "receipt", "warning"}
+BIG = {"poster", "kinetic", "number", "bars", "illus", "vs", "ring", "image"}
+FLEX = {"number", "illus", "kinetic", "ring"}          # duerfen vor ODER hinter der Person stehen
+def rhythm(ov, S, items, dur, hook_end, why):
+    """Rhythmus-Regie (aus der Referenz gemessen: Mikro 0,4 s Untertitel, Makro 5-7 s Blockwechsel):
+       - Abschnittswechsel = harter Schnitt: Wisch-Uebergang + Titel + Visual im selben Moment
+       - spaetestens alle 3,2 s ein neuer visueller Reiz (Meso-Rhythmus)
+       - Wechsel vorne/hinten und gross/klein zwischen aufeinanderfolgenden Inhalts-Overlays"""
+    n0 = len(ov)
+    for k, it in enumerate(items[1:], 1):
+        ov.append(dict(type="wipe", t0=round(it["t0"] - 0.22, 3), t1=round(it["t0"] + 0.2, 3), layer="front", pref="full", data={"tone": ["red", "navy"][k % 2]}, why="Abschnittswechsel -> Wisch-Uebergang (Makro-Rhythmus)"))
+    content = sorted([o for o in ov if o["type"] not in ("hook", "title", "wipe")], key=lambda o: o["t0"])
+    for a, b in zip(content, content[1:]):   # Kontrast: gleiche Ebene hintereinander -> flexible Typen wechseln die Ebene
+        if b["type"] in FLEX and a["layer"] == b["layer"] and abs(b["t0"] - a["t1"]) < 4: b["layer"] = "front" if a["layer"] == "back" else "back"; b["why"] = b.get("why", "") + " · Ebene gewechselt (Kontrast)"
+    punches, filled, used_sent = [], 0, set()
+    for _ in range(40):
+        evs = sorted({round(o["t0"], 2) for o in ov} | {hook_end})
+        evs = [e for e in evs if e >= hook_end - 0.01] + [dur - 0.8]
+        gap = next(((a, b) for a, b in zip(evs, evs[1:]) if b - a > 3.2), None)
+        if not gap: break
+        t = gap[0] + min(2.2, (gap[1] - gap[0]) / 2)
+        sent = next((x for x in S if x["t0"] <= t <= x["t1"] + 0.3), None)
+        if not sent: break
+        lo, hi_ = gap[0] + 0.6, gap[1] - 0.6
+        inwin = lambda w: lo <= w["t0"] <= hi_
+        cand = [w for w in sent["words"] if inwin(w) and w["w"].strip(".,!?:;")[:1].isupper() and norm(w["w"]) not in STOP and len(norm(w["w"])) > 3 and sent["words"].index(w) > 0]
+        nums = [sent["words"][x["i"]] for x in numbers(sent["words"]) if x["unit"] and inwin(sent["words"][x["i"]])]   # nur echte Kennzahlen (mit Einheit), keine Aufzaehlungsnummern
+        pick = (nums or cand or [w for w in sent["words"] if inwin(w) and len(norm(w["w"])) > 6 and norm(w["w"]) not in STOP])[:1]
+        prev = max((o for o in ov if o["type"] not in ("hook", "title", "wipe") and o["t0"] <= t), key=lambda o: o["t0"], default=None)
+        vis = [o for o in ov if o["type"] not in ("hook", "title", "wipe", "_punch") and o["t0"] <= t <= o["t1"]]
+        vis_all = vis + [o for o in ov if o["type"] in ("title", "hook") and o["t0"] <= t <= o["t1"]]
+        shown = " ".join(norm(x) for o in vis_all for x in " ".join(str(o["data"].get(k) or "") for k in ("title", "text", "claim", "a", "b", "label")).split())
+        if pick and (len(vis) >= 2 or norm(pick[0]["w"]) in shown.split() or sent["i"] in used_sent or sent["i"] == S[-1]["i"]): pick = []   # nicht ueberladen, nichts doppeln
+        if not pick:
+            punches.append(t); ov.append(dict(type="_punch", t0=t, t1=t, layer="none", data={})); continue
+        w = pick[0]; j = sent["words"].index(w); sw_ = sent["words"]
+        phrase = w["w"].strip(".,!?:;")
+        if to_number(w["w"]) and j + 1 < len(sw_): phrase += " " + UNIT.get(norm(sw_[j + 1]["w"]), sw_[j + 1]["w"].strip(".,!?:;"))   # Zahl + Einheit
+        elif j + 1 < len(sw_) and sw_[j + 1]["w"][:1].isupper() and norm(sw_[j + 1]["w"]) not in STOP | {"nummer"} and not re.search(r"[,.!?:;]$", w["w"]): phrase += " " + sw_[j + 1]["w"].strip(".,!?:;")
+        big_prev = prev is not None and (prev["type"] in BIG or prev["layer"] == "back")
+        if big_prev:
+            o = dict(type="lowerthird", t0=w["t0"] - 0.05, t1=min(w["t0"] + 2.6, sent["t1"] + 0.6), layer="front", pref="near_head", data={"text": phrase, "icon": ICON_OF.get(motif(phrase) or "", "check")})
+        else:
+            o = dict(type="kinetic", t0=w["t0"] - 0.05, t1=min(w["t0"] + 2.4, sent["t1"] + 0.4), layer="back", pref="top", data={"text": phrase})
+        o["why"] = f"Rhythmus-Regie: {gap[1] - gap[0]:.1f} s ohne Bildwechsel -> {'kleines Label vorn' if big_prev else 'grosse Typo hinten'} (Kontrast zum vorigen Element)"
+        ov.append(o); punches.append(w["t0"]); filled += 1; used_sent.add(sent["i"])
+    ov[:] = [o for o in ov if o["type"] != "_punch"]
+    why.append(f"Rhythmus-Regie: {len(items[1:])} Wisch-Uebergaenge, {filled} Fuell-Reize, {len(punches)} Zoom-Impulse")
+    return punches
 
 # ---------------------------------------------------------------- Zoom + Layout
 def face_center(ana, t0, t1):
@@ -368,19 +428,21 @@ def transformed(ana, zf):
     return np.array(ana["t"]), np.array(faces), np.stack(masks)
 
 NAT = {"hook": (960, 300), "title": (720, 170), "poster": (500, 700), "illus": (520, 520), "number": (600, 360), "ring": (420, 470), "bars": (560, 520),
-       "myth": (440, 330), "error": (440, 280), "tip": (440, 280), "sticker": (440, 130), "vs": (900, 190), "cta": (640, 150), "kinetic": (940, 300), "image": (520, 650), "check": (460, 400)}
+       "myth": (440, 330), "error": (440, 280), "tip": (440, 280), "sticker": (440, 130), "vs": (900, 190), "cta": (640, 150), "kinetic": (940, 300), "image": (520, 650), "check": (460, 400), "lowerthird": (520, 120), "wipe": (1080, 1920)}
 
 def place(plan_, ana, zf, log=None):
     """Position + Massstab je Overlay: Gesicht frei (hart), vordere Elemente meiden die Person, hintere muessen sichtbar bleiben."""
     T, F, M = transformed(ana, zf); g = ana["grid"]; gh, gw = M.shape[1:]
     used = []   # (t0,t1,box) fuer Kollisionsvermeidung zwischen Overlays
     for o in plan_["overlays"]:
+        if o["type"] == "wipe":
+            o["box"] = {"x": 0, "y": 0, "w": W, "h": H, "s": 1.0}; o["face"] = [0, 0, 0, 0]; o["occluded"] = 0; continue
         sel = (T >= o["t0"] - 0.2) & (T <= o["t1"] + 0.2)
         if not sel.any(): sel = np.argmin(np.abs(T - o["t0"])) == np.arange(len(T))
         person = M[sel].max(0).astype(np.float32)                        # Vereinigung ueber das Zeitfenster
         person = cv2.dilate(person, np.ones((2, 2), np.uint8))
         fb = F[sel]; fx0, fy0 = fb[:, 0].min(), fb[:, 1].min(); fx1, fy1 = (fb[:, 0] + fb[:, 2]).max(), (fb[:, 1] + fb[:, 3]).max()
-        pad = 0.10 * (fx1 - fx0); face = (fx0 - pad, fy0 - pad, fx1 + pad, fy1 + pad * 0.5)
+        pad = 0.10 * (fx1 - fx0) + 14; face = (fx0 - pad, fy0 - pad, fx1 + pad, fy1 + pad * 0.5)
         nw, nh = NAT[o["type"]]; layer = o["layer"]
         if layer == "auto": layer = "front" if fy0 > SAFE["y0"] + nh * 0.7 else "back"
         best = None
@@ -402,7 +464,7 @@ def place(plan_, ana, zf, log=None):
                       oc = occ(x, y, w, h)
                       if layer == "front" and oc > (0.65 if not relax else 1.01): continue
                       if layer == "back" and oc > 0.45: continue
-                      clash = any(not (t1 <= o["t0"] or t0 >= o["t1"]) and not (x + w < b[0] or x > b[0] + b[2] or y + h < b[1] or y > b[1] + b[3]) for t0, t1, b in used)
+                      clash = any(min(t1, o["t1"]) - max(t0, o["t0"]) > 0.35 and not (x + w < b[0] or x > b[0] + b[2] or y + h < b[1] or y > b[1] + b[3]) for t0, t1, b in used)
                       if clash: continue
                       score = s * 2.0 - oc * (1.6 if layer == "front" else 0.8)
                       p = o.get("pref")
@@ -423,20 +485,33 @@ def place(plan_, ana, zf, log=None):
         used.append((o["t0"], o["t1"], (x, y, w, h)))
     return plan_
 
-def captions(words, hook_t1):
+def captions(words, hook_t1, keys=()):
+    kn = {norm(k) for k in keys}
     chunks, i = [], 0; ws = [w for w in words if w["t0"] >= hook_t1 - 0.05]
     while i < len(ws):
         take = [ws[i]]; i += 1
+        isnum = lambda w: bool(to_number(w["w"])) and bool(re.search(r"\d", w["w"]))
+        isunit = lambda w: norm(w["w"]) in UNIT
+        if isnum(take[0]) and i < len(ws) and isunit(ws[i]): take.append(ws[i]); i += 1        # Zahl + Einheit gehoeren zusammen
         while i < len(ws) and len(take) < 2 and not re.search(r"[.!?:;,]$", take[-1]["w"]) and len(" ".join(x["w"] for x in take)) + len(ws[i]["w"]) < 17 and ws[i]["t0"] - take[-1]["t1"] < 0.3:
+            if isnum(ws[i]) and i + 1 < len(ws) and isunit(ws[i + 1]): break                    # Zahl beginnt eigenen Chunk
             take.append(ws[i]); i += 1
-        chunks.append({"text": " ".join(x["w"] for x in take), "t0": take[0]["t0"], "t1": take[-1]["t1"], "hi": any(to_number(x["w"]) for x in take)})
+        chunks.append({"text": " ".join(x["w"] for x in take), "t0": take[0]["t0"], "t1": take[-1]["t1"], "hi": False})
+    # Hervorhebung sparsam: nur echte Kennzahlen (Zahl + Einheit) und Finanzbegriffe, hoechstens alle 2 s
+    fig = {round(words_[x["i"]]["t0"], 3) for words_ in [ws] for x in numbers(ws) if x["unit"]}
+    last = -9
+    for c in chunks:
+        isfig = any(abs(c["t0"] - f) < 0.01 or (c["t0"] <= f <= c["t1"]) for f in fig)
+        isfin = any(motif(x) in FIN_MOTIF - {"warning"} for x in c["text"].split())
+        if (isfig or isfin) and c["t0"] - last >= 2.0: c["hi"] = True; last = c["t0"]
     for a, b in zip(chunks, chunks[1:]):
         if b["t0"] - a["t1"] < 0.25: a["t1"] = round(max(a["t0"] + 0.04, b["t0"]), 3)
     return chunks
 
 SFX = {"hook": [("riser", 0.0, 0.3)], "title": [("whoosh", -0.08, 0.6)], "poster": [("whoosh", -0.05, 0.55), ("pop", 0.2, 0.5)], "illus": [("pop", 0.1, 0.7)],
        "number": [("pop", 0.0, 0.6)], "ring": [("pop", 0.0, 0.6)], "bars": [("pop", 0.1, 0.7)], "myth": [("pop", 0.0, 0.7), ("stamp", 0.9, 0.9)], "error": [("thud", 0.05, 0.8)],
-       "tip": [("pop", 0.05, 0.8)], "sticker": [("pop", 0.0, 0.6)], "vs": [("whoosh", -0.05, 0.6), ("thud", 0.3, 0.5)], "cta": [("ding", 0.2, 0.6)], "kinetic": [("whoosh", -0.05, 0.5)], "image": [("whoosh", -0.05, 0.6)]}
+       "tip": [("pop", 0.05, 0.8)], "sticker": [("pop", 0.0, 0.6)], "vs": [("whoosh", -0.05, 0.6), ("thud", 0.3, 0.5)], "cta": [("ding", 0.2, 0.6)], "kinetic": [("whoosh", -0.05, 0.5)], "image": [("whoosh", -0.05, 0.6)],
+       "wipe": [("whoosh", 0.0, 0.75)], "lowerthird": [("pop", 0.05, 0.5)]}
 def sfx_events(plan_):
     ev = []
     for o in plan_["overlays"]:

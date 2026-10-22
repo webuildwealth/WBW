@@ -16,8 +16,8 @@
 | OK | Kein Standbild > 1,2 s | ok |
 | OK | Gesicht frei: kein Overlay vor dem Gesicht (gemessenes Tracking) | ok |
 | OK | Hintergrund-Elemente ausreichend sichtbar (<= 45 % verdeckt) | 5 hinter der Person |
-| OK | Visuelle Vielfalt (>= 3 Overlay-Typen) | hook, poster, sticker, title |
-| OK | Abdeckung mit Inhalts-Overlays 30-90 % | 74 % der Laufzeit |
+| OK | Visuelle Vielfalt (>= 3 Overlay-Typen) | hook, lowerthird, poster, sticker, title, wipe |
+| OK | Abdeckung mit Inhalts-Overlays 30-90 % | 76 % der Laufzeit |
 | OK | Keine starren Wiederholungen (gleicher Typ an gleicher Stelle) | ok |
 | OK | Caption-Sync: Sprache im Caption-Fenster (ASR-Zeitstempel) | ok |
 | OK | Captions ueberlappen nicht | ok |
