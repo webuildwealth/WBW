@@ -319,6 +319,16 @@ def plan(words, ana, dur, opts=None):
             if img: c.update(type="image", data={"src": img, "credit": img_credit(img)}, why=c["why"] + f" -> eigenes Bild {Path(img).name}")
             if c["type"] in ("poster", "illus", "number", "ring", "bars"): c["side"] = "right" if side > 0 else "left"; side = -side
             add(**c); last_types.append(c["type"])
+    # CTA-Wort (Kommentar-Keyword, z.B. fuer automatische DM-Antworten): synchron zum gesprochenen Wort, sonst am Ende
+    cw = (opts.get("cta_word") or "").strip()
+    if cw:
+        ov[:] = [o for o in ov if o["type"] != "cta"]
+        hit = next((w for w in reversed(words) if norm(w["w"]) == norm(cw)), None)
+        t0 = max(hit["t0"] - 0.6, (ov[0]["t1"] if ov else 0)) if hit else max(dur - 3.8, (ov[0]["t1"] if ov else 0) + 0.5)
+        for o in ov:   # nichts anderes vorn ueberlagern lassen
+            if o["layer"] == "front" and o["type"] not in ("title", "hook") and o["t1"] > t0 + 0.2: o["t1"] = max(o["t0"] + 0.9, t0 - 0.05)
+        add(type="ctaword", t0=round(t0, 3), t1=round(dur - 0.02, 3), layer="front", pref="lower", data={"word": cw.upper(), "lead": "Kommentiere", "sub": "und ich schicke dir mehr dazu"},
+            why=f"CTA-Wort '{cw}'" + (" synchron zum gesprochenen Wort" if hit else " (nicht gesprochen) in den letzten Sekunden"))
     # Gleichzeitig hoechstens ein grosses Hintergrund-Element: Ueberlappungen kuerzen
     backs = sorted([o for o in ov if o["layer"] == "back"], key=lambda o: o["t0"])
     for a, b in zip(backs, backs[1:]):
@@ -326,6 +336,11 @@ def plan(words, ana, dur, opts=None):
     ov = [o for o in ov if o["t1"] - o["t0"] >= 0.9]
     hook_end = ov[0]["t1"] if ov and ov[0]["type"] == "hook" else 0
     punches = rhythm(ov, S, items, dur, hook_end, why)
+    cta = next((o for o in ov if o["type"] == "ctaword"), None)
+    if cta:   # Abschnittswechsel waehrend des CTA: CTA dahinter schieben (wenn >= 2,4 s bleiben), sonst Wisch-Uebergang weglassen
+        late = [it["t0"] for it in items if it["t0"] > cta["t0"]]
+        if late and dur - (max(late) + 1.2) >= 2.4: cta["t0"] = round(max(late) + 1.2, 3); cta["why"] += " · hinter den letzten Abschnittswechsel geschoben"
+        ov[:] = [o for o in ov if not (o["type"] == "wipe" and cta["t0"] - 0.3 < o["t0"] < cta["t1"])]
     ov.sort(key=lambda o: o["t0"])
     for k, o in enumerate(ov): o["id"] = f"o{k:02d}_{o['type']}"
     # 3) Zoom: weiche Sprung-Zooms an Abschnittsgrenzen (Talking-Head-Standard; Referenz nutzt keine -> dezent, abschaltbar)
@@ -428,7 +443,7 @@ def transformed(ana, zf):
     return np.array(ana["t"]), np.array(faces), np.stack(masks)
 
 NAT = {"hook": (960, 300), "title": (720, 170), "poster": (500, 700), "illus": (520, 520), "number": (600, 360), "ring": (420, 470), "bars": (560, 520),
-       "myth": (440, 330), "error": (440, 280), "tip": (440, 280), "sticker": (440, 130), "vs": (900, 190), "cta": (640, 150), "kinetic": (940, 300), "image": (520, 650), "check": (460, 400), "lowerthird": (520, 120), "wipe": (1080, 1920)}
+       "myth": (440, 330), "error": (440, 280), "tip": (440, 280), "sticker": (440, 130), "vs": (900, 190), "cta": (640, 150), "kinetic": (940, 300), "image": (520, 650), "check": (460, 400), "lowerthird": (520, 120), "wipe": (1080, 1920), "ctaword": (720, 330)}
 
 def place(plan_, ana, zf, log=None):
     """Position + Massstab je Overlay: Gesicht frei (hart), vordere Elemente meiden die Person, hintere muessen sichtbar bleiben."""
@@ -456,13 +471,14 @@ def place(plan_, ana, zf, log=None):
           if best: break
           for s in (np.linspace(1.0, 0.5, 11) if not relax else np.linspace(0.6, 0.38, 6)):
               w, h = nw * s, nh * s
-              for y in np.arange(SAFE["y0"], SAFE["y1"] - h + 1, 20):
+              ylim = 1470 if o["type"] == "ctaword" else SAFE["y1"]          # CTA darf die (dann pausierte) Untertitelzone nutzen
+              for y in np.arange(SAFE["y0"], ylim - h + 1, 20):
                   for x in np.arange(SAFE["x0"], SAFE["x1"] - w + 1, 20):
                       if y + h > 900 and x + w > SAFE["rx"]: continue
                       inter = not (x + w < face[0] or x > face[2] or y + h < face[1] or y > face[3])
                       if inter and (layer == "front" or o["type"] in ("hook", "title")): continue
                       oc = occ(x, y, w, h)
-                      if layer == "front" and oc > (0.65 if not relax else 1.01): continue
+                      if layer == "front" and oc > (0.65 if not relax and o["type"] != "ctaword" else 1.01): continue
                       if layer == "back" and oc > 0.45: continue
                       clash = any(min(t1, o["t1"]) - max(t0, o["t0"]) > 0.35 and not (x + w < b[0] or x > b[0] + b[2] or y + h < b[1] or y > b[1] + b[3]) for t0, t1, b in used)
                       if clash: continue
@@ -485,7 +501,7 @@ def place(plan_, ana, zf, log=None):
         used.append((o["t0"], o["t1"], (x, y, w, h)))
     return plan_
 
-def captions(words, hook_t1, keys=()):
+def captions(words, hook_t1, keys=(), cta_word=""):
     kn = {norm(k) for k in keys}
     chunks, i = [], 0; ws = [w for w in words if w["t0"] >= hook_t1 - 0.05]
     while i < len(ws):
@@ -503,7 +519,8 @@ def captions(words, hook_t1, keys=()):
     for c in chunks:
         isfig = any(abs(c["t0"] - f) < 0.01 or (c["t0"] <= f <= c["t1"]) for f in fig)
         isfin = any(motif(x) in FIN_MOTIF - {"warning"} for x in c["text"].split())
-        if (isfig or isfin) and c["t0"] - last >= 2.0: c["hi"] = True; last = c["t0"]
+        iscta = bool(cta_word) and any(norm(x) == norm(cta_word) for x in c["text"].split())
+        if iscta or ((isfig or isfin) and c["t0"] - last >= 2.0): c["hi"] = True; last = c["t0"]
     for a, b in zip(chunks, chunks[1:]):
         if b["t0"] - a["t1"] < 0.25: a["t1"] = round(max(a["t0"] + 0.04, b["t0"]), 3)
     return chunks
@@ -511,7 +528,7 @@ def captions(words, hook_t1, keys=()):
 SFX = {"hook": [("riser", 0.0, 0.3)], "title": [("whoosh", -0.08, 0.6)], "poster": [("whoosh", -0.05, 0.55), ("pop", 0.2, 0.5)], "illus": [("pop", 0.1, 0.7)],
        "number": [("pop", 0.0, 0.6)], "ring": [("pop", 0.0, 0.6)], "bars": [("pop", 0.1, 0.7)], "myth": [("pop", 0.0, 0.7), ("stamp", 0.9, 0.9)], "error": [("thud", 0.05, 0.8)],
        "tip": [("pop", 0.05, 0.8)], "sticker": [("pop", 0.0, 0.6)], "vs": [("whoosh", -0.05, 0.6), ("thud", 0.3, 0.5)], "cta": [("ding", 0.2, 0.6)], "kinetic": [("whoosh", -0.05, 0.5)], "image": [("whoosh", -0.05, 0.6)],
-       "wipe": [("whoosh", 0.0, 0.75)], "lowerthird": [("pop", 0.05, 0.5)]}
+       "wipe": [("whoosh", 0.0, 0.75)], "lowerthird": [("pop", 0.05, 0.5)], "ctaword": [("whoosh", -0.05, 0.5), ("ding", 0.35, 0.7), ("pop", 0.6, 0.6)]}
 def sfx_events(plan_):
     ev = []
     for o in plan_["overlays"]:

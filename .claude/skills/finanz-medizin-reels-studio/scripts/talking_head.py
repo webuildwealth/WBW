@@ -66,10 +66,11 @@ def plan_md(p):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("video"); ap.add_argument("--out", required=True)
     ap.add_argument("--zoom", default="subtle", choices=["subtle", "strong", "off"]); ap.add_argument("--music", default="none")
-    ap.add_argument("--script", help="Skript (Text/Markdown): korrigiert Schreibweise von Fachbegriffen, Namen, Zahlen"); ap.add_argument("--no-cut", action="store_true"); ap.add_argument("--plan-only", action="store_true"); ap.add_argument("--plan"); ap.add_argument("--workers", default="4"); ap.add_argument("--images", help="Ordner mit eigenen/lizenzierten Bildern (Dateiname = Motiv oder Stichwort)")
+    ap.add_argument("--script", help="Skript (Text/Markdown): korrigiert Schreibweise von Fachbegriffen, Namen, Zahlen"); ap.add_argument("--hdr", default="mobius", choices=["mobius", "clip", "hable", "aus"], help="iPhone-HDR -> SDR Tonemapping"); ap.add_argument("--cta", help="CTA-Wort fuer Kommentare, z.B. Vorsorge"); ap.add_argument("--no-cut", action="store_true"); ap.add_argument("--plan-only", action="store_true"); ap.add_argument("--plan"); ap.add_argument("--workers", default="4"); ap.add_argument("--images", help="Ordner mit eigenen/lizenzierten Bildern (Dateiname = Motiv oder Stichwort)")
     a = ap.parse_args()
     out = Path(a.out); work = out / "work"; work.mkdir(parents=True, exist_ok=True); src = Path(a.video).resolve(); T0 = time.time()
-    info = vision.probe(src); log(f"Rohvideo: {info['w']}x{info['h']}, {info['dur']:.1f} s")
+    vision.HDR_MODE = a.hdr
+    info = vision.probe(src); log(f"Rohvideo: {info['w']}x{info['h']}, {info['dur']:.1f} s, {info['codec']}" + (f", HDR ({info['transfer'] or 'Dolby Vision'}) -> wird nach SDR BT.709 umgerechnet" if info["hdr"] else ""))
 
     # 1) Transkription
     wraw = work / "words_raw.json"
@@ -94,7 +95,7 @@ def main():
     # 3) Crop + Proxy
     proxy = work / "proxy.mp4"
     if not proxy.exists():
-        crop = vision.crop_window(info, src); log(f"9:16-Ausschnitt: {crop}"); vision.make_proxy(src, segs, crop, proxy)
+        crop = vision.crop_window(info, src); log(f"9:16-Ausschnitt: {crop}"); vision.make_proxy(src, segs, crop, proxy, info)
     # 4) Analyse
     anaf = work / "analysis.npz"
     if anaf.exists():
@@ -106,12 +107,12 @@ def main():
     if a.plan:
         P = json.loads(Path(a.plan).read_text()); log(f"Verwende vorgegebenen Plan {a.plan}")
     else:
-        P = planner.plan(words, ana, dur, {"zoom": a.zoom, "images": a.images})
+        P = planner.plan(words, ana, dur, {"zoom": a.zoom, "images": a.images, "cta_word": a.cta})
     if align_note and not a.plan: P["notes"].insert(0, align_note)
     if take_notes and not a.plan: P["notes"].insert(0, f"Verworfene Takes herausgeschnitten: {' | '.join(take_notes)}")
     zf = planner.zoom_fn(P["zooms"], ana)
     if not a.plan: P = planner.place(P, ana, zf)
-    P["captions"] = planner.captions(words, P.get("hook_t1", 0), P.get("keys", [])); P["duration"] = dur
+    P["captions"] = planner.captions(words, P.get("hook_t1", 0), P.get("keys", []), a.cta or ""); P["duration"] = dur
     (out / "plan.json").write_text(json.dumps(P, ensure_ascii=False, indent=1)); (out / "plan.md").write_text(plan_md(P), encoding="utf-8")
     log(f"Plan: {len(P['overlays'])} Overlays ({', '.join(o['type'] for o in P['overlays'])})")
     if a.plan_only: log(f"Plan gespeichert: {out / 'plan.md'}"); return

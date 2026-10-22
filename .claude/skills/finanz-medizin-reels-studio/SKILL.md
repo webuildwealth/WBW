@@ -14,6 +14,17 @@ Automatisiertes Reels-Studio: **Thema/Skript → recherchiertes, faktengeprüfte
 | **2 Skript → Reel** | fertiger Text | Text **nicht inhaltlich verändern**; nur in Szenen gliedern (Schritt 3), Zahlen/Aussagen prüfen und Auffälligkeiten melden, nicht still ändern |
 | **3 Rohvideo → Reel (Talking Head)** | unbearbeitetes Sprechvideo | **`python3 scripts/talking_head.py <video> --out <dir>`** – vollautomatisch, kein JSON (siehe `references/talking-head.md`). Danach Schritte 6–7 unten. |
 
+## Schnellbefehl am Mac (Claude-Desktop-App, Arbeitsordner ~/Videos/FinanzMedizin)
+Nutzer schreibt z. B. **„Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“** → ausführen:
+```bash
+python3 ~/.claude/skills/finanz-medizin-reels-studio/scripts/fm.py schneide original/IMG_1234.MOV --skript 3 --cta Vorsorge
+```
+- Pfade relativ zu `~/Videos/FinanzMedizin` (oder `FM_HOME`). „Skript 3“ = Datei in `skripte/` mit der Zahl 3 im Namen (txt, md, docx, rtf).
+- Ohne Skript- bzw. CTA-Angabe die Optionen weglassen. Weitere: `--musik <datei in musik/>`, `--zoom off|strong`, `--hdr clip|aus`, `--nur-plan`.
+- Ergebnis: `fertig/<name>_<datum>.mp4` (H.264/AAC, iPhone-kompatibel) + `fertig/projekte/<name>_<datum>/` (Plan, .srt, QA). `original/` wird nie verändert.
+- Vor der Übergabe `qa-report.md` lesen und 3–4 Frames ansehen; Ergebnis und Auffälligkeiten kurz melden.
+- „Was ist noch offen?“ → `fm.py status`. Erste Einrichtung: `bash scripts/setup_mac.sh` (einmalig, ~10 Min.).
+
 ## Workflow Modus 3 (Talking Head)
 1. `python3 scripts/talking_head.py <rohvideo> --script <skript> --out <dir> --plan-only` (Skript optional, verbessert Schreibweisen) → `<dir>/plan.md` lesen: Transkript, erkannte Struktur, jede Einblendung mit Begründung.
 2. Plan fachlich prüfen (Zahlen aus dem Transkript stimmen? Begriffe korrekt erkannt?). Nur wenn nötig `<dir>/plan.json` anpassen (Texte, Typen, `image`-Overlays mit generierten/lizenzierten Bildern) – das erledigt Claude, nicht der Nutzer.

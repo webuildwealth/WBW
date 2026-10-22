@@ -27,7 +27,8 @@
       it.host.style.transform = `translate(${b.x}px,${b.y + out * 20}px) scale(${b.s * (1 - 0.04 * out)})`;
     });
     // Untertitel nur in der Vorder-Ebene, nicht waehrend des Hooks (Style DNA R2)
-    if (LAYER !== 'front' || t < (TL.hookEnd || 0)) { capSpan.style.opacity = 0; return true; }
+    const ctaOn = TL.overlays.some((o) => o.type === 'ctaword' && t >= o.t0 && t < o.t1 + 0.3);
+    if (LAYER !== 'front' || t < (TL.hookEnd || 0) || ctaOn) { capSpan.style.opacity = 0; return true; }
     const c = TL.captions; let cur = null;
     for (let i = 0; i < c.length; i++) { const nx = c[i + 1]; const end = Math.min(c[i].t1 + 0.12, nx ? nx.t0 : 1e9); if (t >= c[i].t0 && t < end) { cur = c[i]; break; } }
     if (!cur) { capSpan.style.opacity = 0; return true; }

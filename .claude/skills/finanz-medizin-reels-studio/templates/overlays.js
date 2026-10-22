@@ -180,4 +180,19 @@
     c.appendChild(pill); host.appendChild(c); fit(pill.children[1], 390, 70, 22);
     return (lt) => { const p = P(lt, 0, 0.4, E.outCubic); pill.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0 round 999px)`; setSvg(pill.querySelector('svg'), '', P(lt, 0.25, 0.35)); };
   };
+  /* CTA-WORT: "Kommentiere VORSORGE" - Sprechblase, grosses Keyword in Signal-Rot, Pfeil nach unten (Kommentarfeld) */
+  O.ctaword = (host, d) => {
+    const c = mk('div'); c.style.cssText = 'width:720px;height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px';
+    const bub = mk('div'); bub.style.cssText = `position:relative;background:#fff;border-radius:44px;padding:24px 40px 30px;box-shadow:0 26px 60px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;gap:8px`;
+    bub.innerHTML = `<div style="display:flex;align-items:center;gap:14px"><svg viewBox="0 0 24 24" style="width:50px;height:50px;fill:none;stroke:${S};stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.6A8 8 0 1121 12z"/></svg><span class="d" style="font-size:44px;color:${N}">${d.lead || 'Kommentiere'}</span></div>
+      <div class="d kw" style="font-size:118px;color:#fff;background:${S};padding:6px 34px 16px;border-radius:26px;letter-spacing:-.03em;white-space:nowrap">${d.word}</div>
+      <div class="body" style="font-size:28px;color:${N5};font-weight:600">${d.sub || ''}</div>
+      <div style="position:absolute;left:50%;bottom:-22px;width:44px;height:44px;background:#fff;transform:translateX(-50%) rotate(45deg);border-radius:6px"></div>`;
+    c.appendChild(bub); host.appendChild(c); const kw = bub.querySelector('.kw'); fit(kw, 620, 150, 40);
+    return (lt) => {
+      const p = P(lt, 0, 0.45, E.outBack); bub.style.opacity = cl(p * 2); bub.style.transform = `translateY(${(1 - p) * 80}px) scale(${0.7 + 0.3 * p})`;
+      const pk = P(lt, 0.35, 0.35, E.outBack); kw.style.transform = `scale(${0.6 + 0.4 * pk}) rotate(${(1 - pk) * -6}deg)`;
+      if (lt > 1.2) bub.style.transform = `translateY(${Math.sin((lt - 1.2) * 4.5) * 6}px) scale(${1 + 0.015 * Math.sin((lt - 1.2) * 9)})`;
+    };
+  };
 })();

@@ -22,21 +22,35 @@ def model(key):
     return str(p)
 
 def probe(path):
-    j = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate:stream_side_data=rotation:format=duration", "-of", "json", str(path)]))
+    j = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate,codec_name,pix_fmt,color_transfer,color_primaries,color_space:stream_side_data=rotation:format=duration", "-of", "json", str(path)]))
     s = j["streams"][0]; w, h = s["width"], s["height"]
     rot = 0
     for sd in s.get("side_data_list", []) or []:
         if "rotation" in sd: rot = abs(int(sd["rotation"]))
     if rot in (90, 270): w, h = h, w
-    return {"w": w, "h": h, "dur": float(j["format"]["duration"])}
+    tr = s.get("color_transfer", "") or ""
+    hdr = tr in ("arib-std-b67", "smpte2084") or any("dolby" in str(sd).lower() for sd in s.get("side_data_list", []) or [])
+    return {"w": w, "h": h, "dur": float(j["format"]["duration"]), "codec": s.get("codec_name"), "pix_fmt": s.get("pix_fmt"), "transfer": tr, "hdr": bool(hdr)}
 
-def frames(path, w, h, fps=None, start=None, dur=None):
+HDR_MODE = "mobius"   # mobius (Standard: Mitteltoene unveraendert, Spitzlichter weich) | clip | hable | aus
+
+def color_chain(info):
+    """iPhone-HDR (HLG / PQ / Dolby Vision Profil 8.4) -> SDR BT.709 per Tonemapping; SDR bleibt unveraendert.
+    Ohne das wirken iPhone-Videos nach dem Export grau/ausgewaschen oder ueberstrahlt."""
+    if not info or not info.get("hdr") or HDR_MODE == "aus": return ""
+    tin = "arib-std-b67" if info.get("transfer") != "smpte2084" else "smpte2084"
+    npl = 100 if tin == "arib-std-b67" else 203
+    return (f"setparams=color_primaries=bt2020:color_trc={tin}:colorspace=bt2020nc:range=tv,"
+            f"zscale=tin={tin}:pin=bt2020:min=bt2020nc:rin=tv:t=linear:npl={npl},format=gbrpf32le,zscale=p=bt709,"
+            f"tonemap=tonemap={HDR_MODE}:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p,")
+
+def frames(path, w, h, fps=None, start=None, dur=None, pre=""):
     """Rohbilder (RGB) aus ffmpeg streamen."""
     cmd = ["ffmpeg", "-v", "error"]
     if start is not None: cmd += ["-ss", str(start)]
     cmd += ["-i", str(path)]
     if dur is not None: cmd += ["-t", str(dur)]
-    vf = f"scale={w}:{h}" + (f",fps={fps}" if fps else "")
+    vf = pre + f"scale={w}:{h}" + (f",fps={fps}" if fps else "")
     cmd += ["-vf", vf, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE); n = w * h * 3
     while True:
@@ -84,7 +98,7 @@ def crop_window(src, path, samples=12):
     if abs(sw / sh - 9 / 16) < 0.01: return [0, 0, sw, sh]
     face = Face(); cx, cy = [], []
     sc = 640 / max(sw, sh); fw, fh = int(sw * sc) // 2 * 2, int(sh * sc) // 2 * 2
-    for i, f in enumerate(frames(path, fw, fh, fps=samples / max(1, src["dur"]))):
+    for i, f in enumerate(frames(path, fw, fh, fps=samples / max(1, src["dur"]), pre=color_chain(src))):
         b = face(f)
         if b: cx.append((b[0] + b[2] / 2) / sc); cy.append((b[1] + b[3] / 2) / sc)
     mx = float(np.median(cx)) if cx else sw / 2
@@ -93,11 +107,12 @@ def crop_window(src, path, samples=12):
     ch = int(sw * 16 / 9) // 2 * 2; my = float(np.median(cy)) if cy else sh / 2
     y = int(min(max(0, my - ch * 0.38), sh - ch)); return [0, y, sw, ch]   # zu hoch -> Gesicht ins obere Drittel
 
-def make_proxy(src_path, segments, crop, out):
-    """Jump-Cuts + 9:16-Crop + 1080x1920@30 + Ton -> proxy.mp4"""
-    x, y, cw, ch = crop; fc = ""
+def make_proxy(src_path, segments, crop, out, info=None):
+    """(HDR->SDR) + Jump-Cuts + 9:16-Crop + 1080x1920@30 + Ton -> proxy.mp4"""
+    x, y, cw, ch = crop; n = len(segments)
+    fc = f"[0:v]{color_chain(info)}split={n}" + "".join(f"[s{i}]" for i in range(n)) + ";" if n > 1 else f"[0:v]{color_chain(info)}null[s0];"
     for i, (a, b) in enumerate(segments):
-        fc += f"[0:v]trim={a:.3f}:{b:.3f},setpts=PTS-STARTPTS,crop={cw}:{ch}:{x}:{y},scale={W}:{H}:flags=lanczos,fps={FPS},setsar=1[v{i}];[0:a]atrim={a:.3f}:{b:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.012,afade=t=out:st={max(0, b - a - 0.012):.3f}:d=0.012[a{i}];"
+        fc += f"[s{i}]trim={a:.3f}:{b:.3f},setpts=PTS-STARTPTS,crop={cw}:{ch}:{x}:{y},scale={W}:{H}:flags=lanczos,fps={FPS},setsar=1[v{i}];[0:a]atrim={a:.3f}:{b:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.012,afade=t=out:st={max(0, b - a - 0.012):.3f}:d=0.012[a{i}];"
     fc += "".join(f"[v{i}][a{i}]" for i in range(len(segments))) + f"concat=n={len(segments)}:v=1:a=1[v][a]"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(src_path), "-filter_complex", fc, "-map", "[v]", "-map", "[a]", "-c:v", "libx264", "-crf", "12", "-preset", "fast", "-pix_fmt", "yuv420p",
                     "-c:a", "pcm_s16le", "-ar", "48000", str(out)], check=True)

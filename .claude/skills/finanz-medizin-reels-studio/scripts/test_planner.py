@@ -16,13 +16,13 @@ TXT = ("Drei Fehler, die Ärzte bei der Altersvorsorge machen. "
        "Mein Tipp: Prüfe deinen Schutz, solange du gesund bist. "
        "Das ist wirklich unglaublich wichtig. "
        "Folg mir für mehr und speicher dir das Video.")
-def run(txt=TXT, face=(360, 560, 360, 460)):
+def run(txt=TXT, face=(360, 560, 360, 460), **opts):
     ws, t = [], 0.2
     for w in txt.split():
         d = 0.12 + 0.045 * len(w); ws.append({"w": w, "t0": round(t, 2), "t1": round(t + d, 2)}); t += d + (0.35 if w[-1] in ".:" else 0.06)
     dur = t + 0.5; n = int(dur * 5) + 1; mask = np.zeros((n, 48, 27), np.uint8); mask[:, 16:48, 7:20] = 1
     ana = {"fps": 5, "grid": 40, "t": [i / 5 for i in range(n)], "face": [list(face)] * n, "mask": mask}
-    p = P.plan(ws, ana, dur, {"zoom": "subtle"}); return P.place(p, ana, P.zoom_fn(p["zooms"], ana))
+    p = P.plan(ws, ana, dur, {"zoom": "subtle", **opts}); return P.place(p, ana, P.zoom_fn(p["zooms"], ana))
 if __name__ == "__main__":
     p = run(); print(p["notes"])
     for o in p["overlays"]:

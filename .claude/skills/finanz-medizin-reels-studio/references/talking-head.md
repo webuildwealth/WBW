@@ -85,3 +85,21 @@ Das Transkript liefert die Zeit, dein Skript die Schreibweise:
 | Ersten Satz als Hook formulieren (≤ 9 Wörter, Zahl oder Gegensatz) | Wird zur Wort-für-Wort-Typo der ersten Sekunden |
 
 **Skript:** einfache Textdatei, so wie du sprichst. Regieanweisungen in `[eckigen Klammern]` sind erlaubt und werden nicht eingeblendet.
+
+## Ablauf am Mac (Claude-Desktop-App, „Weg B“)
+1. Filmen am iPhone (1080p oder 4K; HDR darf an bleiben, wird automatisch nach SDR umgerechnet).
+2. AirDrop auf den Mac nach `~/Videos/FinanzMedizin/original` (im Teilen-Menü **Optionen → „Alle Fotodaten“** an, sonst wird verkleinert).
+3. In der Desktop-App: „Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“.
+4. Fertiges Video in `fertig/` → AirDrop zurück aufs iPhone → posten.
+
+**Einrichtung (einmalig):** `bash ~/.claude/skills/finanz-medizin-reels-studio/scripts/setup_mac.sh` installiert ffmpeg, Node, die Python-Umgebung `~/.fm-reels/venv`, Playwright/Chromium, lädt die Modelle (~510 MB) und legt den Arbeitsordner an.
+
+**iPhone-Besonderheiten (automatisch):**
+- HEVC/H.264, Hoch- oder Querformat-Metadaten (Drehung) werden berücksichtigt.
+- Variable Bildrate wird auf 30 fps vereinheitlicht.
+- HDR (HLG, Dolby Vision 8.4) wird per `zscale`+`tonemap=mobius` nach BT.709 umgerechnet. Falls Hauttöne zu flach wirken: `--hdr clip`; bei SDR-Aufnahmen greift nichts.
+
+**CTA-Wort (`--cta Vorsorge`):**
+- Am Ende erscheint eine Sprechblase „Kommentiere **VORSORGE**“.
+- Sagst du das Wort im Video, erscheint sie genau dann. Sonst kommt sie in den letzten ~3,8 s.
+- Das Wort ist im Untertitel hervorgehoben; während der Sprechblase pausieren die Untertitel.

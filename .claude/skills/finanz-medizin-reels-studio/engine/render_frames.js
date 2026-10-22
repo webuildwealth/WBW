@@ -5,7 +5,7 @@
 const fs = require('fs'), path = require('path'), { spawn, spawnSync } = require('child_process');
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > -1 ? process.argv[i + 1] : d; };
 function loadPlaywright() {
-  const cands = [process.env.PLAYWRIGHT_MODULE, 'playwright', '/opt/node-tools/node_modules/playwright', '/usr/lib/node_modules/playwright', path.join(process.cwd(), 'node_modules/playwright')].filter(Boolean);
+  const cands = [process.env.PLAYWRIGHT_MODULE, 'playwright', path.join(require('os').homedir(), '.fm-reels/node_modules/playwright'), '/opt/node-tools/node_modules/playwright', '/usr/lib/node_modules/playwright', '/opt/homebrew/lib/node_modules/playwright', path.join(process.cwd(), 'node_modules/playwright')].filter(Boolean);
   for (const c of cands) { try { return require(c); } catch (e) {} }
   console.error('playwright nicht gefunden. Installation: npm i playwright (Chromium: PLAYWRIGHT_BROWSERS_PATH setzen) oder PLAYWRIGHT_MODULE=/pfad/zu/playwright'); process.exit(2);
 }
