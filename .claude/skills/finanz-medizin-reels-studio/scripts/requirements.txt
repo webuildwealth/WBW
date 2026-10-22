@@ -1,3 +1,7 @@
 numpy
 scipy
 # optional (Mode 2/3, eigene Stimme -> Wort-Timings): faster-whisper
+# Modus 3 (Talking Head)
+sherpa-onnx
+mediapipe
+opencv-python-headless

@@ -83,6 +83,7 @@
   }
   const stage = (host, gap) => { const s = mk('div', 'stage'); if (gap != null) s.style.gap = gap + 'px'; host.appendChild(s); return s; };
 
+  FM.util = { mk, T, A, fmt, tokens, units, unitSpan, rich, richHTML, rev, svg, setSvg, IC };
   const C = (FM.components = {});
 
   /* ---------------- HOOK: Wort-fuer-Wort-Text (Referenz: Mix aus Sans und Serif-Kursiv, Akzentfarbe) --------------- */

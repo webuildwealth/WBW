@@ -2,13 +2,14 @@
 """Qualitaetskontrolle: Technik, Lautheit, Schnitt-/Caption-Regeln, Layout-Safe-Zones. Schreibt qa-report.md/.json.
    python3 qa.py reel.mp4 --timeline timeline.json --out ./out/x"""
 import argparse, json, re, subprocess, sys
+import numpy as np
 from pathlib import Path
 HERE = Path(__file__).resolve().parent; SKILL = HERE.parent
 
 def sh(cmd): return subprocess.run(cmd, capture_output=True, text=True)
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("video"); ap.add_argument("--timeline"); ap.add_argument("--out", default="."); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("video"); ap.add_argument("--timeline"); ap.add_argument("--out", default="."); ap.add_argument("--th-plan"); ap.add_argument("--track"); a = ap.parse_args()
     out = Path(a.out); R = []  # (status, check, detail)
     ok = lambda c, d: R.append(("OK", c, d)); warn = lambda c, d: R.append(("WARN", c, d)); fail = lambda c, d: R.append(("FAIL", c, d))
     pr = json.loads(sh(["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", a.video]).stdout)
@@ -29,6 +30,33 @@ def main():
     (ok if "black_start" not in bl else fail)("Keine Schwarzbilder", "ok" if "black_start" not in bl else re.findall(r"black_start:[\d.]+", bl)[:3])
     fz = sh(["ffmpeg", "-hide_banner", "-i", a.video, "-vf", "freezedetect=n=-60dB:d=1.2", "-an", "-f", "null", "-"]).stderr
     (ok if "freeze_start" not in fz else warn)("Kein Standbild > 1,2 s", "ok" if "freeze_start" not in fz else f"{fz.count('freeze_start')} Standbild-Phase(n)")
+    if a.th_plan:   # Talking-Head-Pruefungen
+        P = json.loads(Path(a.th_plan).read_text()); ov = P["overlays"]; caps = P["captions"]
+        tr = [r for r in json.loads(Path(a.track).read_text()) if r[1] is not None] if a.track else []
+        hits = []
+        for o in ov:
+            if o["layer"] != "front": continue
+            b = o["box"]
+            for t, x, y, w, h in tr:
+                if o["t0"] <= t <= o["t1"] and not (b["x"] + b["w"] < x or b["x"] > x + w or b["y"] + b["h"] < y or b["y"] > y + h):
+                    ix = min(b["x"] + b["w"], x + w) - max(b["x"], x); iy = min(b["y"] + b["h"], y + h) - max(b["y"], y)
+                    if ix * iy > 0.04 * w * h: hits.append(f"{o['id']}@{t:.1f}s"); break
+        (ok if not hits else fail)("Gesicht frei: kein Overlay vor dem Gesicht (gemessenes Tracking)", "ok" if not hits else ", ".join(hits[:5]))
+        back = [o for o in ov if o["layer"] == "back"]; bad = [o["id"] for o in back if o.get("occluded", 0) > 0.45]
+        (ok if not bad else warn)("Hintergrund-Elemente ausreichend sichtbar (<= 45 % verdeckt)", f"{len(back)} hinter der Person" + ("" if not bad else f", zu verdeckt: {bad}"))
+        types = sorted({o["type"] for o in ov}); (ok if len(types) >= 3 else warn)("Visuelle Vielfalt (>= 3 Overlay-Typen)", ", ".join(types))
+        content = [o for o in ov if o["type"] not in ("title", "hook")]; cov = np.zeros(int(dur * 10) + 1)
+        for o in content: cov[int(o["t0"] * 10):int(o["t1"] * 10)] = 1
+        (ok if 0.3 <= cov.mean() <= 0.9 else warn)("Abdeckung mit Inhalts-Overlays 30-90 %", f"{cov.mean() * 100:.0f} % der Laufzeit")
+        same = [(x["type"]) for x, y in zip(content, content[1:]) if x["type"] == y["type"] and x.get("box") == y.get("box")]
+        (ok if not same else warn)("Keine starren Wiederholungen (gleicher Typ an gleicher Stelle)", "ok" if not same else f"{len(same)}x: {same[:3]}")
+        vo = out / "work" / "voice.wav"
+        if vo.exists():
+            sys.path.insert(0, str(HERE)); import align as al
+            sr, x = al.load(vo); env = al.envelope(x, sr); thr = env.max() * 10 ** (-38 / 20)
+            miss = [c["text"] for c in caps if env[int(c["t0"] * 100): max(int(c["t0"] * 100) + 1, int(c["t1"] * 100))].max(initial=0) < thr]
+            (ok if not miss else fail)("Caption-Sync: Sprache im Caption-Fenster (ASR-Zeitstempel)", "ok" if not miss else f"{len(miss)} ohne Sprache: {miss[:4]}")
+        ovl = [(c1["text"], c2["text"]) for c1, c2 in zip(caps, caps[1:]) if c2["t0"] < c1["t1"] - 1e-6]; (ok if not ovl else fail)("Captions ueberlappen nicht", "ok" if not ovl else str(ovl[:3]))
     if a.timeline:
         tl = json.loads(Path(a.timeline).read_text()); sc = tl["scenes"]; caps = tl["captions"]
         first = min((w["t0"] for w in sc[0]["words"]), default=0)
@@ -40,7 +68,7 @@ def main():
         outs = [c["text"] for c in caps if not any(s["start"] - 0.01 <= c["t0"] < s["start"] + s["dur"] + 0.01 for s in sc)]; (ok if not outs else fail)("Captions innerhalb ihrer Szene", "ok" if not outs else str(outs[:3]))
         vo = out / "work" / "voiceover.wav"
         if vo.exists():   # Sync-Plausibilitaet: Sprachenergie muss in Caption-Fenstern liegen, kurz vor Caption-Start darf kaum Sprache des Vorworts-Ende liegen
-            import numpy as np; sys.path.insert(0, str(HERE)); import align as al
+            sys.path.insert(0, str(HERE)); import align as al
             sr, x = al.load(vo); env = al.envelope(x, sr); thr = env.max() * 10 ** (-38 / 20)
             miss = [c["text"] for c in caps if env[int(c["t0"] * 100): max(int(c["t0"] * 100) + 1, int(c["t1"] * 100))].max(initial=0) < thr]
             (ok if not miss else fail)("Caption-Sync: Sprache liegt im Caption-Fenster", "ok" if not miss else f"{len(miss)} Chunks ohne Sprache: {miss[:4]}")

@@ -19,9 +19,9 @@ function chromePath() {
   const { chromium } = loadPlaywright();
   const tl = JSON.parse(fs.readFileSync(arg('timeline'), 'utf8'));
   const fps = tl.fps || 30, total = Math.ceil(tl.duration * fps);
-  const url = 'file://' + path.resolve(__dirname, 'scene.html');
+  const url = 'file://' + path.resolve(__dirname, tl.mode === 'th' ? 'th.html' : 'scene.html'); const LAYER = arg('layer');
   const browser = await chromium.launch({ executablePath: chromePath(), args: ['--no-sandbox', '--font-render-hinting=none', '--disable-gpu'] });
-  const mkPage = async () => { const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 }); const pg = await ctx.newPage(); await pg.goto(url); await pg.evaluate(() => document.fonts.ready); await pg.evaluate((t) => window.__init(t), tl); await pg.evaluate(() => document.fonts.ready); return pg; };
+  const mkPage = async () => { const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 }); const pg = await ctx.newPage(); await pg.goto(url); await pg.evaluate(() => document.fonts.ready); await pg.evaluate((t) => window.__init(t), tl); if (LAYER) await pg.evaluate((l) => window.__setLayer(l), LAYER); await pg.evaluate(() => document.fonts.ready); return pg; };
   const shot = (pg, t, o) => pg.evaluate((tt) => window.__setTime(tt), t).then(() => pg.screenshot(o));
 
   const stills = arg('stills');
@@ -55,16 +55,17 @@ function chromePath() {
   const t0 = Date.now();
   await Promise.all(Array.from({ length: workers }, async (_, w) => {
     const a = w * per, b = Math.min(total, a + per); if (a >= b) return;
-    const part = path.join(tmp, `p${w}.mp4`); parts[w] = part; const pg = await mkPage();
+    const part = path.join(tmp, `p${w}.${LAYER ? 'mov' : 'mp4'}`); parts[w] = part; const pg = await mkPage();
     const ff = ['-y', '-v', 'error'];
     if (base) ff.push('-ss', String(a / fps), '-t', String((b - a) / fps), '-i', base);
-    ff.push('-f', 'image2pipe', '-framerate', String(fps), '-c:v', tl.overlay ? 'png' : 'mjpeg', '-i', '-');
+    ff.push('-f', 'image2pipe', '-framerate', String(fps), '-c:v', (tl.overlay || LAYER) ? 'png' : 'mjpeg', '-i', '-');
     if (base) ff.push('-filter_complex', '[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,setsar=1,fps=' + fps + '[b];[b][1:v]overlay=0:0:format=auto[o]', '-map', '[o]');
-    ff.push('-c:v', 'libx264', '-preset', 'fast', '-crf', '16', '-pix_fmt', 'yuv420p', '-r', String(fps), '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-an', part);
+    if (LAYER) ff.push('-c:v', 'png', '-pix_fmt', 'rgba', '-r', String(fps), '-an', part);
+    else ff.push('-c:v', 'libx264', '-preset', 'fast', '-crf', '16', '-pix_fmt', 'yuv420p', '-r', String(fps), '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-an', part);
     const p = spawn('ffmpeg', ff, { stdio: ['pipe', 'inherit', 'inherit'] });
     const done = new Promise((r) => p.on('close', r));
     for (let f = a; f < b; f++) {
-      const buf = await shot(pg, f / fps, tl.overlay ? { type: 'png', omitBackground: true } : { type: 'jpeg', quality: 95 });
+      const buf = await shot(pg, f / fps, (tl.overlay || LAYER) ? { type: 'png', omitBackground: true } : { type: 'jpeg', quality: 95 });
       if (!p.stdin.write(buf)) await new Promise((r) => p.stdin.once('drain', r));
     }
     p.stdin.end(); await done;

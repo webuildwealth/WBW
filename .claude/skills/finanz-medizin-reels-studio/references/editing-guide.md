@@ -46,5 +46,8 @@ Stimme: **Pico-TTS ist eine hörbar synthetische Platzhalterstimme.** Für Verö
 ## Export
 H.264 High, yuv420p, **1080 × 1920, 30 fps**, CRF 16 (Renderer) → AAC 192k, `+faststart`, BT.709-Tags. Typische Größe 15–30 MB bei 50 s. Dateien: `<slug>.mp4`, `captions.srt`, `timeline.json`, `storyboard.json`, `voiceover.wav`, `poster.jpg`, `contactsheet.jpg`, `qa-report.md`, `rerender.sh`.
 
-## Modus 3 (Rohvideo)
+## Modus 3 (Rohvideo) – vollautomatisch
+Der vollautomatische Talking-Head-Editor (`scripts/talking_head.py`) ist in **`references/talking-head.md`** beschrieben (Transkription, Szenenplanung, Freistellung, Ebenen-Composite). Der folgende manuelle Weg bleibt für Sonderfälle bestehen.
+
+### Manueller Weg (Storyboard mit `source`)
 `rough_cut.py` entfernt Pausen > 0,35 s (Jump-Cuts, Schwelle −32 dB). Storyboard-Szenen bekommen `source:{from,to}` (Sekunden im Rohvideo) + `vo` (Transkript für Untertitel) und optional `place:{y,scale}`, damit Karten das Gesicht nicht verdecken. Build mit `--base cut.mp4`: Ton kommt aus dem Video, Overlays werden transparent gerendert und über das Video gelegt. *Mechanik getestet mit synthetischem Material; mit echtem Talking-Head vor Veröffentlichung visuell abnehmen (Gesichtsverdeckung!).*
