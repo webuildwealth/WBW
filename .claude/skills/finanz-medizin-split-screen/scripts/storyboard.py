@@ -13,9 +13,9 @@ Autorenformat (story.json):
 """
 import argparse, ast, json, math, operator, re, sys, pathlib
 
-SCENE_TYPES = {"title", "character", "counter", "stat", "gap_bars", "inflation", "timeline", "myth", "compare", "bullets", "image"}
+SCENE_TYPES = {"title", "character", "counter", "stat", "gap_bars", "inflation", "timeline", "myth", "compare", "bullets", "image", "svg"}
 REQUIRED = {"title": ["line1"], "counter": ["to"], "stat": ["to"], "gap_bars": ["bars"], "myth": ["text"], "compare": ["left", "right"],
-            "bullets": ["items"], "image": ["src"], "timeline": ["from", "to"], "inflation": [], "character": []}
+            "bullets": ["items"], "image": ["src"], "timeline": ["from", "to"], "inflation": [], "character": [], "svg": ["layers"]}
 TRANSITIONS = {"cut", "fade", "slide", "zoom", "wipe", "push"}
 
 
@@ -110,10 +110,19 @@ def parse_numbers(text):
     return out
 
 
+NUMWORDS = {"zwei": 2, "drei": 3, "vier": 4, "fünf": 5, "sechs": 6, "sieben": 7, "acht": 8, "neun": 9, "zehn": 10, "elf": 11, "zwölf": 12,
+            "zwanzig": 20, "dreißig": 30, "vierzig": 40, "fünfzig": 50, "hundert": 100, "tausend": 1000, "eins": 1,
+            "erstens": 1, "zweitens": 2, "drittens": 3, "viertens": 4, "fünftens": 5, "erste": 1, "zweite": 2, "dritte": 3, "vierte": 4, "fünfte": 5,
+            "erster": 1, "zweiter": 2, "dritter": 3, "ersten": 1, "zweiten": 2, "dritten": 3, "hälfte": 50, "halb": 0.5}
+
+
 def allowed_numbers(sb):
     ok = {}
     for n in parse_numbers(sb.get("script", "")):
         ok[n] = "Skript"
+    for w in re.findall(r"[a-zäöüß]+", sb.get("script", "").lower()):
+        if w in NUMWORDS:
+            ok.setdefault(float(NUMWORDS[w]), "Skript (Zahlwort)")
     for a in sb.get("assumptions", []):
         ok[float(a["value"])] = "Annahme" + ("" if a.get("approved") else " (NICHT freigegeben)")
     return ok
@@ -165,9 +174,11 @@ def check(sb):
         texts = []
         def walk(x):
             if isinstance(x, str): texts.append(x)
-            elif isinstance(x, dict): [walk(v) for k, v in x.items() if k not in ("src", "tone", "mark", "figure", "env", "envTo", "pose", "mood", "unit")]
+            elif isinstance(x, dict): [walk(v) for k, v in x.items() if k not in ("src", "tone", "mark", "figure", "env", "envTo", "pose", "mood", "unit", "credit", "query", "svg", "origin", "bg")]
             elif isinstance(x, list): [walk(v) for v in x]
         walk(p)
+        for L in p.get("layers", []) if sc["type"] == "svg" else []:  # nur sichtbarer SVG-Text zählt, nicht Koordinaten
+            texts += [re.sub(r"<[^>]+>", "", m) for m in re.findall(r"<text[^>]*>(.*?)</text>", L.get("svg", ""), re.S)]
         for t in texts:
             for n in parse_numbers(t):
                 if 1900 <= n <= 2100 or n <= 0:

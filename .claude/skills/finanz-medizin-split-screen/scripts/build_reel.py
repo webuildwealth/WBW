@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Pipeline-Orchestrator.
 
-  Modus A/B (Rohvideo [+ Skript]):
-    build_reel.py --video raw.mp4 --out-dir out/ [--script skript.txt] [--storyboard story.json]
-      Schritt 1 (ohne --storyboard): Transkription + Schnitt -> out/transcript.txt, out/edited.mp4, out/edited.words.json
-                                      -> Claude schreibt daraus story.json (siehe references/visual-storytelling.md) und startet erneut
-      Schritt 2 (mit --storyboard):   Anker auflösen, Zahlen prüfen, oben rendern, Sounddesign, zusammensetzen, QC
+  Modus A/B (Rohvideo [+ Skript]) – EIN Befehl:
+    build_reel.py --video raw.mp4 --out-dir out/
+      Transkription -> Schnitt -> automatisches Storyboard (Claude-API oder Regel-Regisseur) -> Zahlenprüfung ->
+      Render oben -> Sounddesign -> Montage -> QC -> out/reel.mp4
+    Optional: --storyboard story.json (eigene/von Claude verfeinerte Regie), --review (nach Storyboard-Stills anhalten),
+              --images search|generate (echte Bilder), --engine claude|rules
 
   Modus C (nur Skript):
     build_reel.py --storyboard story.json --out-dir out/            # Storyboard + Vorschau-Reel mit Sprecher-Platzhalter
@@ -39,6 +40,9 @@ def main():
     ap.add_argument("--still-only", action="store_true", help="nur Vorschau-Standbilder statt Video rendern")
     ap.add_argument("--face-x", type=float); ap.add_argument("--face-y", type=float)
     ap.add_argument("--auto-light", action="store_true")
+    ap.add_argument("--engine", default="auto", choices=["auto", "claude", "rules"], help="Storyboard-Regie, wenn kein --storyboard")
+    ap.add_argument("--images", default="none", choices=["none", "search", "generate"], help="echte Bilder suchen/generieren")
+    ap.add_argument("--review", action="store_true", help="nach Storyboard + Vorschau-Stills anhalten")
     a = ap.parse_args()
     out = pathlib.Path(a.out_dir); out.mkdir(parents=True, exist_ok=True)
     panel_h = int(round(1920 * a.ratio / 2) * 2)
@@ -64,13 +68,14 @@ def main():
         duration = tm["out_duration"]
         txt = " ".join(w["w"] for w in json.load(open(words_path)))
         (out / "transcript.txt").write_text(txt, encoding="utf-8")
-        if not a.storyboard:
-            print(f"\nSchnitt fertig ({duration:.1f}s). Transkript (bereinigt, neue Zeitachse) -> {out/'transcript.txt'}\n"
-                  f"NÄCHSTER SCHRITT: story.json nach references/visual-storytelling.md schreiben, dann erneut mit --storyboard starten.")
-            return
-    # ---------- Storyboard ----------
+    # ---------- Storyboard (automatisch, wenn keins übergeben) ----------
     if not a.storyboard:
-        sys.exit("--storyboard fehlt (Modus C) bzw. --video (Modus A/B).")
+        if not words_path:
+            sys.exit("--storyboard fehlt (Modus C) bzw. --video (Modus A/B).")
+        auto = out / "story.auto.json"
+        run(PY, HERE / "auto_storyboard.py", words_path, "-o", auto, "--engine", a.engine, "--images", a.images)
+        a.storyboard = str(auto)
+        print(f"Automatisches Storyboard -> {auto}")
     sb = json.load(open(a.storyboard, encoding="utf-8"))
     sys.path.insert(0, str(HERE)); import storyboard as _sbm; _sbm.absolutize(sb, pathlib.Path(a.storyboard).resolve().parent)
     sb.setdefault("meta", {})["panel_height"] = panel_h
@@ -87,7 +92,7 @@ def main():
     if r.returncode and not a.force:
         sys.exit("Storyboard-Prüfung fehlgeschlagen (Zahlen/Anker). Korrigieren oder --force.")
     # ---------- Rendern ----------
-    if a.still_only:
+    if a.still_only or a.review:
         sbj = json.load(open(res)); d = sbj["meta"]["duration"]
         ts = ",".join(f"{(s['start'] + min(s['end'] - s['start'], 2.0) * .9):.2f}" for s in sbj["scenes"])
         run(PY, HERE / "render_top.py", res, "--stills", ts, "--out-dir", out / "previews")
@@ -106,7 +111,12 @@ def main():
     comp += ["--bottom", bottom] if bottom else ["--placeholder", "Sprecher folgt"]
     if music: comp += ["--music", music]
     run(*comp)
-    run(PY, HERE / "qc.py", comp[-1] if False else out / ("reel.mp4" if bottom else "preview_ohne_sprecher.mp4"), "--storyboard", res, "--out-dir", out / "qc", *([] if bottom else ["--preview"]))
+    cj = out / "images" / "credits.json"
+    if cj.exists():
+        lines = [c.get("credit", "") for c in json.load(open(cj))]
+        (out / "credits.txt").write_text("Bildnachweise:\n" + "\n".join(lines), encoding="utf-8")
+        print(f"Bildnachweise für die Caption -> {out / 'credits.txt'}")
+    run(PY, HERE / "qc.py", out / ("reel.mp4" if bottom else "preview_ohne_sprecher.mp4"), "--storyboard", res, "--out-dir", out / "qc", *([] if bottom else ["--preview"]))
 
 
 if __name__ == "__main__":

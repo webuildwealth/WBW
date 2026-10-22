@@ -97,7 +97,8 @@ def plan(sb):
             ev.append((st + p.get("stamp_t", 1.3), "thud", 0))
         if ty == "gap_bars":
             ev.append((st + .25, "rise", 0))
-            ev.append((st + p.get("gap_t", 1.9), "ding", 0))
+            d_ = sc["end"] - st; k_ = min(1, max(.4, d_ / 3.4))
+            ev.append((st + min(p.get("gap_t", 1.9 * k_), max(.6, d_ - .8)), "ding", 0))
         if ty == "compare":
             for k in range(len(p.get("left", {}).get("items", []))):
                 ev.append((st + .8 + k * .55, "pop", -4))

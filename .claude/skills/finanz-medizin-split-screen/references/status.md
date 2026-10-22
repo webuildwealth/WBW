@@ -1,6 +1,6 @@
 # Implementierungsstand (ehrlich)
 
-Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Python 3.13). `python3 scripts/selftest.py` → 19/19 grün.
+Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Python 3.13). `python3 scripts/selftest.py` → 24/24 grün.
 **Es wurde noch kein echtes Sprechervideo von Finanz-Medizin verarbeitet.** Sprecherschnitt/Montage wurden mit einem *synthetischen* Clip
 (Testbild + Tonbursts) getestet, die Gesichtserkennung separat an einem Standbild mit echtem Gesicht.
 
@@ -17,6 +17,12 @@ Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Pyt
 | QC-Skript (Format, Codec, Lautheit, Peak, Standbilder, Szenenlängen) + Kontaktbogen | Demos |
 | Gesichtserkennung (OpenCV-Haar) | 1 echtes Gesicht (Referenz-Standbild): erkannt, Position plausibel |
 
+| Vollautomatik: `build_reel.py --video roh.mp4` ohne Storyboard (Regel-Regisseur) bis `reel.mp4` | synthetischer 42-s-Clip, selftest |
+| Regel-Regisseur erkennt Figur/Geschlecht, Mythos→Realität, Ruhestand (Alterung + Vergleich), Inflation über Satzgrenzen, Aufzählungen, CTA | selftest + Sichtprüfung |
+| Eigene Illustrationen (`svg`: draw/pop/up/left/right, Parallax, Kamerafahrt) | Szenenkatalog D + Demo |
+| Zahlwörter (drei, zweitens …) gelten als belegt | selftest |
+| Canva-Connector erzeugt passende Illustration | 1 Testbild erzeugt; **nur 200-px-Vorschau** ins Projekt übertragbar (CDN gesperrt) |
+
 ## ⚠️ Benötigt zusätzliche Werkzeuge / Voraussetzungen
 | Funktion | Voraussetzung |
 |---|---|
@@ -28,7 +34,8 @@ Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Pyt
 
 ## ❌ Noch nicht realisiert / Einschränkungen
 - Links/Rechts-Layout (nur Oben/Unten; Verhältnis per `--ratio` frei).
-- Automatische Storyboard-Erzeugung als reines Script: das Storyboard schreibt Claude als Regisseur (bewusst; ohne LLM-Schritt gibt es keine inhaltliche Bildwahl).
+- Claude-API-Regie (`--engine claude`) ist implementiert, aber **ungetestet** (kein API-Key in der Testumgebung). Bildsuche und OpenAI-Generierung: implementiert, **ungetestet** (Hosts gesperrt; Fehler werden sauber gemeldet, Pipeline läuft ohne Bilder weiter).
+- Regel-Regisseur versteht keine Inhalte, nur Muster (Beträge, Prozente, Schlüsselwörter) – Qualität deutlich unter Claude-Regie.
 - Szenen nur als vektorbasierte Illustration (Figur „Arzt/Ärztin“, 4 Umgebungen); weitere Figuren (MFA, Patient, Praxisinhaber) und Orte müssen in `engine.js` ergänzt werden.
 - Gesichts-Tracking nur als fester Ausschnitt je Schnittsegment (keine kontinuierliche Nachführung); keine Beleuchtungs-/Farbkorrektur außer leichtem `eq` und `--auto-light`.
 - Soundqualität nicht per Gehör beurteilt; Hintergrundmusik der Referenz nicht analysiert.

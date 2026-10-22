@@ -188,22 +188,23 @@
   SC.stat = SC.counter;
 
   SC.gap_bars = (p, lt, dur) => {
+    const k = Math.min(1, Math.max(.4, dur / 3.4)), gt = Math.min(p.gap_t ?? 1.9 * k, Math.max(.6, dur - .8));
     const bars = p.bars, max = p.max || Math.max(...bars.map(b => b.value)) * 1.05, base = BOT - 90, hMax = base - (TOP + 130);
     const bw = 250, gapX = 120, x0 = (W - (bars.length * bw + (bars.length - 1) * gapX)) / 2;
     const unit = p.unit || '€';
     let out = `<div class="abs" style="left:0;width:100%;top:${TOP + 10}px;text-align:center;font-weight:800;font-size:34px;letter-spacing:.12em;color:${C.ink}">${esc((p.title || '').toUpperCase())}</div>`;
     let tops = [];
     const s = bars.map((b, i) => {
-      const u = pr(lt, .25 + i * .55, 1.0, E.out), h = b.value / max * hMax * u, x = x0 + i * (bw + gapX), col = toneCol(b.tone || (i ? 'gray' : 'blue'));
+      const u = pr(lt, (.25 + i * .55) * k, 1.0 * k, E.out), h = b.value / max * hMax * u, x = x0 + i * (bw + gapX), col = toneCol(b.tone || (i ? 'gray' : 'blue'));
       tops.push({ x, y: base - b.value / max * hMax, b });
       return `<rect x="${x}" y="${base - h}" width="${bw}" height="${h}" rx="14" fill="${col}"/>
-        <text x="${x + bw / 2}" y="${base - h - 20}" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="60" fill="${col}" opacity="${clamp(u * 3)}">${de(b.value * u, 0)} ${unit}</text>
+        <text x="${x + bw / 2}" y="${i > 0 && lt >= gt ? base - h + 64 : base - h - 20}" text-anchor="middle" font-family="Manrope" font-weight="800" font-size="${i > 0 && lt >= gt ? 52 : 60}" fill="${i > 0 && lt >= gt ? "#fff" : col}" opacity="${clamp(u * 3)}">${de(b.value * u, 0)} ${unit}</text>
         <text x="${x + bw / 2}" y="${base + 52}" text-anchor="middle" font-family="Manrope" font-weight="700" font-size="34" fill="${C.ink}">${esc(b.label)}</text>`;
     }).join('');
     let gap = '';
     if (bars.length >= 2) {
-      const gu = pr(lt, p.gap_t ?? (.25 + .55 + 1.1), .7, E.out), a = tops[0], b = tops[1], gv = p.gap && p.gap.value != null ? p.gap.value : (a.b.value - b.b.value);
-      if (lt >= (p.gap_t ?? 1.9)) {
+      const gu = pr(lt, gt, .6, E.out), a = tops[0], b = tops[1], gv = p.gap && p.gap.value != null ? p.gap.value : (a.b.value - b.b.value);
+      if (lt >= gt) {
         const pulse = 1 + Math.sin(lt * 5) * .015;
         gap = `<path d="M${a.x + bw} ${a.y} H${b.x + bw}" stroke="${C.red500}" stroke-width="4" stroke-dasharray="12 10" fill="none" opacity="${gu}"/>
           <rect x="${b.x}" y="${a.y}" width="${bw}" height="${(b.y - a.y) * gu}" rx="14" fill="${C.red100}" stroke="${C.red500}" stroke-width="4" stroke-dasharray="14 10"/>
@@ -278,7 +279,32 @@
     const u = clamp(lt / dur), z = lerp(p.zoom_from || 1.0, p.zoom_to || 1.15, E.inout(u)), px = lerp(p.pan_x_from || 0, p.pan_x_to || 0, u), py = lerp(p.pan_y_from || 0, p.pan_y_to || 0, u);
     const h = BOT - TOP - 30;
     return `<div class="abs" style="left:60px;top:${TOP - 10}px;width:960px;height:${h}px;border-radius:30px;overflow:hidden;border:5px solid ${C.navy800};box-shadow:0 12px 0 ${C.navy800};background:${C.navy100}"><img src="${esc(p.src)}" style="width:100%;height:100%;object-fit:cover;transform:translate(${px}px,${py}px) scale(${z})"></div>` +
-      (p.caption ? `<div class="abs serif" style="left:60px;width:960px;text-align:center;top:${TOP + 20}px;font-size:56px;color:#fff;text-shadow:0 3px 12px rgba(7,27,50,.7);opacity:${pr(lt, .4, .4)}">${esc(p.caption)}</div>` : '');
+      (p.credit ? `<div class="abs" style="left:80px;top:${BOT - 82}px;font-size:18px;color:#fff;opacity:.85;text-shadow:0 1px 4px rgba(0,0,0,.7)">${esc(p.credit).slice(0, 110)}</div>` : '') + (p.caption ? `<div class="abs serif" style="left:60px;width:960px;text-align:center;top:${TOP + 20}px;font-size:56px;color:#fff;text-shadow:0 3px 12px rgba(7,27,50,.7);opacity:${pr(lt, .4, .4)}">${esc(p.caption)}</div>` : '');
+  };
+
+  /* Eigene Illustration (von Claude je Video gezeichnet): Ebenen mit Auftritt, Schweben, Parallax + Kamerafahrt */
+  SC.svg = (p, lt, dur) => {
+    const cam = p.camera || {}, cu = E.inout(clamp(lt / dur));
+    const z = lerp(cam.from ?? 1, cam.to ?? 1.06, cu), cx = lerp(cam.x_from ?? 0, cam.x_to ?? 0, cu), cy = lerp(cam.y_from ?? 0, cam.y_to ?? 0, cu);
+    const layers = (p.layers || []).map((L, i) => {
+      const t0 = L.t ?? i * .25, d = L.d ?? .5, u = pr(lt, t0, d, L.enter === 'pop' ? E.back : E.out);
+      if (lt < t0 && L.enter && L.enter !== 'none') return '';
+      const par = (L.depth ?? 0) * cu * 40, fl = L.float ? Math.sin((lt + i) * 2) * L.float : 0;
+      const [ox, oy] = (L.origin || '540 480').split(/[ ,]+/).map(Number);
+      let tr = `translate(${(-par).toFixed(1)} ${fl.toFixed(1)})`, op = 1, body = L.svg || '';
+      switch (L.enter) {
+        case 'pop': tr += ` translate(${ox} ${oy}) scale(${u.toFixed(3)}) translate(${-ox} ${-oy})`; break;
+        case 'fade': op = u; break;
+        case 'up': tr += ` translate(0 ${((1 - u) * 80).toFixed(1)})`; op = clamp(u * 2); break;
+        case 'left': tr += ` translate(${((1 - u) * -160).toFixed(1)} 0)`; op = clamp(u * 2); break;
+        case 'right': tr += ` translate(${((1 - u) * 160).toFixed(1)} 0)`; op = clamp(u * 2); break;
+        case 'draw': body = body.replace(/<(path|line|polyline|circle|rect|ellipse)\b/g, `<$1 pathLength="1" stroke-dasharray="1" stroke-dashoffset="${(1 - u).toFixed(3)}"`); break;
+      }
+      return `<g transform="${tr}" opacity="${op.toFixed(3)}">${body}</g>`;
+    }).join('');
+    return `<svg class="abs" style="left:0;top:0" width="${W}" height="${H}" viewBox="0 0 1080 960" preserveAspectRatio="xMidYMid meet">` +
+      `<g transform="translate(540 480) scale(${z.toFixed(4)}) translate(${(-540 + cx).toFixed(1)} ${(-480 + cy).toFixed(1)})">${p.bg ? `<rect x="-200" y="-200" width="1480" height="1360" fill="${esc(p.bg)}"/>` : ''}${layers}</g></svg>` +
+      (p.caption ? `<div class="abs serif" style="left:60px;width:960px;text-align:center;top:${TOP}px;font-size:60px;color:${C.red500};opacity:${pr(lt, .3, .4)}">${esc(p.caption)}</div>` : '');
   };
 
   /* ---------- Untertitel ---------- */

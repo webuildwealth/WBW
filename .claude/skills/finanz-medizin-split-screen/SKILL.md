@@ -23,19 +23,32 @@ Du arbeitest als **Regisseur + Cutter + Motion Designer**. Die Scripts in `scrip
 | **B** Skript + Rohvideo | beides | wie A; Skript dient der Textkorrektur/Zahlenprüfung, Sync folgt der echten Sprache |
 | **C** Skript → Storyboard | nur Skript | `story.json`, Stills, Vorschau-Reel mit Sprecher-Platzhalter (Wortzeiten geschätzt) |
 
-## Ablauf (Modus A/B)
+## Ablauf (Modus A/B) – ein Befehl, kein JSON
 ```bash
 S=.claude/skills/finanz-medizin-split-screen
-python3 $S/scripts/setup_check.py                                            # Voraussetzungen
-python3 $S/scripts/build_reel.py --video roh.mp4 --out-dir out/              # 1) transkribieren + schneiden
-#   → out/transcript.txt (bereinigt), out/edited.mp4, out/edited.words.json (neue Zeitachse)
-#   2) DU schreibst out/story.json (Regeln: references/visual-storytelling.md, Props: references/animation-guide.md)
-python3 $S/scripts/build_reel.py --video roh.mp4 --storyboard out/story.json --out-dir out/ --still-only   # Vorschau-Stills prüfen!
-python3 $S/scripts/build_reel.py --video roh.mp4 --storyboard out/story.json --out-dir out/              # Voll-Render → out/reel.mp4 + out/qc/
+python3 $S/scripts/setup_check.py                                   # Voraussetzungen
+python3 $S/scripts/build_reel.py --video roh.mp4 --out-dir out/     # alles automatisch → out/reel.mp4 + out/qc/
 ```
-- Ohne Whisper-Modell: Transkript anderweitig besorgen (`transcribe.py --from-srt|--from-json`) und mit `--words words.json` übergeben.
-- Gesicht wird automatisch gesucht; sonst `--face-x 0.5 --face-y 0.35`. Zu dunkles Video: `--auto-light`. Anderes Verhältnis: `--ratio 0.667`.
-- Eigene Musik: `--music pfad.mp3` (nur lizenziert!), keine: `--music none`; Standard ist ein generiertes Platzhalter-Pad.
+Automatisch: Transkription (faster-whisper) → Schnitt (Pausen, Füllwörter, Zoom-Cuts) → **Storyboard** (`auto_storyboard.py`:
+Claude-API, wenn `ANTHROPIC_API_KEY` gesetzt; sonst regelbasierter Regisseur) → Zahlenprüfung (fehlerhafte Szenen werden durch neutrale
+Titelkarten ersetzt, nie verfälscht) → Render → Sounddesign → Montage → QC.
+
+**Wenn du (Claude) den Skill in einer Session ausführst, bist du die Regie-Stufe 2:** nach dem automatischen Lauf `out/story.auto.json` und
+`out/qc/contact.png` ansehen und gezielt verbessern – v. a. Titelkarten ohne echte Bildidee durch eigene **`svg`-Illustrationen** (Ebenen mit
+`draw/pop/up`, Parallax `depth`, Kamerafahrt) oder durch Bilder ersetzen, dann `build_reel.py --video roh.mp4 --storyboard out/story.json`.
+Der Nutzer muss dafür nichts tun.
+
+Optionen: `--images search` (lizenzfreie Fotos, Openverse/Wikimedia, Nachweise → `out/credits.txt`), `--images generate` (KI-Bilder per
+`OPENAI_API_KEY`), `--engine rules|claude`, `--review` (nach Storyboard-Stills anhalten), `--words words.json` (vorhandenes Transkript),
+`--face-x/--face-y`, `--auto-light`, `--ratio 0.667`, `--music pfad.mp3|none`.
+
+### Bilder – Quellen und Voraussetzungen
+| Quelle | Wie | Voraussetzung |
+|---|---|---|
+| Eigene Illustrationen (Szenentyp `svg`, Figuren, Diagramme) | Claude zeichnet je Aussage | keine – funktioniert offline |
+| Lizenzfreie Fotos | `image_search.py` (nur CC0/PDM/CC BY/CC BY-SA, Nachweis automatisch) | Hosts `api.openverse.org`, `commons.wikimedia.org`, `upload.wikimedia.org` (+ Bildhosts) freigeben |
+| KI-Bildgenerierung | `image_gen.py` (OpenAI Images) oder in der Session Canva-Connector `generate-image` | `OPENAI_API_KEY` + Host `api.openai.com` bzw. Canva-Download-Host für volle Auflösung |
+| Transkription | faster-whisper | Host `huggingface.co` (+ `cdn-lfs.huggingface.co`, `*.xethub.hf.co`) für den einmaligen Modell-Download |
 
 ## Ablauf (Modus C)
 `python3 $S/scripts/build_reel.py --storyboard story.json --out-dir out/` → `out/preview_ohne_sprecher.mp4`, `out/storyboard.resolved.json`, `out/qc/`.

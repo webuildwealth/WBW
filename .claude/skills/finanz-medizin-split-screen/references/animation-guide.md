@@ -34,6 +34,8 @@ Jeder nicht-`cut`-Übergang löst automatisch einen `whoosh` aus (siehe Sound).
 **compare** – `left`/`right{title,tone,items[{text,mark:"check|cross|dot"}]}`, `vs`
 **bullets** – `title`, `items[]`
 **image** – `src` (relativ zur Storyboard-Datei), `caption`, `zoom_from`, `zoom_to`, `pan_x_from/to`, `pan_y_from/to`
+**svg** (eigene Illustration) – `layers[{svg, t, d, enter:"pop|fade|up|left|right|draw|none", origin:"x y", depth (Parallax 0–1), float (Schweben px)}]`,
+  `camera{from,to,x_from,x_to,y_from,y_to}`, `caption`, `bg`. Koordinatensystem 1080 × 960; Markenfarben verwenden; sichtbarer `<text>` unterliegt der Zahlenprüfung.
 **Alle Szenen:** `callouts[{t,text,x,y,size,rot,arrow{dx,dy}}]`, `keywords[]`, `sfx[]`, `transition`, `tr_duration`.
 
 ## Grafikregeln

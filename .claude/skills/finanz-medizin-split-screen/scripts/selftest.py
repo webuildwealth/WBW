@@ -62,6 +62,25 @@ if ok:
 ok, o = run(PY, HERE / "cut_speaker.py", tmp / "raw.mp4", "-o", tmp / "ed2.mp4")
 t("Sprecherschnitt (nur Lautstärke)", ok and len(json.load(open(tmp / "ed2.timemap.json"))["segments"]) >= 2, o)
 
+# 3b) Automatisches Storyboard (Regel-Regisseur) aus Wortliste
+sys.path.insert(0, str(HERE)); import storyboard as S
+script = ("Stell dir vor, eine junge Ärztin verdient 5.500 € netto im Monat. Viele glauben, die Rente reicht später schon. Das ist leider falsch. "
+          "Im Ruhestand bleiben ihr nur 2.900 € im Monat. Wenn die Preise jedes Jahr um 3 % steigen, sind 100 € nach 20 Jahren nur noch etwa 55 € wert. "
+          "Erstens: ohne Plan starten. Zweitens: zu spät anfangen. Lass uns deine Versorgungslücke berechnen.")
+json.dump(S.estimate_words(script), open(tmp / "aw.json", "w"), ensure_ascii=False)
+ok, o = run(PY, HERE / "auto_storyboard.py", tmp / "aw.json", "-o", tmp / "auto.json", "--engine", "rules")
+t("Auto-Storyboard (regelbasiert) erzeugt", ok, o)
+if ok:
+    ab = json.load(open(tmp / "auto.json")); types = [s["type"] for s in ab["scenes"]]
+    t("  erkennt Figur/Ärztin, Mythos, Ruhestand-Vergleich, Inflation, Aufzählung",
+      ab["figures"]["doc"]["gender"] == "f" and {"character", "myth", "gap_bars", "inflation", "bullets"} <= set(types), str(types))
+    ok, o = run(PY, HERE / "storyboard.py", "resolve", tmp / "auto.json", "--words", tmp / "aw.json", "-o", tmp / "auto.res.json")
+    t("  Auto-Storyboard besteht Zahlen-/Ankerprüfung", ok, o)
+    ok, o = run(PY, HERE / "render_top.py", tmp / "auto.res.json", "--stills", "1,6,12,18", "--out-dir", tmp / "st_auto")
+    t("  Auto-Storyboard rendert", ok, o)
+ok, o = run(PY, HERE / "image_search.py", "doctor", "--out-dir", tmp / "img")
+t("Bildsuche (Netzwerk nötig – Fehler wird sauber gemeldet)", ok or "kein lizenzfreies Bild" in o, o)
+
 # 4) Sounddesign
 ok, o = run(PY, HERE / "sfx.py", tmp / "C_inflation.resolved.json", "-o", tmp / "sfx.wav", "--music-out", tmp / "m.wav")
 t("Sounddesign", ok and (tmp / "sfx.wav").exists(), o)
@@ -70,7 +89,7 @@ t("Sounddesign", ok and (tmp / "sfx.wav").exists(), o)
 if not quick:
     ok, o = run(PY, HERE / "build_reel.py", "--storyboard", SKILL / "examples" / "C_inflation.json", "--out-dir", tmp / "outC")
     t("Pipeline Modus C → Vorschau-Reel inkl. QC", ok, o)
-    ok, o = run(PY, HERE / "build_reel.py", "--video", tmp / "raw.mp4", "--words", tmp / "w.json", "--out-dir", tmp / "outAB")
-    t("Pipeline Schritt 1 (Schnitt) Modus A/B", ok, o)
+    ok, o = run(PY, HERE / "build_reel.py", "--video", tmp / "raw.mp4", "--words", tmp / "w.json", "--out-dir", tmp / "outAB", "--engine", "rules")
+    t("Pipeline Modus A vollautomatisch (Schnitt → Auto-Storyboard → Reel)", ok and (tmp / "outAB" / "reel.mp4").exists(), o)
 print(f"\n{sum(res)}/{len(res)} bestanden  (Temp: {tmp})")
 sys.exit(0 if all(res) else 1)

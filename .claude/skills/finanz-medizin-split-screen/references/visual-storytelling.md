@@ -26,6 +26,7 @@ Kein Script „versteht“ Inhalte. Qualität entsteht durch die Entscheidungen 
 | Aufzählung (Fehler, Schritte, Gründe) | `bullets` | 3 häufige Fehler |
 | Einstieg/Themenkarte/Fazit | `title` (fette Grotesk + kursiver Akzent) | „Drei Fehler *kosten Geld*“ |
 | eigenes/generiertes Bild, Screenshot, Dokument | `image` (Ken-Burns-Zoom/Pan) | Police, Gehaltsabrechnung |
+| Metapher/Bildidee ohne passenden Typ | `svg` – von Claude gezeichnete Illustration mit animierten Ebenen | Weg mit drei Stolperfallen, löchriger Eimer „Rente“ |
 
 Zusätzlich je Szene `callouts` (handschriftliche Annotation + Pfeil), `warn` (rotes Warndreieck), `badge` (Zahlenkarte an Figur).
 **Keine Dekoration ohne Aussage**: Wenn ein Bild nichts erklärt, streichen und die vorige Szene verlängern/verändern.
