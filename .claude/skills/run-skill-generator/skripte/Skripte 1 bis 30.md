@@ -1,39 +1,40 @@
 # Skripte 1 bis 30 · Stand 22.10.2026
 
 Reihenfolge = Posting-Reihenfolge (5 pro Woche, 6 Wochen). Zahlen aus `../daten.md`.
-B = Benedict, Z = Zoe. Stichwort-CTA führt per DM zu
-`finanz-medizin.com/beratung?utm_source=instagram&utm_medium=dm&utm_content=<stichwort>`.
+B = Benedict, Z = Zoe.
+
+So liest du das Skript: Linksbündiger Text wird gesprochen. Zeilen mit `>>` sind
+Schnitt- und Edit-Hinweise für die Nachbearbeitung; in der Word-Datei stehen sie eingerückt und grau.
 
 ---
 
 ### Skript 1 von 30 · 91 € für 50 €
-Praxisinhaber · Rechnung auf Papier · Zahl-Schock · 30 s · B
+Praxisinhaber · Rechnung auf Papier · Zahl-Schock · 35 s · B
+
+VIRAL-VORBILD
+Gehaltsoffenlegung: eine echte Zahl, die jeder sofort mit sich selbst vergleicht.
 
 COVER-TITEL
 50 € kosten dich 110 €
 
 VISUELLE HOOK
-Du knallst einen Hunderter und einen Zehner auf den Tresen, nimmst dann einen Fünfziger zurück und schiebst nur den rüber. Das Geld sagt alles, bevor du redest.
+Du legst einen Hunderter und einen Zehner auf den Tresen, nimmst dann alles zurück und schiebst nur einen Fünfziger rüber.
 
 EMOTION
-Ungläubigkeit („Moment, was?“), dann Aha. Ruhig, fast amüsiert sprechen, wie jemand, der ein Geheimnis verrät.
+Ungläubigkeit, dann Aha. Ruhig und fast amüsiert, als würdest du einem Freund ein kleines Geheimnis verraten.
 
-HOOK
-Gesprochen: „50 € netto für deine MFA kosten dich 110 €.“
-Einblendung: 50 € netto = 110 € Kosten
-Bild: B legt einen Zettel auf den Praxistresen, Stift in der Hand.
-
-BODY
-„Sie verdient 3.100 brutto.“
-„Damit 50 € ankommen, brauchst du 91 € mehr Gehalt.“
-„Plus deine Abgaben. Rund 110.“
-„Und sie freut sich über … 50.“
-
-PAYOFF
-„Oder du gibst ihr 50 € steuerfrei. Kostet 50. Kommt 50 an.“ (kreist die 50 ein)
-
-CTA
-„Kommentier PRAXIS, ich schick dir die Rechnung.“
+SKRIPT
+>> Sekunde 0: Geldscheine auf dem Tresen, Einblendung „50 € netto = 110 € Kosten“
+Wenn du deiner MFA 50 Euro mehr netto geben willst, kostet dich das ungefähr 110 Euro.
+Ich weiß, klingt komisch, aber lass mich das kurz vorrechnen.
+>> Schnitt: Zettel und Stift, du schreibst mit
+Sagen wir, sie verdient 3.100 Euro brutto. Damit bei ihr 50 Euro mehr ankommen, musst du ihr Gehalt um rund 91 Euro erhöhen, weil Steuern und Sozialabgaben ja noch weggehen.
+Und dann kommen noch deine Arbeitgeberanteile oben drauf. Da bist du bei ungefähr 110 Euro.
+>> Einblendung: 91 € → 110 €
+Du zahlst also mehr als das Doppelte von dem, was sie am Ende sieht.
+Es gibt aber einen einfacheren Weg: Du kannst ihr bis zu 50 Euro im Monat als Sachbezug geben, zum Beispiel als Gutscheinkarte, und das ist steuerfrei. Dann kostet es dich 50 Euro und bei ihr kommen auch 50 Euro an.
+>> Du kreist die 50 auf dem Zettel ein
+Wenn du die ganze Rechnung haben willst, schreib mir PRAXIS in die Kommentare, dann schick ich sie dir.
 
 CAPTION
 Gehaltserhöhung ist das teuerste Danke, das es gibt 😬
@@ -45,32 +46,28 @@ Hinweis: Musterwerte 2026, Steuerklasse I, gerundet.
 ---
 
 ### Skript 2 von 30 · Der dritte Anruf
-alle · Sketch/POV · POV-Sketch · 15 s · B (spielt beide)
+alle · Sketch/POV · POV-Sketch · 20 s · B (spielt beide Rollen)
+
+VIRAL-VORBILD
+Feindbild Vertrieb: Wiedererkennen, das man an Kollegen weiterleitet.
 
 COVER-TITEL
 Augen auf bei der Beraterwahl
 
 VISUELLE HOOK
-Handy-Display groß im Bild: „Berater ruft an (3)“. Du schaust drauf, seufzt, beißt ins Brötchen.
+Handy-Display groß im Bild: „Berater ruft an (3)“. Du schaust drauf, seufzt und beißt ins Brötchen.
 
 EMOTION
-Genervtes Wiedererkennen und Lachen. Übertrieben spielen, der Berater laut und schleimig, der Arzt trocken.
+Genervtes Wiedererkennen und Lachen. Berater laut und schleimig, Arzt trocken und müde.
 
-HOOK
-Einblendung: POV: Mittagspause, 3. Anruf vom „Berater“
-Bild: B im Kasack, Brötchen in der Hand, Handy klingelt.
-
-BODY
-B (Berater, zu laut): „Hiii, ich hab da was GANZ Neues für dich!“
-B (Arzt, kauend): „Du hattest letzte Woche auch was ganz Neues.“
-Berater: „Ja, aber DAS hier ist mit Krypto.“
-Arzt legt auf. Beißt ab.
-
-PAYOFF
-Einblendung: Augen auf bei der Beraterwahl 🩺
-
-CTA
-„Schick das dem Kollegen, der immer rangeht.“
+SKRIPT
+>> Sekunde 0: Einblendung „POV: Mittagspause, dritter Anruf vom Berater“, B im Kasack mit Brötchen
+BERATER: Hi, du, ich hab da was ganz Neues für dich, das musst du dir anschauen!
+ARZT: Du hattest letzte Woche auch schon was ganz Neues für mich.
+BERATER: Ja, aber das hier ist jetzt mit Krypto, das ist wirklich was anderes.
+>> Arzt legt wortlos auf und beißt ins Brötchen
+>> Einblendung zum Schluss: „Augen auf bei der Beraterwahl 🩺“
+ARZT (in die Kamera): Schick das mal dem Kollegen, der immer noch rangeht.
 
 CAPTION
 Passiert den Besten 🥲 Wer deinen Job nicht kennt, kann deine Finanzen nicht planen.
@@ -79,33 +76,31 @@ Passiert den Besten 🥲 Wer deinen Job nicht kennt, kann deine Finanzen nicht p
 ---
 
 ### Skript 3 von 30 · Was bleibt? Folge 1: Pflegefachkraft
-Pflege · Netto-Serie · Schätzfrage · 30 s · Z
+Pflege · Netto-Serie · Schätzfrage · 35 s · Z
+
+VIRAL-VORBILD
+Erste Gehaltsabrechnung (Destiny, MD): echter Netto-Zettel, Serienrahmen.
 
 COVER-TITEL
 Was bleibt? #1 Pflege
 
 VISUELLE HOOK
-Abrechnung wird langsam von einem schwarzen Balken freigelegt, Zeile für Zeile, wie ein Rubbellos.
+Die Abrechnung wird Zeile für Zeile unter einem schwarzen Balken freigelegt, wie ein Rubbellos.
 
 EMOTION
-Neugier, dann Empörung („Das ist alles?“). Ernst und warm, nicht mitleidig.
+Neugier, dann Empörung. Ernst und warm, nicht mitleidig.
 
-HOOK
-Gesprochen: „Was glaubst du, was einer Pflegefachkraft im Schichtdienst netto bleibt?“
-Einblendung: Was bleibt? #1 Pflege
-Bild: Z hält eine geschwärzte Gehaltsabrechnung hoch.
-
-BODY
-„Brutto: [ECHTE ZAHL EINSETZEN].“
-„Schichtzulagen: [ZAHL].“
-„Steuern, Sozialabgaben weg …“
-„Netto: [ZAHL].“
-
-PAYOFF
-„Und für die Rente arbeitet davon aktuell: nichts extra.“ (Schulterzucken)
-
-CTA
-„Kommentier deinen Beruf, ich mach als nächstes deinen.“
+SKRIPT
+>> Sekunde 0: geschwärzte Abrechnung, Einblendung „Was bleibt? #1 Pflege“
+Was glaubst du, was einer Pflegefachkraft im Schichtdienst am Ende des Monats wirklich bleibt? Schreib deine Schätzung kurz in die Kommentare, bevor ich's dir zeige.
+Wir haben hier eine echte Abrechnung, anonym und mit Erlaubnis.
+>> Balken rutscht weg: Brutto
+Brutto stehen da [ECHTE ZAHL EINSETZEN] Euro, dazu kommen [ZAHL] Euro Zulagen für Nacht- und Wochenenddienste.
+>> Balken rutscht weg: Abzüge
+Dann gehen Steuern und Sozialabgaben runter, und am Ende landen [ZAHL] Euro auf dem Konto.
+Und jetzt die ehrliche Frage: Wie viel davon arbeitet gerade extra für ihre Rente? In ihrem Fall gar nichts.
+Das ist kein Vorwurf, dafür hat im Schichtdienst einfach keiner Zeit. Aber genau deshalb machen wir diese Serie.
+Schreib mir deinen Beruf in die Kommentare, dann ist deiner als nächstes dran.
 
 CAPTION
 Ihr rennt für andere, wer rennt für euch? 🩺
@@ -117,7 +112,10 @@ Hinweis: Nur mit echter, anonymisierter Abrechnung und schriftlicher Einwilligun
 ---
 
 ### Skript 4 von 30 · Du hast bis 31. März
-angestellte Ärzte in der PKV · Reaktion auf Schlagzeile · Frist · 25 s · B
+angestellte Ärzte in der PKV · Reaktion auf Schlagzeile · Frist · 35 s · B
+
+VIRAL-VORBILD
+Aktualität mit Frist: ein klarer Grund, es an Kollegen zu schicken.
 
 COVER-TITEL
 PKV? Frist 31.03.
@@ -126,24 +124,18 @@ VISUELLE HOOK
 Du kreist im Wandkalender mit rotem Edding den 31. März ein und tippst zweimal drauf.
 
 EMOTION
-Dringlichkeit, leichte Sorge, dann Erleichterung, weil es eine Lösung gibt. Zügig und klar sprechen.
+Dringlichkeit, leichte Sorge, dann Erleichterung, weil es eine Lösung gibt. Zügig und klar.
 
-HOOK
-Gesprochen: „Angestellter Arzt in der PKV? Du hast bis 31. März 2027.“
-Einblendung: PKV? Frist 31.03.2027
-Bild: Green Screen, Kalender mit rot markiertem 31.03.
-
-BODY
-„2027 steigt die Versicherungspflichtgrenze.“
-„Bist du schon privat, gilt für dich 80.550 €.“
-„Liegst du drunter, wirst du wieder gesetzlich pflichtig.“
-„ABER: du kannst dich befreien lassen. Drei Monate Zeit.“
-
-PAYOFF
-„Antrag bei einer gesetzlichen Kasse. Und die Befreiung ist nicht widerrufbar, also erst nachdenken.“
-
-CTA
-„Schick das jedem PKV-Kollegen. Ernsthaft.“
+SKRIPT
+>> Sekunde 0: Kalender, roter Kreis um den 31.03.
+Wenn du angestellter Arzt bist und privat versichert, dann hör mal kurz zu, weil du eine Frist hast, und die endet am 31. März 2027.
+>> Green Screen mit der Schlagzeile zur JAEG 2027
+Zum Jahreswechsel steigt die Grenze, ab der man privat versichert sein darf. Wenn du heute schon privat bist, gilt für dich voraussichtlich eine Grenze von 80.550 Euro im Jahr.
+Liegt dein Gehalt darunter, wirst du ab Januar automatisch wieder gesetzlich versicherungspflichtig, auch wenn du das gar nicht willst.
+Die gute Nachricht ist: Du kannst dich davon befreien lassen. Dafür hast du drei Monate Zeit, also bis Ende März.
+>> Einblendung: Befreiungsantrag bis 31.03.2027
+Den Antrag stellst du bei einer gesetzlichen Krankenkasse. Aber überleg dir das gut, denn diese Befreiung kannst du später nicht mehr zurücknehmen.
+Schick das bitte jedem Kollegen, der privat versichert ist. Ernsthaft, das verpassen gerade ganz viele.
 
 CAPTION
 Neues Jahr, neue JAEG 🥲 Verpasst du die Frist, bist du raus aus der PKV.
@@ -155,22 +147,26 @@ Werte für 2027 voraussichtlich. Einzelfall? Schreib uns.
 ### Skript 5 von 30 · Steuerfrei vom Chef (Karussell)
 MFA · Spickzettel-Karussell · Ergebnis zuerst · 7 Folien · Z
 
+VIRAL-VORBILD
+Nutzwert-Liste zum Speichern und Weiterleiten an Kollegin und Chef.
+
 COVER-TITEL
 1.100 € mehr ohne Gehaltserhöhung
 
 VISUELLE HOOK
-Cover-Folie: Geschenkpaket mit Aufschrift „vom Chef“, darunter die Zahl 1.100 €.
+Cover-Folie: Geschenkpaket mit Aufschrift „vom Chef“, darunter groß 1.100 €.
 
 EMOTION
-Freude und Motivation. Hell, optimistisch, Lust machen, es dem Chef zu zeigen.
+Freude und Motivation. Hell, optimistisch.
 
-F1: Rund 1.100 € im Jahr mehr. Ohne Gehaltserhöhung.
-F2: 50 € Sachbezug im Monat – steuerfrei.
-F3: Gesundheitsbudget – zahlt die Praxis.
-F4: Zuschuss zur Betriebsrente – Pflicht: 15 %.
-F5: Teilzeit bis 2.575 € brutto? Das Finanzamt fördert deine Praxis extra.
-F6: Warum dein Chef das gut findet: kostet ihn weniger als eine Erhöhung.
-F7: Speichern. Und deinem Chef zeigen ;) · Kommentier MFA
+SKRIPT (Folientexte, in ganzen Sätzen)
+Folie 1: Du kannst rund 1.100 Euro im Jahr mehr bekommen, ohne dass dein Chef dein Gehalt erhöht.
+Folie 2: Dein Chef darf dir jeden Monat 50 Euro als Sachbezug geben, zum Beispiel als Gutscheinkarte, und darauf zahlst du keine Steuern.
+Folie 3: Viele Praxen können ein Gesundheitsbudget zahlen, das du für Kurse oder Vorsorge nutzt.
+Folie 4: Wenn du in die Betriebsrente einzahlst, muss dein Chef 15 Prozent dazulegen. Das ist Pflicht, kein Geschenk.
+Folie 5: Arbeitest du in Teilzeit und verdienst bis 2.575 Euro brutto, bekommt deine Praxis sogar extra Geld vom Finanzamt, wenn sie in deine Rente einzahlt.
+Folie 6: Für deinen Chef ist das oft günstiger als eine Gehaltserhöhung. Ihr gewinnt also beide.
+Folie 7: Speicher dir das für dein nächstes Gespräch und schreib MFA in die Kommentare, wenn du die Details willst.
 
 CAPTION
 Speicher dir das, bevor das nächste Gehaltsgespräch kommt 🫶🏼
@@ -180,33 +176,31 @@ Wir reden NIE mit deinem Chef über dich, versprochen.
 ---
 
 ### Skript 6 von 30 · Zwei Fachärzte
-angestellte Ärzte · Zwei-Personen-Vergleich · Zwei Menschen · 30 s · B
+angestellte Ärzte · Zwei-Personen-Vergleich · Zwei Menschen · 35 s · B
+
+VIRAL-VORBILD
+Zwei Menschen, gleiche Ausgangslage: Die Entscheidung wird sichtbar.
 
 COVER-TITEL
 Gleiches Gehalt, 430.000 € Unterschied
 
 VISUELLE HOOK
-Split-Screen: zwei identische Ärzte, gleiche Pose. Nach dem Zeitsprung hält der linke einen dicken Ordner, der rechte eine leere Brieftasche.
+Split-Screen mit zwei identischen Ärzten in gleicher Pose; nach dem Zeitsprung hält der eine einen dicken Ordner, der andere eine leere Brieftasche.
 
 EMOTION
-Erschrecken und Selbstprüfung („Welcher bin ich?“). Gelassen, kein erhobener Zeigefinger.
+Erschrecken und Selbstprüfung. Gelassen, ohne erhobenen Zeigefinger.
 
-HOOK
-Gesprochen: „Zwei Fachärzte. Gleiches Gehalt. 25 Jahre später trennen sie rund 430.000 €.“
-Einblendung: Gleiches Gehalt. 430.000 € Unterschied.
-Bild: Split-Screen, B zweimal, links Kittel, rechts Kittel + Sonnenbrille.
-
-BODY
-Rechts: „Ich fang an, wenn ich Oberarzt bin.“
-Links: „750 im Monat. Ab jetzt.“
-Zeitsprung-Einblendung: 25 Jahre später
-Rechts schaut aufs Handy. Links lächelt.
-
-PAYOFF
-„Nicht mehr Gehalt. Andere Entscheidung.“
-
-CTA
-„Welcher bist du? Kommentier LINKS oder RECHTS.“
+SKRIPT
+>> Sekunde 0: Split-Screen, Einblendung „Gleiches Gehalt. 430.000 € Unterschied.“
+Zwei Fachärzte, beide verdienen genau gleich viel, und trotzdem trennen sie in 25 Jahren rund 430.000 Euro. Ich erklär dir, warum.
+>> Rechte Seite spricht
+Der eine sagt sich: Ich fang an zu sparen, wenn ich Oberarzt bin, jetzt will ich erstmal leben.
+>> Linke Seite spricht
+Der andere legt ab sofort 750 Euro im Monat zur Seite und lässt das Geld einfach liegen und arbeiten.
+>> Einblendung „25 Jahre später“, Ordner und leere Brieftasche
+Wenn man mit fünf Prozent Rendite im Jahr rechnet, hat der zweite nach 25 Jahren ungefähr 430.000 Euro. Der erste hat das Gleiche verdient, aber eben nichts davon behalten.
+Der Unterschied war also nicht das Gehalt, sondern eine einzige Entscheidung.
+Und jetzt sag mal ehrlich: Welcher von beiden bist du? Schreib LINKS oder RECHTS in die Kommentare.
 
 CAPTION
 Euer Verdienst entscheidet nicht über euer Vermögen, eure Entscheidungen schon.
@@ -216,33 +210,30 @@ Modellrechnung: 750€/Monat, 25 Jahre, 5% p.a., ohne Kosten, ohne Garantie.
 ---
 
 ### Skript 7 von 30 · Was bleibt? Folge 2: MFA in Teilzeit
-MFA · Netto-Serie · Identität zuerst · 30 s · Z
+MFA · Netto-Serie · Identität zuerst · 35 s · Z
+
+VIRAL-VORBILD
+Netto-Offenlegung als Serie.
 
 COVER-TITEL
 Was bleibt? #2 MFA Teilzeit
 
 VISUELLE HOOK
-Uhr auf 30 Std. gestellt, daneben ein halbvolles Glas, das sich beim Payoff auffüllt.
+Eine Uhr steht auf 30 Stunden, daneben ein halbvolles Glas, das sich beim Payoff auffüllt.
 
 EMOTION
 Ernüchterung, dann Hoffnung. Vertraut, wie mit einer Kollegin in der Pause.
 
-HOOK
-Gesprochen: „MFA, 30 Stunden, 2.400 brutto. Das hier ist für dich.“
-Einblendung: Was bleibt? #2 MFA Teilzeit
-Bild: Z am Empfangstresen-Set.
-
-BODY
-„Netto bleibt [ECHTE ZAHL].“
-„Rentenniveau: 48 %. Gesichert bis 2031. Danach? Offen.“
-„Jetzt der Trick: 60 € vom Brutto in die Betriebsrente.“
-„Dein Netto sinkt um 33.“
-
-PAYOFF
-„Im Vertrag landen deutlich mehr. Und deine Praxis kriegt sogar Geld vom Finanzamt zurück.“
-
-CTA
-„Kommentier TEILZEIT, ich rechne deins.“
+SKRIPT
+>> Sekunde 0: Z am Empfangstresen, Einblendung „Was bleibt? #2 MFA Teilzeit“
+Wenn du MFA bist und Teilzeit arbeitest, dann ist dieses Video für dich.
+Unsere MFA heute arbeitet 30 Stunden die Woche und verdient 2.400 Euro brutto. Netto bleiben ihr [ECHTE ZAHL EINSETZEN] Euro.
+>> Einblendung: Rentenniveau 48 %
+Das Problem ist nicht nur das Gehalt jetzt, sondern das, was später daraus wird. Die gesetzliche Rente liegt bei 48 Prozent, und das ist nur bis 2031 gesichert.
+Jetzt kommt aber der Teil, den kaum jemand kennt. Wenn sie 60 Euro von ihrem Brutto in die Betriebsrente steckt, sinkt ihr Netto nur um etwa 33 Euro, weil sie auf das Geld keine Steuern und weniger Abgaben zahlt.
+>> Glas füllt sich auf
+Ihr Chef muss noch 15 Prozent dazulegen, und weil sie in Teilzeit wenig verdient, bekommt die Praxis sogar noch Geld vom Finanzamt zurück.
+Wenn du wissen willst, wie das bei dir aussieht, schreib TEILZEIT in die Kommentare, dann rechne ich's dir aus.
 
 CAPTION
 Teilzeit heißt nicht Teil-Rente. Oder doch, wenn man nix macht :/
@@ -251,7 +242,10 @@ Teilzeit heißt nicht Teil-Rente. Oder doch, wenn man nix macht :/
 ---
 
 ### Skript 8 von 30 · Der erste Leasingvertrag
-angestellte Ärzte · Sketch · Teuerster Fehler · 20 s · B
+angestellte Ärzte · Sketch · Teuerster Fehler · 25 s · B
+
+VIRAL-VORBILD
+Lifestyle-Inflation als Sketch: Selbstironie und Wiedererkennen.
 
 COVER-TITEL
 Der teuerste Fehler als Facharzt
@@ -260,22 +254,19 @@ VISUELLE HOOK
 Konfetti beim Brief „bestanden“, dann sofort Schnitt auf Autoschlüssel und Kontoauszug mit roter Null.
 
 EMOTION
-Euphorie kippt in Schreck, dann Lachen über sich selbst. Tempo: schnell schneiden.
+Euphorie kippt in Schreck, dann Lachen über sich selbst. Schnelle Schnitte.
 
-HOOK
-Gesprochen: „Der teuerste Fehler im ersten Facharztjahr.“
-Bild: B öffnet Brief „Facharztprüfung bestanden“, jubelt.
-
-BODY
-Schnitt: B im Autohaus-Set: „Ich nehm den.“
-Schnitt: B im Wohnungs-Set: „Die mit Dachterrasse.“
-Schnitt: Kontoauszug, Einblendung: Sparquote 0 %
-
-PAYOFF
-„Die Hälfte jeder Gehaltserhöhung weglegen. Die andere Hälfte genießen. Fertig.“
-
-CTA
-„Schick das deinem frisch gebackenen Facharzt-Kollegen 😂“
+SKRIPT
+>> Sekunde 0: B öffnet Brief „Facharztprüfung bestanden“, Konfetti
+Ich zeig dir mal den teuersten Fehler, den fast jeder im ersten Facharztjahr macht. Ich kenn das, ehrlich.
+>> Schnitt: Autohaus-Set
+Du hast endlich bestanden, du verdienst plötzlich deutlich mehr, und das Erste, was du machst, ist das schönere Auto.
+>> Schnitt: Wohnungs-Set
+Dann noch die Wohnung mit Dachterrasse, weil du es dir ja jetzt leisten kannst.
+>> Einblendung: Sparquote 0 %
+Und ein Jahr später merkst du, dass du zwar mehr verdienst, aber kein Euro mehr übrig bleibt.
+Mein Tipp, den ich selbst mal von Bodo Schäfer gelernt habe: Leg die Hälfte jeder Gehaltserhöhung weg und genieß die andere Hälfte ganz bewusst. Das Geld war vorher eh nicht da, also vermisst du es auch nicht.
+Schick das deinem frisch gebackenen Facharzt-Kollegen, bevor er beim Autohändler unterschreibt.
 
 CAPTION
 Wohin mit dem ganzen Geld? Hälfte weg, Hälfte genießen. War vorher eh nicht da 😉
@@ -284,33 +275,29 @@ Wohin mit dem ganzen Geld? Hälfte weg, Hälfte genießen. War vorher eh nicht d
 ---
 
 ### Skript 9 von 30 · Jeder Abgang kostet 15.000 €
-Praxisinhaber · Rechnung auf Papier · Zahl-Schock · 30 s · B
+Praxisinhaber · Rechnung auf Papier · Zahl-Schock · 40 s · B
+
+VIRAL-VORBILD
+Echte Zahl im ersten Bild, die größer ist als erwartet.
 
 COVER-TITEL
 1 Kündigung = 15.000 €
 
 VISUELLE HOOK
-Du stapelst Spielgeld-Scheine zu einem Turm, dann ziehst du einen weg und er fällt um.
+Du stapelst Spielgeld zu einem Turm, ziehst einen Schein raus und der Turm fällt um.
 
 EMOTION
-Schock beim Inhaber, dann Kontrolle zurückgewinnen. Sachlich, souverän, wie ein Berater auf Augenhöhe.
+Schock beim Inhaber, dann Kontrolle zurückgewinnen. Sachlich und souverän, auf Augenhöhe.
 
-HOOK
-Gesprochen: „Wenn deine MFA kündigt, kostet dich das rund 15.000 €.“
-Einblendung: 1 Kündigung = 15.000 €
-Bild: B schreibt 15.000 groß auf ein Blatt.
-
-BODY
-„Personal ist 58 % deiner Praxiskosten.“
-„Suchen, einarbeiten, Überstunden der anderen.“
-„Dagegen: Paket aus Sachbezug, Gesundheitsbudget, bAV-Zuschuss. Rund 1.100 im Jahr.“
-„Nach Steuer bleiben rund 770 bei dir hängen.“
-
-PAYOFF
-„Eine verhinderte Kündigung zahlt dieses Paket 19 Jahre.“
-
-CTA
-„Kommentier TEAM, ich schick dir die Aufstellung.“
+SKRIPT
+>> Sekunde 0: Geldturm fällt, Einblendung „1 Kündigung = 15.000 €“
+Wenn eine deiner MFA kündigt, kostet dich das ungefähr 15.000 Euro. Und die meisten Praxisinhaber haben diese Zahl noch nie ausgerechnet.
+>> Schnitt: Zettel, du schreibst mit
+Personal ist mit 58 Prozent der größte Kostenblock in deiner Praxis. Wenn jemand geht, suchst du, du arbeitest neu ein, und die anderen machen in der Zeit Überstunden. Das summiert sich.
+Jetzt stell dir vor, du gibst deinem Team stattdessen ein kleines Paket: einen steuerfreien Sachbezug, ein Gesundheitsbudget und einen Zuschuss zur Betriebsrente. Das kostet dich rund 1.100 Euro im Jahr pro Person, und weil du es absetzen kannst, bleiben am Ende etwa 770 Euro bei dir hängen.
+>> Einblendung: 15.000 € ÷ 770 € ≈ 19 Jahre
+Das heißt, wenn du damit nur eine einzige Kündigung verhinderst, hast du dieses Paket für 19 Jahre bezahlt.
+Wenn du die ganze Aufstellung haben willst, schreib TEAM in die Kommentare.
 
 CAPTION
 Mitarbeiterbindung ist keine Wohlfühl-Sache, das ist Mathe.
@@ -322,21 +309,25 @@ Musterpraxis, Werte gerundet, Einzelfall mit dem Steuerberater klären.
 ### Skript 10 von 30 · Q4-Spickzettel (Karussell)
 Praxisinhaber, Ärzte · Spickzettel-Karussell · Frist · 6 Folien · B
 
+VIRAL-VORBILD
+Frist plus Nutzwert-Liste: speichern und an den Steuerberater weiterleiten.
+
 COVER-TITEL
 Am 31.12. verfällt Geld
 
 VISUELLE HOOK
-Cover-Folie: Sanduhr mit Euro-Zeichen, Datum 31.12. groß.
+Cover-Folie: Sanduhr mit Euro-Zeichen, darunter groß 31.12.
 
 EMOTION
-Leichte Verlustangst, dann Tatendrang. Klar, strukturiert.
+Leichte Verlustangst, dann Tatendrang. Klar und strukturiert.
 
-F1: Am 31.12. verfällt Geld. Jedes Jahr.
-F2: Basisrente: bis zu 44,3 % zahlt das Finanzamt mit.
-F3: Vom Höchstbetrag bleiben nach Versorgungswerk meist 10.000–15.000 € frei.
-F4: bAV fürs Team noch dieses Jahr starten.
-F5: Mit dem Steuerberater VOR Dezember reden, nicht danach.
-F6: Speichern · Kommentier Q4
+SKRIPT (Folientexte)
+Folie 1: Jedes Jahr am 31. Dezember verfällt steuerlicher Spielraum, den du nicht genutzt hast.
+Folie 2: Wenn du in die Basisrente einzahlst, kann sich das Finanzamt mit bis zu 44,3 Prozent an deinem Beitrag beteiligen.
+Folie 3: Nach den Beiträgen ins Versorgungswerk bleiben bei vielen Ärzten noch 10.000 bis 15.000 Euro im Jahr, die man so nutzen kann.
+Folie 4: Wenn du für dein Team eine Betriebsrente starten willst, mach das noch dieses Jahr.
+Folie 5: Sprich mit deinem Steuerberater vor Dezember und nicht erst im Januar, wenn es zu spät ist.
+Folie 6: Speicher dir das und schreib Q4 in die Kommentare, wenn du eine Checkliste willst.
 
 CAPTION
 Wer viel Steuer zahlt, kann sich viel zurückholen. Wenn er's vor Silvester macht ;)
@@ -346,31 +337,32 @@ Rente wird später versteuert. Kein Ersatz für deinen Steuerberater.
 ---
 
 ### Skript 11 von 30 · Ärzte sind reich?
-Ärzte, Pflege · Mythos oder Wahrheit · Mythos-Bruch · 25 s · B
+Ärzte, Pflege · Mythos oder Wahrheit · Mythos-Bruch · 30 s · B
+
+VIRAL-VORBILD
+Mythos-Bruch „Ärzte sind reich“: Widerspruch erzeugt Kommentare.
 
 COVER-TITEL
 Ärzte sind reich?
 
 VISUELLE HOOK
-Du hältst zwei Schilder hoch, MYTHOS und WAHRHEIT, und hebst nach jeder Pause eins.
+Du hältst zwei Schilder, MYTHOS und WAHRHEIT, und hebst nach jeder Pause eins hoch.
 
 EMOTION
-Spiel und Mitraten, kleines Aha. Locker, quizmaster-mäßig.
+Spiel und Mitraten, kleines Aha. Locker, wie ein Quizmaster.
 
-HOOK
-Gesprochen: „Drei Sätze über Ärzte. Mythos oder Wahrheit?“
-Einblendung: Mythos oder Wahrheit? 🩺
-
-BODY
-„Eins: Ärzte sind reich.“ (Pause) „Mythos. Von jedem Euro mehr bleibt gut die Hälfte.“
-„Zwei: Ärzte können nicht mit Geld.“ (Pause) „Keiner hat's ihnen beigebracht. Das ist was anderes.“
-„Drei: Ärzte werden gern von Vertrieblern angerufen.“ (Pause) „Leider Wahrheit.“
-
-PAYOFF
-„Zwei von drei kriegen wir gelöst.“
-
-CTA
-„Wie viele hattest du richtig? Kommentier die Zahl.“
+SKRIPT
+>> Sekunde 0: Schilder im Bild, Einblendung „Mythos oder Wahrheit?“
+Ich sag dir jetzt drei Sätze über Ärzte und Geld, und du rätst mit, ob das ein Mythos ist oder die Wahrheit.
+Erstens: Ärzte sind reich.
+>> Kurze Pause, Schild MYTHOS hoch
+Das ist ein Mythos. Ärzte verdienen gut, aber von jedem Euro, den sie mehr verdienen, bleibt wegen des Spitzensteuersatzes nur gut die Hälfte übrig.
+Zweitens: Ärzte können nicht mit Geld umgehen.
+>> Pause, Schild MYTHOS hoch
+Auch ein Mythos. Es hat ihnen nur nie jemand beigebracht, im Studium gibt es dazu keine einzige Vorlesung.
+Drittens: Ärzte werden ständig von Finanzvertrieblern angerufen.
+>> Pause, Schild WAHRHEIT hoch
+Das stimmt leider. Wie viele hattest du richtig? Schreib die Zahl in die Kommentare.
 
 CAPTION
 Hohe Gehälter, hohe Steuern, null Finanzunterricht im Studium. Same same but different 🥲
@@ -379,33 +371,29 @@ Hohe Gehälter, hohe Steuern, null Finanzunterricht im Studium. Same same but di
 ---
 
 ### Skript 12 von 30 · Was bleibt? Folge 3: Assistenzarzt
-angestellte Ärzte · Netto-Serie · Schätzfrage · 30 s · B
+angestellte Ärzte · Netto-Serie · Schätzfrage · 35 s · B
+
+VIRAL-VORBILD
+Erste Gehaltsabrechnung: Mythos trifft echten Netto-Zettel.
 
 COVER-TITEL
 Was bleibt? #3 Assistenzarzt
 
 VISUELLE HOOK
-Dienstplan voller Kreuze, darüber fällt die Netto-Zahl ins Bild.
+Ein Dienstplan voller Kreuze, darüber fällt die Netto-Zahl ins Bild.
 
 EMOTION
-Müdigkeit und Verständnis, dann Klarheit. Ehrlich, ein bisschen erschöpft-solidarisch.
+Müdigkeit und Verständnis, dann Klarheit. Ehrlich und solidarisch.
 
-HOOK
-Gesprochen: „Assistenzarzt, zweites Jahr. Was glaubst du, was netto bleibt?“
-Einblendung: Was bleibt? #3 Assistenzarzt
-Bild: geschwärzte Abrechnung, Hand mit Stift.
-
-BODY
-„Brutto: [ECHTE ZAHL].“
-„Dienste: [ZAHL].“
-„Netto: [ZAHL].“
-„Und jeder zusätzliche Dienst? Gut die Hälfte geht weg.“
-
-PAYOFF
-„Deshalb ist das Wichtigste nicht MEHR verdienen, sondern was du mit dem machst, was bleibt.“
-
-CTA
-„Kommentier ASSI, ich zeig dir die drei ersten Schritte.“
+SKRIPT
+>> Sekunde 0: Dienstplan, Einblendung „Was bleibt? #3 Assistenzarzt“
+Assistenzarzt im zweiten Jahr. Was glaubst du, was ihm am Monatsende wirklich bleibt? Schreib deine Schätzung in die Kommentare.
+>> Abrechnung, geschwärzt, wird freigelegt
+Auf der Abrechnung stehen [ECHTE ZAHL EINSETZEN] Euro brutto, dazu kommen [ZAHL] Euro für die Dienste.
+Am Ende bleiben ihm [ZAHL] Euro netto.
+Und das ist der Punkt, den viele unterschätzen: Für jeden zusätzlichen Dienst geht gut die Hälfte direkt an Steuern und Abgaben.
+Deshalb ist die wichtigste Frage am Anfang gar nicht, wie du mehr verdienst, sondern was du mit dem machst, was übrig bleibt.
+Wenn du wissen willst, wo du anfangen solltest, schreib ASSI in die Kommentare, dann zeig ich dir die ersten drei Schritte.
 
 CAPTION
 Viel Arbeit, viel Steuer, wenig Zeit. Kennen wir 🩺
@@ -414,29 +402,26 @@ Viel Arbeit, viel Steuer, wenig Zeit. Kennen wir 🩺
 ---
 
 ### Skript 13 von 30 · Antwort auf Kommentar
-je nach Frage · Antwort auf Kommentar · Identität zuerst · 20 s · B oder Z
+je nach Frage · Antwort auf Kommentar · Identität zuerst · 25 s · B oder Z
+
+VIRAL-VORBILD
+Die Community gibt das Thema vor.
 
 COVER-TITEL
 Eure Frage, unsere Antwort
 
 VISUELLE HOOK
-Kommentar als Sprechblase neben deinem Kopf, du liest ihn halblaut mit.
+Der Kommentar steht als Sprechblase neben deinem Kopf, du liest ihn halblaut mit.
 
 EMOTION
-Nähe und Wertschätzung. Direkt, als würdest du antworten, nicht präsentieren.
+Nähe und Wertschätzung. Direkt, wie eine Antwort, nicht wie ein Vortrag.
 
-HOOK
-Einblendung: [ECHTEN KOMMENTAR AUS WOCHE 1–2 EINSETZEN]
-Gesprochen: „Gute Frage, und die stellen fast alle.“
-
-BODY
-Antwort in max. 4 Sätzen, eine Zahl, kein Fachwort ohne Erklärung.
-
-PAYOFF
-Ein Satz Faustregel.
-
-CTA
-„Stell deine Frage in die Kommentare, die beste kriegt ein Video.“
+SKRIPT
+>> Sekunde 0: Kommentar als Einblendung [ECHTEN KOMMENTAR AUS WOCHE 1–2 EINSETZEN]
+Das ist eine richtig gute Frage, und ehrlich gesagt stellen die fast alle, deshalb beantworte ich sie dir hier.
+[Antwort in drei bis vier ganzen Sätzen, mit einer Zahl und ohne Fachwort, das du nicht erklärst.]
+Wenn du dir nur eine Sache merkst, dann diese: [Faustregel in einem Satz].
+Und wenn du auch eine Frage hast, schreib sie in die Kommentare. Die beste bekommt ihr eigenes Video.
 
 CAPTION
 Ihr fragt, wir antworten. Ehrlich, auch wenn's weh tut 🫂
@@ -444,42 +429,41 @@ Ihr fragt, wir antworten. Ehrlich, auch wenn's weh tut 🫂
 ---
 
 ### Skript 14 von 30 · Aus 55 € werden 115 €
-MFA, Pflege · Rechnung auf Papier · Ergebnis zuerst · 25 s · Z
+MFA, Pflege · Rechnung auf Papier · Ergebnis zuerst · 30 s · Z
+
+VIRAL-VORBILD
+Ergebnis zuerst: eine Zahl, die wie geschenktes Geld klingt.
 
 COVER-TITEL
 Aus 55 € werden 115 €
 
 VISUELLE HOOK
-Zwei Gläser: du kippst 55 € Münzen rein, es läuft auf 115 über.
+Du kippst 55 Euro in Münzen in ein Glas, und es läuft bis 115 voll.
 
 EMOTION
 Überraschung und „Warum hat mir das keiner gesagt?“. Begeistert, aber nicht marktschreierisch.
 
-HOOK
-Gesprochen: „Du gibst 55 €. Im Vertrag landen 115.“
-Einblendung: 55 € → 115 €
-
-BODY
-„100 € vom Brutto in die Betriebsrente.“
-„Weil Steuern und Abgaben wegfallen, sinkt dein Netto nur um 55.“
-„Dein Chef MUSS 15 % drauflegen.“
-„Macht 115.“
-
-PAYOFF
-„Wer kennt's nicht: Wort Betriebsrente gehört und sofort abgeschaltet 🥲 Solltest du nicht.“
-
-CTA
-„Kommentier BAV, ich rechne mit deinem Gehalt.“
+SKRIPT
+>> Sekunde 0: Glas mit Münzen, Einblendung „55 € → 115 €“
+Du zahlst 55 Euro, und in deinem Vertrag landen 115 Euro. Klingt nach einem Trick, ist aber ganz normal, wenn man weiß, wie es geht.
+Ich weiß, sobald jemand Betriebsrente sagt, schalten die meisten ab. Ging mir auch so. Bleib trotzdem kurz dran.
+>> Schnitt: Zettel, Z rechnet
+Du lässt 100 Euro von deinem Brutto direkt in die Betriebsrente fließen. Weil du darauf keine Steuern und weniger Sozialabgaben zahlst, sinkt dein Netto nur um etwa 55 Euro.
+Und dein Chef ist gesetzlich verpflichtet, 15 Prozent dazuzulegen. So kommst du auf rund 115 Euro.
+Später musst du die Rente zwar versteuern, aber du startest jeden Monat mit doppelt so viel Geld, wie dich das eigentlich kostet.
+Schreib BAV in die Kommentare, dann rechne ich dir das mit deinem Gehalt aus.
 
 CAPTION
-Die Rente aus der bAV wird später versteuert, klar. Aber 55 rein, 115 im Vertrag ist ein Deal.
-§ 3 Nr. 63 EStG, § 1a BetrAVG.
+55 rein, 115 im Vertrag. § 3 Nr. 63 EStG, § 1a BetrAVG.
 #bav #mfa #pflege
 
 ---
 
-### Skript 15 von 30 · BU: 6 Fragen vor dem Antrag (Karussell)
+### Skript 15 von 30 · BU: Das liest dir keiner vor (Karussell)
 alle · Spickzettel-Karussell · Insider-Blick · 8 Folien · B
+
+VIRAL-VORBILD
+Insider-Blick plus Schutzinstinkt; Liste zum Speichern.
 
 COVER-TITEL
 BU: Das liest dir keiner vor
@@ -488,16 +472,17 @@ VISUELLE HOOK
 Cover-Folie: Lupe über Kleingedrucktem.
 
 EMOTION
-Neugier und Schutzinstinkt. Ruhig, vertrauenswürdig.
+Neugier und Schutzinstinkt. Ruhig und vertrauenswürdig.
 
-F1: Was in einem BU-Antrag steht, das dir keiner vorliest.
-F2: Ist dein Beruf richtig eingetragen? Ärztin ≠ Chirurgin.
-F3: Wird auf einen anderen Beruf verwiesen? (abstrakte Verweisung)
-F4: Ab wie viel Prozent zahlt sie? Meist 50 %.
-F5: Rente: mindestens Fixkosten, maximal 80 % vom Netto.
-F6: Gesundheitsfragen: ehrlich, vollständig, mit Arztakten abgleichen.
-F7: Je jünger, desto günstiger.
-F8: Speichern · Kommentier BU
+SKRIPT (Folientexte)
+Folie 1: In deinem BU-Antrag stehen Dinge, die dir beim Abschluss fast keiner vorliest.
+Folie 2: Prüf, ob dein Beruf genau richtig eingetragen ist, denn Ärztin und Chirurgin sind für die Versicherung nicht dasselbe.
+Folie 3: Schau nach, ob die Versicherung dich auf einen anderen Beruf verweisen darf. Das nennt man abstrakte Verweisung, und die willst du nicht.
+Folie 4: Die meisten Verträge zahlen erst, wenn du zu mindestens 50 Prozent berufsunfähig bist.
+Folie 5: Die Rente sollte mindestens deine Fixkosten decken, mehr als 80 Prozent deines Nettos versichert dir aber keiner.
+Folie 6: Beantworte die Gesundheitsfragen ehrlich und vollständig und gleich sie am besten mit deinen Arztakten ab.
+Folie 7: Je jünger und gesünder du abschließt, desto günstiger wird es.
+Folie 8: Speicher dir das und schreib BU in die Kommentare, wenn wir deine prüfen sollen.
 
 CAPTION
 Deine Arbeitskraft ist Millionen wert. PFLICHT FÜR JEDEN, sie richtig abzusichern.
@@ -508,28 +493,25 @@ Deine Arbeitskraft ist Millionen wert. PFLICHT FÜR JEDEN, sie richtig abzusiche
 ### Skript 16 von 30 · Flurinterview Kongress
 alle · Flurinterview · Schätzfrage · 45 s · Z mit Mikro
 
+VIRAL-VORBILD
+Salary Transparent Street: echte Menschen, ehrliche Zahlen.
+
 COVER-TITEL
 Was legst du zurück?
 
 VISUELLE HOOK
-Mikro mit Finanz-Medizin-Windschutz ins Bild gestreckt, Kongresslogo im Hintergrund unscharf.
+Ein Mikro mit Finanz-Medizin-Windschutz wird ins Bild gestreckt, im Hintergrund unscharf das Kongresslogo.
 
 EMOTION
-Neugier und Lachen über ehrliche Antworten. Offen, freundlich, frech nachfragen.
+Neugier und Lachen über ehrliche Antworten. Offen, freundlich, gern frech nachfragen.
 
-HOOK
-Gesprochen (Z zu Passantin): „Was machst du beruflich, und was legst du jeden Monat zurück?“
-Einblendung: Was legen Mediziner zurück?
-
-BODY
-3–4 Antworten, schnell geschnitten.
-Eine Folgefrage pro Person: „Und wofür?“
-
-PAYOFF
-Die überraschendste Antwort ans Ende.
-
-CTA
-„Was legst du zurück? Ehrlich, in die Kommentare.“
+SKRIPT
+>> Sekunde 0: Mikro ins Bild, Einblendung „Was legen Mediziner zurück?“
+Z (zur ersten Person): Hi, darf ich dich kurz was fragen? Was machst du beruflich, und wie viel legst du jeden Monat zur Seite?
+>> Antwort, schnell geschnitten, drei bis vier Personen
+Z (Folgefrage): Und wofür sparst du das eigentlich?
+>> Die überraschendste Antwort ans Ende setzen
+Z (in die Kamera, zum Schluss): Und jetzt du, ganz ehrlich: Was legst du jeden Monat zurück? Schreib's in die Kommentare.
 
 CAPTION
 Wir waren auf [KONGRESS] und haben gefragt, was keiner fragt 😂
@@ -541,6 +523,9 @@ Hinweis: Dreherlaubnis des Veranstalters und Einwilligung jeder Person einholen.
 ### Skript 17 von 30 · Drei Verträge
 angestellte Ärzte · Anonymer Fall · Teuerster Fehler · 50 s · B
 
+VIRAL-VORBILD
+Geschichte statt Erklärung; Feindbild Vertrieb.
+
 COVER-TITEL
 3 Verträge, 1 Problem
 
@@ -548,19 +533,15 @@ VISUELLE HOOK
 Drei Ordner fallen nacheinander auf den Tisch, alle mit derselben Aufschrift.
 
 EMOTION
-Kopfschütteln, dann Erleichterung. Erzählend, ruhig, wie eine Geschichte.
+Kopfschütteln, dann Erleichterung. Erzählend und ruhig.
 
-HOOK
-Gesprochen: „Sie ist 34, Assistenzärztin, und kam mit drei Verträgen, die alle dasselbe tun.“
-
-BODY
-[ECHTEN, ANONYMISIERTEN FALL EINSETZEN: Problem, was wir gefunden haben, was sie geändert hat.]
-
-PAYOFF
-Eine Zahl: wie viel sie jetzt pro Monat anders nutzt.
-
-CTA
-„Kommentier CHECK, dann schauen wir auf deine.“
+SKRIPT
+>> Sekunde 0: drei Ordner fallen auf den Tisch
+Neulich saß eine Assistenzärztin bei uns, 34 Jahre alt, und hatte drei Verträge dabei, die im Grunde alle dasselbe gemacht haben.
+[ECHTEN, ANONYMISIERTEN FALL in ganzen Sätzen erzählen: Wie sie zu den Verträgen kam, was wir gefunden haben, was sie geändert hat.]
+>> Einblendung: die eine Zahl, z. B. „[X] € im Monat jetzt sinnvoll angelegt“
+Am Ende ging es gar nicht darum, mehr Geld zu haben, sondern das vorhandene richtig zu nutzen.
+Wenn du dir auch nicht sicher bist, was in deinen Verträgen steht, schreib CHECK in die Kommentare, dann schauen wir drauf.
 
 CAPTION
 Passiert den Besten. Augen auf bei der Beraterwahl.
@@ -570,64 +551,59 @@ Hinweis: Nur mit echter Einwilligung der Kundin; keine erkennbaren Details.
 ---
 
 ### Skript 18 von 30 · Das schlechteste Geschenk
-Praxisinhaber, MFA · Unpopuläre Meinung · Unpopuläre Meinung · 20 s · B
+Praxisinhaber, MFA · Unpopuläre Meinung · Unpopuläre Meinung · 25 s · B
+
+VIRAL-VORBILD
+Hot Take, der Inhaber und MFA gegeneinander diskutieren lässt.
 
 COVER-TITEL
 Das schlechteste Geschenk
 
 VISUELLE HOOK
-Geschenkbox mit 110 € drin, beim Öffnen sind nur 50 € übrig.
+Eine Geschenkbox mit 110 Euro darin; beim Öffnen sind nur noch 50 Euro übrig.
 
 EMOTION
 Widerspruch und Diskussionslust. Selbstbewusst, leicht provokant.
 
-HOOK
-Gesprochen: „Unpopuläre Meinung: Eine Gehaltserhöhung ist das schlechteste Geschenk für deine MFA.“
-
-BODY
-„Du zahlst 110. Sie kriegt 50.“
-„Mit Sachbezug, Gesundheitsbudget, bAV kommt fast alles an.“
-„Und sie weiß jeden Monat, von wem.“
-
-PAYOFF
-„Gleiches Geld. Doppelt Wirkung.“
-
-CTA
-„MFA, Inhaber: Wer sieht's anders? Kommentar.“
+SKRIPT
+>> Sekunde 0: Geschenkbox, Einblendung „Unpopuläre Meinung“
+Unpopuläre Meinung: Eine Gehaltserhöhung ist eigentlich das schlechteste Geschenk, das du deiner MFA machen kannst.
+Und zwar nicht, weil sie es nicht verdient hätte, sondern weil so wenig davon bei ihr ankommt.
+>> Box öffnet sich, nur 50 € übrig
+Du zahlst rund 110 Euro, und bei ihr kommen 50 Euro an. Der Rest geht an Steuern und Abgaben.
+Wenn du ihr dasselbe Geld über einen Sachbezug, ein Gesundheitsbudget oder die Betriebsrente gibst, kommt fast alles bei ihr an. Und sie merkt jeden Monat, dass das von dir kommt.
+Gleiches Geld, aber doppelt so viel Wirkung. Und jetzt seid ihr dran: MFA und Inhaber, wer sieht das anders?
 
 CAPTION
-Ja, das wird diskutiert 😂 Rechnung oben in Video 1.
+Ja, das wird diskutiert 😂 Die Rechnung steht in Skript 1.
 #mfa #praxisinhaber #mitarbeiterbindung
 
 ---
 
 ### Skript 19 von 30 · Was bleibt? Folge 4: Praxisinhaberin
-Praxisinhaber · Netto-Serie · Mythos-Bruch · 35 s · B
+Praxisinhaber · Netto-Serie · Mythos-Bruch · 40 s · B
+
+VIRAL-VORBILD
+Netto-Offenlegung für Selbstständige: Mythos „Praxis = Porsche“.
 
 COVER-TITEL
 Was bleibt? #4 Praxis
 
 VISUELLE HOOK
-Umsatz-Zahl groß, dann fliegen Kostenblöcke als Klebezettel ab, bis wenig übrig ist.
+Die Umsatz-Zahl steht groß an der Wand, dann fliegen Kostenblöcke als Klebezettel ab, bis wenig übrig ist.
 
 EMOTION
-Aha und Respekt („Selbst und ständig“). Sachlich, anerkennend.
+Aha und Respekt. Sachlich und anerkennend.
 
-HOOK
-Gesprochen: „Umsatz ist nicht Gewinn. Was bleibt einer Praxisinhaberin wirklich?“
-Einblendung: Was bleibt? #4 Praxis
-
-BODY
-„Umsatz: [ECHTE ZAHL].“
-„Personal, 58 % der Kosten.“
-„Miete, Geräte, Kredit.“
-„Gewinn: [ZAHL]. Davon Steuer zum Spitzensatz.“
-
-PAYOFF
-„Bleibt: [ZAHL]. Und Rente? Muss sie komplett selbst machen.“
-
-CTA
-„Kommentier PRAXIS für die drei größten Hebel.“
+SKRIPT
+>> Sekunde 0: Umsatz an der Wand, Einblendung „Was bleibt? #4 Praxis“
+Umsatz ist nicht gleich Gewinn, und ich zeig dir heute, was einer Praxisinhaberin am Ende wirklich bleibt.
+>> Klebezettel fliegen ab: Personal, Miete, Geräte, Kredit
+Ihre Praxis macht [ECHTE ZAHL EINSETZEN] Euro Umsatz. Davon geht über die Hälfte für das Personal weg, dann kommen Miete, Geräte und der Kredit für die Praxis.
+Als Gewinn bleiben [ZAHL] Euro, und darauf zahlt sie den Spitzensteuersatz.
+Am Ende hat sie [ZAHL] Euro zum Leben, und ihre komplette Altersvorsorge muss sie davon auch noch selbst aufbauen.
+Also, wenn das nächste Mal jemand sagt, Praxis heißt automatisch Porsche, schick ihm dieses Video.
+Wenn du wissen willst, wo die drei größten Hebel in deiner Praxis liegen, schreib PRAXIS in die Kommentare.
 
 CAPTION
 Selbst und ständig. Und trotzdem denken alle, Praxis = Porsche 🥲
@@ -637,26 +613,30 @@ Selbst und ständig. Und trotzdem denken alle, Praxis = Porsche 🥲
 ### Skript 20 von 30 · 10 Zahlen für MFA (Karussell)
 MFA · Spickzettel-Karussell · Zahl-Schock · 11 Folien · Z
 
+VIRAL-VORBILD
+Zahlen-Liste zum Speichern; jede Folie ein kleines Aha.
+
 COVER-TITEL
 10 Zahlen für jede MFA
 
 VISUELLE HOOK
-Cover-Folie: Ausgedruckter Zettel am Pausenraum-Kühlschrank.
+Cover-Folie: ein ausgedruckter Zettel am Kühlschrank im Pausenraum.
 
 EMOTION
-Stolz und Nutzwert. Hell, praktisch.
+Stolz und Nutzwert. Hell und praktisch.
 
-F1: 10 Zahlen 2026, die jede MFA kennen sollte.
-F2: 48 % – Rentenniveau.
-F3: 2031 – bis dahin gesichert.
-F4: 15 % – Pflichtzuschuss deines Chefs zur bAV.
-F5: 55 € – so wenig kosten dich 100 € bAV netto.
-F6: 50 € – steuerfreier Sachbezug pro Monat.
-F7: 2.575 € – bis hier gibt's Extra-Förderung.
-F8: 288 € – so viel erstattet das Finanzamt deiner Praxis (ab 2027: 360 €).
-F9: 3–6 – Monatsausgaben als Notgroschen.
-F10: 80 % – maximal so viel vom Netto über die BU.
-F11: Speichern · Kommentier MFA
+SKRIPT (Folientexte)
+Folie 1: Diese 10 Zahlen sollte jede MFA 2026 kennen.
+Folie 2: 48 Prozent: So hoch ist das Rentenniveau, gemessen am Durchschnittsverdienst.
+Folie 3: 2031: Bis dahin ist dieses Niveau gesetzlich gesichert, danach ist es offen.
+Folie 4: 15 Prozent: So viel muss dein Chef dazulegen, wenn du in die Betriebsrente einzahlst.
+Folie 5: 55 Euro: So wenig kosten dich 100 Euro Betriebsrente netto.
+Folie 6: 50 Euro: So viel darf dir dein Chef jeden Monat steuerfrei als Sachbezug geben.
+Folie 7: 2.575 Euro: Bis zu diesem Bruttogehalt gibt es eine Extra-Förderung für deine Betriebsrente.
+Folie 8: 288 Euro: So viel erstattet das Finanzamt deiner Praxis dafür, ab 2027 sogar bis zu 360 Euro.
+Folie 9: 3 bis 6: So viele Monatsausgaben solltest du als Notgroschen auf dem Konto haben.
+Folie 10: 80 Prozent: Mehr von deinem Netto kannst du über eine BU nicht absichern.
+Folie 11: Speicher dir das und schreib MFA in die Kommentare, wenn du wissen willst, was davon für dich zählt.
 
 CAPTION
 Druck's aus, häng's in den Pausenraum ;)
@@ -665,32 +645,28 @@ Druck's aus, häng's in den Pausenraum ;)
 ---
 
 ### Skript 21 von 30 · KI fragt man nicht
-alle · Sketch · POV-Sketch · 15 s · Z
+alle · Sketch · POV-Sketch · 20 s · Z
+
+VIRAL-VORBILD
+Aktueller Alltag als Sketch (KI fragen): Humor und Wiedererkennen.
 
 COVER-TITEL
 KI fragt man nicht
 
 VISUELLE HOOK
-Handy spricht mit Roboterstimme, du schaust immer skeptischer, am Ende direkt in die Kamera.
+Das Handy antwortet mit Roboterstimme, du schaust immer skeptischer und am Ende direkt in die Kamera.
 
 EMOTION
 Humor und leichte Skepsis. Trocken, Augenbraue hoch.
 
-HOOK
-Einblendung: POV: Du fragst die KI, ob deine BU gut ist
-Bild: Z tippt aufs Handy, nickt zufrieden.
-
-BODY
-Handy (Stimme aus dem Off, monoton): „Die BU ist eine gute Wahl. Sie bietet Schutz.“
-Z: „Und die Verweisung?“
-Off: „Die BU ist eine gute Wahl. Sie bietet Schutz.“
-Z guckt in die Kamera.
-
-PAYOFF
-Einblendung: I doubt it.
-
-CTA
-„Schick das der Kollegin, die alles ChatGPT fragt 😬“
+SKRIPT
+>> Sekunde 0: Einblendung „POV: Du fragst die KI, ob deine BU gut ist“
+Z (tippt): Hey, ist meine BU eigentlich gut?
+HANDY (monotone Roboterstimme): Die Berufsunfähigkeitsversicherung ist eine gute Wahl. Sie bietet Schutz.
+Z: Okay, und darf mich die Versicherung auf einen anderen Beruf verweisen?
+HANDY: Die Berufsunfähigkeitsversicherung ist eine gute Wahl. Sie bietet Schutz.
+>> Z schaut langsam in die Kamera, Einblendung „I doubt it.“
+Z: Beim Thema Geld würde ich mich vielleicht nicht nur auf die KI verlassen. Schick das mal der Kollegin, die wirklich alles ChatGPT fragt.
 
 CAPTION
 Beim Thema Geld nicht nur auf KI stützen, sondern auf Erfahrung 🫂
@@ -698,30 +674,26 @@ Beim Thema Geld nicht nur auf KI stützen, sondern auf Erfahrung 🫂
 ---
 
 ### Skript 22 von 30 · Ihr rennt für andere
-Pflege · Identität · Identität zuerst · 15 s · Z
+Pflege · Identität · Identität zuerst · 20 s · Z
+
+VIRAL-VORBILD
+Identitäts-Reel (euer bester Inhaltstyp): „Wir kümmern uns um alle außer uns“.
 
 COVER-TITEL
 Wer versorgt dich mit 67?
 
 VISUELLE HOOK
-Lange Flurfahrt im Kasack, du bleibst abrupt stehen und schaust in die Kamera.
+Lange Kamerafahrt im Kasack durch den Flur; du bleibst abrupt stehen und schaust in die Kamera.
 
 EMOTION
 Rührung und Wachrütteln. Langsam, eindringlich, leise.
 
-HOOK
-Gesprochen: „Du hast heute 14 Leute versorgt. Wer versorgt dich mit 67?“
-Bild: Z im Kasack, läuft einen Flur entlang, bleibt stehen.
-
-BODY
-„Schichtdienst, Teilzeit, Kinder.“
-„Jede Lücke landet in deiner Rente.“
-
-PAYOFF
-„Nicht morgen. Heute 10 Minuten.“
-
-CTA
-„Kommentier PFLEGE, ich schick dir den Kurzcheck.“
+SKRIPT
+>> Sekunde 0: Flurfahrt, Z bleibt stehen
+Du hast heute wahrscheinlich 14 Menschen versorgt. Aber hast du dir schon mal überlegt, wer eigentlich dich versorgt, wenn du 67 bist?
+Schichtdienst, vielleicht Teilzeit, vielleicht Kinder, und jede dieser Lücken landet am Ende in deiner Rente.
+Das soll dir keine Angst machen. Ich will nur, dass du dir heute zehn Minuten nimmst und dir das einmal anschaust.
+Schreib PFLEGE in die Kommentare, dann schick ich dir unseren Kurzcheck.
 
 CAPTION
 Ihr rennt für andere, wer rennt für euch? 🩺
@@ -729,191 +701,184 @@ Ihr rennt für andere, wer rennt für euch? 🩺
 
 ---
 
-### Skript 23 von 30 · Notgroschen in echt
-MFA, Pflege · Zwei-Personen-Vergleich · Zwei Menschen · 25 s · Z
+### Skript 23 von 30 · Waschmaschine kaputt
+MFA, Pflege · Zwei-Personen-Vergleich · Zwei Menschen · 30 s · Z
+
+VIRAL-VORBILD
+Zwei Menschen, gleiche Lage: Alltagssituation macht den Unterschied sichtbar.
 
 COVER-TITEL
 Waschmaschine kaputt
 
 VISUELLE HOOK
-Split-Screen: links Panik am Handy, rechts entspannter Klick auf „Bestellen“.
+Split-Screen: links Panik am Handy, rechts ein entspannter Klick auf „Bestellen“.
 
 EMOTION
 Wiedererkennen, dann Erleichterung. Alltagsnah, ein bisschen dramatisch gespielt.
 
-HOOK
-Gesprochen: „Waschmaschine kaputt. Zwei MFA. Zwei völlig verschiedene Wochen.“
-
-BODY
-Links: Z schaut aufs Konto, verzweifelt, ruft Mama an.
-Rechts: Z bestellt eine neue, zuckt mit den Schultern.
-Einblendung: 3–6 Monatsausgaben
-
-PAYOFF
-„Notgroschen ist kein Geldanlage-Thema. Das ist Ruhe.“
-
-CTA
-„Hast du deinen? Ja oder nein in die Kommentare.“
+SKRIPT
+>> Sekunde 0: Split-Screen, Waschmaschine mit Fehlermeldung
+Die Waschmaschine geht kaputt, und zwei MFA erleben eine komplett unterschiedliche Woche.
+>> Linke Seite
+Die eine schaut aufs Konto, bekommt Panik und ruft erstmal ihre Mama an, ob sie ihr was leihen kann.
+>> Rechte Seite
+Die andere bestellt einfach eine neue, zuckt mit den Schultern und macht weiter.
+>> Einblendung „3–6 Monatsausgaben“
+Der Unterschied ist ein Notgroschen. Drei bis sechs Monatsausgaben auf einem eigenen Konto, das du nicht anrührst.
+Das ist übrigens kein Geldanlage-Thema, sondern einfach Ruhe im Kopf.
+Hast du deinen schon? Schreib ja oder nein in die Kommentare.
 
 CAPTION
 Unerwartete Kosten? Kein Problem, wenn du vorbereitet bist 🛟
 
 ---
 
-### Skript 24 von 30 · Der 50-€-Satz
-alle · Sketch · POV-Sketch · 15 s · B
+### Skript 24 von 30 · Spart überall, außer hier
+alle · Sketch · POV-Sketch · 20 s · B
+
+VIRAL-VORBILD
+Berater-Parodie (euer meistgeteiltes Format).
 
 COVER-TITEL
 Spart überall, außer hier
 
 VISUELLE HOOK
-Taschenrechner, du streichst Zeilen auf einer Liste, bei „BU“ machst du einen Haken bei „günstigste“.
+Du hast einen Taschenrechner, streichst Zeilen auf einer Liste und setzt bei „BU“ einen Haken bei „günstigste“.
 
 EMOTION
 Augenrollen und Lachen. Ironisch überspielt.
 
-HOOK
-Einblendung: Berater, der bei allem spart. Außer bei sich.
-Bild: B mit Taschenrechner.
-
-BODY
-B: „Netflix weg. Fitnessstudio weg. Urlaub halbiert.“
-Kunde: „Und die BU?“
-B: „Ach, die günstigste reicht.“
-
-PAYOFF
-Einblendung: Bei der Arbeitskraft spart man nicht.
-
-CTA
-„Kennst du so einen? Markier ihn nicht. Aber denk dran 😂“
+SKRIPT
+>> Sekunde 0: Einblendung „Der Berater, der bei allem spart“
+BERATER: Also, Netflix kündigen wir, das Fitnessstudio auch, und den Urlaub machen wir halb so lang.
+KUNDE: Okay, und was ist mit meiner BU?
+BERATER: Ach, da nehmen wir einfach die günstigste, das reicht schon.
+>> Kunde schaut in die Kamera, Einblendung „Bei der Arbeitskraft spart man nicht.“
+B (als er selbst): Bei allem kann man sparen, aber nicht bei der Absicherung deiner Arbeitskraft. Kennst du so einen Berater? Dann denk an dieses Video.
 
 CAPTION
-Wer schreibt der bleibt 🥲 Bei der Arbeitskraft solltet ihr wirklich nicht sparen.
+Wer schreibt, der bleibt 🥲 Bei der Arbeitskraft solltet ihr wirklich nicht sparen.
 
 ---
 
 ### Skript 25 von 30 · MFA gegen Arzt
-MFA, Ärzte · Zwei-Personen-Vergleich · Mythos-Bruch · 25 s · B und Z
+MFA, Ärzte · Zwei-Personen-Vergleich · Mythos-Bruch · 30 s · B und Z
+
+VIRAL-VORBILD
+Gerechtigkeitsfrage im Vergleich, die die Kommentare spaltet.
 
 COVER-TITEL
 Gleiche Praxis, anderes Konto
 
 VISUELLE HOOK
-Zwei Hände legen Gehaltsabrechnungen nebeneinander, Zahlen geschwärzt, Höhe unterschiedlich.
+Zwei Hände legen Gehaltsabrechnungen nebeneinander, die Zahlen sind geschwärzt, die Stapel unterschiedlich hoch.
 
 EMOTION
-Fairness-Gefühl, Verbundenheit. Ehrlich, auf Augenhöhe, kein Gegeneinander.
+Fairness-Gefühl und Verbundenheit. Ehrlich, auf Augenhöhe, kein Gegeneinander.
 
-HOOK
-Gesprochen (Z): „Gleiche Praxis. Gleiche Patienten. Anderes Konto.“
-
-BODY
-Z: „Ich verdien weniger, also kann ich nix aufbauen.“
-B: „Ich verdien mehr, also zahl ich Spitzensteuer.“
-Beide: „Und keiner hat's uns erklärt.“
-
-PAYOFF
-B: „Für beide gibt's Hebel. Nur andere.“
-
-CTA
-„Kommentier MFA oder ARZT, wir machen dein Video.“
+SKRIPT
+>> Sekunde 0: zwei Abrechnungen nebeneinander
+Z: Wir arbeiten in derselben Praxis mit denselben Patienten, und trotzdem sieht unser Konto komplett anders aus.
+Z: Ich hab immer gedacht, ich verdiene einfach zu wenig, um überhaupt etwas aufzubauen.
+B: Und ich hab gedacht, weil ich mehr verdiene, läuft das von allein. Dabei zahle ich auf jeden Euro mehr den Spitzensteuersatz.
+Z: Und erklärt hat es uns beiden ehrlich gesagt nie jemand.
+>> Einblendung: „Andere Hebel für jeden“
+B: Die gute Nachricht ist: Für uns beide gibt es Hebel, es sind nur unterschiedliche.
+Schreibt MFA oder ARZT in die Kommentare, dann machen wir das nächste Video genau für euch.
 
 CAPTION
 Same same but different. Die Arbeit ist ähnlich, die Zahlen nicht, die Lösung auch nicht.
 
 ---
 
-### Skript 26 von 30 · Altersvorsorgedepot – was wir wissen
-alle · Reaktion auf Schlagzeile · Mythos-Bruch · 25 s · B
+### Skript 26 von 30 · Altersvorsorgedepot: was wir wissen
+alle · Reaktion auf Schlagzeile · Mythos-Bruch · 30 s · B
+
+VIRAL-VORBILD
+Aktualität mit Einordnung: „Klingt gut, aber …“.
 
 COVER-TITEL
 Riester ist tot, was jetzt?
 
 VISUELLE HOOK
-Du legst eine Riester-Mappe in einen Karton mit Aufschrift „Archiv“.
+Du legst eine Riester-Mappe in einen Karton mit der Aufschrift „Archiv“.
 
 EMOTION
-Neugier mit gesunder Skepsis. Nüchtern, „Klingt geil, aber …“-Haltung.
+Neugier mit gesunder Skepsis. Nüchtern.
 
-HOOK
-Gesprochen: „Riester ist tot. Was jetzt kommt, klingt gut, aber eine Sache weiß noch keiner.“
-
-BODY
-„Altersvorsorgedepot.“
-„Förderung 60 bis 540 € im Jahr.“
-„Was die Verträge kosten? Unbekannt.“
-
-PAYOFF
-„Und Kosten entscheiden über alles. Also: nicht in den ersten Vertrag rennen.“
-
-CTA
-„Folgen, wir sagen dir, wenn's klar ist.“
+SKRIPT
+>> Sekunde 0: Riester-Mappe wandert ins Archiv
+Riester ist tot, und was jetzt kommt, klingt erstmal richtig gut. Aber eine wichtige Sache weiß bisher noch niemand.
+>> Green Screen mit Schlagzeile zum Altersvorsorgedepot
+Das Neue heißt Altersvorsorgedepot. Der Staat fördert es mit 60 bis 540 Euro im Jahr, je nachdem, wie viel du einzahlst.
+Was aber noch komplett offen ist: Was diese Verträge am Ende kosten werden.
+Und die Kosten entscheiden am Ende darüber, ob sich so etwas lohnt oder nicht.
+Deshalb mein Rat: Renn nicht in den ersten Vertrag, den dir jemand anbietet. Folg uns, wir sagen dir Bescheid, sobald es klar ist.
 
 CAPTION
 Klingt geil, aber erstmal nur Theorie :/ Wir halten dich up to date.
 
-Hinweis: Vor Veröffentlichung aktuelle Gesetzeslage prüfen.
+Hinweis: Vor Veröffentlichung die aktuelle Gesetzeslage prüfen.
 
 ---
 
-### Skript 27 von 30 · Was Studis verkauft wird
-angestellte Ärzte, Studis · Insider-Blick · Teuerster Fehler · 25 s · B
+### Skript 27 von 30 · Drei Fragen an jeden Berater
+angestellte Ärzte, Studis · Insider-Blick · Teuerster Fehler · 30 s · B
+
+VIRAL-VORBILD
+Feindbild Vertrieb mit Schutz-Nutzwert: wird in PJ-Gruppen geteilt.
 
 COVER-TITEL
 3 Fragen an jeden Berater
 
 VISUELLE HOOK
-Drei Finger hoch, bei jeder Frage einer mehr, beim dritten ernster Blick.
+Du hebst drei Finger, bei jeder Frage einen mehr, beim dritten mit ernstem Blick.
 
 EMOTION
-Selbstschutz und Bestärkung. Bestimmt, wie ein guter Ratschlag unter Freunden.
+Selbstschutz und Bestärkung. Bestimmt, wie ein guter Rat unter Freunden.
 
-HOOK
-Gesprochen: „Im PJ hat mir einer was verkauft. Heute weiß ich, was ich hätte fragen sollen.“
-
-BODY
-„Frage eins: Was kostet das im Jahr, in Euro?“
-„Frage zwei: Was passiert, wenn ich aufhöre?“
-„Frage drei: Was verdienst DU daran?“
-
-PAYOFF
-„Wer bei Frage drei rumdruckst: weg.“
-
-CTA
-„Schick das an deine PJ-Gruppe.“
+SKRIPT
+>> Sekunde 0: ein Finger hoch
+Im PJ hat mir mal jemand einen Vertrag verkauft, und heute weiß ich genau, welche drei Fragen ich damals hätte stellen sollen.
+Erstens: Was kostet mich das im Jahr, und zwar in Euro, nicht in Prozent?
+>> Zwei Finger
+Zweitens: Was passiert, wenn ich in ein paar Jahren aufhören will?
+>> Drei Finger, ernster Blick
+Und drittens, die wichtigste: Was verdienst du eigentlich daran?
+Wenn jemand bei der dritten Frage anfängt rumzudrucksen, dann weißt du eigentlich schon alles.
+Schick das an deine PJ-Gruppe, die werden es dir danken.
 
 CAPTION
 Augen auf bei der Beraterwahl, schon im Studium 🩺
 
-Hinweis: Nur nutzen, wenn die PJ-Geschichte stimmt; sonst als Zoe-Freundinnen-Geschichte umschreiben.
+Hinweis: Nur nutzen, wenn die PJ-Geschichte stimmt; sonst als Geschichte aus Zoes Freundeskreis erzählen.
 
 ---
 
 ### Skript 28 von 30 · Was bleibt? Folge 5: MFA Vollzeit
-MFA · Netto-Serie · Schätzfrage · 30 s · Z
+MFA · Netto-Serie · Schätzfrage · 35 s · Z
+
+VIRAL-VORBILD
+Netto-Serie, Folge 5.
 
 COVER-TITEL
 Was bleibt? #5 MFA Vollzeit
 
 VISUELLE HOOK
-Mietvertrag und Rentenbescheid nebeneinander, die Zahlen fast gleich.
+Mietvertrag und Rentenbescheid liegen nebeneinander, die Zahlen sind fast gleich.
 
 EMOTION
-Ernüchterung, dann Hoffnung. Warm, ermutigend.
+Ernüchterung, dann Hoffnung. Warm und ermutigend.
 
-HOOK
-Gesprochen: „MFA, Vollzeit, 3.100 brutto. Rate mal, was im Alter von der Rente bleibt.“
-
-BODY
-„Netto heute: [ECHTE ZAHL].“
-„Rentenniveau 48 %.“
-„Reicht für die Miete. Und nicht viel mehr.“
-
-PAYOFF
-„Die gute Nachricht: Das meiste davon kann deine Praxis zahlen.“
-
-CTA
-„Kommentier VOLLZEIT.“
+SKRIPT
+>> Sekunde 0: Einblendung „Was bleibt? #5 MFA Vollzeit“
+MFA in Vollzeit mit 3.100 Euro brutto. Was glaubst du, was ihr im Alter von der gesetzlichen Rente bleibt?
+>> Abrechnung wird freigelegt
+Heute bleiben ihr netto [ECHTE ZAHL EINSETZEN] Euro im Monat.
+Die gesetzliche Rente liegt bei 48 Prozent, und bei ihrem Gehalt heißt das ehrlich gesagt: Es reicht für die Miete, und viel mehr ist dann nicht drin.
+>> Mietvertrag und Rentenbescheid nebeneinander
+Aber jetzt kommt die gute Nachricht: Einen großen Teil von dem, was ihr fehlt, kann ihre Praxis mitbezahlen, über Zuschüsse und steuerfreie Extras.
+Jede MFA kann sich ein Vermögen aufbauen, man muss nur wissen, wie. Schreib VOLLZEIT in die Kommentare, dann zeig ich dir deins.
 
 CAPTION
 Jede MFA kann sich ein Vermögen aufbauen, man muss nur wissen WIE 🫶🏼
@@ -921,7 +886,10 @@ Jede MFA kann sich ein Vermögen aufbauen, man muss nur wissen WIE 🫶🏼
 ---
 
 ### Skript 29 von 30 · Faustregel BU
-alle · Rechnung auf Papier · Ergebnis zuerst · 20 s · B
+alle · Rechnung auf Papier · Ergebnis zuerst · 25 s · B
+
+VIRAL-VORBILD
+Eine Zeile Faustregel zum Speichern.
 
 COVER-TITEL
 Wie hoch muss deine BU sein?
@@ -930,56 +898,47 @@ VISUELLE HOOK
 Du schreibst die Formel auf ein Whiteboard und unterstreichst sie zweimal.
 
 EMOTION
-Klarheit und Sicherheit. Ruhig, kompetent.
+Klarheit und Sicherheit. Ruhig und kompetent.
 
-HOOK
-Gesprochen: „Wie hoch muss deine BU sein? Eine Zeile.“
-Einblendung: Fixkosten ≤ BU ≤ 80 % Netto
-
-BODY
-„Untergrenze: deine Fixkosten.“
-„Obergrenze: 80 % vom Netto, mehr versichert keiner.“
-„Dazwischen liegt deine Zahl.“
-
-PAYOFF
-„Und dann prüfen, ob die Bedingungen zu deinem Fach passen.“
-
-CTA
-„Kommentier BU, wir prüfen deine.“
+SKRIPT
+>> Sekunde 0: Whiteboard, Einblendung „Fixkosten ≤ BU ≤ 80 % Netto“
+Wie hoch deine Berufsunfähigkeitsrente sein sollte, kann ich dir in einer einzigen Zeile erklären.
+Die Untergrenze sind deine Fixkosten. Also alles, was jeden Monat sicher rausgeht, Miete, Versicherungen, Kredite.
+Die Obergrenze liegt bei etwa 80 Prozent von deinem Netto, denn mehr versichert dir keine Gesellschaft.
+>> Du unterstreichst die Formel zweimal
+Irgendwo dazwischen liegt deine Zahl. Und danach solltest du unbedingt prüfen, ob die Bedingungen auch wirklich zu deinem Fach passen.
+Schreib BU in die Kommentare, dann schauen wir uns deine an.
 
 CAPTION
 Minimum deine Fixkosten und max. 80% deines Netto ;) safety first.
 
 ---
 
-### Skript 30 von 30 · Warum wir das machen (ohne „Willkommen“)
-alle · Identität · Mythos-Bruch · 25 s · B
+### Skript 30 von 30 · Warum es uns gibt
+alle · Identität · Mythos-Bruch · 30 s · B
+
+VIRAL-VORBILD
+Gesicht statt Logo: persönliche Geschichte statt „Willkommen bei …“.
 
 COVER-TITEL
 Warum es uns gibt
 
 VISUELLE HOOK
-Ruhiges Porträt, keine Musik, nur deine Stimme. Optional ein altes Foto mit Kittel (Vater) eingeblendet.
+Ruhiges Porträt ohne Musik, nur deine Stimme; optional ein altes Foto deines Vaters im Kittel.
 
 EMOTION
-Ehrlichkeit und Vertrauen. Leise, persönlich, langsam sprechen.
+Ehrlichkeit und Vertrauen. Leise, persönlich, langsam.
 
-HOOK
-Gesprochen: „Mein Vater ist Arzt. Bis heute hat ihm keiner seine Finanzen erklärt.“
-Bild: B, ruhige Einstellung, kein Intro.
-
-BODY
-„Er kann Leben retten.“
-„Aber nicht sagen, was seine Rente kosten wird.“
-„Nicht weil er's nicht kann. Weil's keiner gemacht hat.“
-
-PAYOFF
-„Genau deshalb gibt's uns.“
-
-CTA
-„Kommentier CHECK, dein Finanzbefund ist kostenlos.“
+SKRIPT
+>> Sekunde 0: ruhiges Porträt, kein Intro, keine Musik
+Mein Vater ist Arzt, und bis heute hat ihm eigentlich nie jemand richtig erklärt, wie er mit seinem Geld umgehen soll.
+>> Optional: altes Foto des Vaters im Kittel
+Er kann Menschenleben retten, aber er konnte mir lange nicht sagen, was seine Rente später einmal kosten wird.
+Und das liegt nicht daran, dass er es nicht verstehen würde, sondern daran, dass es ihm schlicht keiner gezeigt hat.
+Genau deshalb gibt es Finanz-Medizin. Damit Menschen, die sich jeden Tag um andere kümmern, auch wissen, wie es um ihre eigenen Finanzen steht.
+Wenn du das für dich wissen willst, schreib CHECK in die Kommentare. Dein Finanzbefund ist kostenlos.
 
 CAPTION
-Sie kümmern sich um Patienten. Wir uns um euch 🩺
+Ihr kümmert euch um Patienten. Wir uns um euch 🩺
 
-Hinweis: Nur so sagen, wenn es stimmt; Formulierung mit dem Vater abstimmen.
+Hinweis: Nur so sagen, wenn es stimmt; die Formulierung mit dem Vater abstimmen.

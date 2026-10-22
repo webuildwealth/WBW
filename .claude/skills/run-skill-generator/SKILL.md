@@ -26,39 +26,67 @@ und was bei uns funktioniert) und `markt.md` (was im Markt viral geht). Bestehen
 4. Den **Anti-AI-Check** und den **Compliance-Check** unten Punkt für Punkt durchgehen.
    Was durchfällt, umschreiben — nicht abschwächen, umschreiben.
 5. Ausgabe als Markdown; bei mehr als 3 Skripten zusätzlich als Datei in `skripte/`
-   ablegen als „Skripte X bis Y.md“ und zusätzlich als Word-Datei (pandoc, hard_line_breaks, Abschnittsnamen fett).
+   ablegen als „Skripte X bis Y.md“ und zusätzlich als Word-Datei über `baue_word.py`.
+
+## Formate, die wir produzieren können (nur diese verwenden)
+
+Jedes Skript nutzt genau eines dieser fünf Formate. Das virale Markt-Vorbild aus `markt.md`
+wird in eines davon übersetzt, nie in ein Format, das wir nicht schneiden können.
+
+1. **Fehler / Mythen / Tipps** — „3 Fehler, die …“, „Mythos oder Wahrheit“, „Mein Tipp …“.
+   Person spricht in die Kamera, Text-Einblendungen pro Punkt.
+2. **AI-visualisiertes Storytelling** — eine Geschichte (Figur, Problem, Wendung, Ergebnis),
+   gesprochen als Voiceover; zu jedem Satz ein AI-Bild-Prompt in einer `>>`-Zeile.
+3. **Splitscreen-Erklärung / Rechnung** — oben oder links die Person, die erklärt; daneben die
+   Rechnung, die Schritt für Schritt aufgebaut wird. Jede Zahl als `>>`-Zeile, wann sie erscheint.
+4. **4-Pinterest-Bilder-Erklärvideo** — vier Bilder, jedes ist der Hook für einen Punkt.
+   Pro Bild: `>>`-Zeile mit Pinterest-Suchbegriff und Bildbeschreibung, dann die gesprochenen Sätze dazu.
+5. **Ad-Kampagne (alle Kanäle)** — Anzeige mit Hook, Nutzen, Beweis, Handlungsaufforderung;
+   Varianten für Instagram/Facebook (Reel 9:16 + Feed 4:5), TikTok, YouTube Shorts, LinkedIn.
+   Ziel immer der Kurzcheck mit eigenem UTM je Kanal (`utm_source=<kanal>&utm_medium=paid`).
+   Compliance hier besonders streng: keine Renditeversprechen, Werbung als solche erkennbar.
+
+## Wie gesprochen wird
+
+- **Ganze Sätze, wie mit einem guten Freund.** Kein Stichwort-Gestammel, keine Satzfetzen
+  wie „Brutto. Abzüge. Netto.“ Du erklärst etwas, mit „weil“, „und dann“, „das heißt“.
+- Die Bilder unterstützen, sie ersetzen nie die Erklärung. Ein Video muss auch nur
+  als Audio verständlich sein.
+- Ein bis zwei Sätze pro Gedanke, dann darf geschnitten werden.
+
+## Layout im Skript
+
+- **Gesprochener Text steht linksbündig**, ohne Präfix. Bei Dialogen: `NAME:` vor den Satz.
+- **Alles für den Schnitt** (Bild, Einblendung, Schnitt, Effekt, AI-Prompt, Pinterest-Bild)
+  steht in eigenen Zeilen, die mit `>>` beginnen. In der Word-Datei werden sie eingerückt,
+  grau und kursiv dargestellt (`baue_word.py`).
+- Word-Datei bauen: `python3 baue_word.py "skripte/Skripte X bis Y.md"`.
 
 ## Vorlage pro Skript
 
 ```
 ### Skript <Nr> von <Gesamtzahl> · <Arbeitstitel>
-Zielgruppe · Format · Hook-Muster · Länge · Wer spricht (Benedict / Zoe)
+Zielgruppe · Format (eins der fünf) · Hook-Muster · Länge · Wer spricht (Benedict / Zoe)
 
 VIRAL-VORBILD
 <welches Markt-Format aus markt.md, und welche Viral-Mechanik es überträgt>
 
 COVER-TITEL
-<max. 6 Wörter fürs Instagram-Cover, meist die Zahl oder die Frage>
+<max. 6 Wörter fürs Instagram-Cover>
 
 VISUELLE HOOK
-<eine konkrete Bildidee für Sekunde 0–2, die ohne Ton funktioniert: Gegenstand, Bewegung, Requisite>
+<konkrete Bildidee für Sekunde 0–2, funktioniert ohne Ton>
 
 EMOTION
-<welches Gefühl beim Zuschauer entstehen soll, und wie es gespielt/gesprochen wird: Tempo, Ton, Haltung>
+<welches Gefühl entstehen soll und wie es gesprochen wird: Tempo, Ton, Haltung>
 
-HOOK (0–3 s)
-Gesprochen: <ein Satz, ab dem ersten Bild>
-Text-Einblendung: <max. 7 Wörter, meist die Zahl>
-Bild: <was man sieht, mit Bewegung und Berufssignal>
-
-BODY (3–25 s)
-<gesprochene Sätze, kurz, je Zeile ein Schnitt>
-
-PAYOFF
-<die Zahl / die Pointe / die Auflösung>
-
-CTA
-<Kommentar-Stichwort oder Weiterleiten-Grund>
+SKRIPT
+>> Sekunde 0: <Bild / Einblendung>
+<Hook als ganzer gesprochener Satz>
+<Erklärung in ganzen Sätzen>
+>> <Schnitt / Einblendung>
+<weiter gesprochen>
+<CTA mit Kommentar-Stichwort>
 
 CAPTION
 <in unserer Schreibstimme, siehe stimme.md>
