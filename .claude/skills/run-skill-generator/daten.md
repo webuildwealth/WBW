@@ -12,12 +12,14 @@ https://claude.ai/artifact/7BxoF2hT3tVqKQssokNKQb
 | Sketch über Berater/Alltag | 1.864 | 32,5 % |
 | Vergleich zweier Personen | 1.226 | 46,2 % |
 | Trend/Meme | 793 | 57,7 % |
+| Nachricht (AV-Depot, JAEG, Gehaltserhöhung) | 313 | 68,4 % |
 | Über uns / Link in Bio | 652 | 70,8 % |
 | Wissen (Erklär-Reel) | 476 | 64,7 % |
 
 - Skip-Rate unter 46 % → Ø 1.855 Aufrufe; ab 59 % → Ø 497. Korrelation −0,88.
 - Saves: 0,18 % der Aufrufe. Wissen muss als Zahl, Rechnung oder Liste kommen.
 - Meiste Shares: Berater-Parodie (18).
+- Kommentare: 2 bei 24 Reels. Kommentar-CTAs funktionieren nicht; Weiterleiten-CTA nutzen (Review 22.10.2026, Stichprobe 1–7 je Typ).
 
 ## Hook-Muster
 

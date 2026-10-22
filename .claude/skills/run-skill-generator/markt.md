@@ -29,3 +29,11 @@ Bei neuen Erkenntnissen hier ergänzen, mit Datum.
 
 MLP, Deutsche Ärzte Finanz und Ärzte FIN posten institutionell; die Recherche fand für keinen
 ein virales Video. Persönlichkeits- und Gehalts-Formate für Heilberufe sind unbesetzt.
+
+## Review 22.10.2026 (Websuche, dünne Quellenlage)
+
+- Keine belegten neuen viralen Finanzformate in DACH gefunden. Plattformweit: Hook in 2–3 Sekunden
+  entscheidend (Metricool-Studie, Herstellerangabe).
+- Themenlage Heilberufe: SPD-Vorstoß Versorgungswerke/gesetzliche Rente (Juni 2026, Vorschlag, nicht beschlossen),
+  Forderung Pflichtbetriebsrente (eine Quelle), MFA-Gehaltstarif läuft voraussichtlich Ende 2026 aus.
+  Vor Verwendung gegenprüfen.
