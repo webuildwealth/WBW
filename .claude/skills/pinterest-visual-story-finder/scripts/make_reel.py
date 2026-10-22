@@ -42,6 +42,8 @@ def main():
     p.add_argument("--music-db", type=float, default=-20)
     p.add_argument("--sfx-dir", help="Eigene SFX: whoosh.wav, pop.wav, hit.wav")
     p.add_argument("--no-sfx", action="store_true")
+    p.add_argument("--cta", help="CTA-Wort, z. B. Vorsorge -> Einblendung 'Kommentiere VORSORGE' + Hervorhebung")
+    p.add_argument("--cta-text", default="Kommentiere", help="Text über dem CTA-Wort")
     p.add_argument("--highlight", help="Aktives Untertitelwort einfärben, z. B. F5C542")
     p.add_argument("--no-layers", action="store_true", help="Keine Ebenen-Exporte (schneller)")
     p.add_argument("--previews", type=int, default=0, help="Alle N Frames ein Vorschau-JPG speichern")
@@ -93,6 +95,11 @@ def main():
         log("EDL aus Cache (manuelle Änderungen bleiben erhalten)")
     if a.highlight:
         edl["layout"]["subtitle_highlight"] = [int(a.highlight.strip("#")[i:i + 2], 16) for i in (0, 2, 4)]
+    edl.pop("cta", None)
+    if a.cta:
+        edl["cta"] = plan.cta_block(tr, edl["duration"], a.cta, a.cta_text)
+        log(f"CTA '{a.cta}' ab {edl['cta']['start']:.1f}s" + ("" if edl["cta"]["spoken"] else
+                                                               " (Wort nicht im Transkript – letzte Sekunden)"))
     if a.stop_after == "plan":
         log(f"EDL: {edl_p}")
         return 0

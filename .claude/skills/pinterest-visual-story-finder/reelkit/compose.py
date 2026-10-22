@@ -7,6 +7,7 @@ Ausgaben (work/):
   layers/speaker_matte.mp4  passende Luma-Maske (weiß = Sprecher) – als Spur-Maske nutzbar
 """
 import os
+import re
 
 import cv2
 import numpy as np
@@ -16,6 +17,7 @@ from .util import FrameReader, FrameWriter, font_path, load_json, log, warn
 
 TRANS = 0.32          # Dauer der Einblend-Animation (s)
 GREEN = (0, 177, 64)
+CTA_GOLD = (245, 197, 66)
 # Bitrate gedeckelt: Filmkorn würde sonst 40+ Mbit/s erzeugen (Instagram komprimiert ohnehin neu)
 H264 = ["-c:v", "libx264", "-preset", "medium", "-crf", "19", "-maxrate", "16M", "-bufsize", "32M",
         "-pix_fmt", "yuv420p", "-profile:v", "high",
@@ -103,8 +105,9 @@ class Collage:
 
 
 class Subtitles:
-    def __init__(self, subs, W, H, lay):
+    def __init__(self, subs, W, H, lay, cta=None):
         self.subs = subs
+        self.cta = re.sub(r"[^\wäöüß]", "", cta["word"].lower()) if cta else None
         self.W, self.H = W, H
         self.y = lay.get("subtitle_y", 0.6) * H
         self.size = int(lay.get("subtitle_size", 66) * W / 1080)
@@ -140,6 +143,8 @@ class Subtitles:
                 col = (255, 255, 255, 255)
                 if self.hl and wi == active:
                     col = tuple(self.hl) + (255,)
+                if self.cta and re.sub(r"[^\wäöüß]", "", w.lower()).startswith(self.cta):
+                    col = CTA_GOLD + (255,)
                 d.text((x, y), w, font=self.font, fill=col, stroke_width=4, stroke_fill=(10, 10, 10, 235))
                 x += d.textlength(w + " ", font=self.font)
                 wi += 1
@@ -169,6 +174,57 @@ class Subtitles:
                 region = frame[y0c:y1c, x0:x0 + w].astype(np.float32)
                 frame[y0c:y1c, x0:x0 + w] = (region * (1 - a) + sub[..., :3] * a).astype(np.uint8)
                 break
+        return frame
+
+
+class CTA:
+    """Animierte Call-to-Action-Karte, z. B. 'Kommentiere VORSORGE' mit Pfeil nach unten (Kommentare)."""
+
+    def __init__(self, cta, W, H):
+        self.c = cta
+        self.W, self.H = W, H
+        self.y = int(H * 0.735)
+        small = ImageFont.truetype(font_path("bold"), int(46 * W / 1080)) if font_path("bold") else ImageFont.load_default()
+        big = ImageFont.truetype(font_path("black"), int(92 * W / 1080)) if font_path("black") else ImageFont.load_default()
+        word = cta["word"].upper()
+        d0 = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+        tw = max(d0.textlength(cta["text"], font=small), d0.textlength(word, font=big))
+        cw, ch = int(tw + 120 * W / 1080), int(205 * W / 1080)
+        img = Image.new("RGBA", (cw + 40, ch + 60), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle([20, 14, 20 + cw, 14 + ch], radius=int(34 * W / 1080), fill=(14, 14, 14, 232),
+                            outline=CTA_GOLD + (255,), width=max(3, int(5 * W / 1080)))
+        d.text((20 + cw / 2, 14 + ch * 0.28), cta["text"], font=small, fill=(255, 255, 255, 255), anchor="mm")
+        d.text((20 + cw / 2, 14 + ch * 0.66), word, font=big, fill=CTA_GOLD + (255,), anchor="mm")
+        ax, ay = 20 + cw / 2, 14 + ch + 8  # Pfeil Richtung Kommentare
+        d.polygon([(ax - 22, ay), (ax + 22, ay), (ax, ay + 30)], fill=CTA_GOLD + (255,))
+        a = np.array(img)
+        sh = Image.fromarray(a[..., 3]).filter(ImageFilter.GaussianBlur(14))
+        shadow = np.zeros_like(a)
+        shadow[..., 3] = (np.roll(np.array(sh), 8, 0) * 0.6).astype(np.uint8)
+        self.rgba = np.array(Image.alpha_composite(Image.fromarray(shadow), img))
+
+    def overlay(self, frame, t):
+        c = self.c
+        if not (c["start"] <= t < c["end"]):
+            return frame
+        age = t - c["start"]
+        if age < 0.35:  # Pop mit leichtem Überschwingen
+            x = age / 0.35
+            sc = 0.6 + 0.4 * (1 + 2.2 * (x - 1) ** 3 + 1.2 * (x - 1) ** 2)
+        else:
+            sc = 1 + 0.025 * np.sin((age - 0.35) * 5.0)  # sanftes Pulsieren
+        rgba = self.rgba
+        if abs(sc - 1) > 0.003:
+            h, w = rgba.shape[:2]
+            rgba = cv2.resize(rgba, (max(2, int(w * sc)), max(2, int(h * sc))), interpolation=cv2.INTER_LINEAR)
+        h, w = rgba.shape[:2]
+        x0, y0 = (self.W - w) // 2, self.y - h // 2
+        xa, ya, xb, yb = max(0, x0), max(0, y0), min(self.W, x0 + w), min(self.H, y0 + h)
+        sub = rgba[ya - y0:yb - y0, xa - x0:xb - x0]
+        al = sub[..., 3:4].astype(np.float32) / 255
+        reg = frame[ya:yb, xa:xb].astype(np.float32)
+        frame[ya:yb, xa:xb] = (reg * (1 - al) + sub[..., :3] * al).astype(np.uint8)
         return frame
 
 
@@ -237,7 +293,8 @@ def render(edl, work, info, layers=True, preview_every=0):
     sw, sh = info["width"], info["height"]
     n_frames = int(round(edl["duration"] * fps))
     collage = Collage(edl, W, H)
-    subs = Subtitles(edl["subtitles"], W, H, lay)
+    subs = Subtitles(edl["subtitles"], W, H, lay, edl.get("cta"))
+    cta = CTA(edl["cta"], W, H) if edl.get("cta") else None
     spk = Speaker(stats, lay, W, H, sw, sh)
 
     # Filmkorn (6 Varianten, sättigend addiert) + Vignette, vorab berechnet
@@ -279,6 +336,8 @@ def render(edl, work, info, layers=True, preview_every=0):
         bg = cv2.subtract(cv2.add(bg, gp), gn)
         fg, mm, ol, shd = spk.layers(f, m)
         frame = subs.overlay(spk.composite(bg, fg, mm, ol, shd), t)
+        if cta:
+            frame = cta.overlay(frame, t)
         out.write(frame)
         if lw:
             lw[0].write(bg)

@@ -1,6 +1,20 @@
 # Reels-Pipeline: Installation & Betrieb
 
-## Einmalig einrichten
+## Mac + Claude-Desktop-App (empfohlen)
+```bash
+bash scripts/install_mac.sh   # Homebrew-ffmpeg, Python ≥3.10, Skill nach ~/.claude/skills, Ordner, Modelle, Whisper small
+```
+Ablauf pro Video:
+1. iPhone filmt (1080p oder 4K, HDR ist ok).
+2. AirDrop nach `~/Videos/FinanzMedizin/original` (im Teilen-Menü „Optionen“ → „Alle Fotodaten“, sonst wird verkleinert).
+3. Skript als `skripte/3.txt` (oder `03_thema.txt`) ablegen. `#`-Zeilen, `[Regie]` und Labels wie `Hook:`/`CTA:` werden entfernt.
+4. In der Desktop-App: „Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“.
+5. Ergebnis: `fertig/IMG_1234.mp4` → AirDrop aufs iPhone → posten.
+
+CTA: Ab dem gesprochenen CTA-Wort (sonst in den letzten 3,5 s) erscheint „Kommentiere VORSORGE“ als animierte
+Karte mit Impact-Sound; das Wort wird in den Untertiteln goldgelb hervorgehoben. Text änderbar mit `--cta-text`.
+
+## Einmalig einrichten (manuell / Linux)
 ```bash
 bash scripts/setup_reels.sh                 # venv + Pakete + MediaPipe-Modelle + Selbsttest
 WHISPER=small bash scripts/setup_reels.sh   # zusätzlich Whisper-Modell vorladen (empfohlen)

@@ -239,3 +239,13 @@ def build_edl(transcript, duration, fps=30, width=1080, height=1920):
     n_full = sum(1 for e in events if e["type"] == "collage")
     log(f"EDL: {len(scenes)} Szenen, {n_full} Collagen, {len(events) - n_full} Einzelwechsel, Thema '{theme}'")
     return edl
+
+
+def cta_block(transcript, duration, word, text=None, min_show=2.8, tail=3.5):
+    """Call-to-Action: startet beim letzten gesprochenen CTA-Wort, sonst in den letzten Sekunden."""
+    n = norm(word)
+    hits = [w for w in transcript["words"] if n and norm(w["w"]).startswith(n)]
+    start = hits[-1]["s"] - 0.1 if hits else duration - tail
+    start = max(0.0, min(start, duration - min_show))
+    return {"word": word, "text": text or "Kommentiere", "start": round(start, 3), "end": round(duration, 3),
+            "spoken": bool(hits)}

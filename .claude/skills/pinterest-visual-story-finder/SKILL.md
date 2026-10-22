@@ -5,6 +5,20 @@ description: Automatisierter Instagram-Reels-Editor plus Pinterest-Bildrecherche
 
 # PINTEREST VISUAL STORY FINDER + AUTOMATED REELS EDITOR
 
+## Schnellbefehl (Desktop-App, Ordner ~/Videos/FinanzMedizin)
+
+Nachricht wie „Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“ → sofort ausführen:
+```bash
+~/.claude/skills/pinterest-visual-story-finder/.venv/bin/python \
+  ~/.claude/skills/pinterest-visual-story-finder/scripts/schneide.py original/IMG_1234.MOV --skript 3 --cta Vorsorge
+```
+- Fehlt die Umgebung (`.venv`), zuerst `bash scripts/install_mac.sh` ausführen.
+- Optional: `--musik musik/datei.mp3`, `--vorschau`, `--neu`, `--ohne-pinterest`; alle `make_reel.py`-Optionen werden durchgereicht.
+- Danach: Kontaktbögen in `.arbeit/IMG_1234/work/assets/*_kandidaten.jpg` und Vorschau prüfen, ggf. Bilder in
+  `.arbeit/IMG_1234/work/edl.json` tauschen und denselben Befehl erneut ausführen (Cache macht es schnell).
+- Ergebnis: `fertig/IMG_1234.mp4` + `fertig/IMG_1234_report.md`. Dem Nutzer Pfad und Report-Hinweise nennen.
+- iPhone-HDR (HLG/Dolby Vision) wird automatisch auf SDR umgerechnet; 4K wird auf 1080p verkleinert.
+
 ## Modus A: Rohvideo → fertiges Reel (ausführbar)
 
 Wenn der Nutzer ein Video hochlädt/angibt, IMMER diese Pipeline ausführen, nicht nur planen.

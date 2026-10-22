@@ -50,6 +50,8 @@ def probe(path):
         "width": int(v["width"]), "height": int(v["height"]), "fps": fps,
         "duration": float(d["format"].get("duration") or v.get("duration") or 0),
         "has_audio": a is not None,
+        "transfer": v.get("color_transfer", ""), "primaries": v.get("color_primaries", ""),
+        "pix_fmt": v.get("pix_fmt", ""), "codec": v.get("codec_name", ""),
     }
 
 

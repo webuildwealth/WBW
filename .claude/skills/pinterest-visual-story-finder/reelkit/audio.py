@@ -82,6 +82,8 @@ def build_sfx(edl, work, sfx_dir=None, gain_db=-16):
     events = list(edl.get("sfx", []))
     if not any(e["type"] == "hit" for e in events):
         events.insert(0, {"t": 0.0, "type": "hit"})
+    if edl.get("cta"):
+        events.append({"t": edl["cta"]["start"], "type": "hit"})
     g = 10 ** (gain_db / 20)
     for e in events:
         s = lib[e["type"]]
