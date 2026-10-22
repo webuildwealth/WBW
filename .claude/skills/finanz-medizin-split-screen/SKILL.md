@@ -16,6 +16,17 @@ Du arbeitest als **Regisseur + Cutter + Motion Designer**. Die Scripts in `scrip
 **Lies zuerst `references/status.md`** (was ist implementiert/getestet/offen) und sage dem Nutzer ehrlich, was du tatsächlich produziert hast
 (fertiges Reel ≠ Vorschau ohne Sprecher ≠ nur Storyboard).
 
+## Bildsprache-Vorgabe von Finanz-Medizin (verbindlich)
+- **Personen immer als echte Fotos** (realistische Menschen/Gesichter), nie als Comic-/Zeichentrickfigur – sonst wirkt der Kanal unseriös.
+  Ablauf je Person: eigene Fotobibliothek `assets/photos/` → fotorealistisches KI-Foto → lizenzfreie Fotosuche.
+  Dieselbe Person durchgängig: gleiche Bildbeschreibung (Alter, Geschlecht, Rolle), jung→alt per Überblendung (`image` mit `src2`).
+- **Zahlen, Diagramme, Zeitstrahlen, Vergleiche, Mythos-Karten dürfen generierte Grafik bleiben.**
+- Die gezeichnete Figur (`character`) ist nur noch **Notfall-Platzhalter**, wenn keine Fotoquelle erreichbar ist – das wird im Lauf als
+  WARNUNG gemeldet und muss dem Nutzer gesagt werden; ein solches Reel nicht als final ausgeben.
+- Rechte: Erkennbare echte Menschen in Werbung brauchen eine Model-Freigabe. CC-Fotos (Openverse/Wikimedia) regeln nur das Urheberrecht,
+  nicht das Persönlichkeitsrecht → für Personen bevorzugt **KI-generierte Fotos** oder Stockfotos mit Model Release (eigene Lizenz, in
+  `assets/photos/` ablegen, Nachweis in gleichnamiger `.txt`). Keine realen Prominenten/Kunden/Patienten.
+
 ## Modi
 | Modus | Eingabe | Ergebnis |
 |---|---|---|
@@ -27,9 +38,9 @@ Du arbeitest als **Regisseur + Cutter + Motion Designer**. Die Scripts in `scrip
 ```bash
 S=.claude/skills/finanz-medizin-split-screen
 python3 $S/scripts/setup_check.py                                   # Voraussetzungen
-python3 $S/scripts/build_reel.py --video roh.mp4 --out-dir out/     # alles automatisch → out/reel.mp4 + out/qc/
+python3 $S/scripts/build_reel.py --video roh.mp4 --transcript transkript.txt --out-dir out/   # alles automatisch → out/reel.mp4 + out/qc/
 ```
-Automatisch: Transkription (faster-whisper) → Schnitt (Pausen, Füllwörter, Zoom-Cuts) → **Storyboard** (`auto_storyboard.py`:
+Der Nutzer liefert **Rohvideo + Transkript**. Automatisch: Transkription (faster-whisper; Schreibweise aus dem Transkript übernommen – ohne Modell werden die Transkript-Wörter auf die Sprechpausen verteilt, Näherung ±0,6 s) → Schnitt (Pausen, Füllwörter, Zoom-Cuts) → **Storyboard** (`auto_storyboard.py`:
 Claude-API, wenn `ANTHROPIC_API_KEY` gesetzt; sonst regelbasierter Regisseur) → Zahlenprüfung (fehlerhafte Szenen werden durch neutrale
 Titelkarten ersetzt, nie verfälscht) → Render → Sounddesign → Montage → QC.
 

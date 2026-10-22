@@ -275,11 +275,36 @@
     return `<div class="abs" style="left:90px;width:900px;top:${TOP + 90}px"><div class="serif" style="font-size:66px;color:${C.red500};margin-bottom:30px;opacity:${pr(lt, 0, .3)}">${esc(p.title || '')}</div>${items}</div>`;
   };
 
+  /* Zahlenkarte + Warnschild – auch über Fotos nutzbar */
+  function badgeHTML(b, lt) {
+    const bu = pr(lt, b.t ?? .5, .5, E.back), tone = toneCol(b.tone || 'blue');
+    let val = b.text;
+    if (b.countFrom != null) val = de(lerp(b.countFrom, b.value, pr(lt, b.t ?? .5, .9)), 0) + (b.unit ? ' ' + b.unit : '');
+    return `<div class="abs" style="left:${b.x ?? 620}px;top:${b.y ?? 300}px;z-index:4;transform:scale(${bu}) rotate(-2deg);transform-origin:0 100%;background:#fff;border-radius:26px;padding:22px 34px;border:4px solid ${tone};box-shadow:0 10px 0 ${tone}">
+      <div style="font-weight:800;font-size:${b.size || 78}px;color:${tone};letter-spacing:-.03em;line-height:1">${esc(val)}</div>${b.label ? `<div style="font-weight:700;font-size:30px;color:${C.ink};margin-top:6px">${esc(b.label)}</div>` : ''}</div>`;
+  }
+  function warnHTML(w, lt) {
+    const u = pr(lt, w.t ?? .8, .45, E.back);
+    return `<svg class="abs" style="left:${w.x ?? 640}px;top:${w.y ?? 240}px;z-index:4" width="190" height="170" viewBox="0 0 190 170"><g transform="translate(95 85) scale(${u}) translate(-95 -85)"><path d="M95 8 L182 160 H8 Z" fill="${C.red500}" stroke="#fff" stroke-width="8" stroke-linejoin="round"/><rect x="87" y="62" width="16" height="54" rx="6" fill="#fff"/><circle cx="95" cy="136" r="9" fill="#fff"/></g></svg>`;
+  }
+
+  /* Foto-Szene: echte Personen/Orte. Ken-Burns, optional zweites Foto (z. B. dieselbe Person älter) mit Überblendung, Badge/Warnung */
   SC.image = (p, lt, dur) => {
     const u = clamp(lt / dur), z = lerp(p.zoom_from || 1.0, p.zoom_to || 1.15, E.inout(u)), px = lerp(p.pan_x_from || 0, p.pan_x_to || 0, u), py = lerp(p.pan_y_from || 0, p.pan_y_to || 0, u);
-    const h = BOT - TOP - 30;
-    return `<div class="abs" style="left:60px;top:${TOP - 10}px;width:960px;height:${h}px;border-radius:30px;overflow:hidden;border:5px solid ${C.navy800};box-shadow:0 12px 0 ${C.navy800};background:${C.navy100}"><img src="${esc(p.src)}" style="width:100%;height:100%;object-fit:cover;transform:translate(${px}px,${py}px) scale(${z})"></div>` +
-      (p.credit ? `<div class="abs" style="left:80px;top:${BOT - 82}px;font-size:18px;color:#fff;opacity:.85;text-shadow:0 1px 4px rgba(0,0,0,.7)">${esc(p.credit).slice(0, 110)}</div>` : '') + (p.caption ? `<div class="abs serif" style="left:60px;width:960px;text-align:center;top:${TOP + 20}px;font-size:56px;color:#fff;text-shadow:0 3px 12px rgba(7,27,50,.7);opacity:${pr(lt, .4, .4)}">${esc(p.caption)}</div>` : '');
+    const h = BOT - TOP - 30, full = p.frame === 'full';
+    const box = full ? `left:0;top:0;width:${W}px;height:${H}px;` : `left:60px;top:${TOP - 10}px;width:960px;height:${h}px;border-radius:30px;border:5px solid ${C.navy800};box-shadow:0 12px 0 ${C.navy800};`;
+    const m = p.src2 ? pr(lt, p.cross_t ?? dur * .45, p.cross_d ?? .8, E.inout) : 0;
+    const img = (src, op, zz) => `<img src="${esc(src)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:${p.focus || '50% 30%'};opacity:${op};transform:translate(${px}px,${py}px) scale(${zz})">`;
+    const shade = `<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,27,50,.35) 0%,rgba(7,27,50,0) 30%,rgba(7,27,50,0) 70%,rgba(7,27,50,.45) 100%)"></div>`;
+    let yr = '';
+    if (p.year != null) {
+      const y = p.yearTo != null ? Math.round(lerp(p.year, p.yearTo, m)) : p.year;
+      yr = `<div class="abs" style="right:${full ? 50 : 90}px;top:${TOP + 10}px;z-index:4;padding:8px 26px;border-radius:18px;background:#fff;border:3px solid ${C.navy800};box-shadow:0 6px 0 ${C.navy800};font-weight:800;font-size:52px;color:${C.navy800}">${y}</div>`;
+    }
+    return `<div class="abs" style="${box}overflow:hidden;background:${C.navy100}">${img(p.src, 1, z)}${p.src2 ? img(p.src2, m, z * 1.02) : ''}${shade}</div>` + yr +
+      (p.badge ? badgeHTML(p.badge, lt) : '') + (p.warn ? warnHTML(p.warn, lt) : '') +
+      (p.credit ? `<div class="abs" style="left:${full ? 30 : 80}px;top:${BOT - 82}px;font-size:18px;color:#fff;opacity:.85;text-shadow:0 1px 4px rgba(0,0,0,.7)">${esc(p.credit).slice(0, 110)}</div>` : '') +
+      (p.caption ? `<div class="abs serif" style="left:60px;width:960px;text-align:center;top:${TOP + 20}px;font-size:56px;color:#fff;text-shadow:0 3px 12px rgba(7,27,50,.7);opacity:${pr(lt, .4, .4)}">${esc(p.caption)}</div>` : '');
   };
 
   /* Eigene Illustration (von Claude je Video gezeichnet): Ebenen mit Auftritt, Schweben, Parallax + Kamerafahrt */

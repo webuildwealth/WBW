@@ -1,6 +1,6 @@
 # Implementierungsstand (ehrlich)
 
-Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Python 3.13). `python3 scripts/selftest.py` → 24/24 grün.
+Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Python 3.13). `python3 scripts/selftest.py` → 27/27 grün.
 **Es wurde noch kein echtes Sprechervideo von Finanz-Medizin verarbeitet.** Sprecherschnitt/Montage wurden mit einem *synthetischen* Clip
 (Testbild + Tonbursts) getestet, die Gesichtserkennung separat an einem Standbild mit echtem Gesicht.
 
@@ -22,6 +22,9 @@ Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Pyt
 | Eigene Illustrationen (`svg`: draw/pop/up/left/right, Parallax, Kamerafahrt) | Szenenkatalog D + Demo |
 | Zahlwörter (drei, zweitens …) gelten als belegt | selftest |
 | Canva-Connector erzeugt passende Illustration | 1 Testbild erzeugt; **nur 200-px-Vorschau** ins Projekt übertragbar (CDN gesperrt) |
+
+| Personen → Fotos (Bibliothek/KI/Suche), jung→alt-Überblendung, Badge auf Foto | Bibliotheks-Pfad mit Platzhalterbildern geprüft (keine echten Personenfotos verfügbar) |
+| Transkript des Nutzers: Abgleich mit Whisper-Wörtern / Verteilung auf Sprechpausen ohne Modell | Pausen-Verteilung mit synthetischem Clip: Abweichung Ø 0,62 s, max 1,39 s; Füllwörter werden so NICHT erkannt |
 
 ## ⚠️ Benötigt zusätzliche Werkzeuge / Voraussetzungen
 | Funktion | Voraussetzung |

@@ -174,7 +174,7 @@ def check(sb):
         texts = []
         def walk(x):
             if isinstance(x, str): texts.append(x)
-            elif isinstance(x, dict): [walk(v) for k, v in x.items() if k not in ("src", "tone", "mark", "figure", "env", "envTo", "pose", "mood", "unit", "credit", "query", "svg", "origin", "bg")]
+            elif isinstance(x, dict): [walk(v) for k, v in x.items() if k not in ("src", "tone", "mark", "figure", "env", "envTo", "pose", "mood", "unit", "credit", "query", "svg", "origin", "bg", "src2", "focus", "frame", "photo")]
             elif isinstance(x, list): [walk(v) for v in x]
         walk(p)
         for L in p.get("layers", []) if sc["type"] == "svg" else []:  # nur sichtbarer SVG-Text zählt, nicht Koordinaten
@@ -195,7 +195,7 @@ def check(sb):
                 ok[abs(p["bars"][0]["value"] - p["bars"][1]["value"])] = "Differenz"
         if sc["type"] == "inflation":
             nums += [("amount", p.get("amount", 100)), ("rate", p.get("rate", 3)), ("years", p.get("years", 20))]
-        if sc["type"] == "character" and p.get("badge") and "value" in p["badge"]:
+        if sc["type"] in ("character", "image") and p.get("badge") and "value" in p["badge"]:
             nums.append(("badge", p["badge"]["value"]))
         for name, v in nums:
             if v in (None, 0):

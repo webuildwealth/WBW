@@ -3,6 +3,17 @@
 Das ist die Kernaufgabe. Der Skill (= Claude als Regisseur) schreibt das **Storyboard `story.json`**; die Scripts rendern es.
 Kein Script „versteht“ Inhalte. Qualität entsteht durch die Entscheidungen hier.
 
+## Bildsprache-Vorgabe von Finanz-Medizin (verbindlich)
+- **Personen immer als echte Fotos** (realistische Menschen/Gesichter), nie als Comic-/Zeichentrickfigur – sonst wirkt der Kanal unseriös.
+  Ablauf je Person: eigene Fotobibliothek `assets/photos/` → fotorealistisches KI-Foto → lizenzfreie Fotosuche.
+  Dieselbe Person durchgängig: gleiche Bildbeschreibung (Alter, Geschlecht, Rolle), jung→alt per Überblendung (`image` mit `src2`).
+- **Zahlen, Diagramme, Zeitstrahlen, Vergleiche, Mythos-Karten dürfen generierte Grafik bleiben.**
+- Die gezeichnete Figur (`character`) ist nur noch **Notfall-Platzhalter**, wenn keine Fotoquelle erreichbar ist – das wird im Lauf als
+  WARNUNG gemeldet und muss dem Nutzer gesagt werden; ein solches Reel nicht als final ausgeben.
+- Rechte: Erkennbare echte Menschen in Werbung brauchen eine Model-Freigabe. CC-Fotos (Openverse/Wikimedia) regeln nur das Urheberrecht,
+  nicht das Persönlichkeitsrecht → für Personen bevorzugt **KI-generierte Fotos** oder Stockfotos mit Model Release (eigene Lizenz, in
+  `assets/photos/` ablegen, Nachweis in gleichnamiger `.txt`). Keine realen Prominenten/Kunden/Patienten.
+
 ## 1. Vorgehen (immer in dieser Reihenfolge)
 1. **Transkript lesen** (`out/transcript.txt`, bereinigt) oder Skript lesen.
 2. **Kernaussage in einem Satz** formulieren. Alles Bildliche dient dieser Aussage.

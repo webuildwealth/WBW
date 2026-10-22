@@ -32,6 +32,7 @@ def main():
     ap.add_argument("--script")
     ap.add_argument("--storyboard")
     ap.add_argument("--words")
+    ap.add_argument("--transcript", help="dein Transkript (Text) – korrigiert die Erkennung bzw. ersetzt sie, wenn kein Modell verfügbar ist")
     ap.add_argument("--out-dir", default="out")
     ap.add_argument("--ratio", type=float, default=0.5, help="Anteil der Visualisierung an der Bildhöhe (Standard 0.5)")
     ap.add_argument("--music", default="auto", help="auto = generiertes Pad, none, oder Pfad zu lizenzierter Musik")
@@ -41,7 +42,7 @@ def main():
     ap.add_argument("--face-x", type=float); ap.add_argument("--face-y", type=float)
     ap.add_argument("--auto-light", action="store_true")
     ap.add_argument("--engine", default="auto", choices=["auto", "claude", "rules"], help="Storyboard-Regie, wenn kein --storyboard")
-    ap.add_argument("--images", default="none", choices=["none", "search", "generate"], help="echte Bilder suchen/generieren")
+    ap.add_argument("--images", default="auto", choices=["auto", "none", "search", "generate"], help="echte Fotos: auto = Bibliothek → KI-Foto → Fotosuche")
     ap.add_argument("--review", action="store_true", help="nach Storyboard + Vorschau-Stills anhalten")
     a = ap.parse_args()
     out = pathlib.Path(a.out_dir); out.mkdir(parents=True, exist_ok=True)
@@ -56,7 +57,18 @@ def main():
             words_path = out / "words.raw.json"
             if a.script and not os.path.exists(words_path):
                 print("Hinweis: Skript wird zur Textkorrektur genutzt, Wortzeiten kommen aus der Transkription.")
-            run(PY, HERE / "transcribe.py", a.video, "-o", words_path, "--model", a.model)
+            asr = out / "words.asr.json"
+            r = subprocess.run([PY, str(HERE / "transcribe.py"), a.video, "-o", str(asr), "--model", a.model])
+            if a.transcript:
+                if r.returncode == 0:
+                    run(PY, HERE / "align_transcript.py", "--transcript", a.transcript, "--words", asr, "-o", words_path)
+                else:
+                    print("WARNUNG: Spracherkennung nicht verfügbar → Wortzeiten aus Transkript + Sprechpausen (Näherung)")
+                    run(PY, HERE / "align_transcript.py", "--transcript", a.transcript, "--video", a.video, "-o", words_path)
+            elif r.returncode == 0:
+                os.replace(asr, words_path)
+            else:
+                sys.exit("Transkription fehlgeschlagen und kein --transcript angegeben. Transkript mitgeben oder huggingface.co freigeben.")
         cut = [PY, HERE / "cut_speaker.py", a.video, "-o", out / "edited.mp4", "--words", words_path, "--panel-h", 1920 - panel_h]
         if a.face_x is not None: cut += ["--face-x", a.face_x, "--face-y", a.face_y]
         if a.auto_light: cut += ["--auto-light"]
@@ -81,6 +93,8 @@ def main():
     sb.setdefault("meta", {})["panel_height"] = panel_h
     if duration:
         sb["meta"]["duration"] = duration
+    if a.transcript and not a.script:
+        a.script = a.transcript
     if a.script and "script" not in sb:
         sb["script"] = pathlib.Path(a.script).read_text(encoding="utf-8")
     tmp_story = out / "story.in.json"

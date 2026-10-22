@@ -24,6 +24,17 @@ Regel: **Navy = Information, Rot = Aufmerksamkeit/Problem, Weiß/Elfenbein = Ruh
 - **Inter**: kleiner Fließtext (selten; Reel-Text soll ohnehin kurz sein).
 Keine weiteren Schriften, keine Systemschriften-Fallbacks im Endergebnis (Render prüft per `document.fonts.ready`).
 
+## Bildsprache-Vorgabe von Finanz-Medizin (verbindlich)
+- **Personen immer als echte Fotos** (realistische Menschen/Gesichter), nie als Comic-/Zeichentrickfigur – sonst wirkt der Kanal unseriös.
+  Ablauf je Person: eigene Fotobibliothek `assets/photos/` → fotorealistisches KI-Foto → lizenzfreie Fotosuche.
+  Dieselbe Person durchgängig: gleiche Bildbeschreibung (Alter, Geschlecht, Rolle), jung→alt per Überblendung (`image` mit `src2`).
+- **Zahlen, Diagramme, Zeitstrahlen, Vergleiche, Mythos-Karten dürfen generierte Grafik bleiben.**
+- Die gezeichnete Figur (`character`) ist nur noch **Notfall-Platzhalter**, wenn keine Fotoquelle erreichbar ist – das wird im Lauf als
+  WARNUNG gemeldet und muss dem Nutzer gesagt werden; ein solches Reel nicht als final ausgeben.
+- Rechte: Erkennbare echte Menschen in Werbung brauchen eine Model-Freigabe. CC-Fotos (Openverse/Wikimedia) regeln nur das Urheberrecht,
+  nicht das Persönlichkeitsrecht → für Personen bevorzugt **KI-generierte Fotos** oder Stockfotos mit Model Release (eigene Lizenz, in
+  `assets/photos/` ablegen, Nachweis in gleichnamiger `.txt`). Keine realen Prominenten/Kunden/Patienten.
+
 ## Logo
 `assets/img/mark-finanz-medizin.png` (Zeichen: Äskulapstab im blau-roten Ring mit Balken) als 70-px-Badge auf der Trennlinie;
 `logo-finanz-medizin.png` für Endkarte/CTA (`image`-Szene). Logo nicht verzerren, nicht umfärben.

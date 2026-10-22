@@ -237,30 +237,74 @@ def claude_engine(words, script, model, retries=1):
     raise RuntimeError("Claude-Storyboard nicht valide: " + "; ".join(errs))
 
 
-def attach_images(sb, mode, out_dir):
-    """Ersetzt reine Text-Titel (ohne eigene Grafik) durch echte Bilder (Suche oder Generierung)."""
-    if mode == "none":
-        return sb
+PHOTO_STYLE = ("photorealistic editorial photograph, natural soft light, shallow depth of field, modern German setting, "
+               "authentic, professional, no text, no logos, no watermark: ")
+ENV_EN = {"apartment": "in a bright modern apartment", "hospital": "in a modern hospital corridor", "praxis": "in a modern medical practice",
+          "retirement": "in a garden in front of a house, retired"}
+
+
+def person_query(p, gender, older=False):
+    """Bildbeschreibung für ein echtes Foto derselben Person (jung/alt) – konsistent über das ganze Reel."""
+    age = p.get("ageTo") if older else p.get("age", 40)
+    who = ("woman" if gender == "f" else "man")
+    role = "doctor in white coat with stethoscope" if (age or 40) < 62 else f"retired senior {who}, former doctor"
+    mood = ", looking thoughtful and slightly worried" if p.get("mood") == "worried" else ", friendly confident smile"
+    env = ENV_EN.get(p.get("envTo") if older else p.get("env"), "")
+    return f"{age}-year-old {who} {role} {env}{mood}, portrait, upper body"
+
+
+def get_image(query, mode, out_dir, photo=True):
     import image_search, image_gen
-    glossary = json.loads((HERE / "glossary_de_en.json").read_text(encoding="utf-8"))
-    for i, sc in enumerate(sb["scenes"]):
-        q = sc.pop("_query", None) or (sc.get("props", {}).get("query") and [sc["props"]["query"]])
-        if not q or i == 0:
-            continue
-        query = " ".join(glossary.get(w.lower(), w) for w in q[:3])
+    errors = []
+    order = ["library"] + (["generate", "search"] if mode == "generate" else ["search", "generate"] if mode == "search" else ["generate", "search"])
+    for src in order:
         try:
-            if mode == "search":
-                img = image_search.find(query, out_dir)
+            if src == "library":
+                hit = image_gen.from_library(query)
+            elif src == "generate":
+                hit = image_gen.generate((PHOTO_STYLE if photo else "") + query, out_dir)
             else:
-                img = image_gen.generate(f"flat vector illustration, navy blue and burgundy red accents, ivory background, no text: {query}", out_dir)
+                hit = image_search.find(" ".join(re.findall(r"[a-z]+", query.lower())[:5]), out_dir)
+            if hit:
+                return hit
         except Exception as e:
-            print(f"Bild für '{query}' nicht verfügbar: {e}")
-            continue
-        if img:
-            cap = sc["props"].get("line1", "") + (" " + sc["props"].get("accent", "") if sc["props"].get("accent") else "")
-            sc["type"] = "image"
-            sc["props"] = {"src": img["path"], "caption": cap.strip(), "zoom_from": 1.0, "zoom_to": 1.15, "credit": img.get("credit", "")}
-    for sc in sb["scenes"]:
+            errors.append(f"{src}: {str(e)[:90]}")
+    raise RuntimeError(" | ".join(errors))
+
+
+def attach_images(sb, mode, out_dir):
+    """Personen → echte Fotos (Bibliothek/KI-Foto/Fotosuche); Titelkarten ohne Bildidee → passendes Foto.
+    Diagramme/Zahlen bleiben generierte Grafik. Ohne Bildquelle bleibt die Illustration und wird als Platzhalter gemeldet."""
+    if mode == "none":
+        for sc in sb["scenes"]:
+            sc.pop("_query", None)
+        return sb
+    glossary = json.loads((HERE / "glossary_de_en.json").read_text(encoding="utf-8"))
+    gender = sb.get("figures", {}).get("doc", {}).get("gender", "m")
+    warn = sb.setdefault("meta", {}).setdefault("warnings", [])
+    for i, sc in enumerate(sb["scenes"]):
+        p = sc.get("props", {})
+        try:
+            if sc["type"] == "character":
+                young = get_image(person_query(p, gender), mode, out_dir)
+                newp = {"src": young["path"], "credit": young.get("credit", ""), "zoom_from": 1.0, "zoom_to": 1.12, "focus": "50% 25%"}
+                if p.get("ageTo"):
+                    old = get_image(person_query(p, gender, older=True), mode, out_dir)
+                    newp.update(src2=old["path"], cross_t=p.get("lapseStart", .3) + .4, cross_d=1.0)
+                    newp["credit"] = "; ".join(x for x in (young.get("credit"), old.get("credit")) if x)
+                for k in ("badge", "warn", "year", "yearTo"):
+                    if k in p:
+                        newp[k] = p[k]
+                sc["type"], sc["props"] = "image", newp
+            elif sc.get("_query") and i > 0:
+                q = " ".join(glossary.get(w.lower(), w) for w in sc["_query"][:3])
+                img = get_image(q, mode, out_dir)
+                cap = (p.get("line1", "") + " " + p.get("accent", "")).strip()
+                sc["type"], sc["props"] = "image", {"src": img["path"], "caption": cap, "zoom_from": 1.0, "zoom_to": 1.15, "credit": img.get("credit", "")}
+        except Exception as e:
+            if sc["type"] == "character":
+                warn.append(f"{sc['id']}: kein Foto verfügbar → Illustration als PLATZHALTER ({e})")
+            print(f"Bild für {sc['id']} nicht verfügbar: {e}")
         sc.pop("_query", None)
     return sb
 
@@ -291,7 +335,7 @@ def main():
     ap.add_argument("-o", "--out", default="story.json")
     ap.add_argument("--engine", default="auto", choices=["auto", "claude", "rules"])
     ap.add_argument("--model", default="claude-opus-5-5")
-    ap.add_argument("--images", default="none", choices=["none", "search", "generate"])
+    ap.add_argument("--images", default="auto", choices=["auto", "none", "search", "generate"])
     ap.add_argument("--gender", default="m")
     a = ap.parse_args()
     words = json.loads(pathlib.Path(a.words).read_text(encoding="utf-8"))
@@ -309,7 +353,9 @@ def main():
             print(f"Claude-API nicht nutzbar ({e}) → regelbasierter Regisseur")
     if sb is None:
         sb = rules_engine(words, script, a.gender)
-    sb = attach_images(sb, a.images, pathlib.Path(a.out).resolve().parent / "images")
+    sb = attach_images(sb, "generate" if a.images == "auto" else a.images, pathlib.Path(a.out).resolve().parent / "images")
+    for w_ in sb.get("meta", {}).get("warnings", []):
+        print("WARNUNG:", w_)
     sb = repair(sb, words)
     pathlib.Path(a.out).write_text(json.dumps(sb, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(sb['scenes'])} Szenen -> {a.out}")

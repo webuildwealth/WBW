@@ -81,6 +81,18 @@ if ok:
 ok, o = run(PY, HERE / "image_search.py", "doctor", "--out-dir", tmp / "img")
 t("Bildsuche (Netzwerk nötig – Fehler wird sauber gemeldet)", ok or "kein lizenzfreies Bild" in o, o)
 
+# 3c) Transkript ohne Spracherkennung + Foto-Bibliothek
+(tmp / "tr.txt").write_text("Eins zwei drei vier fünf.", encoding="utf-8")
+ok, o = run(PY, HERE / "align_transcript.py", "--transcript", tmp / "tr.txt", "--video", tmp / "raw.mp4", "-o", tmp / "al.json")
+t("Transkript-Ausrichtung ohne Modell", ok and len(json.load(open(tmp / "al.json"))) == 5, o)
+ok, o = run(PY, HERE / "align_transcript.py", "--transcript", tmp / "tr.txt", "--words", tmp / "w.json", "-o", tmp / "al2.json")
+t("Transkript-Abgleich mit Wortzeiten", ok and json.load(open(tmp / "al2.json"))[3]["s"] == 3.8, o)
+sys.path.insert(0, str(HERE)); import image_gen, os as _os
+lib = tmp / "lib"; lib.mkdir(exist_ok=True)
+from PIL import Image as _I; _I.new("RGB", (900, 700), "#89a").save(lib / "aerztin-frau-praxis.jpg")
+_os.environ["FM_IMAGE_DIR"] = str(lib)
+t("Foto-Bibliothek findet passendes Personenfoto", bool(image_gen.from_library("35-year-old woman doctor in a modern medical practice")))
+
 # 4) Sounddesign
 ok, o = run(PY, HERE / "sfx.py", tmp / "C_inflation.resolved.json", "-o", tmp / "sfx.wav", "--music-out", tmp / "m.wav")
 t("Sounddesign", ok and (tmp / "sfx.wav").exists(), o)

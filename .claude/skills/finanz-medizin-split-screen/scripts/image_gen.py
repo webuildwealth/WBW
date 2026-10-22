@@ -12,15 +12,35 @@ als props.src eintragen (siehe SKILL.md, Abschnitt Bilder). Nutzungsrechte: Open
 import base64, json, os, pathlib, re, urllib.request
 
 
+LIB = pathlib.Path(__file__).resolve().parent.parent / "assets" / "photos"
+
+
+def from_library(query):
+    """Eigene, lizenzierte Fotos (assets/photos/ oder FM_IMAGE_DIR). Dateiname = Stichwörter, z. B. aerztin-jung-praxis.jpg,
+    senior-frau-garten.jpg; optional gleichnamige .txt mit Bildnachweis. Bestes Stichwort-Match gewinnt (mind. 2 Treffer)."""
+    EN_DE = {"woman": "frau|aerztin|ärztin", "man": "mann|arzt", "doctor": "arzt|aerztin|ärztin|doctor", "senior": "senior|rentner|alt",
+             "retired": "rentner|ruhestand|senior", "hospital": "klinik|krankenhaus|hospital", "practice": "praxis|practice", "apartment": "wohnung|zuhause|home",
+             "garden": "garten|garden", "worried": "sorge|besorgt|worried", "smile": "laechelt|lächelt|smile|freundlich"}
+    dirs = [LIB] + ([pathlib.Path(os.environ["FM_IMAGE_DIR"])] if os.environ.get("FM_IMAGE_DIR") else [])
+    words = re.findall(r"[a-z]+", query.lower())
+    best, score = None, 1
+    for d in dirs:
+        for f in sorted(d.glob("*")) if d.exists() else []:
+            if f.suffix.lower() not in (".jpg", ".jpeg", ".png", ".webp"):
+                continue
+            name = f.stem.lower()
+            s = sum(1 for w in words if w in name or any(k in name for k in EN_DE.get(w, "#").split("|")))
+            if s > score:
+                best, score = f, s
+    if not best:
+        return None
+    cred = best.with_suffix(".txt")
+    return {"path": str(best), "credit": cred.read_text(encoding="utf-8").strip() if cred.exists() else ""}
+
+
 def generate(prompt, out_dir, size="1536x1024"):
     out = pathlib.Path(out_dir); out.mkdir(parents=True, exist_ok=True)
     fn = out / ("gen_" + re.sub(r"\W+", "_", prompt.lower())[-40:] + ".png")
-    d = os.environ.get("FM_IMAGE_DIR")
-    if d:
-        words = [w for w in re.findall(r"\w{4,}", prompt.lower())]
-        for f in sorted(pathlib.Path(d).glob("*")):
-            if any(w in f.stem.lower() for w in words[-3:]):
-                return {"path": str(f), "credit": "eigenes/generiertes Bild"}
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         raise RuntimeError("kein Bildgenerator konfiguriert (OPENAI_API_KEY oder FM_IMAGE_DIR)")
