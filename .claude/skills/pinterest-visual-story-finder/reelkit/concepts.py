@@ -19,17 +19,17 @@ CONCEPTS = {
     },
     "past": {
         "triggers": ["früher", "damals", "großeltern", "opa", "oma", "vergangen", "geschichte", "19", "historisch",
-                     "past", "ago", "history", "grandpa", "grandparents"],
+                     "=past", "ago", "history", "grandpa", "grandparents"],
         "motifs": [
             {"art": "old_photo", "q": "1950s american street photograph", "tags": ["vintage", "1950s", "history", "früher"]},
             {"art": "newspaper", "q": "vintage newspaper 1950s", "tags": ["newspaper", "zeitung", "vintage"]},
-            {"art": "clock", "q": "antique pocket watch dark still life", "tags": ["clock", "uhr", "time"]},
+            {"art": "clock", "q": "antique pocket watch dark still life", "tags": ["clock", "uhr", "=time"]},
             {"art": "horse", "q": "naive drawing horse crayon", "tags": ["horse", "pferd", "naive"]},
         ],
     },
     "inflation": {
         "triggers": ["inflation", "preis", "teuer", "kaufkraft", "entwert", "verteuer", "wertverlust", "price",
-                     "expensive", "purchasing", "cost"],
+                     "expensive", "purchasing", "=cost"],
         "motifs": [
             {"art": "price_tag", "q": "vintage price tag grocery store", "tags": ["price", "preis", "tag"]},
             {"art": "chart_up", "q": "inflation surreal collage", "tags": ["inflation", "chart", "prices"]},
@@ -39,7 +39,7 @@ CONCEPTS = {
     },
     "everyday": {
         "triggers": ["brot", "brötchen", "kaffee", "zeitung", "kino", "einkauf", "supermarkt", "milch", "benzin",
-                     "lebensmittel", "bread", "coffee", "grocer", "milk", "gas", "cinema", "ticket"],
+                     "lebensmittel", "bread", "coffee", "grocer", "milk", "=gas", "cinema", "ticket"],
         "motifs": [
             {"art": "bread", "q": "bread still life oil painting", "tags": ["bread", "brot", "still life"]},
             {"art": "coffee", "q": "vintage diner coffee cup photograph", "tags": ["coffee", "kaffee", "diner"]},
@@ -48,7 +48,7 @@ CONCEPTS = {
         ],
     },
     "wealth": {
-        "triggers": ["=reich", "=reiche", "=reichen", "=reicher", "reichtum", "vermögen", "millionär", "million", "luxus", "wohlstand", "elite", "wealth", "rich",
+        "triggers": ["=reich", "=reiche", "=reichen", "=reicher", "reichtum", "vermögen", "millionär", "million", "luxus", "wohlstand", "elite", "wealth", "=rich",
                      "luxury", "millionaire", "rolex"],
         "motifs": [
             {"art": "villa", "q": "old money mansion vintage photograph", "tags": ["villa", "mansion", "luxury"]},
@@ -77,7 +77,7 @@ CONCEPTS = {
         ],
     },
     "growth": {
-        "triggers": ["zinseszins", "wachs", "vermehr", "verdoppel", "exponent", "compound", "grow", "double"],
+        "triggers": ["zinseszins", "wachs", "vermehr", "verdoppel", "exponent", "compound", "=grow", "=double"],
         "motifs": [
             {"art": "tree", "q": "tree growing from coins surreal", "tags": ["tree", "growth"]},
             {"art": "chart_up", "q": "compound interest vintage illustration", "tags": ["chart", "growth"]},
@@ -87,7 +87,7 @@ CONCEPTS = {
     },
     "realestate": {
         "triggers": ["immobilie", "wohnung", "haus", "häuser", "miete", "eigenheim", "grundstück", "house", "apartment",
-                     "rent", "property", "real estate"],
+                     "=rent", "property", "real estate"],
         "motifs": [
             {"art": "house", "q": "vintage suburban house 1950s photograph", "tags": ["house", "haus", "home"]},
             {"art": "villa", "q": "old villa overgrown cinematic", "tags": ["villa", "mansion"]},
@@ -105,7 +105,7 @@ CONCEPTS = {
         ],
     },
     "debt": {
-        "triggers": ["schuld", "kredit", "darlehen", "überzieh", "=rate", "=raten", "ratenkredit", "debt", "loan", "credit", "owe"],
+        "triggers": ["schuld", "kredit", "darlehen", "überzieh", "=rate", "=raten", "ratenkredit", "debt", "loan", "credit", "=owe"],
         "motifs": [
             {"art": "chains", "q": "chains dark surreal photography", "tags": ["chains", "ketten", "debt"]},
             {"art": "wave", "q": "great wave storm painting", "tags": ["wave", "storm", "sea"]},
@@ -114,10 +114,10 @@ CONCEPTS = {
         ],
     },
     "time": {
-        "triggers": ["zeit", "jahr", "jahrzehnt", "rente", "ruhestand", "zukunft", "=uhr", "time", "year",
+        "triggers": ["zeit", "jahr", "jahrzehnt", "rente", "ruhestand", "zukunft", "=uhr", "=time", "=year",
                      "decade", "retire", "future"],
         "motifs": [
-            {"art": "hourglass", "q": "hourglass vanitas painting", "tags": ["hourglass", "sanduhr", "time"]},
+            {"art": "hourglass", "q": "hourglass vanitas painting", "tags": ["hourglass", "sanduhr", "=time"]},
             {"art": "clock", "q": "melting clock surreal", "tags": ["clock", "uhr"]},
             {"art": "sun_landscape", "q": "lonely road horizon film photography", "tags": ["horizon", "road"]},
             {"art": "old_photo", "q": "old couple vintage photograph", "tags": ["vintage", "old"]},
@@ -125,16 +125,16 @@ CONCEPTS = {
     },
     "work": {
         "triggers": ["arbeit", "job", "gehalt", "lohn", "arzt", "ärzt", "praxis", "beruf", "chef", "einkommen",
-                     "verdien", "angestellt", "work", "salary", "doctor", "income", "earn"],
+                     "verdien", "angestellt", "=work", "salary", "doctor", "income", "=earn"],
         "motifs": [
             {"art": "ladder", "q": "corporate ladder surreal", "tags": ["ladder", "career"]},
-            {"art": "clock", "q": "factory clock vintage photograph", "tags": ["clock", "work"]},
+            {"art": "clock", "q": "factory clock vintage photograph", "tags": ["clock", "=work"]},
             {"art": "chess", "q": "pawn chess piece dark", "tags": ["pawn", "chess"]},
-            {"art": "old_photo", "q": "1950s office workers photograph", "tags": ["office", "work"]},
+            {"art": "old_photo", "q": "1950s office workers photograph", "tags": ["office", "=work"]},
         ],
     },
     "spending": {
-        "triggers": ["ausgeb", "konsum", "kauf", "auto", "urlaub", "shopping", "spend", "buy", "car", "vacation"],
+        "triggers": ["ausgeb", "konsum", "kauf", "auto", "urlaub", "shopping", "spend", "=buy", "=car", "vacation"],
         "motifs": [
             {"art": "cart", "q": "shopping cart surreal", "tags": ["cart", "shopping"]},
             {"art": "flame", "q": "burning money dark", "tags": ["burning", "money"]},
@@ -144,7 +144,7 @@ CONCEPTS = {
     },
     "risk": {
         "triggers": ["angst", "risiko", "crash", "krise", "verlust", "verlier", "pleite", "gefahr", "fear", "risk",
-                     "crisis", "lose", "loss"],
+                     "crisis", "=lose", "loss"],
         "motifs": [
             {"art": "wave", "q": "storm at sea painting dark", "tags": ["storm", "wave", "sea"]},
             {"art": "chart_down", "q": "1929 stock market crash photograph", "tags": ["crash", "chart"]},
@@ -153,7 +153,7 @@ CONCEPTS = {
         ],
     },
     "freedom": {
-        "triggers": ["frei", "freiheit", "unabhängig", "ziel", "traum", "freedom", "free", "independent",
+        "triggers": ["frei", "freiheit", "unabhängig", "ziel", "traum", "freedom", "=free", "independent",
                      "dream", "goal"],
         "motifs": [
             {"art": "sun_landscape", "q": "open field film photography", "tags": ["landscape", "field", "freedom"]},
@@ -163,7 +163,7 @@ CONCEPTS = {
         ],
     },
     "tax": {
-        "triggers": ["steuer", "finanzamt", "abgabe", "staat", "tax", "government"],
+        "triggers": ["steuer", "finanzamt", "abgabe", "staat", "hälfte", "netto", "brutto", "=tax", "government"],
         "motifs": [
             {"art": "bank", "q": "government building columns vintage", "tags": ["building", "columns"]},
             {"art": "scale", "q": "scales of justice painting", "tags": ["scale", "justice"]},
@@ -171,9 +171,29 @@ CONCEPTS = {
             {"art": "coins", "q": "coins falling dark", "tags": ["coins"]},
         ],
     },
+    "myth": {
+        "triggers": ["mythos", "mythen", "legende", "wahrheit", "=wahr", "lüge", "irrtum", "klischee", "vorurteil",
+                     "myth", "truth", "=lie"],
+        "motifs": [
+            {"art": "scale", "q": "ancient greek statue dark aesthetic", "tags": ["statue", "myth", "greek"]},
+            {"art": "chess", "q": "theatre masks vintage photograph", "tags": ["mask", "theatre", "myth"]},
+            {"art": "key", "q": "magnifying glass vintage aesthetic", "tags": ["magnifying", "truth"]},
+            {"art": "newspaper", "q": "surreal question mark art", "tags": ["question", "myth"]},
+        ],
+    },
+    "sales": {
+        "triggers": ["vertrieb", "verkäufer", "anruf", "angerufen", "telefon", "berater", "makler", "provision",
+                     "kaltakquise", "sales", "salesman", "=call", "phone"],
+        "motifs": [
+            {"art": "telephone", "q": "vintage rotary phone dark aesthetic", "tags": ["phone", "telefon"]},
+            {"art": "old_photo", "q": "1950s salesman photograph", "tags": ["salesman", "vertrieb"]},
+            {"art": "chess", "q": "wolf in suit surreal art", "tags": ["wolf", "suit"]},
+            {"art": "telephone", "q": "phone off the hook cinematic", "tags": ["phone", "=call"]},
+        ],
+    },
     "knowledge": {
-        "triggers": ["wissen", "lern", "versteh", "system", "geheim", "wahrheit", "know", "learn", "understand",
-                     "secret", "truth"],
+        "triggers": ["wissen", "lern", "versteh", "system", "geheim", "beigebracht", "unterricht", "studium",
+                     "schule", "=know", "learn", "understand", "secret"],
         "motifs": [
             {"art": "key", "q": "antique key dark aesthetic", "tags": ["key"]},
             {"art": "chess", "q": "chess king cinematic", "tags": ["chess"]},

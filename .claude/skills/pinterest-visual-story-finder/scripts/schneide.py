@@ -6,7 +6,8 @@
 
 Basisordner: $REELKIT_HOME oder ~/Videos/FinanzMedizin
   original/   Rohvideos vom iPhone (bleiben unverändert)
-  skripte/    Skripte als .txt/.md – „Skript 3“ findet z. B. 3.txt, Skript 3.txt, 03_inflation.md
+  skripte/    Skripte als .txt/.md/.docx – „Skript 3“ findet 3.txt, 03_inflation.md oder den Abschnitt
+              „Skript 3 von 30 …“ in einem Sammeldokument; nur Text in „…“ wird gesprochen
   bilder/     optionale eigene Bilder (+ assets.json)
   musik/      optionale Musik
   fertig/     fertige Reels: IMG_1234.mp4 (+ IMG_1234_report.md)
@@ -23,7 +24,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 BASE = os.path.expanduser(os.environ.get("REELKIT_HOME", "~/Videos/FinanzMedizin"))
 VIDEO_EXT = (".mov", ".mp4", ".m4v")
-SCRIPT_EXT = (".txt", ".md")
+SCRIPT_EXT = (".txt", ".md", ".docx")
 
 
 def find_video(arg):
@@ -40,35 +41,82 @@ def find_video(arg):
     sys.exit(f"Video '{arg}' nicht gefunden. In {BASE}/original liegen: {', '.join(have) or '(nichts)'}")
 
 
+def read_text(path):
+    """Text aus .txt/.md/.docx (Word) lesen. Pages bitte als Word oder Text exportieren."""
+    if path.lower().endswith(".docx"):
+        import zipfile
+        xml = zipfile.ZipFile(path).read("word/document.xml").decode("utf-8")
+        paras = []
+        for p in re.findall(r"<w:p[ >].*?</w:p>", xml, flags=re.S):
+            t = "".join(re.findall(r"<w:t(?: [^>]*)?>([^<]*)</w:t>", p))
+            paras.append(t.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&quot;", '"'))
+        return "\n".join(paras)
+    return open(path, encoding="utf-8-sig").read()
+
+
+HEAD = re.compile(r"^\s*Skript\s+(\d+)\b(?:\s+von\s+\d+)?", re.I | re.M)
+
+
 def find_script(arg):
+    """Liefert (Beschreibung, Text). 'Skript 11' findet eine Datei 11.txt/11_thema.docx ODER den Abschnitt
+    'Skript 11 von 30 …' in einem Sammeldokument mit allen Skripten."""
     if not arg:
         return None
     if os.path.isfile(os.path.expanduser(arg)):
-        return os.path.expanduser(arg)
+        return arg, read_text(os.path.expanduser(arg))
     files = [f for f in glob.glob(os.path.join(BASE, "skripte", "**", "*"), recursive=True)
-             if f.lower().endswith(SCRIPT_EXT)]
+             if f.lower().endswith(SCRIPT_EXT) and not os.path.basename(f).startswith(("~$", "LIESMICH"))]
     if re.fullmatch(r"\d+", arg.strip()):
         n = int(arg)
+        for f in files:  # 1) Abschnitt in einem Sammeldokument
+            txt = read_text(f)
+            heads = list(HEAD.finditer(txt))
+            if len(heads) < 2:
+                continue
+            for k, h in enumerate(heads):
+                if int(h.group(1)) == n:
+                    end = next((x.start() for x in heads[k + 1:] if int(x.group(1)) != n), len(txt))
+                    return f"{os.path.basename(f)} › Skript {n}", txt[h.start():end]
         hits = [f for f in files if [int(x) for x in re.findall(r"\d+", os.path.basename(f))[:1]] == [n]]
     else:
         hits = [f for f in files if arg.lower() in os.path.basename(f).lower()]
     if len(hits) == 1:
-        return hits[0]
+        return hits[0], read_text(hits[0])
     names = ", ".join(sorted(os.path.basename(f) for f in (hits or files))) or "(keine)"
-    sys.exit(f"Skript '{arg}' {'mehrdeutig' if hits else 'nicht gefunden'}. Skripte: {names}")
+    sys.exit(f"Skript '{arg}' {'mehrdeutig' if hits else 'nicht gefunden'}. Skripte: {names}"
+             + ("" if files else " – .pages-Dateien bitte als Word (.docx) oder Text exportieren."))
 
 
-def clean_script(path, dest):
-    """Regieanweisungen/Überschriften entfernen: Zeilen mit #, [..], (..) am Zeilenanfang, 'Hook:'-Labels."""
-    out = []
-    for line in open(path, encoding="utf-8-sig").read().splitlines():
-        s = line.strip()
-        if not s or s.startswith("#") or re.match(r"^[\[(].*[\])]$", s):
+SKIP_LABEL = re.compile(r"^\s*(cover|titel|cover-titel|einblendung|caption|visuelle|emotion|hashtags?|#)", re.I)
+QUOTE = re.compile(r"[„“\"«»]([^„“”\"«»]+)[“”\"«»]")
+
+
+def clean_script(text, dest):
+    """Nur den gesprochenen Text behalten.
+    Steht Gesprochenes in Anführungszeichen („…“), werden nur diese Passagen genommen (Format mit HOOK/BODY/CTA,
+    Einblendungen und Caption fallen weg). Sonst: Überschriften, #-Zeilen, [Regie], (Pause) und Labels entfernen."""
+    lines = [l for l in text.splitlines() if l.strip()]
+    quoted = []
+    for l in lines:
+        if SKIP_LABEL.match(l):
             continue
-        s = re.sub(r"^(hook|intro|hauptteil|cta|outro|schluss|szene \d+)\s*[:\-–]\s*", "", s, flags=re.I)
-        s = re.sub(r"\[[^\]]*\]|\([^)]*regie[^)]*\)", "", s).strip()
-        if s:
-            out.append(s)
+        quoted += [q.strip() for q in QUOTE.findall(l)]
+    if quoted:
+        out = quoted
+    else:
+        out = []
+        for l in lines:
+            s = l.strip()
+            if s.startswith("#") or re.match(r"^[\[(].*[\])]$", s) or HEAD.match(s) or SKIP_LABEL.match(s):
+                continue
+            if re.fullmatch(r"[A-ZÄÖÜ\- ]{3,}", s):  # Abschnittsüberschrift wie HOOK, BODY
+                continue
+            s = re.sub(r"^(hook|intro|body|hauptteil|payoff|cta|outro|schluss|gesprochen|szene \d+)\s*[:\-–]\s*",
+                       "", s, flags=re.I)
+            s = re.sub(r"\[[^\]]*\]|\((?:pause|regie)[^)]*\)", "", s, flags=re.I).strip()
+            if s:
+                out.append(s)
+    out = [re.sub(r"\s*\((?:pause)[^)]*\)\s*", " ", o, flags=re.I).strip() for o in out]
     with open(dest, "w", encoding="utf-8") as fh:
         fh.write(" ".join(out))
     return dest
@@ -96,8 +144,9 @@ def main():
     cmd = [sys.executable, os.path.join(HERE, "make_reel.py"), video, "-o", work, "--lang", "de"]
     script = find_script(a.skript)
     if script:
-        cmd += ["--script", clean_script(script, os.path.join(work, "skript_bereinigt.txt"))]
-        print(f"Skript: {script}")
+        dest = clean_script(script[1], os.path.join(work, "skript_bereinigt.txt"))
+        cmd += ["--script", dest]
+        print(f"Skript: {script[0]}\nGesprochen: {open(dest, encoding='utf-8').read()}")
     if a.cta:
         cmd += ["--cta", a.cta, "--cta-text", a.cta_text]
     if not a.ohne_pinterest:

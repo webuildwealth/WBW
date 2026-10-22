@@ -515,6 +515,25 @@ def m_cart(pen, cx, cy, s, P, rng):
         pen.ellipse(cx + x * s, cy + s * .55, s * .08, s * .08, fill=c, outline=c, width=2)
 
 
+def m_telephone(pen, cx, cy, s, P, rng):
+    body, ln = P["accent"] if pen.wob else P["second"], P["line"] + (255,)
+    pen.poly([(cx - s * .55, cy + s * .45), (cx + s * .55, cy + s * .45), (cx + s * .38, cy - s * .1),
+              (cx - s * .38, cy - s * .1)], fill=body + (255,), outline=ln, width=5)
+    pen.ellipse(cx, cy + s * .18, s * .26, s * .22, fill=P["light"] + (255,), outline=ln, width=4)
+    for k in range(10):
+        a = -math.pi * 0.8 + k * math.pi * 1.6 / 9
+        pen.ellipse(cx + math.cos(a) * s * .17, cy + s * .18 + math.sin(a) * s * .14, s * .035, s * .03,
+                    fill=P["dark"] + (255,))
+    pen.ellipse(cx, cy + s * .18, s * .07, s * .06, fill=body + (255,), outline=ln, width=3)
+    hand = [(cx - s * .62, cy - s * .2), (cx - s * .5, cy - s * .38), (cx + s * .5, cy - s * .38),
+            (cx + s * .62, cy - s * .2), (cx + s * .42, cy - s * .12), (cx + s * .32, cy - s * .24),
+            (cx - s * .32, cy - s * .24), (cx - s * .42, cy - s * .12)]
+    pen.poly(hand, fill=body + (255,), outline=ln, width=5)
+    pts = [(cx + s * .55, cy + s * .35)] + [(cx + s * (.7 + .08 * math.sin(k)), cy + s * (.35 + k * .08))
+                                          for k in range(1, 8)]
+    pen.line(pts, ln, 5)
+
+
 MOTIFS = {k[2:]: v for k, v in globals().items() if k.startswith("m_") and k not in ("m_chart",)}
 
 
