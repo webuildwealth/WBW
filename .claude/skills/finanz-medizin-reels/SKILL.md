@@ -7,8 +7,13 @@ description: Reels für Finanz-Medizin (Finanzberatung für Heilberufe) schneide
 
 Werkzeug: `python3 <skill>/scripts/reel.py` (im Folgenden `reel`). ffmpeg schneidet, HyperFrames
 (HTML + GSAP, Version fest auf 0.8.184) rendert die Einblendungen, Parakeet erkennt die Sprache mit Wortzeiten.
-Arbeitsordner: `$FM_ROOT`, sonst `~/Videos/FinanzMedizin` mit `original/` (nur lesen), `fertig/`, `assets/`,
-`arbeit/<nr>/` (Zwischendateien).
+Arbeitsordner: `$FM_ROOT`, sonst `~/Videos/FinanzMedizin` mit `original/` (Rohvideos, nur lesen), `skripte/`
+(Skript je Nummer: `3.txt`, `03.md`, `Skript 3.txt`), `fertig/`, `assets/` (Logo, Bilder), `arbeit/<nr>/` (Zwischendateien).
+
+**Typischer Auftrag:** „Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“. Das heißt: Nummer 3,
+Skript aus `skripte/`, Stichwort VORSORGE. Takes, Hook, Format, Zahlen und Grafiken entscheidest du selbst aus Skript
+und Material; der Nutzer bearbeitet keine JSON-Dateien. Nur nachfragen, wenn das Skript fehlt oder ein Take-Entscheid
+den Sinn ändern könnte. iPhone-Dateien (.MOV, HEVC, HDR, 4K/60 fps) gehen direkt; HDR wird auf SDR umgerechnet.
 
 ## Ablauf
 
@@ -70,8 +75,9 @@ Augenhöhe anpassen, wenn das Gesicht woanders sitzt).
 
 ## Einrichtung
 
-- Mac: `brew install ffmpeg node` (Node 22+). Dann `npx -y hyperframes@0.8.184 browser ensure` und
-  `npx -y hyperframes@0.8.184 models install parakeet`.
+- Mac, einmalig: `brew install ffmpeg node` (Node 22+), `python3 -m pip install --user numpy`, dann
+  `npx -y hyperframes@0.8.184 browser ensure` und `npx -y hyperframes@0.8.184 models install parakeet` (~700 MB).
+  Danach `reel check`: alle Zeilen OK.
 - Ist Hugging Face gesperrt (Cloud-Umgebung), das Modell von GitHub holen und an die erwartete Stelle legen;
   die Prüfsummen sind identisch:
   ```bash

@@ -21,7 +21,10 @@ Zeiten in spec.json sind Sekunden auf der Zeitleiste des geschnittenen Videos.
 import argparse, difflib, html, json, os, re, shutil, subprocess, sys, wave
 from pathlib import Path
 
-import numpy as np
+try:
+    import numpy as np
+except ImportError:
+    sys.exit("Python-Paket numpy fehlt. Einmalig im Terminal: python3 -m pip install --user numpy")
 
 SKILL = Path(__file__).resolve().parent.parent
 ROOT = Path(os.environ.get("FM_ROOT", "~/Videos/FinanzMedizin")).expanduser()
@@ -130,10 +133,13 @@ def cmd_check(a):
 # --------------------------------------------------------------------------- prep
 
 def cmd_prep(a):
-    raw = Path(a.raw).expanduser().resolve()
+    raw = Path(a.raw).expanduser()
+    if not raw.exists() and (ROOT / raw).exists():   # "original/IMG_1234.MOV" relativ zum Arbeitsordner
+        raw = ROOT / raw
+    raw = raw.resolve()
     if not raw.exists():
         sys.exit(f"Datei nicht gefunden: {raw}")
-    for d in ("original", "fertig", "assets", "arbeit"):
+    for d in ("original", "fertig", "assets", "arbeit", "skripte"):
         (ROOT / d).mkdir(parents=True, exist_ok=True)
     src = ROOT / "original" / raw.name
     if not src.exists():
@@ -146,7 +152,9 @@ def cmd_prep(a):
 
     # 9:16-Ausschnitt; HDR-Aufnahmen (iPhone: HLG/PQ) vorher auf SDR umrechnen
     vf = []
-    if info["transfer"] in ("arib-std-b67", "smpte2084"):
+    if info["transfer"] == "arib-std-b67":           # iPhone-HDR (HLG): direkt umrechnen, hält Farben am nächsten am Original
+        vf.append("zscale=tin=arib-std-b67:min=bt2020nc:pin=bt2020:rin=tv:t=bt709:m=bt709:p=bt709:r=tv:npl=203")
+    elif info["transfer"] == "smpte2084":            # PQ-HDR: Tonemapping nötig
         vf.append("zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,"
                   "zscale=t=bt709:m=bt709:r=tv")
     if info["w"] / info["h"] > 9 / 16 + 0.01:
@@ -481,14 +489,29 @@ def number_value(words, i):
     return value, {"to": x, "dec": dec, "suffix": f" {unit}" if unit else ""}
 
 
+def find_script(nr):
+    """Skript zur Nummer im Arbeitsordner: skripte/3.txt, skripte/03.md, skripte/Skript 3.txt …"""
+    d = ROOT / "skripte"
+    n = str(nr).lstrip("0") or "0"
+    for f in sorted(d.glob("*")) if d.exists() else []:
+        m = re.search(r"\d+", f.stem)
+        if f.suffix.lower() in (".txt", ".md") and m and m.group().lstrip("0") == n:
+            return f
+    return None
+
+
 def cmd_spec(a):
     wd = work(a.nr)
     if a.format not in FORMATS:
         sys.exit(f"Format unbekannt. Möglich: {', '.join(FORMATS)}")
     words, cuts = load(wd / "words_cut.json"), load(wd / "cuts.json")
     dur = load(wd / "edl.json")["dur"]
-    if a.script:
-        words = align_to_script(words, Path(a.script).expanduser().read_text(encoding="utf-8"))
+    script = Path(a.script).expanduser() if a.script else find_script(a.nr)
+    if script:
+        print(f"Skript: {script}")
+        words = align_to_script(words, script.read_text(encoding="utf-8"))
+    else:
+        print(f"Kein Skript gefunden (skripte/{a.nr}.txt): Untertitel nur aus der Spracherkennung.")
     sent = sentences(words)
     first = " ".join(w["w"] for w in sent[0]) if sent else ""
     hook_end = round(min(3.0, max(2.0, sent[0][-1]["e"] if sent else 2.6)), 2)
