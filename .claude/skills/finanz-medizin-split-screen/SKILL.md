@@ -34,6 +34,20 @@ Du arbeitest als **Regisseur + Cutter + Motion Designer**. Die Scripts in `scrip
 | **B** Skript + Rohvideo | beides | wie A; Skript dient der Textkorrektur/Zahlenprüfung, Sync folgt der echten Sprache |
 | **C** Skript → Storyboard | nur Skript | `story.json`, Stills, Vorschau-Reel mit Sprecher-Platzhalter (Wortzeiten geschätzt) |
 
+## Mac-Workflow (Claude-Desktop-App, Standard für Finanz-Medizin)
+Ordner `~/Videos/FinanzMedizin/` mit `original/` (iPhone-Originale per AirDrop mit „Alle Fotodaten“), `skripte/` (Transkripte als .txt,
+z. B. `3 Altersvorsorge.txt`), `fotos/` (eigene lizenzierte Personenfotos), `arbeit/`, `fertig/`. Einmalig: `bash scripts/mac_setup.sh`.
+
+Auftrag des Nutzers, z. B. **„Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“** → ausführen:
+```bash
+~/Videos/FinanzMedizin/.venv/bin/python .claude/skills/finanz-medizin-split-screen/scripts/reel.py original/IMG_1234.MOV --skript 3 --cta Vorsorge
+```
+Dann als Regie-Stufe 2 `arbeit/IMG_1234/qc/contact.png` + `story.auto.json` prüfen, ggf. verbessern und mit
+`build_reel.py --video … --transcript … --storyboard arbeit/IMG_1234/story.json --out-dir arbeit/IMG_1234 --cta …` neu rendern, Ergebnis nach
+`fertig/IMG_1234_reel.mp4` kopieren. iPhone-HDR (HLG/Dolby Vision, HEVC, 10 Bit, 60 fps, 4K) wird automatisch nach SDR/H.264/30 fps umgewandelt.
+Ergebnis: `fertig/IMG_1234_reel.mp4`, `_qc.md`, ggf. `_bildnachweise.txt` (für die Caption). Dem Nutzer berichten, welche Szenen
+Platzhalter enthalten (WARNUNG-Zeilen) – Reel mit Zeichenfiguren nicht als final ausgeben.
+
 ## Ablauf (Modus A/B) – ein Befehl, kein JSON
 ```bash
 S=.claude/skills/finanz-medizin-split-screen

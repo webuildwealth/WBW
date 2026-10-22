@@ -329,6 +329,31 @@ def repair(sb, words):
     return sb
 
 
+def add_cta(sb, words, cta):
+    """CTA-Karte: „Kommentiere VORSORGE“. Beginnt dort, wo das Wort zuletzt gesagt wird (sonst beim letzten Satz)."""
+    if not cta:
+        return sb
+    cw = norm_cta = re.sub(r"[^\wäöüß]", "", cta.lower())
+    idx = max((i for i, w in enumerate(words) if re.sub(r"[^\wäöüß]", "", w["w"].lower()) == cw), default=None)
+    if idx is None:  # Satzanfang des letzten Satzes
+        idx = max((i + 1 for i, w in enumerate(words[:-1]) if re.search(r"[.!?]$", w["w"])), default=max(0, len(words) - 6))
+        print(f"Hinweis: CTA-Wort '{cta}' wird nicht gesprochen – Karte ab dem letzten Satz")
+    else:  # bis zum Satzanfang zurück
+        while idx > 0 and not re.search(r"[.!?]$", words[idx - 1]["w"]) and words[idx]["s"] - words[idx - 1]["s"] < 4:
+            idx -= 1
+    at = " ".join(w["w"] for w in words[idx:idx + 2])
+    sc = {"id": f"s{len(sb['scenes']) + 1}", "at": at, "type": "title", "transition": "zoom",
+          "props": {"kicker": "Schreib in die Kommentare", "line1": "", "accent": "„" + cta + "“", "sub": "und ich schicke dir die Details", "size": 130},
+          "keywords": [cta], "say": "CTA"}
+    # Szenen, die nach dem CTA-Anker beginnen, entfallen
+    t_cta = words[idx]["s"]
+    tmp = SBM.resolve(json.loads(json.dumps(sb)), words)
+    keep = [s for s, r in zip(sb["scenes"], tmp["scenes"]) if r["start"] < t_cta - 0.5]
+    sb["scenes"] = keep + [sc]
+    sb.setdefault("meta", {}).setdefault("keywords", []).append(cta)
+    return sb
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("words")
@@ -337,6 +362,7 @@ def main():
     ap.add_argument("--model", default="claude-opus-5-5")
     ap.add_argument("--images", default="auto", choices=["auto", "none", "search", "generate"])
     ap.add_argument("--gender", default="m")
+    ap.add_argument("--cta", help="CTA-Wort für die Kommentar-Aufforderung am Ende, z. B. Vorsorge")
     a = ap.parse_args()
     words = json.loads(pathlib.Path(a.words).read_text(encoding="utf-8"))
     if isinstance(words, dict):
@@ -356,6 +382,7 @@ def main():
     sb = attach_images(sb, "generate" if a.images == "auto" else a.images, pathlib.Path(a.out).resolve().parent / "images")
     for w_ in sb.get("meta", {}).get("warnings", []):
         print("WARNUNG:", w_)
+    sb = add_cta(sb, words, a.cta)
     sb = repair(sb, words)
     pathlib.Path(a.out).write_text(json.dumps(sb, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(sb['scenes'])} Szenen -> {a.out}")

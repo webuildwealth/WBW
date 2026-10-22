@@ -36,6 +36,27 @@ def probe(path):
     return w, h, dur
 
 
+def color_info(path):
+    r = run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=color_transfer,color_primaries,pix_fmt,codec_name,r_frame_rate", "-of", "json", path])
+    try:
+        return json.loads(r.stdout)["streams"][0]
+    except Exception:
+        return {}
+
+
+def hdr_filter(ci):
+    """iPhone-HDR (HLG/Dolby Vision 8.4 bzw. PQ) -> SDR BT.709, sonst wirkt das Video auf Instagram flau/überstrahlt."""
+    if ci.get("color_transfer") not in ("arib-std-b67", "smpte2084"):
+        return ""
+    flt = run(["ffmpeg", "-hide_banner", "-filters"]).stdout
+    if " zscale " not in flt or " tonemap " not in flt:
+        print("WARNUNG: HDR-Video, aber ffmpeg ohne zscale/tonemap – Farben können flau wirken (brew install ffmpeg)")
+        return ""
+    tin = "arib-std-b67" if ci["color_transfer"] == "arib-std-b67" else "smpte2084"
+    return (f"zscale=tin={tin}:min=bt2020nc:pin=bt2020:t=linear:npl=203,format=gbrpf32le,zscale=p=bt709,"
+            "tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p,")
+
+
 def silence_segments(path, dur, noise_db, min_sil):
     r = run(["ffmpeg", "-hide_banner", "-i", path, "-af", f"silencedetect=n={noise_db}dB:d={min_sil}", "-f", "null", "-"])
     starts = [float(x) for x in re.findall(r"silence_start: ([\d.]+)", r.stderr)]
@@ -143,6 +164,10 @@ def build(args):
     fx, fy = face if face else (0.5, 0.35)
     print(f"Quelle {w}x{h} {dur:.1f}s | Gesicht {'erkannt' if face and args.face_x is None else 'manuell' if face else 'NICHT erkannt – Mitte'} bei x={fx:.2f}, y={fy:.2f}")
 
+    ci = color_info(raw)
+    hdr = hdr_filter(ci)
+    if hdr:
+        print(f"HDR erkannt ({ci.get('color_transfer')}, {ci.get('pix_fmt')}) → Tonemapping nach SDR BT.709")
     base = max(ow / w, oh / h)  # cover
     zoom_cycle = [1.0, 1.12, 1.0, 1.2, 1.06, 1.16] if not args.no_zoom else [1.0]
     fc, labels, t_out, tmap = [], [], 0.0, []
@@ -158,7 +183,7 @@ def build(args):
         cx = max(0, min(sw - ow, int(fx * sw - ow / 2)))
         cy = max(0, min(sh - oh, int(fy * sh - oh * args.headroom)))
         d = e - s
-        fc.append(f"[0:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS,fps={args.fps},scale={sw}:{sh}:flags=lanczos,crop={ow}:{oh}:{cx}:{cy},setsar=1,{eq}[v{i}]")
+        fc.append(f"[0:v]trim={s:.3f}:{e:.3f},setpts=PTS-STARTPTS,{hdr}fps={args.fps},scale={sw}:{sh}:flags=lanczos,crop={ow}:{oh}:{cx}:{cy},setsar=1,{eq}[v{i}]")
         af = f"[0:a]atrim={s:.3f}:{e:.3f},asetpts=PTS-STARTPTS,afade=t=in:d=0.012,afade=t=out:st={max(0, d - 0.012):.3f}:d=0.012[a{i}]"
         fc.append(af)
         labels.append(f"[v{i}][a{i}]")

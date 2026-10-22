@@ -43,6 +43,7 @@ def main():
     ap.add_argument("--auto-light", action="store_true")
     ap.add_argument("--engine", default="auto", choices=["auto", "claude", "rules"], help="Storyboard-Regie, wenn kein --storyboard")
     ap.add_argument("--images", default="auto", choices=["auto", "none", "search", "generate"], help="echte Fotos: auto = Bibliothek → KI-Foto → Fotosuche")
+    ap.add_argument("--cta", help="CTA-Wort (Kommentar-Aufforderung am Ende)")
     ap.add_argument("--review", action="store_true", help="nach Storyboard + Vorschau-Stills anhalten")
     a = ap.parse_args()
     out = pathlib.Path(a.out_dir); out.mkdir(parents=True, exist_ok=True)
@@ -85,7 +86,7 @@ def main():
         if not words_path:
             sys.exit("--storyboard fehlt (Modus C) bzw. --video (Modus A/B).")
         auto = out / "story.auto.json"
-        run(PY, HERE / "auto_storyboard.py", words_path, "-o", auto, "--engine", a.engine, "--images", a.images)
+        run(PY, HERE / "auto_storyboard.py", words_path, "-o", auto, "--engine", a.engine, "--images", a.images, *(["--cta", a.cta] if a.cta else []))
         a.storyboard = str(auto)
         print(f"Automatisches Storyboard -> {auto}")
     sb = json.load(open(a.storyboard, encoding="utf-8"))

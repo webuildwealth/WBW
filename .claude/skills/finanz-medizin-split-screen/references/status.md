@@ -26,6 +26,11 @@ Stand der Tests: Sandbox-Umgebung (Linux, ffmpeg 6, Chromium via Playwright, Pyt
 | Personen → Fotos (Bibliothek/KI/Suche), jung→alt-Überblendung, Badge auf Foto | Bibliotheks-Pfad mit Platzhalterbildern geprüft (keine echten Personenfotos verfügbar) |
 | Transkript des Nutzers: Abgleich mit Whisper-Wörtern / Verteilung auf Sprechpausen ohne Modell | Pausen-Verteilung mit synthetischem Clip: Abweichung Ø 0,62 s, max 1,39 s; Füllwörter werden so NICHT erkannt |
 
+| Ordner-Workflow `reel.py original/IMG.MOV --skript 3 --cta Vorsorge` → `fertig/` | nachgebaute Ordnerstruktur in der Cloud-Sandbox (**nicht auf dem Mac getestet**) |
+| iPhone-HDR (HEVC 10 Bit HLG, 60 fps) → SDR H.264 30 fps | synthetischer HLG-Clip |
+| CTA-Karte ab dem Satz mit dem CTA-Wort | Testlauf |
+| `mac_setup.sh` (Homebrew, venv, Whisper-Modell, Chromium) | nur Syntax geprüft – **nicht ausgeführt** |
+
 ## ⚠️ Benötigt zusätzliche Werkzeuge / Voraussetzungen
 | Funktion | Voraussetzung |
 |---|---|
