@@ -1,38 +1,50 @@
-# Story 1 „Arzt mit 6.000 € netto“ – Prompt-Paket
-**Hinweis: Mit diesen Prompts wurden noch keine Medien erzeugt.** Sie sind zum Einfügen in ChatGPT (Bilder) und Higgsfield (Image-to-Video) gedacht.
+# Story 1 „Arzt mit 6.000 € netto“ – Prompt-Paket (fotorealistisch)
+**Mit diesen Prompts wurden noch keine Medien erzeugt.** Workflow: ChatGPT (Bilder) → Higgsfield (Image-to-Video) → Schnitt.
 
-## Ablauf
-1. **ChatGPT:** Charakter-Sheet erzeugen (Prompt A). Das beste Ergebnis speichern.
-2. **ChatGPT:** Für jede Szene das Charakter-Sheet hochladen und den Keyframe-Prompt (B1–B5) verwenden. So bleibt Dr. Jonas in allen Szenen gleich.
-3. **Higgsfield:** Jeden Keyframe als Startbild nutzen (Image-to-Video, 5 s) und den Motion-Prompt (C1–C5) einfügen. Kamera-Presets wie „Dolly In“ oder „Orbit“ passend wählen.
-4. **Schnitt (CapCut/Premiere):** Clips auf 1080 × 960 px zuschneiden (9:8), obere Reel-Hälfte, Übergänge mit Licht-Flash. Zahlen-Overlays (6.000 €, 900 €, 2.000 €, „übrig: 200 €“) im Schnitt einsetzen, nicht generieren lassen. KI-Text wird oft fehlerhaft.
+## Stil: realistisch und alltagsnah
+Ziel: Die Bilder sollen wie ein echter Kurzfilm oder eine hochwertige Werbung aussehen und kein Cartoon sein. Normale Menschen, echte deutsche Orte (Klinikflur, Altbau- und Neubauwohnung, Tiefgarage), natürliches Licht. Der Zuschauer soll denken: „Das könnte ich sein.“
 
-## Stil-Block (an jeden Bild-Prompt anhängen)
+**Stil-Block (an jeden Bild-Prompt anhängen):**
 ```
-Style: high-end cinematic 3D animation, Pixar/Illumination quality, soft global illumination, warm amber key light with deep navy shadows, subtle volumetric haze, shallow depth of field, rich detailed environment, 35mm film look. Color palette: dark navy, warm amber/orange glow, small teal accents. No text, no logos, no watermark. Aspect ratio 9:8 (square-ish), subject centered with headroom, nothing important at the edges.
+Photorealistic cinematic still, shot on ARRI Alexa with a 35mm lens, natural skin texture with visible pores, realistic lighting, subtle film grain, shallow depth of field, warm and natural color grading with soft amber highlights, realistic everyday setting in Germany. Looks like a frame from a modern German TV drama or a premium commercial, not CGI, not cartoon, not illustration. No text, no logos, no watermark. Aspect ratio 9:8, main subject centered with headroom.
 ```
 
-## A – Charakter-Sheet (ChatGPT)
+## A – Charakterreferenz Jonas (ChatGPT, zuerst erstellen)
 ```
-Character reference sheet of "Dr. Jonas": a 30-year-old German doctor, slim build, average height, light skin, short dark-brown hair with a side part and a small quiff, light three-day stubble, warm brown eyes, thin black rectangular glasses. Wears an open white doctor's coat over teal scrubs, a stethoscope around his neck, a small orange name badge on the coat, dark navy trousers, white sneakers. Show front view, 3/4 view, side view, and 4 facial expressions (proud smile, amazed, worried, thoughtful). Neutral dark background. [STIL-BLOCK]
+Realistic portrait photo series of the same man, "Jonas": 31 years old, German, friendly and approachable, slim athletic build, short dark-brown hair neatly styled, light stubble, brown eyes, thin black rectangular glasses. Wears a white doctor's coat over navy scrubs, a stethoscope around his neck and a hospital ID badge. Create 4 photos: front portrait, 3/4 view, side profile, full body standing. Same face in every photo, neutral grey studio background, soft daylight. [STIL-BLOCK]
 ```
+Zusätzlich ein Outfit „privat“: *same man, same face, wearing a dark navy sweater and chinos.* Das brauchst du für die Szenen 2 bis 5.
 
-## B – Keyframes (ChatGPT, jeweils mit hochgeladenem Charakter-Sheet)
-**B1 Krankenhaus:** `Use the uploaded character exactly. Dr. Jonas walks toward the camera down a modern hospital corridor at night, ceiling lights reflecting on the polished floor, warm amber light from door windows. He looks at his smartphone with a proud, surprised smile; the phone screen glows amber. Medium-wide shot, low angle. [STIL-BLOCK]`
+**Tipp für gleichbleibende Gesichter:** In jedem neuen Chat zuerst das Referenzbild hochladen und schreiben: *„Use exactly this person, same face, hair, glasses and age.“* In Higgsfield kannst du Jonas alternativ als **Soul ID / Character** anlegen, dann bleibt das Gesicht über alle Clips stabil.
 
-**B2 Sportwagen:** `Use the uploaded character exactly. Dr. Jonas sits behind the wheel of a sleek orange sports coupe, driving through a city at golden-hour dusk, skyline silhouettes and glowing streetlights, headlights on. He smiles confidently, one hand on the wheel. 3/4 front view of the car, the driver clearly visible through the windshield. [STIL-BLOCK]`
+## B – Szenenbilder (ChatGPT, Referenz hochladen)
+**B1 Klinik, Gehalt kommt:**
+`Use exactly this person. Jonas walks down a real German hospital corridor in the early evening, fluorescent ceiling lights, linoleum floor with reflections, nurses blurred in the background. He holds his smartphone and looks at it with a quiet, proud smile. Medium shot, camera in front of him at eye level. [STIL-BLOCK]`
 
-**B3 Wohnung:** `Use the uploaded character exactly. Dr. Jonas steps into a large luxurious penthouse apartment at night: floor-to-ceiling windows with a glowing city skyline, designer sofa, warm floor lamp, plants. He spreads his arms in amazement, looking around. Wide shot from a slightly low angle. [STIL-BLOCK]`
+**B2 Neues Auto:**
+`Use exactly this person, wearing his navy sweater. Jonas sits in the driver's seat of a new dark-grey premium sports sedan (no visible brand logo), driving through a German city at golden hour, sunlight flaring through the windshield. Relaxed, satisfied smile, one hand on the steering wheel. Shot from the passenger side. [STIL-BLOCK]`
 
-**B4 Schreibtisch:** `Use the uploaded character exactly. Dr. Jonas sits at a dark wooden desk at night, lit by the cold glow of his laptop and a warm desk lamp. A floating holographic budget bar beside him is almost completely filled with orange, coral and violet blocks, only a tiny teal sliver left. He frowns, looking worried. Medium shot over the desk. [STIL-BLOCK]`
+**B3 Große Wohnung:**
+`Use exactly this person, wearing his navy sweater. Jonas stands in a large, newly renovated city apartment in the evening: high ceilings, big windows overlooking city lights, oak floor, a designer sofa, still a few moving boxes. He looks around, impressed, keys in his hand. Wide shot. [STIL-BLOCK]`
 
-**B5 Erkenntnis:** `Use the uploaded character exactly. Close-up of Dr. Jonas in a dim room with warm amber bokeh behind him, hand on his chin, thoughtful and slightly concerned expression, eyes looking down to the side as if realizing something. Beside him on the desk, an almost empty glass savings jar with only three coins, softly lit. [STIL-BLOCK]`
+**B4 Kontoauszug:**
+`Use exactly this person. Jonas sits at his kitchen table late in the evening, laptop open, banking app on his phone, a stack of letters and bills next to a coffee mug. His face is lit by the screen; he frowns slightly, worried. Medium close-up. [STIL-BLOCK]`
 
-## C – Motion-Prompts (Higgsfield, Image-to-Video, je ~5 s)
-- **C1:** `He keeps walking slowly toward the camera, glances at his phone and breaks into a proud smile. Ceiling lights pass overhead. Slow dolly-in, natural walk cycle, subtle camera shake.`
-- **C2:** `The car glides forward through the dusk city, wheels spinning, streetlights sweeping across the glossy paint. Slow orbit from the front 3/4 view to the side. He smiles.`
-- **C3:** `He walks two steps into the room, the floor lamp switches on with a warm glow, he slowly spreads his arms in amazement. Slow pan right with slight push-in.`
-- **C4:** `The holographic bar fills block by block until only a tiny teal sliver remains, glowing. His expression shifts from neutral to worried. Very slow push-in.`
-- **C5:** `He lowers his gaze to the nearly empty jar, then looks up thoughtfully, small realization nod. Slow push-in on his face, bokeh drifting.`
+**B5 Erkenntnis:**
+`Use exactly this person. Close-up of Jonas sitting on his sofa in the dim apartment at night, city lights behind him out of focus. He leans forward, elbows on his knees, hand rubbing his chin, looking into the distance with a thoughtful, slightly concerned expression, realizing something. [STIL-BLOCK]`
 
-Negativ (falls das Tool es anbietet): `distorted hands, extra fingers, warped face, changing outfit, changing hair, text, letters, logos, watermark, flicker, morphing`
+## C – Higgsfield-Motion-Prompts (Image-to-Video, je ~5 s)
+| Szene | Kamera-Preset | Motion-Prompt |
+|---|---|---|
+| C1 | Dolly In | `He walks slowly toward the camera, glances at his phone and a proud smile spreads across his face. Natural walk, realistic body movement, background staff moving softly out of focus.` |
+| C2 | Car Grip / Tracking | `The car drives smoothly through the city, golden sunlight and shadows slide across his face, he smiles and adjusts his grip on the wheel.` |
+| C3 | Slow Pan / Arc | `He steps into the room, turns slowly while looking around, a small amazed laugh, then puts the keys on the windowsill.` |
+| C4 | Slow Push In | `He scrolls on his phone, pauses, exhales and leans back; his expression turns from neutral to worried.` |
+| C5 | Super Slow Push In | `He stares into the distance, slowly rubs his chin, then gives a small, thoughtful nod.` |
+
+Negativ-Prompt (falls verfügbar): `cartoon, 3d render, CGI, plastic skin, distorted hands, extra fingers, warped face, changing face, changing glasses, text, logo, watermark, flicker, morphing`
+
+## D – Schnitt
+- Clips auf **1080 × 960** croppen (obere Reel-Hälfte). Den Bildmittelpunkt beim Generieren mittig halten.
+- Zahlen im Schnitt als dezente Overlays einblenden: *+6.000 € netto*, *Leasing 900 €*, *Miete 2.000 €*, *übrig: 200 €*. Dazu die Fußnote „Beispielrechnung · keine Anlageberatung“.
+- Übergänge: kurze Licht- oder Weißblitze, sonst harte Schnitte im Sprechrhythmus.
