@@ -25,7 +25,10 @@ def main():
     p.add_argument("input", help="Rohvideo (Sprecher vor der Kamera)")
     p.add_argument("-o", "--out", help="Ausgabeordner (Standard: <video>_reel)")
     p.add_argument("--lang", help="Sprache, z. B. de oder en (Standard: automatisch)")
-    p.add_argument("--script", help="Skript als Textdatei: korrigiert Transkript / ersetzt fehlenden Spracherkenner")
+    p.add_argument("--script", help="Skript als Textdatei: Gedankenstütze für die Erkennung (Fachbegriffe, Schreibweisen); "
+                   "ersetzt nur bei fehlendem Spracherkenner das Transkript")
+    p.add_argument("--script-mode", default="hint", choices=["hint", "replace"],
+                   help="hint = Gesprochenes ist maßgeblich (Standard), replace = Skripttext übernehmen")
     p.add_argument("--asr", default="auto", choices=["auto", "faster-whisper", "pocketsphinx", "script"])
     p.add_argument("--whisper-model", default=os.environ.get("REELKIT_WHISPER_MODEL", "small"),
                    help="faster-whisper Modellname (tiny/base/small/medium/large-v3) oder lokaler Pfad")
@@ -77,7 +80,8 @@ def main():
     tr_p = os.path.join(work, "transcript.json")
     if f("transcribe") or not os.path.exists(tr_p):
         script_text = open(a.script, encoding="utf-8").read() if a.script else None
-        tr = transcribe.transcribe(os.path.join(work, "asr.wav"), a.lang, a.asr, script_text, a.whisper_model)
+        tr = transcribe.transcribe(os.path.join(work, "asr.wav"), a.lang, a.asr, script_text, a.whisper_model,
+                                   a.script_mode)
         save_json(tr_p, tr)
     else:
         tr = load_json(tr_p)

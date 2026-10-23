@@ -228,6 +228,9 @@ def resolve_assets(edl, work, assets_dir=None, online=False, gen_cmd=None, force
                                    query=slot["q"]))
                 counts["cache"] = counts.get("cache", 0) + 1
                 continue
+            # Suchvariante immer aus der (ggf. von Claude angepassten) Suchanfrage q ableiten
+            suffix = STYLE_QUERY_SUFFIX.get(slot["style"], "")
+            slot["q_style"] = slot["q"] if suffix.lower() in slot["q"].lower() else f"{slot['q']} {suffix}".strip()
             dest = os.path.join(work, "assets", f"c{cell}_{i:02d}_{slot['art']}_{slot['style']}.jpg")
             res = (user.match(slot) or pins.fetch(slot, dest) or net.fetch(slot, dest)
                    or external_generate(gen_cmd, slot, dest))

@@ -132,6 +132,8 @@ def main():
     p.add_argument("--ohne-pinterest", action="store_true", help="keine Pinterest-Bilder (nur eigene/generierte)")
     p.add_argument("--neu", action="store_true", help="alles neu berechnen (Cache ignorieren)")
     p.add_argument("--vorschau", action="store_true", help="Vorschau-Frames speichern")
+    p.add_argument("--nur-plan", action="store_true",
+                   help="nur transkribieren + Bildplan (edl.json) erstellen, damit Claude die Pinterest-Suchen anpasst")
     a, weitere = p.parse_known_args()  # unbekannte Optionen gehen unverändert an make_reel.py
 
     for d in ("original", "skripte", "bilder", "musik", "fertig", ".arbeit"):
@@ -160,9 +162,15 @@ def main():
         cmd += ["--force", "all"]
     if a.vorschau:
         cmd += ["--previews", "60"]
+    if a.nur_plan:
+        cmd += ["--stop-after", "plan"]
     cmd += [x for x in weitere if x != "--"]
     print("Starte:", " ".join(cmd), flush=True)
     rc = subprocess.call(cmd)
+    if a.nur_plan:
+        print(f"\nPLAN FERTIG.\nTranskript: {work}/work/transcript.json\nBildplan:   {work}/work/edl.json\n"
+              "Pinterest-Suchen (Feld 'q' je Bildplatz) anpassen, dann ohne --nur-plan erneut starten.")
+        return rc
     final = os.path.join(work, "final.mp4")
     if rc not in (0, 1) or not os.path.exists(final):
         sys.exit(f"Schnitt fehlgeschlagen (Code {rc}). Details oben bzw. in {work}")

@@ -163,12 +163,33 @@ def merge_script(asr_words, script_words):
     return [{"w": w, "s": round(t[0], 3), "e": round(t[1], 3)} for w, t in zip(script_words, times)]
 
 
-def asr_faster_whisper(path, lang, model_name):
+def spelling_fix(asr_words, script_words, min_ratio=0.8):
+    """Skript nur als Gedankenstütze: Das Gesprochene bleibt maßgeblich. Übernommen wird nur die Schreibweise
+    (Groß-/Kleinschreibung, Fachbegriffe, Satzzeichen) von Skriptwörtern, die praktisch gleich klingen.
+    Weggelassene Skriptwörter tauchen nicht auf, frei Gesagtes bleibt erhalten."""
+    a = [_norm(w["w"]) for w in asr_words]
+    b = [_norm(w) for w in script_words]
+    out = [dict(w) for w in asr_words]
+    fixed = 0
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes():
+        if tag == "equal" or (tag == "replace" and i2 - i1 == j2 - j1):
+            for k in range(i2 - i1):
+                if tag == "equal" or difflib.SequenceMatcher(a=a[i1 + k], b=b[j1 + k]).ratio() >= min_ratio:
+                    if out[i1 + k]["w"] != script_words[j1 + k]:
+                        fixed += tag != "equal"
+                    out[i1 + k]["w"] = script_words[j1 + k]
+    log(f"Skript als Gedankenstütze: {fixed} Schreibweisen korrigiert, Wortlaut bleibt wie gesprochen")
+    return out
+
+
+def asr_faster_whisper(path, lang, model_name, hint=None):
     from faster_whisper import WhisperModel
     log(f"faster-whisper: lade Modell '{model_name}' (CPU, int8) …")
     model = WhisperModel(model_name, device="auto", compute_type="int8")
+    # Skript als Vokabelhilfe (Fachbegriffe, Namen) – Whisper transkribiert trotzdem das tatsächlich Gesagte
+    prompt = hint[:600] if hint else None
     segs, info = model.transcribe(path, language=lang or None, word_timestamps=True, vad_filter=True,
-                                  beam_size=5)
+                                  beam_size=5, initial_prompt=prompt, condition_on_previous_text=False)
     words = []
     for seg in segs:
         for w in seg.words or []:
@@ -199,7 +220,9 @@ def asr_pocketsphinx(path, lang):
     return words, "en"
 
 
-def transcribe(asr_wav, lang=None, backend="auto", script_text=None, whisper_model="small"):
+def transcribe(asr_wav, lang=None, backend="auto", script_text=None, whisper_model="small", script_mode="hint"):
+    """script_mode: 'hint' = Gesprochenes ist maßgeblich, Skript korrigiert nur Schreibweisen (Standard);
+    'replace' = Skripttext wird übernommen, ASR liefert nur die Zeitstempel."""
     script_words = tokenize_script(script_text) if script_text else None
     order = {"auto": ["faster-whisper", "pocketsphinx", "script"],
              "faster-whisper": ["faster-whisper"], "pocketsphinx": ["pocketsphinx"], "script": ["script"]}[backend]
@@ -211,18 +234,21 @@ def transcribe(asr_wav, lang=None, backend="auto", script_text=None, whisper_mod
                     raise RuntimeError("kein --script angegeben")
                 words = align_script_to_vad(script_words, vad_regions(asr_wav))
                 if backend == "auto":
-                    warn("Kein Spracherkenner verfügbar: Untertitel-Timing aus Skript + Sprachaktivität geschätzt (±0,3 s).")
+                    warn("Kein Spracherkenner verfügbar: Untertitel und Bildwahl folgen dem SKRIPT, nicht dem "
+                         "tatsächlich Gesagten; Timing aus Sprachaktivität geschätzt (±0,3 s).")
                 return {"backend": "script-vad", "language": lang, "words": words, "errors": errors}
             if b == "faster-whisper":
-                words, det = asr_faster_whisper(asr_wav, lang, whisper_model)
+                words, det = asr_faster_whisper(asr_wav, lang, whisper_model, script_text)
             else:
                 words, det = asr_pocketsphinx(asr_wav, lang)
             if not words:
                 raise RuntimeError("keine Wörter erkannt")
-            if script_words:
+            if script_words and script_mode == "replace":
                 merged = merge_script(words, script_words)
                 if merged:
                     words = merged
+            elif script_words:
+                words = spelling_fix(words, script_words)
             log(f"Transkription via {b}: {len(words)} Wörter, Sprache {det}")
             if errors:
                 warn("Transkriptions-Fallback genutzt: " + " | ".join(errors))

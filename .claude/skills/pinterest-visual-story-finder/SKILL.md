@@ -7,17 +7,37 @@ description: Automatisierter Instagram-Reels-Editor plus Pinterest-Bildrecherche
 
 ## Schnellbefehl (Desktop-App, Ordner ~/Videos/FinanzMedizin)
 
-Nachricht wie „Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“ → sofort ausführen:
+Nachricht wie „Schneide original/IMG_1234.MOV, Skript 3, CTA-Wort ‚Vorsorge‘“ → in drei Phasen ausführen.
+Maßgeblich ist, was im Video GESPROCHEN wird. Das Skript ist nur Gedankenstütze (Vokabelhilfe für Whisper,
+Schreibweisen) – es ersetzt nie das Gesagte.
+
 ```bash
-~/.claude/skills/pinterest-visual-story-finder/.venv/bin/python \
-  ~/.claude/skills/pinterest-visual-story-finder/scripts/schneide.py original/IMG_1234.MOV --skript 3 --cta Vorsorge
+SK=~/.claude/skills/pinterest-visual-story-finder
+# Phase 1: transkribieren + Bildplan
+$SK/.venv/bin/python $SK/scripts/schneide.py original/IMG_1234.MOV --skript 3 --cta Vorsorge --nur-plan
 ```
-- Fehlt die Umgebung (`.venv`), zuerst `bash scripts/install_mac.sh` ausführen.
-- Optional: `--musik musik/datei.mp3`, `--vorschau`, `--neu`, `--ohne-pinterest`; alle `make_reel.py`-Optionen werden durchgereicht.
-- Danach: Kontaktbögen in `.arbeit/IMG_1234/work/assets/*_kandidaten.jpg` und Vorschau prüfen, ggf. Bilder in
-  `.arbeit/IMG_1234/work/edl.json` tauschen und denselben Befehl erneut ausführen (Cache macht es schnell).
-- Ergebnis: `fertig/IMG_1234.mp4` + `fertig/IMG_1234_report.md`. Dem Nutzer Pfad und Report-Hinweise nennen.
-- iPhone-HDR (HLG/Dolby Vision) wird automatisch auf SDR umgerechnet; 4K wird auf 1080p verkleinert.
+**Phase 2 – Bilder zum Gesagten auswählen (Claude selbst, nicht überspringen):**
+1. `.arbeit/IMG_1234/work/transcript.json` lesen: Was wird tatsächlich gesagt (Wortlaut, Pointen, Beispiele)?
+2. `.arbeit/IMG_1234/work/edl.json` öffnen. Pro Szene (`scenes`) die vier Bildplätze ermitteln, deren `start` in die
+   Szene fällt (`tracks[zelle][i]`), und für jeden Platz `q` neu schreiben: englische Pinterest-Suche, 3–7 Wörter,
+   konkretes Motiv + Ästhetik-Wort, abgeleitet aus dem GESPROCHENEN Satz. Rezept je Collage:
+   - Anker (wörtlich): z. B. „Ärzte sind reich“ → `doctor 1950s vintage photograph`
+   - Übertreibung/Surreal: → `man swimming in money surreal art`
+   - Medienbruch (Gemälde/Zeichnung): → `wealthy man baroque oil painting`
+   - Kontrast/Pointe: → `empty wallet dark aesthetic` (wenn die Pointe „Mythos“ ist)
+   Ästhetik-Wörter: vintage, cinematic, film photography, dark aesthetic, surreal, oil painting, editorial.
+   Keine Stockfoto-Begriffe, kein Text/Zitat/Infografik, nichts doppelt. Bei Einzelwechseln (`anim: swap`) das
+   Auslösewort (`trigger`) bebildern. `concept`/`art`/`style` dürfen bleiben (`art` ist nur der Offline-Fallback).
+3. Phase 3 starten (gleicher Befehl ohne `--nur-plan`). Danach die Kontaktbögen
+   `.arbeit/IMG_1234/work/assets/*_kandidaten.jpg` ansehen; unpassende Wahl durch anderen Kandidaten
+   (`*_pinN.img` als `asset`) ersetzen oder `q` schärfen, `asset` auf null setzen und erneut starten.
+4. Vorschau prüfen (`--vorschau`), Ergebnis `fertig/IMG_1234.mp4` melden, Hinweise aus dem Report nennen.
+
+- Fehlt `.venv`, zuerst `bash $SK/scripts/install_mac.sh`.
+- Skripte: `skripte/` (.docx/.txt/.md, auch Sammeldokument „Skript 11 von 30“); nur Text in „…“ zählt.
+- CTA: `--cta Zahl --cta-text "Kommentier die"` → Karte „Kommentier die ZAHL“ ab dem gesprochenen Wort.
+- Optional: `--musik musik/datei.mp3`, `--vorschau`, `--neu`, `--ohne-pinterest`.
+- iPhone-HDR wird automatisch auf SDR umgerechnet; 4K wird auf 1080p verkleinert.
 
 ## Modus A: Rohvideo → fertiges Reel (ausführbar)
 
