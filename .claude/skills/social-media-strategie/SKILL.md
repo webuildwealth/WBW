@@ -15,7 +15,10 @@ und `markt.md` (Markttrends) sind das Gedächtnis. Du hältst beide aktuell.
 
 ## Ablauf eines Reviews
 
-1. **Eigene Zahlen holen.** Über das Supermetrics-Tool `instagram_insights` (Fallback:
+1. **Eigene Zahlen holen.** Zusätzlich Metricool (Marke `finanz.medizin`, brandId 7612803, Zeitzone Europe/Berlin):
+   `getAnalyticsDataByMetrics` für Instagram (IGRE…), TikTok (TKPO/TKEV…), YouTube (YTVV/YTEV…), LinkedIn (LIPO/LIEV…),
+   Website (WTEV…, nur mit installiertem Tracking-Code) und `getBestTimeToPostByNetwork`. Instagram-Zahlen
+   gegen Supermetrics gegenprüfen; leere Netzwerke offen als „keine Daten“ melden. Über das Supermetrics-Tool `instagram_insights` (Fallback:
    `data_query` mit Instagram-Quelle) alle Reels seit dem letzten Bericht in `berichte/`.
    Pro Reel: Aufrufe, Skip-Rate/Wiedergabedauer, Likes, Kommentare, Shares, Saves, Follower-Zuwachs.
    Keine Zahl erfinden. Fehlt der Zugriff, das offen sagen und nur mit vorhandenen Daten arbeiten.

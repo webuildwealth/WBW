@@ -71,3 +71,9 @@ zeigen kein klares Muster nach Uhrzeit (Top-Reels liefen um 08:37, 15:56, 17:15,
 - Mo–Do 6:30–7:30 (vor Dienstbeginn), 12:30–13:30 (Mittagspause), 20:00–21:30 (nach Spätdienst)
 - So 19:00–21:00
 Prüfen: Instagram-App → Professional Dashboard → Follower → „Aktivste Zeiten“.
+
+## Beste Posting-Zeit (Metricool, Instagram, Follower-Aktivität, Stand 23.10.2026)
+
+Mi–Fr 10:00 am höchsten, Di 10:00 und 18:00, Mo 10:00; Wochenende deutlich schwächer. Aus unseren Reels
+bisher nicht bestätigt (Top-Reels liefen Di 17:15, Fr 06:45, So 14:53). Test läuft mit Skripten 31–35.
+Sketch-Skip-Rate steigt von 26,4 % auf 45,2 % (5 Reels, 13.–22.10.): Hooks wechseln.
