@@ -10,13 +10,15 @@ Heilberufe spezialisierte Marke von We Build Wealth, Berlin. Ziel jedes Stücks:
 **Reichweite, die zu Terminen führt.** Kein Content ohne Weg zum Kurzcheck.
 
 Lies vor dem Schreiben `stimme.md` (wie wir klingen), `daten.md` (was belegt ist
-und was bei uns funktioniert) und `markt.md` (was im Markt viral geht). Bestehende Skripte liegen in `skripte/` (Dateinamen „Skripte X bis Y.md“, dazu immer eine gleichnamige .docx) — wiederhole keine Idee.
+und was bei uns funktioniert) `markt.md` (was im Markt viral geht) und `zielgruppen.md` (Personas, Provokations-Regeln). Bestehende Skripte liegen in `skripte/` (Dateinamen „Skripte X bis Y.md“, dazu immer eine gleichnamige .docx) — wiederhole keine Idee.
 
 ## Ablauf
 
 1. Argument lesen: Thema, Zielgruppe, Anzahl, Format. Fehlt etwas, wähle selbst nach
    `daten.md` (Zielgruppe mit der höchsten Reichweite, Format mit niedrigster Skip-Rate).
-2. **Zuerst Viralität aus dem Markt:** Für jedes Skript ein Markt-Format aus `markt.md` wählen und
+2. **Persona wählen** aus `zielgruppen.md` (nur angestellte Heilberufler). Erkennungsbild als
+   visuelle Hook, inneren Monolog als gesprochenen Hook, Provokations-Formel anwenden.
+3. **Zuerst Viralität aus dem Markt:** Für jedes Skript ein Markt-Format aus `markt.md` wählen und
    auf Finanz-Medizin übersetzen. Mindestens die Hälfte der Skripte nutzt ein Gehalts- oder
    Vergleichsformat. Reine Erklär-Reels ohne Markt-Vorbild nur, wenn der Nutzer es verlangt.
    Sind neue Markt-Trends bekannt (Websuche, falls verfügbar), zuerst `markt.md` ergänzen.
