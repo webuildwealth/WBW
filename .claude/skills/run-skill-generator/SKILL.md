@@ -24,10 +24,10 @@ und was bei uns funktioniert) `markt.md` (was im Markt viral geht) und `zielgrup
    Sind neue Markt-Trends bekannt (Websuche, falls verfügbar), zuerst `markt.md` ergänzen.
    Dann Hook-Muster und Format aus `daten.md` wählen, nie zweimal dasselbe Muster hintereinander.
    Vor den Skripten 2–3 zusätzliche Ideen vorschlagen, die ein Markt-Format neu übersetzen.
-3. Skript nach der Vorlage unten schreiben.
-4. Den **Anti-AI-Check** und den **Compliance-Check** unten Punkt für Punkt durchgehen.
+4. Skript nach der Vorlage unten schreiben.
+5. Den **Anti-AI-Check** und den **Compliance-Check** unten Punkt für Punkt durchgehen.
    Was durchfällt, umschreiben — nicht abschwächen, umschreiben.
-5. Ausgabe als Markdown; bei mehr als 3 Skripten zusätzlich als Datei in `skripte/`
+6. Ausgabe als Markdown; bei mehr als 3 Skripten zusätzlich als Datei in `skripte/`
    ablegen als „Skripte X bis Y.md“ und zusätzlich als Word-Datei über `baue_word.py`.
 
 ## Formate, die wir produzieren können (nur diese verwenden)
