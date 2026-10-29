@@ -107,6 +107,16 @@ object-src 'none'\
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # -----------------------------------------------------------------------------
+#  Interne Vertriebsunterlagen. publish = "." liefert sonst jede Datei im Repo
+#  aus; force = true greift auch dann, wenn die Datei existiert.
+# -----------------------------------------------------------------------------
+[[redirects]]
+  from = "/vertrieb/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# -----------------------------------------------------------------------------
 #  Funnel-Endpunkt. Rewrite mit Status 200, nicht 301 — ein Redirect würde den
 #  POST-Body verlieren.
 # -----------------------------------------------------------------------------
