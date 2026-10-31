@@ -10,7 +10,7 @@ Heilberufe spezialisierte Marke von We Build Wealth, Berlin. Ziel jedes Stücks:
 **Reichweite, die zu Terminen führt.** Kein Content ohne Weg zum Kurzcheck.
 
 Lies vor dem Schreiben `stimme.md` (wie wir klingen), `daten.md` (was belegt ist
-und was bei uns funktioniert) `international.md` (was in den USA und international trägt, **Hauptquelle**), `markt.md` (Markt allgemein) und `zielgruppen.md` (Personas, Provokations-Regeln). Bestehende Skripte liegen in `skripte/` (Dateinamen „Skripte X bis Y.md“, dazu immer eine gleichnamige .docx) — wiederhole keine Idee.
+und was bei uns funktioniert) `international.md` (was in den USA und international trägt, **Hauptquelle**), `markt.md` (Markt allgemein) `zielgruppen.md` (Personas, Provokations-Regeln) und `emotion.md` (wie Wissen berührt: Gefühlshebel, emotionaler Bogen, Konzept Kinderstimme). Bestehende Skripte liegen in `skripte/` (Dateinamen „Skripte X bis Y.md“, dazu immer eine gleichnamige .docx) — wiederhole keine Idee.
 
 ## Ablauf
 
@@ -97,6 +97,11 @@ CAPTION
 
 Hinweis: <Modellrechnung/Quelle, falls Zahl>
 ```
+
+## Mischung
+
+Etwa die Hälfte der Skripte folgt einem viralen Markt-Muster, die andere Hälfte ist Wissens-Content
+nach `emotion.md`: ein Gefühlshebel pro Video, Bogen Welt → Bruch → Frage → Wissen → Rückkehr.
 
 ## Harte Regeln
 
