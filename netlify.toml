@@ -106,6 +106,13 @@ object-src 'none'\
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Fondsvergleich: internes Beratungswerkzeug, nicht in Suchmaschinen
+[[headers]]
+  for = "/fondsvergleich/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 # -----------------------------------------------------------------------------
 #  Funnel-Endpunkt. Rewrite mit Status 200, nicht 301 — ein Redirect würde den
 #  POST-Body verlieren.

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fondsvergleich · H&amp;H Finanzstrategie</title>
+<meta name="description" content="Beratungswerkzeug: ETF-Depot und Fondspolicen nach Kosten, Steuern und Ablaufleistung vergleichen.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="preload" href="fonts/jost.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/playfair.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fondsvergleich.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="200 60 480 565"><g fill="none" stroke="#a88c48" stroke-width="8"><polyline points="613,496 657,470 657,220 435,84 221,216 221,469 436,605 530,546" stroke-linejoin="miter"/></g><g fill="currentColor"><polygon points="307,166.6 327,154.2 327,387 307,387"/><rect x="295" y="382" width="44" height="5"/><path d="M296,382 Q307,382 307,371 L307,382Z"/><path d="M338,382 Q327,382 327,371 L327,382Z"/><rect x="327" y="275" width="100" height="6"/><rect x="427" y="191" width="20" height="99"/><rect x="418" y="191" width="38" height="5"/><path d="M419,196 Q427,196 427,204 L427,196Z"/><path d="M455,196 Q447,196 447,204 L447,196Z"/><rect x="427" y="305" width="20" height="215"/><rect x="418" y="305" width="38" height="5"/><path d="M419,310 Q427,310 427,318 L427,310Z"/><path d="M455,310 Q447,310 447,318 L447,310Z"/><rect x="411" y="514" width="53" height="6"/><path d="M416,514 Q427,514 427,503 L427,514Z"/><path d="M458,514 Q447,514 447,503 L447,514Z"/><rect x="554" y="294" width="20" height="226"/><rect x="545" y="294" width="38" height="6"/><path d="M546,300 Q554,300 554,308 L554,300Z"/><path d="M582,300 Q574,300 574,308 L574,300Z"/><rect x="537" y="514" width="53" height="6"/><path d="M543,514 Q554,514 554,503 L554,514Z"/><path d="M585,514 Q574,514 574,503 L574,514Z"/><rect x="447" y="396" width="107" height="6"/></g></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M7 9V3h10v6M7 17H4v-7h16v7h-3M7 14h10v7H7z"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M4 12a8 8 0 1 0 2.4-5.7M4 4v4h4"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="1.8" d="M6 6l12 12M18 6L6 18"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap top__in">
+    <a class="brand" href="#" aria-label="H&amp;H Finanzstrategie · Fondsvergleich">
+      <svg aria-hidden="true" style="color:var(--paper)"><use href="#mark"/></svg>
+      <span class="brand__bar" aria-hidden="true"></span>
+      <span class="brand__text"><span class="brand__hh">H&amp;H</span><span class="brand__fs">FINANZSTRATEGIE</span></span>
+      <span class="top__tool">Fondsvergleich</span>
+    </a>
+    <div class="top__actions">
+      <button class="btn btn--ghost btn--sm" type="button" data-reset title="Auf Standardwerte zurücksetzen"><svg aria-hidden="true"><use href="#i-reset"/></svg><span>Zurücksetzen</span></button>
+      <button class="btn btn--gold btn--sm" type="button" data-print title="Als PDF speichern oder drucken"><svg aria-hidden="true"><use href="#i-print"/></svg><span>PDF-Bericht</span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Beratungswerkzeug</span>
+    <h1>Depot oder Fondspolice? <em>Gerechnet nach Kosten und Steuern.</em></h1>
+    <p class="lead">Gleicher Beitrag, gleicher Fonds, gleiche Rendite. Was am Ende netto ankommt, entscheiden drei Hebel: die Kosten, die Steuer und das, was aus der Ablaufleistung wird.</p>
+    <div class="hero__facts"><span>Kostenmodell α · β · γ · TER</span><span>Vorabpauschale, Teilfreistellung, 12/62-Regel</span><span>Rentenfaktor und Entnahmeplan</span></div>
+  </div>
+</section>
+
+<main>
+  <!-- 01 Kunde -->
+  <section class="sec" id="kunde">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Schritt 01</span>
+        <h2>Kunde und <em>Annahmen</em></h2>
+        <p>Alle Produkte rechnen mit demselben Monatsbudget und derselben Fondsrendite vor Kosten. So bleibt nur der Unterschied übrig, um den es geht.</p>
+      </div>
+      <div class="card">
+        <div class="fields" data-fields="kunde"></div>
+        <p class="note"><b>Annahmen, keine Prognose.</b> Die Fondsrendite ist die Wertentwicklung vor allen Kosten. Der Grenzsteuersatz im Ruhestand wirkt nur auf die Fondspolice (Halbeinkünfte bzw. Ertragsanteil). Den Basiszins für die Vorabpauschale veröffentlicht das BMF jedes Jahr im Januar, bitte aktuell halten.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Produkte -->
+  <section class="sec sec--grey" id="produkte">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Schritt 02</span>
+        <h2>Produkte und <em>Tarife</em></h2>
+        <p>Das Depot ist der Maßstab. Daneben bis zu drei Fondspolicen, als Brutto- oder Nettotarif. Tarifwerte kommen aus der Notion-Datenbank „Tarife“ oder direkt aus dem Angebot.</p>
+      </div>
+      <div class="data-state" data-tarif-state>Tarifdaten werden geladen …</div>
+      <div class="grid-products" data-products></div>
+    </div>
+  </section>
+
+  <!-- 03 Ergebnis -->
+  <section class="sec sec--dark" id="ergebnis">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Schritt 03</span>
+        <h2>Was am Ende <em>netto bleibt</em></h2>
+        <p data-summary-line></p>
+      </div>
+      <div class="view-switch" role="group" aria-label="Ergebnis anzeigen als">
+        <button type="button" data-view="kapital" aria-pressed="true">Kapitalauszahlung</button>
+        <button type="button" data-view="rente" aria-pressed="false">Monatlich im Ruhestand</button>
+      </div>
+      <div class="kpis" data-kpis></div>
+      <div class="verdict"><p data-verdict></p></div>
+    </div>
+  </section>
+
+  <!-- 04 Hebel -->
+  <section class="sec" id="hebel">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Schritt 04</span>
+        <h2>Die drei <em>Hebel</em> im Detail</h2>
+        <p>Wo der Unterschied entsteht: was die Kosten von der Ablaufleistung wegnehmen, was die Steuer nimmt und was die Ablaufleistung in der Auszahlung wert ist.</p>
+      </div>
+      <div class="levers" data-levers></div>
+      <div class="tablewrap"><table class="cmp" data-table></table></div>
+      <div class="charts">
+        <div class="chart">
+          <h3>Guthabenverlauf</h3>
+          <p>Vertragswert am Ende jedes Jahres, nach laufenden Kosten. Gestrichelt: derselbe Sparplan ganz ohne Kosten.</p>
+          <div data-chart-line></div>
+          <div class="legend" data-chart-legend></div>
+        </div>
+        <div class="chart">
+          <h3>Von der Bruttorendite zum Netto</h3>
+          <p>Ablaufleistung ohne Kosten, aufgeteilt in das, was netto bleibt, die Kosten und die Steuer.</p>
+          <div class="wf" data-waterfall></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Auszahlphase -->
+  <section class="sec sec--grey" id="auszahlung">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Schritt 05</span>
+        <h2>Ablaufleistung als <em>Einkommen</em></h2>
+        <p>Die Police kann lebenslang verrenten, bezahlt wird das mit dem Rentenfaktor. Das Depot zahlt per Entnahmeplan bis zum Planungsalter. Die Frage lautet: Bis zu welchem Alter hält das Depot dieselbe Netto-Rente durch?</p>
+      </div>
+      <div class="payout" data-payout></div>
+    </div>
+  </section>
+
+  <!-- 06 Sensitivität -->
+  <section class="sec" id="szenarien">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Schritt 06</span>
+        <h2>Wenn die Rendite <em>anders kommt</em></h2>
+        <p>Netto-Kapital nach Steuern bei Kapitalauszahlung, über verschiedene Fondsrenditen. Grün: Die Police liegt vor dem Depot, rot: dahinter.</p>
+      </div>
+      <div class="tablewrap"><table class="cmp sens" data-sens></table></div>
+    </div>
+  </section>
+
+  <!-- 07 Rechenweg -->
+  <section class="sec sec--dark" id="rechenweg">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Rechenweg</span>
+        <h2>So wird <em>gerechnet</em></h2>
+      </div>
+      <div class="method">
+        <article>
+          <h3>Kosten der Police</h3>
+          <ul>
+            <li><b>Abschlusskosten α</b> in % der Beitragssumme, über die ersten 60 Monate verteilt (Zillmerung, § 169 VVG).</li>
+            <li><b>Verwaltungskosten β</b> in % jedes Beitrags, dazu Stückkosten in € pro Jahr.</li>
+            <li><b>Kosten aufs Guthaben γ</b> und <b>Fondskosten TER</b> mindern die Rendite jedes Jahr.</li>
+            <li><b>Nettotarif:</b> Das Honorar kommt aus demselben Budget und senkt in den Ratenmonaten den Beitrag.</li>
+            <li><b>Effektivkosten (RIY)</b> = Bruttorendite − Rendite nach Kosten.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Steuer im Depot</h3>
+          <ul>
+            <li><b>Abgeltungsteuer</b> 25 % + 5,5 % Soli, mit Kirchensteuer nach § 32d Abs. 1 EStG.</li>
+            <li><b>Teilfreistellung</b> 30 % bei Aktienfonds (§ 20 Abs. 1 InvStG).</li>
+            <li><b>Vorabpauschale</b> jährlich: Wert am Jahresanfang × Basiszins × 70 %, höchstens der Wertzuwachs, bei Zukäufen je vollem Monat 1/12 weniger (§ 18 InvStG). Die Steuer wird aus dem Depot bezahlt.</li>
+            <li><b>Sparerpauschbetrag</b> jedes Jahr auf Vorabpauschale und Entnahmen angerechnet.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Steuer der Police</h3>
+          <ul>
+            <li>In der Ansparphase steuerfrei, auch beim Fondswechsel.</li>
+            <li><b>Kapital:</b> Ertrag = Auszahlung − Beiträge, davon 15 % steuerfrei bei Aktienfonds (§ 20 Abs. 1 Nr. 6 S. 9 EStG).</li>
+            <li><b>12/62-Regel:</b> Ab 12 Jahren Laufzeit und Auszahlung ab 62 wird nur die Hälfte zum persönlichen Satz besteuert, sonst Abgeltungsteuer.</li>
+            <li><b>Rente:</b> nur der Ertragsanteil nach Alter bei Rentenbeginn (§ 22 Nr. 1 S. 3 a bb EStG), z. B. 17 % mit 67.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>Auszahlphase</h3>
+          <ul>
+            <li><b>Police:</b> Monatsrente = Ablaufleistung ÷ 10.000 × Rentenfaktor, lebenslang.</li>
+            <li><b>Depot:</b> gleichbleibende Entnahme bis zum Planungsalter, das Depot bleibt investiert. Die Steuer fällt nur auf den Gewinnanteil jeder Entnahme an.</li>
+            <li><b>Break-even:</b> das Alter, bis zu dem das Depot dieselbe Netto-Rente zahlen kann wie die Police.</li>
+          </ul>
+        </article>
+      </div>
+      <p class="disclaimer">Modellrechnung mit gerundeten Werten und Annahmen, keine Prognose, keine Steuer- oder Rechtsberatung. Vereinfachungen: Grenzsteuersatz statt voller Progression, kein Solidaritätszuschlag auf die Einkommensteuer im Ruhestand, keine Kranken- und Pflegeversicherungsbeiträge auf Renten, keine Vorabpauschale in der Entnahmephase, Garantien und Überschussbeteiligung nicht berücksichtigt. Maßgeblich sind das Angebot, das Basisinformationsblatt und die Versicherungsbedingungen des jeweiligen Tarifs.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <span>H&amp;H Finanzstrategie · Fondsvergleich · interne Beratungsunterlage</span>
+    <span data-stand></span>
+  </div>
+</footer>
+
+<script src="engine.js"></script>
+<script src="tarife.js"></script>
+<script src="fondsvergleich.js"></script>
+</body>
+</html>

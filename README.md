@@ -28,6 +28,7 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `assets/js/beratung.js` | Ablauf des Kurzchecks: Fragen, Wunschzeiten, Absenden | Kurzcheck |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
+| `fondsvergleich/` | Internes Beratungswerkzeug Depot vs. Fondspolice im H&H-Stil, `noindex`, siehe `fondsvergleich/README.md` | — |
 
 ### Zielgruppen-Ansprache
 
