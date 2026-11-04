@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Verwaltung der Kundenzugänge zum Cashflow-Rechner. Nur für das Team.
+     Ohne CASHFLOW_ADMIN_PASSWORT erstellt der Server keinen Link; die Seite
+     selbst enthält nichts Vertrauliches. Kein Tracking, nicht indexiert. -->
+<title>Zugänge verwalten · Cashflow-Rechner</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/cashflow.css">
+</head>
+<body class="cf-seite">
+
+<header class="cf-kopf">
+  <div class="cf-kopf__innen">
+    <a class="cf-marke" href="index.html" aria-label="Finanz-Medizin — Startseite">
+      <picture>
+        <source srcset="assets/img/mark-finanz-medizin.webp" type="image/webp">
+        <img src="assets/img/mark-finanz-medizin.png" alt="" width="30" height="30">
+      </picture>
+      <span>Finanz<span>-Medizin</span></span>
+    </a>
+  </div>
+</header>
+
+<main class="cf-verwaltung">
+  <p class="eyebrow">Intern</p>
+  <h1>Zugang zum <em>Cashflow</em>-Rechner erstellen</h1>
+  <p class="lead">Jeder Kunde bekommt einen eigenen Link mit seinem Namen. Wer den Link öffnet, sieht die persönliche Begrüßung und kann den Rechner nutzen.</p>
+
+  <form class="cf-karte" data-form novalidate>
+    <div class="field">
+      <label for="v-name">Name des Kunden, wie er begrüßt werden soll</label>
+      <input id="v-name" name="name" type="text" maxlength="80" placeholder="z. B. Dr. Anna Müller" required>
+    </div>
+    <div class="field">
+      <label for="v-tage">Gültigkeit</label>
+      <select id="v-tage" name="tage">
+        <option value="0">unbegrenzt</option>
+        <option value="30">30 Tage</option>
+        <option value="90">90 Tage</option>
+        <option value="365" selected>1 Jahr</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="v-pw">Verwaltungspasswort</label>
+      <input id="v-pw" name="passwort" type="password" autocomplete="current-password" required>
+    </div>
+    <p class="cf-fehler" data-fehler role="alert" hidden></p>
+    <button class="btn btn--navy btn--block" type="submit" style="margin-top:1.3rem">Link erstellen <span class="arr">→</span></button>
+
+    <div class="cf-ergebnis" data-ergebnis hidden>
+      <strong>Persönlicher Link</strong>
+      <textarea class="cf-ergebnis__link" data-link rows="3" readonly></textarea>
+      <div class="btn-row">
+        <button class="btn btn--primary btn--sm" type="button" data-kopieren="link">Link kopieren</button>
+        <a class="btn btn--ghost btn--sm" data-oeffnen target="_blank" rel="noopener">Testen</a>
+      </div>
+      <dl>
+        <dt>Kunde</dt><dd data-e="name"></dd>
+        <dt>Gültig bis</dt><dd data-e="bis"></dd>
+        <dt>Zugangs-ID</dt><dd data-e="id"></dd>
+      </dl>
+      <div class="field">
+        <label for="v-text">Nachricht zum Verschicken</label>
+        <textarea id="v-text" class="cf-ergebnis__link" data-text rows="7"></textarea>
+      </div>
+      <button class="btn btn--ghost btn--sm" type="button" data-kopieren="text">Nachricht kopieren</button>
+    </div>
+  </form>
+
+  <p class="cf-hinweis-klein">Zugang sperren: Die Zugangs-ID in Netlify unter der Umgebungsvariable <code>CASHFLOW_GESPERRT</code> eintragen (mehrere mit Komma getrennt) und neu veröffentlichen. Die Zugangs-ID am besten im CRM beim Kunden notieren.</p>
+</main>
+
+<script src="assets/js/cashflow-zugang.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<!-- ==========================================================================
+     Cashflow-Rechner — persönlicher Kundenbereich
+
+     Bewusst OHNE Cookiebot, Tag Manager, Analytics und Clarity: Auf dieser
+     Seite tragen Kunden ihre Finanzen ein. Hier wird nichts gemessen und nichts
+     aufgezeichnet. Gerechnet wird nur im Browser; an den Server geht einzig der
+     Zugangsschlüssel zur Prüfung (/api/zugang). Der lokale Zwischenspeicher
+     (localStorage) dient allein dem ausdrücklich gewünschten Dienst und braucht
+     nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung.
+
+     Nicht in sitemap.xml, per robots.txt und X-Robots-Tag ausgeschlossen.
+     ========================================================================== -->
+
+<title>Cashflow-Rechner · Finanz-Medizin</title>
+<meta name="description" content="Ihr persönlicher Cashflow-Rechner von Finanz-Medizin.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#071B32">
+
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/favicon-180.png">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/manrope-normal-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/inter-normal-latin.woff2">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/cashflow.css">
+</head>
+<body class="cf-seite">
+
+<header class="cf-kopf">
+  <div class="cf-kopf__innen">
+    <a class="cf-marke" href="index.html" aria-label="Finanz-Medizin — Startseite">
+      <picture>
+        <source srcset="assets/img/mark-finanz-medizin.webp" type="image/webp">
+        <img src="assets/img/mark-finanz-medizin.png" alt="" width="30" height="30">
+      </picture>
+      <span>Finanz<span>-Medizin</span></span>
+    </a>
+
+    <div class="cf-aktionen" data-nur-app hidden>
+      <span class="cf-status" data-status aria-live="polite"></span>
+      <button class="cf-knopf" type="button" data-aktion="laden">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 13V3m0 0L6 7m4-4 4 4M3.5 13v2.5A1.5 1.5 0 0 0 5 17h10a1.5 1.5 0 0 0 1.5-1.5V13"/></svg>
+        <span>Datei laden</span>
+      </button>
+      <button class="cf-knopf" type="button" data-aktion="bericht">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 7V3h9v4M5.5 14h-2V8.5A1.5 1.5 0 0 1 5 7h10a1.5 1.5 0 0 1 1.5 1.5V14h-2M5.5 11.5h9V17h-9z"/></svg>
+        <span>Bericht</span>
+      </button>
+      <button class="cf-knopf cf-knopf--primaer" type="button" data-aktion="speichern">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0 4-4m-4 4-4-4M3.5 13v2.5A1.5 1.5 0 0 0 5 17h10a1.5 1.5 0 0 0 1.5-1.5V13"/></svg>
+        <span>Speichern</span>
+        <i class="cf-punkt" data-ungesichert hidden></i>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="inhalt">
+
+  <!-- ===================== 1. Zugang ===================== -->
+  <section class="cf-tor" data-ansicht="tor">
+    <div class="cf-tor__karte">
+      <p class="eyebrow">Persönlicher Zugang</p>
+      <h1>Ihr <em>Cashflow</em>-Rechner</h1>
+
+      <div class="cf-tor__laden" data-tor="pruefen">
+        <span class="cf-spinner" aria-hidden="true"></span>
+        <p>Ihr Zugang wird geprüft …</p>
+      </div>
+
+      <form class="cf-tor__form" data-tor="eingabe" hidden novalidate>
+        <p class="cf-tor__text" data-tor-text>Dieser Bereich ist unseren Mandantinnen und Mandanten vorbehalten. Öffnen Sie bitte den persönlichen Link, den Sie von uns erhalten haben, oder fügen Sie ihn hier ein.</p>
+        <div class="field">
+          <label for="cf-schluessel">Zugangslink</label>
+          <input id="cf-schluessel" name="schluessel" type="text" autocomplete="off" spellcheck="false"
+                 placeholder="https://finanz-medizin.com/cashflow?z=…">
+        </div>
+        <p class="cf-fehler" data-tor-fehler role="alert" hidden></p>
+        <button class="btn btn--navy btn--block" type="submit">Rechner öffnen <span class="arr">→</span></button>
+        <p class="cf-tor__fuss">Noch kein Zugang? <a href="beratung.html">Kostenloses Erstgespräch vereinbaren</a></p>
+      </form>
+    </div>
+    <p class="cf-vertraulich">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 9V6.5a4 4 0 0 1 8 0V9M5 9h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1z"/></svg>
+      Ihre Zahlen werden ausschließlich auf Ihrem Gerät berechnet und nicht an uns übertragen.
+    </p>
+  </section>
+
+  <!-- ===================== 2. Begrüßung ===================== -->
+  <section class="cf-start" data-ansicht="start" hidden>
+    <div class="cf-start__kopf">
+      <p class="eyebrow">Ihr persönlicher Bereich</p>
+      <h1>Willkommen, <em data-kunde>…</em></h1>
+      <p class="lead">Tragen Sie einmal Ihre Einnahmen und Ausgaben ein. Speichern Sie das Ergebnis als Datei, dann laden Sie sie beim nächsten Mal einfach wieder hoch und machen dort weiter, wo Sie aufgehört haben.</p>
+    </div>
+
+    <div class="cf-wege">
+      <button class="cf-weg cf-weg--hervor" type="button" data-aktion="fortsetzen" hidden>
+        <span class="cf-weg__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4.5h4.5"/></svg></span>
+        <span class="cf-weg__titel">Weitermachen</span>
+        <span class="cf-weg__text" data-fortsetzen-text>Ihre letzten Angaben auf diesem Gerät öffnen.</span>
+      </button>
+
+      <button class="cf-weg cf-ablage" type="button" data-aktion="laden" data-ablage>
+        <span class="cf-weg__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0L8 8m4-4 4 4M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg></span>
+        <span class="cf-weg__titel">Gespeicherte Datei laden</span>
+        <span class="cf-weg__text">Datei auswählen oder hierher ziehen.</span>
+      </button>
+
+      <button class="cf-weg" type="button" data-aktion="neu">
+        <span class="cf-weg__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>
+        <span class="cf-weg__titel">Neu beginnen</span>
+        <span class="cf-weg__text">Mit einer leeren Aufstellung starten. Dauert etwa 15 Minuten.</span>
+      </button>
+    </div>
+
+    <p class="cf-vertraulich">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 9V6.5a4 4 0 0 1 8 0V9M5 9h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1z"/></svg>
+      Ihre Zahlen bleiben auf Ihrem Gerät. Wir sehen sie erst, wenn Sie uns die Datei selbst schicken.
+    </p>
+  </section>
+
+  <!-- ===================== 3. Rechner ===================== -->
+  <section class="cf-app" data-ansicht="app" hidden>
+
+    <div class="cf-band">
+      <div class="cf-band__innen">
+        <div class="cf-band__titel">
+          <p class="cf-band__kunde" data-kunde>…</p>
+          <h1>Ihr Cashflow <em>auf einen Blick</em></h1>
+        </div>
+        <div class="cf-zeitraum" role="group" aria-label="Zeitraum">
+          <button type="button" data-zeitraum="1" aria-pressed="true">pro Monat</button>
+          <button type="button" data-zeitraum="12" aria-pressed="false">pro Jahr</button>
+        </div>
+      </div>
+      <div class="cf-kpis">
+        <div class="cf-kpi cf-kpi--gross" data-kpi-frei>
+          <span class="cf-kpi__label">Frei verfügbar</span>
+          <strong class="cf-kpi__wert" data-out="frei">0 €</strong>
+          <span class="cf-kpi__notiz" data-out="frei-text">Tragen Sie Ihre Einnahmen ein.</span>
+        </div>
+        <div class="cf-kpi">
+          <span class="cf-kpi__label">Einnahmen</span>
+          <strong class="cf-kpi__wert" data-out="ein">0 €</strong>
+        </div>
+        <div class="cf-kpi">
+          <span class="cf-kpi__label">Ausgaben</span>
+          <strong class="cf-kpi__wert" data-out="aus-ohne-sparen">0 €</strong>
+          <span class="cf-kpi__notiz">ohne Sparen</span>
+        </div>
+        <div class="cf-kpi">
+          <span class="cf-kpi__label">Sparen &amp; Vorsorge</span>
+          <strong class="cf-kpi__wert" data-out="spar">0 €</strong>
+        </div>
+        <div class="cf-kpi">
+          <span class="cf-kpi__label">Sparquote</span>
+          <strong class="cf-kpi__wert" data-out="quote">–</strong>
+          <span class="cf-kpi__notiz">inkl. freiem Betrag</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cf-raster">
+      <div class="cf-eingabe">
+        <nav class="cf-sprung" aria-label="Bereiche" data-sprung></nav>
+        <div data-bereiche></div>
+        <p class="cf-hinweis-klein">Positionen, die nicht auf Sie zutreffen, lassen Sie einfach leer. Beträge tragen Sie so ein, wie sie gezahlt werden, und wählen den Turnus. Eine Jahresprämie also als Jahresbetrag mit „jährlich“.</p>
+      </div>
+
+      <aside class="cf-analyse" aria-label="Auswertung">
+        <div class="cf-karte">
+          <h2 class="cf-karte__titel">Wohin Ihr Einkommen fließt</h2>
+          <div class="cf-stapel" data-stapel aria-hidden="true"></div>
+          <ul class="cf-legende" data-legende></ul>
+        </div>
+
+        <div class="cf-karte">
+          <h2 class="cf-karte__titel">Orientierung: 50-30-20</h2>
+          <p class="cf-karte__text">Eine verbreitete Faustregel für das Nettoeinkommen: höchstens 50 % Fixkosten, höchstens 30 % für variable Ausgaben, mindestens 20 % sparen.</p>
+          <div data-regel></div>
+        </div>
+
+        <div class="cf-karte">
+          <h2 class="cf-karte__titel">Ausgaben nach Bereich</h2>
+          <ol class="cf-balken" data-kategorien></ol>
+        </div>
+
+        <div class="cf-karte">
+          <h2 class="cf-karte__titel">Notgroschen</h2>
+          <p class="cf-karte__text">Eine Rücklage von drei bis sechs Monatsausgaben fängt Reparaturen oder Einkommensausfälle ab, ohne dass ein Kredit nötig wird.</p>
+          <div class="cf-reserve-felder">
+            <label class="cf-mini">
+              <span>Aktuelle Rücklage</span>
+              <span class="cf-betrag"><input type="text" inputmode="decimal" data-reserve="aktuell" placeholder="0" aria-label="Aktuelle Rücklage in Euro"><i>€</i></span>
+            </label>
+            <label class="cf-mini">
+              <span>Ziel</span>
+              <select data-reserve="monate" aria-label="Ziel in Monatsausgaben">
+                <option value="3">3 Monate</option>
+                <option value="4">4 Monate</option>
+                <option value="6">6 Monate</option>
+                <option value="9">9 Monate</option>
+                <option value="12">12 Monate</option>
+              </select>
+            </label>
+          </div>
+          <div class="cf-fortschritt" aria-hidden="true"><i data-reserve-balken></i></div>
+          <dl class="cf-zeilen">
+            <div><dt>Lebenshaltung pro Monat</dt><dd data-out="lebenshaltung">–</dd></div>
+            <div><dt>Ziel-Rücklage</dt><dd data-out="reserve-ziel">–</dd></div>
+            <div><dt>Reicht für</dt><dd data-out="reserve-monate">–</dd></div>
+            <div><dt>Noch aufzubauen</dt><dd data-out="reserve-fehlt">–</dd></div>
+          </dl>
+        </div>
+
+        <div class="cf-karte cf-karte--dunkel">
+          <h2 class="cf-karte__titel">Gemeinsam besprechen</h2>
+          <p class="cf-karte__text">Speichern Sie Ihre Datei und bringen Sie sie zum nächsten Termin mit. Dann sprechen wir über Ihre Zahlen statt über Schätzungen.</p>
+          <a class="btn btn--white btn--sm" href="beratung.html">Termin vereinbaren <span class="arr">→</span></a>
+        </div>
+      </aside>
+    </div>
+
+    <p class="cf-rechtlich">Der Rechner dient Ihrer eigenen Orientierung und ersetzt keine individuelle Beratung. Alle Angaben ohne Gewähr.</p>
+  </section>
+</main>
+
+<!-- Druckfassung: wird erst beim Drucken befüllt. -->
+<section class="cf-bericht" data-bericht aria-hidden="true"></section>
+
+<input type="file" accept=".json,application/json" data-datei hidden>
+<div class="cf-ablage-overlay" data-overlay hidden><p>Datei hier ablegen</p></div>
+<div class="cf-toast" data-toast role="status" aria-live="polite" hidden></div>
+
+<script src="assets/js/cashflow.js" defer></script>
+</body>
+</html>
