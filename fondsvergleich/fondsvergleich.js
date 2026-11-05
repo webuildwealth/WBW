@@ -3,7 +3,7 @@
   "use strict";
   const FV = window.FV;
   const DATA = window.FV_TARIFE || { tarife: [], referenz: null };
-  const STORE = "hh-fondsvergleich-v1";
+  const STORE = "hh-fondsvergleich-v2";
   const COLORS = ["var(--c-p0)", "var(--c-p1)", "var(--c-p2)"];
   const MAX_POLICEN = 3;
 
@@ -35,12 +35,29 @@
     { k: "dynamik", l: "Dynamik", u: "% p. a.", min: 0, max: 10, step: 0.5, hint: "Beitragssteigerung" },
     { k: "rendite", l: "Fondsrendite", u: "% p. a.", min: 0, max: 12, step: 0.25, slider: true, hint: "vor Kosten" },
     { k: "aktienfonds", l: "Fondsart", type: "seg", opts: [[true, "Aktienfonds"], [false, "Sonstige"]] },
-    { k: "grenzRuhe", l: "Steuersatz Rente", u: "%", min: 0, max: 45, step: 1, hint: "Grenzsteuersatz" },
     { k: "kist", l: "Kirchensteuer", type: "seg", opts: [[0, "keine"], [0.08, "8 %"], [0.09, "9 %"]] },
     { k: "sparerpausch", l: "Sparerpauschbetrag", type: "seg", opts: [[1000, "1.000 €"], [2000, "2.000 €"], [0, "verbraucht"]] },
-    { k: "basiszins", l: "Basiszins", u: "%", min: 0, max: 6, step: 0.01, hint: "BMF, jährlich" },
-    { k: "renditeEntnahme", l: "Rendite Entnahme", u: "% p. a.", min: 0, max: 10, step: 0.25, hint: "Depot" },
-    { k: "planAlter", l: "Entnahme bis", u: "J.", min: 70, max: 105, step: 1, hint: "Planungsalter" }
+    { k: "basiszins", l: "Basiszins", u: "%", min: 0, max: 6, step: 0.01, hint: "BMF 2026: 3,20 %" },
+    { k: "wechsel", l: "Fondswechsel", u: "Anzahl", min: 0, max: 10, step: 1, hint: "im Depot steuerpflichtig" },
+    { k: "renditeEntnahme", l: "Rendite Entnahme", u: "% p. a.", min: 0, max: 10, step: 0.25, hint: "vor Kosten" },
+    { k: "planAlter", l: "Entnahme bis", u: "J.", min: 70, max: 105, step: 1, hint: "Planungsalter" },
+    { k: "entnahmeDyn", l: "Entnahme steigt", u: "% p. a.", min: 0, max: 5, step: 0.25, hint: "0 = konstant" }
+  ];
+
+  const BEDARF_FELDER = [
+    { k: "ziel", l: "Wunscheinkommen", u: "€/Mon.", min: 0, max: 30000, step: 100, slider: false, hint: "netto, heutige Kaufkraft" },
+    { k: "inflation", l: "Inflation", u: "% p. a.", min: 0, max: 8, step: 0.25, hint: "Annahme" },
+    { k: "rvModus", l: "Gesetzliche Rente", type: "seg", opts: [["info", "Renteninfo"], ["schaetzen", "schätzen"]] },
+    { k: "renteHeute", l: "Rente heute", u: "€/Mon.", min: 0, max: 6000, step: 50, hint: "brutto, Renteninformation", nurWenn: ["rvModus", "info"] },
+    { k: "brutto", l: "Bruttoeinkommen", u: "€/Jahr", min: 0, max: 500000, step: 1000, hint: "Durchschnitt", nurWenn: ["rvModus", "schaetzen"] },
+    { k: "rvJahre", l: "Beitragsjahre", u: "J.", min: 0, max: 50, step: 1, hint: "bis Rentenbeginn", nurWenn: ["rvModus", "schaetzen"] },
+    { k: "renteAnp", l: "Rentenanpassung", u: "% p. a.", min: 0, max: 5, step: 0.25, hint: "Annahme" },
+    { k: "kvSatz", l: "KV/PV auf die Rente", u: "%", min: 0, max: 25, step: 0.05, hint: "KVdR 2026 Ø: 12,35 %, PKV: 0" },
+    { k: "pkv", l: "PKV-Beitrag", u: "€/Mon.", min: 0, max: 3000, step: 10, hint: "heute, sonst 0" },
+    { k: "verheiratet", l: "Veranlagung", type: "seg", opts: [[false, "Einzeln"], [true, "Zusammen"]] },
+    { k: "steuerModus", l: "Steuersatz Ruhestand", type: "seg", opts: [["auto", "aus Tarif"], ["manuell", "manuell"]] },
+    { k: "grenzRuhe", l: "Persönlicher Satz", u: "%", min: 0, max: 45, step: 1, hint: "manuell", nurWenn: ["steuerModus", "manuell"] },
+    { k: "tarifIndex", l: "Tarif wächst", u: "% p. a.", min: 0, max: 5, step: 0.25, hint: "gegen kalte Progression", nurWenn: ["steuerModus", "auto"] }
   ];
 
   const DEPOT_FELDER = [
@@ -61,7 +78,8 @@
 
   const DEFAULT = () => ({
     view: "kapital",
-    kunde: { alter: 37, rentenalter: 67, beitrag: 200, einmal: 0, dynamik: 0, rendite: 6, aktienfonds: true, grenzRuhe: 30, kist: 0, sparerpausch: 1000, basiszins: 2.53, renditeEntnahme: 4, planAlter: 90 },
+    kunde: { alter: 37, rentenalter: 67, beitrag: 200, einmal: 0, dynamik: 0, rendite: 6, aktienfonds: true, grenzRuhe: 30, kist: 0, sparerpausch: 1000, basiszins: 3.2, wechsel: 0, renditeEntnahme: 4, planAlter: 90, entnahmeDyn: 0,
+      ziel: 3000, inflation: 2, rvModus: "info", renteHeute: 1500, brutto: 60000, rvJahre: 42, renteAnp: 1, kvSatz: 12.35, pkv: 0, verheiratet: false, steuerModus: "auto", tarifIndex: 2 },
     depot: { name: "ETF-Depot", ter: 0.2, order: 0, depotgebuehr: 0 },
     policen: [tarifAus(DATA.referenz ? DATA.referenz.id : "eigen")]
   });
@@ -81,7 +99,7 @@
 
   let S; S = load();
   function load() {
-    try { const raw = localStorage.getItem(STORE); if (raw) { const s = JSON.parse(raw); if (s && s.kunde && s.depot && Array.isArray(s.policen)) return Object.assign(DEFAULT(), s); } } catch (e) { /* Speicher nicht verfügbar */ }
+    try { const raw = localStorage.getItem(STORE); if (raw) { const s = JSON.parse(raw); if (s && s.kunde && s.depot && Array.isArray(s.policen)) { const d = DEFAULT(); return Object.assign(d, s, { kunde: Object.assign(d.kunde, s.kunde) }); } } } catch (e) { /* Speicher nicht verfügbar */ }
     return DEFAULT();
   }
   function save() { try { localStorage.setItem(STORE, JSON.stringify(S)); } catch (e) { /* egal */ } }
@@ -94,8 +112,14 @@
   }
 
   function renderKunde() {
-    const box = $("[data-fields=kunde]");
-    box.innerHTML = KUNDE_FELDER.map((f) => {
+    renderFelder("kunde", KUNDE_FELDER);
+    renderFelder("bedarf", BEDARF_FELDER);
+  }
+
+  function renderFelder(name, liste) {
+    const box = $(`[data-fields=${name}]`);
+    const felder = liste.filter((f) => !f.nurWenn || S.kunde[f.nurWenn[0]] === f.nurWenn[1]);
+    box.innerHTML = felder.map((f) => {
       const v = S.kunde[f.k];
       if (f.type === "seg") {
         return `<div class="field field--seg"><span>${f.l}</span><div class="seg" role="radiogroup" aria-label="${f.l}">${f.opts.map(([ov, ol], i) =>
@@ -105,7 +129,7 @@
       return `<label class="field" for="k-${f.k}"><span>${f.l}${f.hint ? `<i>${f.hint}</i>` : ""}</span>${inputHtml("k-" + f.k, shown, f.u)}${f.slider ? `<input class="range" type="range" min="${f.min}" max="${f.max}" step="${f.step}" value="${v}" data-range="${f.k}" aria-label="${f.l}">` : ""}</label>`;
     }).join("");
 
-    KUNDE_FELDER.forEach((f) => {
+    felder.forEach((f) => {
       if (f.type === "seg") return;
       const inp = $("#k-" + f.k);
       const rng = $(`[data-range="${f.k}"]`);
@@ -122,8 +146,9 @@
       if (rng) { paintRange(rng); rng.addEventListener("input", () => set(Number(rng.value), "rng")); }
     });
     box.querySelectorAll("[data-seg]").forEach((r) => r.addEventListener("change", () => {
-      const f = KUNDE_FELDER.find((x) => x.k === r.dataset.seg);
+      const f = liste.find((x) => x.k === r.dataset.seg);
       S.kunde[f.k] = f.opts[Number(r.value)][0];
+      if (liste.some((x) => x.nurWenn && x.nurWenn[0] === f.k)) renderFelder(name, liste);
       update();
     }));
   }
@@ -221,7 +246,10 @@
       dynamik: (k.dynamik || 0) / 100, rendite: k.rendite / 100, aktienfonds: !!k.aktienfonds,
       kist: k.kist || 0, sparerpausch: k.sparerpausch || 0, grenzRuhe: (k.grenzRuhe || 0) / 100,
       basiszins: (k.basiszins || 0) / 100, renditeEntnahme: (k.renditeEntnahme || 0) / 100,
-      terEntnahme: (S.depot.ter || 0) / 100, planAlter: Math.max(k.planAlter, k.rentenalter + 1)
+      planAlter: Math.max(k.planAlter, k.rentenalter + 1), wechsel: k.wechsel || 0, entnahmeDyn: (k.entnahmeDyn || 0) / 100,
+      ziel: k.ziel || 0, inflation: (k.inflation || 0) / 100, renteAnp: (k.renteAnp || 0) / 100, kvSatz: (k.kvSatz || 0) / 100, pkv: k.pkv || 0,
+      verheiratet: !!k.verheiratet, steuerModus: k.steuerModus, tarifIndex: (k.tarifIndex || 0) / 100,
+      rente: k.rvModus === "schaetzen" ? FV.renteSchaetzung(k.brutto || 0, k.rvJahre || 0, k.rentenalter) : (k.renteHeute || 0)
     };
     p.jahre = p.rentenalter - p.alter;
     return Object.assign(p, over || {});
@@ -249,7 +277,43 @@
   function update() {
     save();
     R = rechnen();
-    renderKpis(); renderLevers(); renderTable(); renderLine(); renderWaterfall(); renderPayout(); renderSens();
+    renderBedarf(); renderKpis(); renderLevers(); renderTable(); renderLine(); renderWaterfall(); renderPayout(); renderEntnahme(); renderSens();
+  }
+
+  function renderBedarf() {
+    const b = R.bedarf, p = R.p;
+    const inflFaktor = Math.pow(1 + p.inflation, p.jahre);
+    const rate = (v) => (isFinite(v) ? eur(v) + " / Monat" : "nicht mehr erreichbar");
+    $("[data-bedarf]").innerHTML = `
+      <article class="pay" style="--c:var(--c-depot)"><div class="card__tag"><span class="dot"></span>Einkommen mit ${p.rentenalter}</div>
+        <div class="pay__big">${eur(b.nettoHeute)} <small>netto / Monat, in heutiger Kaufkraft</small></div>
+        <div class="pay__rows"><div><span>Gesetzliche Rente heute</span><b>${eur(p.rente)}</b></div><div><span>Brutto bei Rentenbeginn</span><b>${eur(b.bruttoMonat)}</b></div><div><span>KV/PV</span><b class="neg">−${nf0.format(Math.round(b.kvMonat))}&nbsp;€</b></div><div><span>Steuer (${pct(b.anteil, 1)} steuerpflichtig)</span><b class="${b.steuerMonat >= 0.5 ? "neg" : ""}">${b.steuerMonat >= 0.5 ? "−" : ""}${nf0.format(Math.round(b.steuerMonat))}&nbsp;€</b></div><div><span>Netto bei Rentenbeginn</span><b>${eur(b.nettoMonat)}</b></div></div></article>
+      <article class="pay" style="--c:var(--c-p0)"><div class="card__tag"><span class="dot"></span>Versorgungslücke</div>
+        <div class="pay__big">${eur(b.lueckeHeute)} <small>/ Monat, in heutiger Kaufkraft</small></div>
+        <div class="pay__rows"><div><span>Wunsch heute</span><b>${eur(p.ziel)}</b></div><div><span>Wunsch mit ${p.rentenalter} (Faktor ${nf2.format(inflFaktor)})</span><b>${eur(b.zielNominal)}</b></div><div><span>Lücke mit ${p.rentenalter}</span><b>${eur(b.luecke)}</b></div><div><span>Kapitalbedarf bis ${p.planAlter}</span><b>${eur(b.kapital)}</b></div></div></article>
+      <article class="pay" style="--c:var(--c-p1)"><div class="card__tag"><span class="dot"></span>Was das bedeutet</div>
+        <div class="pay__big">${rate(b.rate).replace(" / Monat", "")} <small>${isFinite(b.rate) ? "Sparrate / Monat, ab sofort" : ""}</small></div>
+        <div class="pay__rows"><div><span>Bei 5 Jahren Wartezeit</span><b>${rate(b.rate5)}</b></div><div><span>Aktuelles Budget</span><b>${eur(p.beitrag)} / Monat</b></div><div><span>Deckt vom Kapitalbedarf (Depot)</span><b>${pct(b.deckung, 0)}</b></div></div>
+        <div class="pay__hint">Kapitalbedarf und Sparrate vor Steuern auf Erträge. Die Entnahme wächst hier mit der Inflation.</div></article>`;
+  }
+
+  function renderEntnahme() {
+    const d = R.depot.entnahme;
+    const box = $("[data-entnahme]");
+    if (!R.policen.length) { box.innerHTML = ""; return; }
+    const N = R.p.planAlter - R.p.rentenalter;
+    const head = `<thead><tr><th>Entnahmeplan bis ${R.p.planAlter}</th><th><span class="dot" style="--c:var(--c-depot)"></span>${esc(R.depot.name)}</th>${R.policen.map((x) => `<th><span class="dot" style="--c:${x.color}"></span>${esc(x.name)}</th>`).join("")}</tr></thead>`;
+    const zeile = (label, dep, pol, cls) => `<tr class="${cls || ""}"><td>${label}</td><td>${dep}</td>${R.policen.map((x) => `<td>${pol(x)}</td>`).join("")}</tr>`;
+    box.innerHTML = head + `<tbody>
+      <tr class="grp"><td colspan="${R.policen.length + 2}">Höchste Entnahme, Kapital reicht genau bis ${R.p.planAlter}</td></tr>
+      ${zeile("Netto pro Monat im ersten Jahr", eur(d.nettoMonat), (x) => eur(x.entnahmeMax.nettoMonat), "sum")}
+      ${zeile("Unterschied zum Depot", "–", (x) => eurS(x.entnahmeMax.nettoMonat - d.nettoMonat))}
+      ${zeile("Steuer über " + N + " Jahre", eur(d.steuerSumme), (x) => eur(x.entnahmeMax.steuerSumme))}
+      <tr class="grp"><td colspan="${R.policen.length + 2}">Gleiche Entnahme wie im Depot: ${eur(d.nettoMonat)} netto pro Monat</td></tr>
+      ${zeile("Kapital reicht bis", String(R.p.planAlter), (x) => (x.entnahmeGleich.leerAlter === null ? String(R.p.planAlter) + " und länger" : "Alter " + nf0.format(Math.floor(x.entnahmeGleich.leerAlter))))}
+      ${zeile("Restkapital netto mit " + R.p.planAlter, eur(0), (x) => eur(x.entnahmeGleich.restNetto), "sum")}
+      ${zeile("Steuer über die Laufzeit", eur(d.steuerSumme), (x) => eur(x.entnahmeGleich.steuerSumme))}
+    </tbody>`;
   }
 
   const steuerGesamt = (x) => x.steuerAnspar + x.steuerKapital.steuer;
@@ -341,7 +405,7 @@
       ${line("Effektivkosten (RIY) p. a.", (x) => pct(x.riy))}
       ${line("Ablaufleistung vor Steuern", (x) => eur(x.wert), { cls: "sum" })}
       <tr class="grp"><td colspan="${all.length + 1}">Hebel 2 · Steuer</td></tr>
-      ${line("Vorabpauschale (Ansparphase)", (x) => neg(x.steuerAnspar))}
+      ${line("Vorabpauschale und Fondswechsel (Ansparphase)", (x) => neg(x.steuerAnspar))}
       ${line("Steuerpflichtiger Ertrag bei Auszahlung", (x) => eur(x.steuerKapital.stpfl))}
       ${line("Steuer bei Kapitalauszahlung", (x) => ({ v: (x.steuerKapital.steuer > 0.5 ? "−" + eur(x.steuerKapital.steuer) : "–") + `<small>${esc(x.steuerKapital.regel)}</small>`, c: "neg" }))}
       ${line("Netto-Kapital", (x) => ({ v: eur(x.netto), c: x.netto === best ? "best" : "" }), { cls: "sum" })}

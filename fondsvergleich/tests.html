@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>Fondsvergleich Tests</title>
+<style>body{font:14px/1.5 system-ui;margin:24px;background:#fff;color:#111}.ok{color:#176b3a}.no{color:#b3261e;font-weight:700}</style></head>
+<body><h1>Rechenkern-Tests</h1><p id="sum"></p><ul id="out"></ul>
+<script src="engine.js"></script>
+<script>
+const out = document.getElementById("out"); let ok = 0, no = 0;
+function t(name, ist, soll, tol) {
+  const pass = Math.abs(ist - soll) <= (tol == null ? 0.005 : tol);
+  pass ? ok++ : no++;
+  out.insertAdjacentHTML("beforeend", `<li class="${pass ? "ok" : "no"}">${pass ? "OK" : "FEHLER"} · ${name}: ist ${ist.toFixed(4)}, soll ${soll}</li>`);
+}
+
+// Tarif 2026 (§ 32a EStG): Handwerte und stetige Zonengrenzen
+t("ESt 12.348", FV.est(12348), 0);
+t("ESt 20.000 abgerundet", Math.floor(FV.est(20000)), 1570);
+t("ESt 100.000 abgerundet", Math.floor(FV.est(100000)), 30864);
+t("Stetig 17.799", FV.est(17799) - FV.est(17799.0001), 0, 0.01);
+t("Stetig 69.878 (Rundung der Gesetzeskoeffizienten)", FV.est(69878) - FV.est(69878.0001), 0, 0.1);
+t("Stetig 277.825", FV.est(277825) - FV.est(277825.0001), 0, 0.01);
+
+// Abgeltungsteuer: Bekannte Sätze
+t("Abgeltung ohne KiSt", FV.abgeltungSatz(0), 0.26375, 1e-6);
+t("Abgeltung KiSt 9 %", FV.abgeltungSatz(0.09), 0.27995, 1e-4);
+t("Abgeltung KiSt 8 %", FV.abgeltungSatz(0.08), 0.27819, 1e-4);
+
+// Soli-Freigrenze
+const pa = { kist: 0, tarifIndex: 0 };
+t("Kein Soli unter Freigrenze", FV.steuerGesamt(pa, 60000, 0), FV.est(60000));
+t("Splitting 100.000", FV.steuerGesamt({ kist: 0, verheiratet: true }, 100000, 0), 2 * FV.est(50000));
+t("Tarifindex neutral bei Kaufkraft", FV.steuerGesamt({ kist: 0, tarifIndex: 0.02 }, 50000 * Math.pow(1.02, 10), 10) / Math.pow(1.02, 10), FV.est(50000), 0.01);
+
+// Rente und Krankenversicherung
+t("Besteuerungsanteil 2026", FV.besteuerungsanteil(2026), 0.84, 1e-9);
+t("Besteuerungsanteil 2058", FV.besteuerungsanteil(2058), 1, 1e-9);
+t("Besteuerungsanteil gedeckelt", FV.besteuerungsanteil(2070), 1, 1e-9);
+t("Standardrente 45 Jahre", FV.renteSchaetzung(FV.STAND.durchschnittsentgelt, 45, 67), 1913.40);
+t("Abschlag 2 Jahre früher", FV.renteSchaetzung(FV.STAND.durchschnittsentgelt, 45, 65), 1913.40 * 0.928);
+
+// Notion-Referenz: 200 €/Monat, 30 Jahre, 6 %, α 2,5 %, β 5 %, γ 0,3 %, TER 0,2 %
+const p = { alter: 37, rentenalter: 67, jahre: 30, beitrag: 200, einmal: 0, dynamik: 0, rendite: 0.06, aktienfonds: true, kist: 0, sparerpausch: 1000, basiszins: 0.032, renditeEntnahme: 0.04, planAlter: 90, steuerModus: "manuell", grenzRuhe: 0.30, inflation: 0.02, ziel: 3000, rente: 1500, renteAnp: 0.01, kvSatz: 0.1235, pkv: 0, tarifIndex: 0.02 };
+const tarif = { name: "Referenz", alpha: 0.025, beta: 0.05, gamma: 0.003, ter: 0.002, stueck: 0, rentenfaktor: 30 };
+const depot = { name: "ETF", ter: 0.002, order: 0, depotgebuehr: 0 };
+const res = FV.berechne(p, depot, [tarif]);
+const pol = res.policen[0];
+t("Notion Ablauf ohne Kosten", pol.ohneKosten, 195900, 100);
+t("Notion Ablauf mit Kosten", pol.wert, 162100, 100);
+t("Notion RIY", pol.riy, 0.0106, 0.0002);
+t("Notion Guthaben Jahr 3", pol.verlauf[3], 6260, 10);
+
+// Entnahmeplan: Identitäten
+const d = res.depot;
+t("Depot leer am Planungsalter", d.entnahme.rest, 0, 25);
+t("Depot Summe Netto", d.entnahme.nettoSumme, d.entnahme.nettoMonat * 12 * 23, 1);
+const pm = pol.entnahmeMax;
+t("Police leer am Planungsalter", pm.rest, 0, 25);
+const q0 = Object.assign({}, p, { basiszins: 0, renditeEntnahme: 0.0 });
+const e0 = FV.entnahmeplan("depot", Object.assign({}, q0, { sparerpausch: 0 }), 100000, 100000, 400, 87, 0);
+t("Ohne Gewinn keine Steuer", e0.steuerSumme, 0);
+t("Ohne Rendite Rest = Kapital − Entnahmen", e0.rest, 100000 - 400 * 12 * 20, 0.01);
+const e1 = FV.entnahmeplan("depot", Object.assign({}, q0, { sparerpausch: 0 }), 100000, 50000, 500, 87, 0);
+t("Gewinnanteil 50 %: Steuer im Jahr 1", e1.brutto * 12 - 6000, 6000 / (1 - 0.5 * 0.7 * 0.26375) * 0.5 * 0.7 * 0.26375, 0.01);
+
+// Bedarf
+const b = res.bedarf;
+t("Netto heute = Netto / Inflation", b.nettoHeute, b.nettoMonat / Math.pow(1.02, 30), 1e-6);
+t("Lücke heute", b.lueckeHeute, 3000 - b.nettoHeute, 1e-6);
+t("Warten kostet mehr", b.rate5 > b.rate ? 1 : 0, 1);
+
+// Fondswechsel: Steuer nur im Depot, Wert sinkt
+const mitW = FV.berechne(Object.assign({}, p, { wechsel: 3 }), depot, [tarif]);
+t("Wechsel senkt Depotwert", mitW.depot.wert < d.wert ? 1 : 0, 1);
+t("Wechsel lässt Police gleich", mitW.policen[0].wert, pol.wert);
+
+// 12/62 nicht erfüllt: Abgeltung
+const kurz = FV.steuerPoliceKapital(Object.assign({}, p, { jahre: 10, rentenalter: 60 }), { wert: 100000, beitragssumme: 60000 });
+t("Ohne 12/62 Abgeltung", kurz.steuer, (40000 * 0.85 - 1000) * 0.26375);
+
+document.getElementById("sum").innerHTML = `<b>${ok} bestanden, ${no} fehlgeschlagen</b>`;
+document.title = `${no ? "FEHLER" : "OK"} ${ok}/${ok + no}`;
+</script></body></html>

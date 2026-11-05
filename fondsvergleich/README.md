@@ -1,7 +1,8 @@
 # Fondsvergleich · H&H Finanzstrategie
 
 Internes Beratungswerkzeug: **ETF-Depot gegen bis zu drei Fondspolicen** (Brutto- oder
-Nettotarif), gerechnet nach den drei Hebeln **Kosten, Steuer und Ablaufleistung**.
+Nettotarif), gerechnet nach den drei Hebeln **Kosten, Steuer und Ablaufleistung**, dazu
+**Versorgungslücke, Kapitalbedarf und Sparrate**.
 Gestaltung nach H&H Finanzstrategie (Schwarz, Papier, Gold; Playfair Display + Jost,
 selbst gehostet). Kein Build-Schritt, keine externen Aufrufe.
 
@@ -16,8 +17,9 @@ kopieren.
 
 | Datei | Zweck |
 |---|---|
-| `index.html` | Seite: Kunde → Produkte → Ergebnis → Hebel → Auszahlphase → Szenarien → Rechenweg |
+| `index.html` | Seite: Kunde → Bedarf → Produkte → Ergebnis → Hebel → Auszahlphase → Szenarien → Rechenweg |
 | `engine.js` | Rechenkern, reine Funktionen, läuft auch in Node (`require`) |
+| `tests.html` | Tests des Rechenkerns, im Browser öffnen |
 | `fondsvergleich.js` | Oberfläche, Zustand (im Browser gespeichert), Diagramme |
 | `fondsvergleich.css` | Gestaltung inkl. Druckfassung (PDF-Bericht über „PDF-Bericht“ → Als PDF speichern) |
 | `tarife.js` | Tarifdaten, **erzeugt** von `notion_sync.py` |
@@ -62,22 +64,38 @@ Geprüft am Referenzbeispiel aus Notion (200 €/Monat, 30 Jahre, 6 %, α 2,5 %,
   demselben Budget und senkt in den Ratenmonaten den Beitrag.
 - **Depot:** gleicher Fonds (TER), Order- und Depotkosten, Vorabpauschale jährlich
   (Basiszins × 0,7, gedeckelt auf den Wertzuwachs, Zukäufe anteilig), Steuer aus dem Depot bezahlt.
+  Fondswechsel realisieren den aufgelaufenen Gewinn, gleichmäßig über die Laufzeit verteilt.
+- **Persönlicher Steuersatz:** Tarif § 32a EStG 2026 mit Soli (Freigrenze, Milderungszone) und
+  Kirchensteuer. Grundlage ist die steuerpflichtige gesetzliche Rente (Besteuerungsanteil nach
+  Rentenbeginn, fester Rentenfreibetrag, abzüglich KV/PV und Pauschbeträgen). Gezählt wird die
+  Mehrsteuer durch die Erträge. Der Tarif wächst mit dem eingestellten Satz. Manuell überschreibbar.
 - **Steuer Kapital:** Depot mit Abgeltungsteuer und 30 % Teilfreistellung. Police mit 15 %
-  Teilfreistellung, bei 12/62 Halbeinkünfte zum Grenzsteuersatz, sonst Abgeltungsteuer.
+  Teilfreistellung, bei 12/62 Halbeinkünfte zum persönlichen Satz, sonst Abgeltungsteuer.
 - **Auszahlphase:** Police-Rente = Ablaufleistung ÷ 10.000 × Rentenfaktor, versteuert mit dem
-  Ertragsanteil. Depot mit Entnahmeplan bis zum Planungsalter, Steuer auf den Gewinnanteil
-  jeder Entnahme. Break-even = Alter, bis zu dem das Depot dieselbe Netto-Rente zahlt.
+  Ertragsanteil. Entnahmeplan für Depot und Police: feste Netto-Entnahme, Gewinnanteil je Jahr
+  besteuert, im Depot zusätzlich die Vorabpauschale. Break-even = Alter, bis zu dem das Depot
+  dieselbe Netto-Rente zahlt.
+- **Bedarf:** Lücke = Wunsch (mit Inflation) − Netto aus gesetzlicher Rente. Kapitalbedarf = Barwert
+  der mit der Inflation steigenden Lücke bis zum Planungsalter. Sparrate = Kapitalbedarf ÷ Endwert
+  eines monatlich vorschüssigen Sparplans. Beides vor Steuern auf Erträge.
+- **Rentenschätzung:** Entgeltpunkte (Einkommen bis zur BBG ÷ Durchschnittsentgelt × Jahre)
+  × Zugangsfaktor × Rentenwert.
 
-Bewusste Vereinfachungen (auch im Rechner genannt): Grenzsteuersatz statt Progression, kein
-Soli auf die ESt im Ruhestand, keine KV/PV auf Renten, keine Vorabpauschale in der Entnahme,
-keine Garantien oder Überschüsse.
+Werte Stand 2026: Grundfreibetrag 12.348 €, Basiszins 3,20 %, Rentenwert 42,52 €,
+Durchschnittsentgelt 51.944 €, BBG RV 101.400 €, Soli-Freigrenze 20.350 €, KVdR Ø 12,35 %
+(7,3 + 1,45 + 3,6). In `engine.js` unter `STAND` jährlich pflegen.
+
+Bewusste Vereinfachungen (auch im Rechner genannt): Ruhestandseinkommen nur aus gesetzlicher
+Rente und den Erträgen dieses Vergleichs, Partnereinkommen nicht berücksichtigt, keine KV/PV auf
+Entnahmen, keine Günstigerprüfung im Depot, keine Garantien oder Überschüsse.
+
+## Quellen des Rechenwegs
+
+Der Rechenweg ist aus Gesetz, öffentlichen Rechengrößen und dem Notion-Rechenmodell aufgebaut.
+Tarifdaten kommen nur aus Versichererangeboten und der eigenen Notion-Datenbank.
 
 ## Offen
 
-- **Abgleich mit fonder (app.fonder-vergleiche.de):** Die Domain ist in der Cloud-Umgebung
-  gesperrt, und `/beratung` braucht einen Login. Für einen 1:1-Abgleich die Domain in den
-  Netzwerkeinstellungen freigeben oder 2–3 Beispielrechnungen (Eingaben + Ergebnisse,
-  gern als PDF-Bericht) bereitstellen. Danach Abweichungen in Rechenweg und Aufbau angleichen.
-- **Basiszins** für die Vorabpauschale jährlich prüfen (BMF, Januar). Voreinstellung 2,53 %.
-- Erweiterungen, die fonder laut Website anbietet: Basisrente/Rürup und das
-  Altersvorsorgedepot ab 2027. Erst einbauen, wenn die gesetzlichen Parameter feststehen.
+- **Basiszins** und `STAND` jährlich prüfen (BMF, Januar).
+- Basisrente/Rürup und das Altersvorsorgedepot ab 2027: Erst einbauen, wenn die gesetzlichen
+  Parameter feststehen.

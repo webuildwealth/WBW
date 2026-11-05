@@ -55,8 +55,23 @@
       </div>
       <div class="card">
         <div class="fields" data-fields="kunde"></div>
-        <p class="note"><b>Annahmen, keine Prognose.</b> Die Fondsrendite ist die Wertentwicklung vor allen Kosten. Der Grenzsteuersatz im Ruhestand wirkt nur auf die Fondspolice (Halbeinkünfte bzw. Ertragsanteil). Den Basiszins für die Vorabpauschale veröffentlicht das BMF jedes Jahr im Januar, bitte aktuell halten.</p>
+        <p class="note"><b>Annahmen, keine Prognose.</b> Die Fondsrendite ist die Wertentwicklung vor allen Kosten. Den Basiszins für die Vorabpauschale veröffentlicht das BMF jedes Jahr im Januar, bitte aktuell halten.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- Bedarf -->
+  <section class="sec sec--grey" id="bedarf">
+    <div class="wrap">
+      <div class="head">
+        <span class="eyebrow">Bedarf</span>
+        <h2>Was im Ruhestand <em>fehlt</em></h2>
+        <p>Aus Wunscheinkommen und gesetzlicher Rente ergeben sich Lücke, Kapitalbedarf und Sparrate. Dieselben Angaben bestimmen den persönlichen Steuersatz der Police.</p>
+      </div>
+      <div class="card">
+        <div class="fields" data-fields="bedarf"></div>
+      </div>
+      <div class="payout" data-bedarf style="margin-top:24px"></div>
     </div>
   </section>
 
@@ -125,6 +140,7 @@
         <p>Die Police kann lebenslang verrenten, bezahlt wird das mit dem Rentenfaktor. Das Depot zahlt per Entnahmeplan bis zum Planungsalter. Die Frage lautet: Bis zu welchem Alter hält das Depot dieselbe Netto-Rente durch?</p>
       </div>
       <div class="payout" data-payout></div>
+      <div class="tablewrap" style="margin-top:24px"><table class="cmp" data-entnahme></table></div>
     </div>
   </section>
 
@@ -173,6 +189,7 @@
             <li>In der Ansparphase steuerfrei, auch beim Fondswechsel.</li>
             <li><b>Kapital:</b> Ertrag = Auszahlung − Beiträge, davon 15 % steuerfrei bei Aktienfonds (§ 20 Abs. 1 Nr. 6 S. 9 EStG).</li>
             <li><b>12/62-Regel:</b> Ab 12 Jahren Laufzeit und Auszahlung ab 62 wird nur die Hälfte zum persönlichen Satz besteuert, sonst Abgeltungsteuer.</li>
+            <li><b>Persönlicher Satz:</b> Tarif § 32a EStG 2026 mit Soli und Kirchensteuer, aufgesetzt auf die steuerpflichtige gesetzliche Rente. Gezählt wird die Mehrsteuer. Alternativ manuell.</li>
             <li><b>Rente:</b> nur der Ertragsanteil nach Alter bei Rentenbeginn (§ 22 Nr. 1 S. 3 a bb EStG), z. B. 17 % mit 67.</li>
           </ul>
         </article>
@@ -180,12 +197,12 @@
           <h3>Auszahlphase</h3>
           <ul>
             <li><b>Police:</b> Monatsrente = Ablaufleistung ÷ 10.000 × Rentenfaktor, lebenslang.</li>
-            <li><b>Depot:</b> gleichbleibende Entnahme bis zum Planungsalter, das Depot bleibt investiert. Die Steuer fällt nur auf den Gewinnanteil jeder Entnahme an.</li>
+            <li><b>Entnahmeplan:</b> feste Netto-Entnahme aus Depot oder Police, das Kapital bleibt investiert. Die Steuer fällt auf den Gewinnanteil jeder Entnahme an, im Depot kommt die Vorabpauschale dazu. Rechnet bei der Police mit der Annahme, dass der Vertrag Teilentnahmen zulässt.</li>
             <li><b>Break-even:</b> das Alter, bis zu dem das Depot dieselbe Netto-Rente zahlen kann wie die Police.</li>
           </ul>
         </article>
       </div>
-      <p class="disclaimer">Modellrechnung mit gerundeten Werten und Annahmen, keine Prognose, keine Steuer- oder Rechtsberatung. Vereinfachungen: Grenzsteuersatz statt voller Progression, kein Solidaritätszuschlag auf die Einkommensteuer im Ruhestand, keine Kranken- und Pflegeversicherungsbeiträge auf Renten, keine Vorabpauschale in der Entnahmephase, Garantien und Überschussbeteiligung nicht berücksichtigt. Maßgeblich sind das Angebot, das Basisinformationsblatt und die Versicherungsbedingungen des jeweiligen Tarifs.</p>
+      <p class="disclaimer">Modellrechnung mit gerundeten Werten und Annahmen, keine Prognose, keine Steuer- oder Rechtsberatung. Vereinfachungen: Einkommen im Ruhestand nur aus gesetzlicher Rente und den Erträgen dieses Vergleichs, Partnereinkommen nicht berücksichtigt, Rechengrößen und Beitragssätze auf Stand 2026 fortgeschrieben, keine Beiträge zur Kranken- und Pflegeversicherung auf Entnahmen, Garantien und Überschussbeteiligung nicht berücksichtigt. Maßgeblich sind das Angebot, das Basisinformationsblatt und die Versicherungsbedingungen des jeweiligen Tarifs.</p>
     </div>
   </section>
 </main>
