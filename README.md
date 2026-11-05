@@ -28,9 +28,7 @@ Kein Build-Schritt, keine Abhängigkeiten, kein Framework. Ordner hochladen, fer
 | `assets/js/beratung.js` | Ablauf des Kurzchecks: Fragen, Wunschzeiten, Absenden | Kurzcheck |
 | `lib/lead-core.js` | Close-Logik, hosterunabhängig — prüft, baut Lead und Notiz, sendet | alle |
 | `netlify/functions/lead.js` | Netlify-Adapter, rund 30 Zeilen, enthält keine Fachlogik | alle |
-| `cashflow-rechner.html` | Persönlicher Cashflow-Rechner für Kunden (`/cashflow?z=…`), nicht indexiert | — |
-| `cashflow-zugang.html` | Interne Seite zum Erstellen der Kundenlinks (`/cashflow-zugang`) | — |
-| `lib/zugang-core.js` | Prüft und erstellt die signierten Zugangslinks des Rechners | — |
+| `cashflow-rechner.html` | Cashflow-Rechner für Nutzer (`/cashflow`), rechnet im Browser, nicht indexiert | — |
 
 ### Zielgruppen-Ansprache
 
@@ -206,39 +204,13 @@ und `robots.txt` anpassen.
 
 ---
 
-## Cashflow-Rechner für Kunden
+## Cashflow-Rechner
 
-Kunden bekommen einen persönlichen Link, tragen dort ihre Einnahmen und Ausgaben ein,
-speichern das Ergebnis als Datei und laden diese Datei beim nächsten Mal wieder hoch.
-
-**Einrichten (einmalig, Netlify → Site configuration → Environment variables):**
-
-| Variable | Inhalt |
-|---|---|
-| `CASHFLOW_SECRET` | Zufällige Zeichenkette, mindestens 32 Zeichen, z. B. aus `openssl rand -base64 48`. Wird sie geändert, sind **alle** bisherigen Links ungültig. |
-| `CASHFLOW_ADMIN_PASSWORT` | Passwort für die Verwaltungsseite. |
-| `CASHFLOW_GESPERRT` | Optional. Zugangs-IDs, die nicht mehr gelten sollen, mit Komma getrennt. |
-
-Danach neu veröffentlichen (Deploys → Trigger deploy).
-
-**Link für einen Kunden erstellen:** `https://www.finanz-medizin.com/cashflow-zugang` öffnen,
-Name und Gültigkeit eingeben, Passwort eingeben, „Link erstellen“. Die Seite liefert den
-Link und eine fertige Nachricht zum Kopieren. Die Zugangs-ID am besten im CRM notieren.
-
-**Wie der Zugang funktioniert:** Der Link enthält Name, Zugangs-ID und Ablaufdatum,
-signiert mit `CASHFLOW_SECRET`. Eine Datenbank gibt es nicht; gültig ist jeder Link mit
-korrekter Signatur, der nicht abgelaufen und nicht gesperrt ist. Gesperrt wird, indem
-die Zugangs-ID in `CASHFLOW_GESPERRT` eingetragen und neu veröffentlicht wird.
-
-**Was mit den Daten passiert:** Gerechnet wird ausschließlich im Browser. An den Server
-geht nur der Zugangsschlüssel zur Prüfung. Die Angaben bleiben automatisch im Browser
-des Kunden (localStorage) und auf Wunsch als JSON-Datei auf seinem Gerät. Die Seite lädt
-weder Cookiebot noch Tag Manager, Analytics oder Clarity.
-
-**Grenzen, die man kennen sollte:** Der Link ist der Schlüssel. Wer ihn weitergibt, gibt
-den Zugang weiter. Die Seite selbst (HTML, Rechenlogik) ist öffentlich abrufbar; geschützt
-ist die Nutzung über die Zugangsprüfung, nicht der Quelltext. Da im Rechner nur steht,
-was der Kunde selbst einträgt, ist das hier ausreichend.
+Unter `/cashflow` steht ein Rechner für Einnahmen und Ausgaben. Er ist ohne Anmeldung
+offen. Gerechnet wird ausschließlich im Browser, es gibt keinen Server-Aufruf. Die
+Angaben bleiben im Browser des Nutzers (localStorage) und lassen sich als JSON-Datei
+speichern und wieder hochladen. Die Seite lädt weder Cookiebot noch Tag Manager,
+Analytics oder Clarity.
 
 ## Technik
 

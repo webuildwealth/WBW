@@ -5,16 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <!-- ==========================================================================
-     Cashflow-Rechner — persönlicher Kundenbereich
+     Cashflow-Rechner
 
      Bewusst OHNE Cookiebot, Tag Manager, Analytics und Clarity: Auf dieser
-     Seite tragen Kunden ihre Finanzen ein. Hier wird nichts gemessen und nichts
-     aufgezeichnet. Gerechnet wird nur im Browser; an den Server geht einzig der
-     Zugangsschlüssel zur Prüfung (/api/zugang). Der lokale Zwischenspeicher
-     (localStorage) dient allein dem ausdrücklich gewünschten Dienst und braucht
-     nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung.
+     Seite tragen Nutzer ihre Finanzen ein. Hier wird nichts gemessen und nichts
+     aufgezeichnet. Gerechnet wird nur im Browser, es gibt keinen Server-Aufruf.
+     Der lokale Zwischenspeicher (localStorage) dient allein dem ausdrücklich
+     gewünschten Dienst und braucht nach § 25 Abs. 2 Nr. 2 TDDDG keine Einwilligung.
 
-     Nicht in sitemap.xml, per robots.txt und X-Robots-Tag ausgeschlossen.
+     Nicht in sitemap.xml und per robots.txt sowie noindex ausgeschlossen.
      ========================================================================== -->
 
 <title>Cashflow-Rechner · Finanz-Medizin</title>
@@ -63,40 +62,11 @@
 
 <main id="inhalt">
 
-  <!-- ===================== 1. Zugang ===================== -->
-  <section class="cf-tor" data-ansicht="tor">
-    <div class="cf-tor__karte">
-      <p class="eyebrow">Persönlicher Zugang</p>
-      <h1>Ihr <em>Cashflow</em>-Rechner</h1>
-
-      <div class="cf-tor__laden" data-tor="pruefen">
-        <span class="cf-spinner" aria-hidden="true"></span>
-        <p>Ihr Zugang wird geprüft …</p>
-      </div>
-
-      <form class="cf-tor__form" data-tor="eingabe" hidden novalidate>
-        <p class="cf-tor__text" data-tor-text>Dieser Bereich ist unseren Mandantinnen und Mandanten vorbehalten. Öffnen Sie bitte den persönlichen Link, den Sie von uns erhalten haben, oder fügen Sie ihn hier ein.</p>
-        <div class="field">
-          <label for="cf-schluessel">Zugangslink</label>
-          <input id="cf-schluessel" name="schluessel" type="text" autocomplete="off" spellcheck="false"
-                 placeholder="https://finanz-medizin.com/cashflow?z=…">
-        </div>
-        <p class="cf-fehler" data-tor-fehler role="alert" hidden></p>
-        <button class="btn btn--navy btn--block" type="submit">Rechner öffnen <span class="arr">→</span></button>
-        <p class="cf-tor__fuss">Noch kein Zugang? <a href="beratung.html">Kostenloses Erstgespräch vereinbaren</a></p>
-      </form>
-    </div>
-    <p class="cf-vertraulich">
-      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 9V6.5a4 4 0 0 1 8 0V9M5 9h10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1z"/></svg>
-      Ihre Zahlen werden ausschließlich auf Ihrem Gerät berechnet und nicht an uns übertragen.
-    </p>
-  </section>
-
-  <!-- ===================== 2. Begrüßung ===================== -->
+  <!-- ===================== Begrüßung ===================== -->
   <section class="cf-start" data-ansicht="start" hidden>
     <div class="cf-start__kopf">
-      <p class="eyebrow">Ihr persönlicher Bereich</p>
-      <h1>Willkommen, <em data-kunde>…</em></h1>
+      <p class="eyebrow">Cashflow-Rechner</p>
+      <h1>Willkommen</h1>
       <p class="lead">Tragen Sie einmal Ihre Einnahmen und Ausgaben ein. Speichern Sie das Ergebnis als Datei, dann laden Sie sie beim nächsten Mal einfach wieder hoch und machen dort weiter, wo Sie aufgehört haben.</p>
     </div>
 
@@ -132,7 +102,6 @@
     <div class="cf-band">
       <div class="cf-band__innen">
         <div class="cf-band__titel">
-          <p class="cf-band__kunde" data-kunde>…</p>
           <h1>Ihr Cashflow <em>auf einen Blick</em></h1>
         </div>
         <div class="cf-zeitraum" role="group" aria-label="Zeitraum">

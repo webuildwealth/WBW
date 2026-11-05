@@ -106,14 +106,9 @@ object-src 'none'\
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Kundenbereich und Verwaltung gehoeren in keinen Suchindex.
+# Der Cashflow-Rechner gehoert in keinen Suchindex.
 [[headers]]
   for = "/cashflow-rechner.html"
-  [headers.values]
-    X-Robots-Tag = "noindex, nofollow"
-
-[[headers]]
-  for = "/cashflow-zugang.html"
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 
@@ -139,25 +134,10 @@ object-src 'none'\
   status = 200
   force = true
 
-# Cashflow-Rechner: prüft persönliche Zugangslinks und erstellt neue.
-# Finanzangaben der Kunden kommen hier nie an (siehe lib/zugang-core.js).
-[[redirects]]
-  from = "/api/zugang"
-  to = "/.netlify/functions/zugang"
-  status = 200
-  force = true
-
-# Der Kundenlink lautet /cashflow?z=... — das Ziel traegt bewusst KEINE eigene
-# Abfragezeichenkette, sonst ginge der Zugangsschluessel unterwegs verloren.
+# Cashflow-Rechner: kurze Adresse.
 [[redirects]]
   from = "/cashflow"
   to = "/cashflow-rechner.html"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "/cashflow-zugang"
-  to = "/cashflow-zugang.html"
   status = 301
   force = true
 

@@ -2,14 +2,12 @@
    finanz-medizin.com — Cashflow-Rechner (cashflow-rechner.html)
 
    Ablauf
-     1. Zugang: Der Schlüssel aus ?z= (oder ein früher auf diesem Gerät
-        gemerkter) wird an /api/zugang geschickt. Nur der Schlüssel, nie
-        Finanzangaben.
-     2. Begrüßung: weitermachen (lokal gesichert), Datei laden oder neu.
-     3. Rechner: Eingaben, Auswertung, Datei speichern, Bericht drucken.
+     1. Begrüßung: weitermachen (lokal gesichert), Datei laden oder neu.
+     2. Rechner: Eingaben, Auswertung, Datei speichern, Bericht drucken.
+     Es gibt keinen Server-Aufruf und keinen Zugangsschutz.
 
    Datenhaltung
-     - Automatisch: localStorage je Zugangs-ID, nur auf diesem Gerät.
+     - Automatisch: localStorage, nur auf diesem Gerät.
      - Dauerhaft und übertragbar: JSON-Datei, die der Kunde selbst speichert
        und später wieder hochlädt (Format "finanz-medizin/cashflow", v1).
    ========================================================================== */
@@ -146,12 +144,11 @@
 
   var FORMAT = 'finanz-medizin/cashflow';
   var VERSION = 1;
-  var SPEICHER_ZUGANG = 'fm-cf-zugang';
 
   /* ---------------------------------------------------------------------
      Zustand
      --------------------------------------------------------------------- */
-  var zugang = null;          // { id, name, gueltigBis, schluessel }
+  var zugang = { id: 'offen', name: '' };   // ein Gerät, ein Stand
   var zeitraum = 1;           // 1 = Monat, 12 = Jahr
   var ungesichert = false;    // Änderungen seit der letzten Datei-Sicherung
   var state = leererZustand();
@@ -230,67 +227,12 @@
   }
 
   /* ---------------------------------------------------------------------
-     1. Zugang
-     --------------------------------------------------------------------- */
-  function schluesselAus(text) {
-    var t = String(text || '').trim();
-    var m = t.match(/[?&]z=([A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+)/);
-    if (m) return m[1];
-    return /^[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+$/.test(t) ? t : null;
-  }
-
-  function torEingabe(meldung) {
-    $('[data-tor="pruefen"]').hidden = true;
-    $('[data-tor="eingabe"]').hidden = false;
-    var f = $('[data-tor-fehler]');
-    f.hidden = !meldung;
-    f.textContent = meldung || '';
-  }
-
-  function pruefeZugang(schluessel) {
-    $('[data-tor="pruefen"]').hidden = false;
-    $('[data-tor="eingabe"]').hidden = true;
-
-    return fetch('/api/zugang', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ aktion: 'pruefen', schluessel: schluessel })
-    }).then(function (r) {
-      return r.json().catch(function () { return { ok: false }; });
-    }).then(function (d) {
-      if (!d || !d.ok) {
-        if (d && (d.grund === 'ungueltig' || d.grund === 'abgelaufen' || d.grund === 'gesperrt')) {
-          speicherLoeschen(SPEICHER_ZUGANG);
-        }
-        torEingabe((d && d.fehler) || 'Der Zugang konnte nicht geprüft werden. Bitte versuchen Sie es erneut.');
-        return;
-      }
-      zugang = { id: d.id, name: d.name, gueltigBis: d.gueltigBis, schluessel: schluessel };
-      speicherSchreiben(SPEICHER_ZUGANG, schluessel);
-      if (!/[?&]z=/.test(location.search)) {
-        history.replaceState(null, '', location.pathname + '?z=' + schluessel);
-      }
-      begruessung();
-    }).catch(function () {
-      torEingabe('Keine Verbindung. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.');
-    });
-  }
-
-  $('[data-tor="eingabe"]').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var s = schluesselAus($('#cf-schluessel').value);
-    if (!s) { torEingabe('Bitte fügen Sie den vollständigen Link ein, den Sie von uns erhalten haben.'); return; }
-    pruefeZugang(s);
-  });
-
-  /* ---------------------------------------------------------------------
-     2. Begrüßung
+     Begrüßung
      --------------------------------------------------------------------- */
   function lokalerSchluessel() { return 'fm-cf-daten:' + zugang.id; }
 
   function begruessung() {
-    $$('[data-kunde]').forEach(function (el) { el.textContent = zugang.name; });
-    document.title = 'Cashflow-Rechner · ' + zugang.name;
+    document.title = 'Cashflow-Rechner · Finanz-Medizin';
 
     var lokal = ladeLokal();
     var knopf = $('[data-aktion="fortsetzen"]');
@@ -453,7 +395,7 @@
     dateiFeld.value = '';
   });
 
-  /* Ziehen und Ablegen: überall, sobald der Zugang steht. */
+  /* Ziehen und Ablegen: überall auf der Seite. */
   var ziehZaehler = 0;
   function istDateiZug(e) {
     return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], 'Files') !== -1;
@@ -861,7 +803,7 @@
     }).join('');
 
     $('[data-bericht]').innerHTML =
-      '<header><img src="assets/img/mark-finanz-medizin.png" alt=""><div><p><b>Finanz-Medizin</b> · Cashflow-Analyse</p><h1>' + esc(zugang ? zugang.name : '') + '</h1><p>Stand ' + heute + '</p></div></header>' +
+      '<header><img src="assets/img/mark-finanz-medizin.png" alt=""><div><p><b>Finanz-Medizin</b> · Cashflow-Analyse</p><h1>Ihr Cashflow</h1><p>Stand ' + heute + '</p></div></header>' +
       '<h2>Überblick pro Monat</h2><table class="kpi"><tbody>' +
         '<tr><td>Einnahmen (netto)</td><td>' + euro(r.ein) + '</td><td></td></tr>' +
         '<tr><td>Fixkosten</td><td>' + euro(r.fix) + '</td><td>' + (r.ein ? prozent(r.fix / r.ein) : '') + '</td></tr>' +
@@ -932,9 +874,5 @@
      Start
      --------------------------------------------------------------------- */
   baueBereiche();
-  zeige('tor');
-  var ausLink = new URLSearchParams(location.search).get('z');
-  var start = (ausLink && schluesselAus(ausLink)) || speicherLesen(SPEICHER_ZUGANG);
-  if (start) pruefeZugang(start);
-  else torEingabe('');
+  begruessung();
 })();
